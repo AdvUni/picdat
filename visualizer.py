@@ -99,6 +99,7 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
 
         # write rest of body
         chart_counter = 0
+
         for chart in range(len(csv_files)):
             graphs.write('<div id="' + object_ids[chart] + '"' + os.linesep)
             graphs.write(style_line())
@@ -113,43 +114,53 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
                          ')">deselect all</button>' + os.linesep)
             graphs.write('</p>' + os.linesep)
 
-            # create checkboxes and their labels, arranged in a table
+            # create checkbox and label for each instance you have, arranged in a table. They'll
+            # allow to select and deselect graph lines individually.
             instance_counter = 0
             graphs.write('<table>' + os.linesep)
             graphs.write('<tr>' + os.linesep)
             for instance in header[chart]:
 
                 # for better readability, checkboxes are arranged in a table. Therefore,
-                # you need to linebreak after a view checkboxes:
+                # it needs a linebreak after a view checkboxes:
                 if (instance_counter % constants.COLUMN_NUMBER_OF_CHECKBOXES == 0) \
                         and instance_counter != 0:
                     graphs.write('    </tr>' + os.linesep + '    <tr>' + os.linesep)
 
+                # create html code for checkbox
                 graphs.write('        <td><input type=checkbox id="'
                              + get_checkbox_id(chart_counter, instance_counter) + '" name="'
                              + object_ids[chart] + '" onClick="change(this, '
                              + object_ids[chart] + ')" checked>' + os.linesep)
-                graphs.write(
-                    '        <label for="' + get_checkbox_id(chart_counter, instance_counter) + '">' +
-                    instance + '</label></td>' + os.linesep)
+                # create html code for label
+                graphs.write('        <label for="' + get_checkbox_id(chart_counter,
+                                                                      instance_counter) + '">' +
+                             instance + '</label></td>' + os.linesep)
                 instance_counter += 1
             graphs.write('</tr>' + os.linesep)
             graphs.write('</table>' + os.linesep)
 
+            # create dygraph object in java script, which is responsible for all data visualisation
             graphs.write('<script type="text/javascript">' + os.linesep)
             graphs.write('    ' + object_ids[chart] + ' = new Dygraph(' + os.linesep)
             graphs.write('        document.getElementById("' + object_ids[chart] + '"),'
                                                                                    '' + os.linesep)
             graphs.write('        "' + csv_files[chart] + '",' + os.linesep)
             graphs.write('        {' + os.linesep)
+            # write options into dygraph object's constructor. They'll decide over axis labeling and
+            # chart caption
             graphs.write(option_line('xlabel', constants.X_LABEL))
             graphs.write(option_line('ylabel', y_labels[chart]))
             graphs.write(option_line('title', titles[chart]))
             graphs.write('        }' + os.linesep + '    );' + os.linesep)
             graphs.write('</script>' + os.linesep)
+
+            # give some space between single charts
             graphs.write('<p/>' + os.linesep)
+
             chart_counter += 1
 
+        # implement checkbox functionality in java script
         graphs.write('<script>' + os.linesep)
         graphs.write('    function change(el, chart) {' + os.linesep)
         graphs.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
@@ -160,6 +171,8 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
         graphs.write(constants.SELECT_ALL_FCT)
         graphs.write(constants.DESELECT_ALL_FCT)
         graphs.write('</script>' + os.linesep)
+
+        # end html document
         graphs.write('</body>' + os.linesep + '</html>')
 
     graphs.close()
