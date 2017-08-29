@@ -1,0 +1,10 @@
+<html>
+<head>
+    <title>PicDat</title>
+    <script type="text/javascript"
+            src="dygraph.js"></script>
+    <link rel="stylesheet" type="text/css" href="dygraph.css"/>
+</head>
+
+<body>
+    <h1> PicDat: </h1>

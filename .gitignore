@@ -1,0 +1,9 @@
+__pycache__/
+*.data
+*.zip
+results*/
+
+bothwaysdict.py
+Playground.py
+fct_archive.py
+
