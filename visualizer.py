@@ -102,6 +102,8 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
         for chart in range(len(csv_files)):
             graphs.write('<div id="' + object_ids[chart] + '"' + os.linesep)
             graphs.write(style_line())
+
+            # create 'select all' and 'deselect all' buttons
             graphs.write('<p>' + os.linesep)
             graphs.write('    <button type="button" onclick="selectAll(this, '
                          + object_ids[chart] + ', ' + "'" + object_ids[chart] + "'" +
@@ -110,20 +112,30 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
                          + object_ids[chart] + ', ' + "'" + object_ids[chart] + "'" +
                          ')">deselect all</button>' + os.linesep)
             graphs.write('</p>' + os.linesep)
-            graphs.write('<p>' + os.linesep)
-            instance_counter = 0
 
+            # create checkboxes and their labels, arranged in a table
+            instance_counter = 0
+            graphs.write('<table>' + os.linesep)
+            graphs.write('<tr>' + os.linesep)
             for instance in header[chart]:
-                graphs.write('    <input type=checkbox id="'
+
+                # for better readability, checkboxes are arranged in a table. Therefore,
+                # you need to linebreak after a view checkboxes:
+                if (instance_counter % constants.COLUMN_NUMBER_OF_CHECKBOXES == 0) \
+                        and instance_counter != 0:
+                    graphs.write('    </tr>' + os.linesep + '    <tr>' + os.linesep)
+
+                graphs.write('        <td><input type=checkbox id="'
                              + get_checkbox_id(chart_counter, instance_counter) + '" name="'
                              + object_ids[chart] + '" onClick="change(this, '
                              + object_ids[chart] + ')" checked>' + os.linesep)
                 graphs.write(
-                    '    <label for="' + get_checkbox_id(chart_counter, instance_counter) + '">' +
-                    instance + '</label>' + os.linesep)
+                    '        <label for="' + get_checkbox_id(chart_counter, instance_counter) + '">' +
+                    instance + '</label></td>' + os.linesep)
                 instance_counter += 1
+            graphs.write('</tr>' + os.linesep)
+            graphs.write('</table>' + os.linesep)
 
-            graphs.write('</p>' + os.linesep)
             graphs.write('<script type="text/javascript">' + os.linesep)
             graphs.write('    ' + object_ids[chart] + ' = new Dygraph(' + os.linesep)
             graphs.write('        document.getElementById("' + object_ids[chart] + '"),'
@@ -135,6 +147,7 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
             graphs.write(option_line('title', titles[chart]))
             graphs.write('        }' + os.linesep + '    );' + os.linesep)
             graphs.write('</script>' + os.linesep)
+            graphs.write('<p/>' + os.linesep)
             chart_counter += 1
 
         graphs.write('<script>' + os.linesep)

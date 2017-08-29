@@ -31,6 +31,8 @@ DYGRAPHS_CSS_SRC = 'dygraphs/dygraph.css'
 
 X_LABEL = 'time'
 
+COLUMN_NUMBER_OF_CHECKBOXES = 4
+
 SELECT_ALL_FCT = """
     function selectAll(button, chart, name) {
         var checkboxes = document.getElementsByName(name);
