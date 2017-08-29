@@ -51,7 +51,7 @@ def run(search_requests):
     :return: None
     """
 
-    print("Welcome to PicDat!")
+    print('Welcome to PicDat!')
 
     # receive PerfStat file from user:
     perfstat_output_file = input('Please enter a path to a PerfStat output file: ')

@@ -2,6 +2,11 @@
  * Default styles for the dygraphs charting library.
  */
 
+/*
+ * Copyright 2009 Dan Vanderkam
+ * License: MIT
+ */
+
 .dygraph-legend {
   position: absolute;
   font-size: 14px;

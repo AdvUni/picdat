@@ -1,5 +1,9 @@
 import collections
 
+__author__ = 'Raymond Hettinger'
+__copyright__ = 'Copyright 2017 ActiveState Software Inc.'
+__license__ = 'MIT'
+
 
 class OrderedSet(collections.MutableSet):
     def __init__(self, iterable=None):
