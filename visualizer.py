@@ -98,8 +98,6 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
         graphs.write('    <h2> ' + sourcepath + ' </h2>')
 
         # write rest of body
-        chart_counter = 0
-
         for chart in range(len(csv_files)):
             graphs.write('<div id="' + object_ids[chart] + '"' + os.linesep)
             graphs.write(style_line())
@@ -129,11 +127,11 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
 
                 # create html code for checkbox
                 graphs.write('        <td><input type=checkbox id="'
-                             + get_checkbox_id(chart_counter, instance_counter) + '" name="'
+                             + get_checkbox_id(chart, instance_counter) + '" name="'
                              + object_ids[chart] + '" onClick="change(this, '
                              + object_ids[chart] + ')" checked>' + os.linesep)
                 # create html code for label
-                graphs.write('        <label for="' + get_checkbox_id(chart_counter,
+                graphs.write('        <label for="' + get_checkbox_id(chart,
                                                                       instance_counter) + '">' +
                              instance + '</label></td>' + os.linesep)
                 instance_counter += 1
@@ -157,8 +155,6 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
 
             # give some space between single charts
             graphs.write('<p/>' + os.linesep)
-
-            chart_counter += 1
 
         # implement checkbox functionality in java script
         graphs.write('<script>' + os.linesep)
