@@ -124,15 +124,20 @@ def process_search_requests(line, search_requests, recent_iteration, headers_set
                     util.inner_ord_set_insertion(headers_sets, request_index, instance)
 
                     value = line[line.index(aspect) + len(aspect) + 1: line.index(unit)]
+
+                    # we want to convert b/s into MB/s, so if the unit is b/s, lower the value
+                    # about factor 10^6.
+                    # Pay attention, that this conversion implies an adaption in the visualizer
+                    # module, where the unit is written out and also should be changed to MB/s!!!
+                    if unit == 'b/s':
+                        value = str(round(int(value)/1000000))
+
                     util.tablelist_insertion(table_values, request_index, recent_iteration,
                                              instance, value)
-                    # print(object_type,aspect,request_index)
                     return
-                # print('inner' + str(request_index))
                 request_index += 1
         else:
             request_index += len(search_requests[object_type])
-            # print('outer' + str(request_index))
 
 
 def replace_lun_ids(search_requests, header_row_list, lun_path_dict):

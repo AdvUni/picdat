@@ -154,6 +154,13 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
     chart_ids = util.get_object_ids(search_requests)
     y_labels = util.get_units(search_requests)
 
+    # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
+    # Pay attention, that this rename needs to be compatible with the data_collector module,
+    # where the affected values should be reduced by the factor 10^6!!!
+    for i in range(len(y_labels)):
+        if y_labels[i] == 'b/s':
+            y_labels[i] = 'MB/s'
+
     with open(html_filepath, 'w') as html_document:
         # write head
         with open('graph_html_head_template.txt', 'r') as template:
