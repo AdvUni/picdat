@@ -67,7 +67,25 @@ def get_checkbox_id(chart_id, graph_number):
     :param graph_number: simple number, representing the graph line, the checkbox belongs to.
     :return: simple ID as String
     """
-    return str(chart_id) + '_checkbox' + str(graph_number)
+    return str(chart_id) + constants.CHECKBOX_ID_SPLITTER + str(graph_number)
+
+
+def create_buttons(html_document, chart_id):
+    """
+    Creates two html buttons - 'select all' and 'deselect all' - which allow to select or 
+    deselect all checkboxes and with this all graph lines of one chart at once.
+    :param html_document: The html file, the checkboxes should be written in.   
+    :param chart_id: The id of the chart, the checkboxes should belong to.
+    :return: None
+    """
+    html_document.write('<p>' + os.linesep)
+    html_document.write('    <button type="button" onclick="selectAll(this, '
+                        + chart_id + ', ' + "'" + chart_id + "'" +
+                        ')">select all</button>' + os.linesep)
+    html_document.write('    <button type="button" onclick="deselectAll(this, '
+                        + chart_id + ', ' + "'" + chart_id + "'" +
+                        ')">deselect all</button>' + os.linesep)
+    html_document.write('</p>' + os.linesep)
 
 
 def create_checkboxes(html_document, chart_id, graph_identifiers):
@@ -123,7 +141,6 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
     y_labels = util.get_units(search_requests)
 
     with open(html_filepath, 'w') as html_document:
-
         # write head
         with open('graph_html_head_template.txt', 'r') as template:
             html_document.writelines(template.readlines())
@@ -138,14 +155,7 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
             html_document.write(style_line())
 
             # create 'select all' and 'deselect all' buttons
-            html_document.write('<p>' + os.linesep)
-            html_document.write('    <button type="button" onclick="selectAll(this, '
-                         + chart_ids[chart] + ', ' + "'" + chart_ids[chart] + "'" +
-                         ')">select all</button>' + os.linesep)
-            html_document.write('    <button type="button" onclick="deselectAll(this, '
-                         + chart_ids[chart] + ', ' + "'" + chart_ids[chart] + "'" +
-                         ')">deselect all</button>' + os.linesep)
-            html_document.write('</p>' + os.linesep)
+            create_buttons(html_document, chart_ids[chart])
 
             # create checkboxes
             create_checkboxes(html_document, chart_ids[chart], header[chart])
@@ -154,7 +164,8 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
             html_document.write('<script type="text/javascript">' + os.linesep)
             html_document.write('    ' + chart_ids[chart] + ' = new Dygraph(' + os.linesep)
             html_document.write('        document.getElementById("' + chart_ids[chart] + '"),'
-                                                                                   '' + os.linesep)
+                                                                                         '' +
+                                os.linesep)
             html_document.write('        "' + csv_files[chart] + '",' + os.linesep)
             html_document.write('        {' + os.linesep)
             # write options into dygraph object's constructor. They'll decide over axis labeling and
@@ -172,10 +183,11 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
         html_document.write('<script>' + os.linesep)
         html_document.write('    function change(el, chart) {' + os.linesep)
         html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
-                     os.linesep)
+                            os.linesep)
         html_document.write('    }' + os.linesep)
         html_document.write('    function translateNumber(id) {' + os.linesep +
-                     '        return id.split("_")[1];' + os.linesep + '    }')
+                            '        return id.split("' + constants.CHECKBOX_ID_SPLITTER
+                            + '")[1];' + os.linesep + '    }')
         html_document.write(constants.SELECT_ALL_FCT)
         html_document.write(constants.DESELECT_ALL_FCT)
         html_document.write('</script>' + os.linesep)
