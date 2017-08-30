@@ -18,7 +18,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 class InvalidDataInputException(Exception):
     def __init__(self, data_filename):
-        self.message = data_filename + ' not contains necessary information. ' \
+        self.message = data_filename + ' does not contain the required information. ' \
                                        'Maybe it is no PerfStat output at all.'
 
 

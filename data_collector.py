@@ -29,7 +29,7 @@ def search_for_number_of_iterations(line):
     Recognizes and, if applicable, filters the number of iterations planned in a
     PerfStat measuring from a string.
     :param line: A string from a PerfStat output file which should be searched
-    :return: the planned number of iteration, if given, or zero, otherwise
+    :return: the planned number of iteration, if given, or zero otherwise
     """
     if 'ITERATIONS,' in line:
         # get the 3rd word of this line, which should be the number of iterations
@@ -46,7 +46,7 @@ def found_iteration_begin(line, start_times):
     adds the timestamp given in this marker to start_times.
     :param line: A string from a PerfStat output file which should be searched
     :param start_times: A list of all iteration start timestamps
-    :return: True, if the line contains an iteration begin marker and False, otherwise
+    :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
         start_times.append(data_collector_util.build_date(line))
@@ -61,7 +61,7 @@ def found_iteration_end(line, end_times):
     adds the timestamp given in this marker to end_times.
     :param line: A string from a PerfStat output file which should be searched
     :param end_times: A list of all iteration end timestamps
-    :return: True, if the line contains an iteration end marker and False, otherwise
+    :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
         end_times.append(data_collector_util.build_date(line))
@@ -73,9 +73,9 @@ def found_iteration_end(line, end_times):
 def map_lun_path(line, lun_path, lun_path_dict):
     """
     Builds a dictionary to translate each LUN's uuid into it's path for better readability.
-    Looks for a 'LUN Path' or a 'LUN UUID' keyword. In case it found a path, it buffers the
-    path name. In case a uuid was found, it writes the uuid in the lun_path_dict together with
-    the lun path name buffered last.
+    Looks for a 'LUN Path' or a 'LUN UUID' keyword. In case it finds a path, it buffers the
+    path name. In case a uuid is found, it writes the uuid in the lun_path_dict together with
+    the lun path name last buffered.
     :param line: A string from a PerfStat output file which should be searched
     :param lun_path: The last buffered lun_path
     :param lun_path_dict: The dict in which the uuid-path-pairs should be written in
@@ -96,7 +96,7 @@ def map_lun_path(line, lun_path, lun_path_dict):
 
 def process_search_requests(line, search_requests, recent_iteration, headers_sets, table_values):
     """
-    Searches a String for all search requests from main. In case it found something, it writes the
+    Searches a String for all search requests from main. In case it finds something, it writes the
     results into the correct place in table_values. During the first iteration it collects the
     instance names of all requested object types as well and writes them into table_headers.
     :param line: A string from a PerfStat output file which should be searched
@@ -144,7 +144,7 @@ def replace_lun_ids(search_requests, header_row_list, lun_path_dict):
     """
     All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
     name or path. To make the resulting charts more readable, this function replaces their IDs
-    through the paths.
+    with the paths.
     :param search_requests: An OrderedDict of lists which contains all requested object types
     mapped to the relating aspects and units which the tool should create charts for.
     :param header_row_list: A list of lists which contains all instance names, the program
@@ -177,7 +177,7 @@ def replace_lun_ids(search_requests, header_row_list, lun_path_dict):
 
 def read_data_file(perfstat_data_file, search_requests):
     """
-    reads the requested information from a PerfStat output file and collects them into several lists
+    Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
     :param search_requests: An OrderedDict of lists which contains all requested object types
     mapped to the relating aspects and units which the tool should create graphs for.
