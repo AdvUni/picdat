@@ -54,19 +54,25 @@ def run(search_requests):
     print('Welcome to PicDat!')
 
     # receive PerfStat file from user:
-    perfstat_output_file = input('Please enter a path to a PerfStat output file: ')
-    if perfstat_output_file == '':
-        perfstat_output_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
-    elif not os.path.isfile(perfstat_output_file):
-        raise FileNotFoundError
+    while True:
+        perfstat_output_file = input('Please enter a path to a PerfStat output file: ')
+        if perfstat_output_file == '':
+            perfstat_output_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+            break
+        elif not os.path.isfile(perfstat_output_file):
+            print('This seems not to be a file. Try again.')
 
     # receive destination directory from user
-    destination_directory = input('Please select a destination directory for the results: ')
-    if destination_directory != '':
-        if os.path.isdir(destination_directory):
-            destination_directory += os.sep
+    while True:
+        destination_directory = input('Please select a destination directory for the results: ')
+        if destination_directory != '':
+            if os.path.isdir(destination_directory):
+                destination_directory += os.sep
+                break
+            else:
+                print('This seems not to be a directory. Try again.')
         else:
-            raise NotADirectoryError
+            break
 
     destination_directory += constants.DEFAULT_DIRECTORY_NAME
 
@@ -105,7 +111,7 @@ def run(search_requests):
                            perfstat_output_absolute_path)
 
     # finally
-    print('Done. You will find graphs under: ' + html_filepath)
+    print('Done. You will find graphs under: ' + os.path.abspath(html_filepath))
 
 
 # run
