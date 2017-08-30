@@ -48,15 +48,20 @@ def style_line():
            'px;"></div>' + os.linesep
 
 
-def option_line(label, content):
+def option_line(label, content, argument_is_string):
     """
     Generates a string to write it into an HTML file. It is used to specify an option inside the
     dygraphs object.
     :param label: The option's label.
     :param content: The option's content.
+    :param argument_is_string: Boolean, whether content should be written with quotation marks, 
+    because it is meant as String, or not, because it is meant as a javaScript function.
     :return: The line you can write into an HTML file.
     """
-    return '            ' + label + ': "' + content + '",' + os.linesep
+    if argument_is_string:
+        return '            ' + label + ': "' + content + '",' + os.linesep
+    else:
+        return '            ' + label + ': ' + content + ',' + os.linesep
 
 
 def get_checkbox_id(chart_id, graph_number):
@@ -67,7 +72,16 @@ def get_checkbox_id(chart_id, graph_number):
     :param graph_number: simple number, representing the graph line, the checkbox belongs to.
     :return: simple ID as String
     """
-    return str(chart_id) + constants.CHECKBOX_ID_SPLITTER + str(graph_number)
+    return chart_id + constants.CHECKBOX_ID_SPLITTER + str(graph_number)
+
+
+def get_legend_div_id(chart_id):
+    """
+    Generates a simple id for a chart legend's div element through adding a string to the chart id.
+    :param chart_id: ID of the chart which legend should be carried by the div the ID is for.
+    :return: simple ID as String
+    """
+    return chart_id + '_legend'
 
 
 def create_buttons(html_document, chart_id):
@@ -154,11 +168,9 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
             html_document.write('<div id="' + chart_ids[chart] + '"' + os.linesep)
             html_document.write(style_line())
 
-            # create 'select all' and 'deselect all' buttons
-            create_buttons(html_document, chart_ids[chart])
-
-            # create checkboxes
-            create_checkboxes(html_document, chart_ids[chart], header[chart])
+            # create html div element in which the chart legend should be showed
+            html_document.write('<div id="' + get_legend_div_id(chart_ids[chart]) + '" class="'
+                                + constants.LEGEND_DIV_CLASS_NAME + '"></div>')
 
             # create dygraph object in java script, which is responsible for all data visualisation
             html_document.write('<script type="text/javascript">' + os.linesep)
@@ -168,18 +180,26 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
                                 os.linesep)
             html_document.write('        "' + csv_files[chart] + '",' + os.linesep)
             html_document.write('        {' + os.linesep)
-            # write options into dygraph object's constructor. They'll decide over axis labeling and
-            # chart caption
-            html_document.write(option_line('xlabel', constants.X_LABEL))
-            html_document.write(option_line('ylabel', y_labels[chart]))
-            html_document.write(option_line('title', titles[chart]))
+            # write options into dygraph object's constructor.
+            html_document.write(option_line('xlabel', constants.X_LABEL, True))
+            html_document.write(option_line('ylabel', y_labels[chart], True))
+            html_document.write(option_line('title', titles[chart], True))
+            html_document.write(option_line('legend', 'always', True))
+            html_document.write(option_line('labelsDiv', 'document.getElementById("' +
+                                            get_legend_div_id(chart_ids[chart]) + '")', False))
             html_document.write('        }' + os.linesep + '    );' + os.linesep)
             html_document.write('</script>' + os.linesep)
+
+            # create 'select all' and 'deselect all' buttons
+            create_buttons(html_document, chart_ids[chart])
+
+            # create checkboxes
+            create_checkboxes(html_document, chart_ids[chart], header[chart])
 
             # give some space between single charts
             html_document.write('<p/>' + os.linesep)
 
-        # implement checkbox functionality in java script
+        # implement checkbox functionality in javaScript
         html_document.write('<script>' + os.linesep)
         html_document.write('    function change(el, chart) {' + os.linesep)
         html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
