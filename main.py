@@ -62,12 +62,13 @@ def run(search_requests):
 
     # receive destination directory from user
     destination_directory = input('Please select a destination directory for the results: ')
-    if destination_directory == '':
-        destination_directory = constants.DEFAULT_DIRECTORY_NAME
-    elif os.path.isdir(destination_directory):
-        destination_directory += os.sep + constants.DEFAULT_DIRECTORY_NAME
-    else:
-        raise NotADirectoryError
+    if destination_directory != '':
+        if os.path.isdir(destination_directory):
+            destination_directory += os.sep
+        else:
+            raise NotADirectoryError
+
+    destination_directory += constants.DEFAULT_DIRECTORY_NAME
 
     # get absolute path for PerfStat data file (just for using it as caption in resulting html)
     perfstat_output_absolute_path = os.path.abspath(perfstat_output_file)
