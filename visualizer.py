@@ -59,15 +59,50 @@ def option_line(label, content):
     return '            ' + label + ': "' + content + '",' + os.linesep
 
 
-def get_checkbox_id(chart_number, instance_number):
+def get_checkbox_id(chart_id, graph_number):
     """
-    Generates an simple ID for a checkbox relating on two numbers marking iteration and instance
-    of the graph line, the checkbox is related on.
-    :param chart_number: number of chart
-    :param instance_number: number of instance
+    Generates an simple ID for a checkbox, related on the chart's id, the checkbox belongs to, 
+    and a number.
+    :param chart_id: A string, containing the chart's id.
+    :param graph_number: simple number, representing the graph line, the checkbox belongs to.
     :return: simple ID as String
     """
-    return str(chart_number) + '_' + str(instance_number)
+    return str(chart_id) + '_checkbox' + str(graph_number)
+
+
+def create_checkboxes(html_document, chart_id, graph_identifiers):
+    """
+    This function creates checkboxes and relating labels for each graph line of one chart. The 
+    checkboxes allows to select and deselect single graph lines individually. For 
+    better readability, they'll be arranged in a html table.
+    :param html_document: The html file, the checkboxes should be written in.   
+    :param chart_id: The id of the chart, the checkboxes should belong to.
+    :param graph_identifiers: A list which contains the names of all graph lines.
+    :return: None
+    """
+    instance_counter = 0
+    html_document.write('<table>' + os.linesep)
+    html_document.write('<tr>' + os.linesep)
+    for instance in graph_identifiers:
+
+        # for better readability, checkboxes are arranged in a table. Therefore,
+        # it needs a linebreak after a view checkboxes:
+        if (instance_counter % constants.COLUMN_NUMBER_OF_CHECKBOXES == 0) \
+                and instance_counter != 0:
+            html_document.write('    </tr>' + os.linesep + '    <tr>' + os.linesep)
+
+        # create html code for checkbox
+        html_document.write('        <td><input type=checkbox id="'
+                            + get_checkbox_id(chart_id, instance_counter) + '" name="'
+                            + chart_id + '" onClick="change(this, '
+                            + chart_id + ')" checked>' + os.linesep)
+        # create html code for label
+        html_document.write('        <label for="' + get_checkbox_id(chart_id,
+                                                                     instance_counter) + '">' +
+                            instance + '</label></td>' + os.linesep)
+        instance_counter += 1
+    html_document.write('</tr>' + os.linesep)
+    html_document.write('</table>' + os.linesep)
 
 
 def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
@@ -84,91 +119,68 @@ def create_html(html_filepath, csv_files, search_requests, header, sourcepath):
     :return: None
     """
     titles = util.get_titles(search_requests)
-    object_ids = util.get_object_ids(search_requests)
+    chart_ids = util.get_object_ids(search_requests)
     y_labels = util.get_units(search_requests)
 
-    with open(html_filepath, 'w') as graphs:
+    with open(html_filepath, 'w') as html_document:
 
         # write head
         with open('graph_html_head_template.txt', 'r') as template:
-            graphs.writelines(template.readlines())
+            html_document.writelines(template.readlines())
         template.close()
 
         # write caption
-        graphs.write('    <h2> ' + sourcepath + ' </h2>')
+        html_document.write('    <h2> ' + sourcepath + ' </h2>')
 
         # write rest of body
         for chart in range(len(csv_files)):
-            graphs.write('<div id="' + object_ids[chart] + '"' + os.linesep)
-            graphs.write(style_line())
+            html_document.write('<div id="' + chart_ids[chart] + '"' + os.linesep)
+            html_document.write(style_line())
 
             # create 'select all' and 'deselect all' buttons
-            graphs.write('<p>' + os.linesep)
-            graphs.write('    <button type="button" onclick="selectAll(this, '
-                         + object_ids[chart] + ', ' + "'" + object_ids[chart] + "'" +
+            html_document.write('<p>' + os.linesep)
+            html_document.write('    <button type="button" onclick="selectAll(this, '
+                         + chart_ids[chart] + ', ' + "'" + chart_ids[chart] + "'" +
                          ')">select all</button>' + os.linesep)
-            graphs.write('    <button type="button" onclick="deselectAll(this, '
-                         + object_ids[chart] + ', ' + "'" + object_ids[chart] + "'" +
+            html_document.write('    <button type="button" onclick="deselectAll(this, '
+                         + chart_ids[chart] + ', ' + "'" + chart_ids[chart] + "'" +
                          ')">deselect all</button>' + os.linesep)
-            graphs.write('</p>' + os.linesep)
+            html_document.write('</p>' + os.linesep)
 
-            # create checkbox and label for each instance you have, arranged in a table. They'll
-            # allow to select and deselect graph lines individually.
-            instance_counter = 0
-            graphs.write('<table>' + os.linesep)
-            graphs.write('<tr>' + os.linesep)
-            for instance in header[chart]:
-
-                # for better readability, checkboxes are arranged in a table. Therefore,
-                # it needs a linebreak after a view checkboxes:
-                if (instance_counter % constants.COLUMN_NUMBER_OF_CHECKBOXES == 0) \
-                        and instance_counter != 0:
-                    graphs.write('    </tr>' + os.linesep + '    <tr>' + os.linesep)
-
-                # create html code for checkbox
-                graphs.write('        <td><input type=checkbox id="'
-                             + get_checkbox_id(chart, instance_counter) + '" name="'
-                             + object_ids[chart] + '" onClick="change(this, '
-                             + object_ids[chart] + ')" checked>' + os.linesep)
-                # create html code for label
-                graphs.write('        <label for="' + get_checkbox_id(chart,
-                                                                      instance_counter) + '">' +
-                             instance + '</label></td>' + os.linesep)
-                instance_counter += 1
-            graphs.write('</tr>' + os.linesep)
-            graphs.write('</table>' + os.linesep)
+            # create checkboxes
+            create_checkboxes(html_document, chart_ids[chart], header[chart])
 
             # create dygraph object in java script, which is responsible for all data visualisation
-            graphs.write('<script type="text/javascript">' + os.linesep)
-            graphs.write('    ' + object_ids[chart] + ' = new Dygraph(' + os.linesep)
-            graphs.write('        document.getElementById("' + object_ids[chart] + '"),'
+            html_document.write('<script type="text/javascript">' + os.linesep)
+            html_document.write('    ' + chart_ids[chart] + ' = new Dygraph(' + os.linesep)
+            html_document.write('        document.getElementById("' + chart_ids[chart] + '"),'
                                                                                    '' + os.linesep)
-            graphs.write('        "' + csv_files[chart] + '",' + os.linesep)
-            graphs.write('        {' + os.linesep)
+            html_document.write('        "' + csv_files[chart] + '",' + os.linesep)
+            html_document.write('        {' + os.linesep)
             # write options into dygraph object's constructor. They'll decide over axis labeling and
             # chart caption
-            graphs.write(option_line('xlabel', constants.X_LABEL))
-            graphs.write(option_line('ylabel', y_labels[chart]))
-            graphs.write(option_line('title', titles[chart]))
-            graphs.write('        }' + os.linesep + '    );' + os.linesep)
-            graphs.write('</script>' + os.linesep)
+            html_document.write(option_line('xlabel', constants.X_LABEL))
+            html_document.write(option_line('ylabel', y_labels[chart]))
+            html_document.write(option_line('title', titles[chart]))
+            html_document.write('        }' + os.linesep + '    );' + os.linesep)
+            html_document.write('</script>' + os.linesep)
 
             # give some space between single charts
-            graphs.write('<p/>' + os.linesep)
+            html_document.write('<p/>' + os.linesep)
 
         # implement checkbox functionality in java script
-        graphs.write('<script>' + os.linesep)
-        graphs.write('    function change(el, chart) {' + os.linesep)
-        graphs.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
+        html_document.write('<script>' + os.linesep)
+        html_document.write('    function change(el, chart) {' + os.linesep)
+        html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
                      os.linesep)
-        graphs.write('    }' + os.linesep)
-        graphs.write('    function translateNumber(id) {' + os.linesep +
+        html_document.write('    }' + os.linesep)
+        html_document.write('    function translateNumber(id) {' + os.linesep +
                      '        return id.split("_")[1];' + os.linesep + '    }')
-        graphs.write(constants.SELECT_ALL_FCT)
-        graphs.write(constants.DESELECT_ALL_FCT)
-        graphs.write('</script>' + os.linesep)
+        html_document.write(constants.SELECT_ALL_FCT)
+        html_document.write(constants.DESELECT_ALL_FCT)
+        html_document.write('</script>' + os.linesep)
 
         # end html document
-        graphs.write('</body>' + os.linesep + '</html>')
+        html_document.write('</body>' + os.linesep + '</html>')
 
-    graphs.close()
+    html_document.close()
