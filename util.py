@@ -106,61 +106,65 @@ def empty_directory(preferred_directory_path):
     return directory_name
 
 
-def get_units(search_requests):
+def get_units(per_iteration_requests):
     """
-    Gets all units from a search request dict.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
+    Gets all units from a per_iteration_request dict.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of all units.
     """
     unit_list = []
-    for object_type in search_requests:
-        for request_tuple in search_requests.get(object_type):
+    for object_type in per_iteration_requests:
+        for request_tuple in per_iteration_requests.get(object_type):
             unit = request_tuple[1]
             unit_list.append(unit)
     return unit_list
 
 
-def get_titles(search_requests):
+def get_titles(per_iteration_requests):
     """
     Generates proper titles for charts.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
-    :return: A list of chart titles, relating on the given search request.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
+    :return: A list of chart titles, relating on the given per_iteration_requests.
     """
     title_list = []
-    for object_type in search_requests:
-        for request_tuple in search_requests.get(object_type):
+    for object_type in per_iteration_requests:
+        for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             title_list.append(object_type + ':' + aspect)
     return title_list
 
 
-def get_object_ids(search_requests):
+def get_object_ids(per_iteration_requests):
     """
-    Generates proper titles for charts.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
-    :return: A list of chart titles, relating on the given search request.
+    Gets all object IDs from a per_iteration_request.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
+    :return: A list of all object IDs.
     """
     id_list = []
-    for object_type in search_requests:
-        for request_tuple in search_requests.get(object_type):
+    for object_type in per_iteration_requests:
+        for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             id_list.append(object_type + '_' + aspect)
     return id_list
 
 
-def get_csv_file_names(search_requests):
+def get_csv_file_names(per_iteration_requests):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
-    :return: A list of csv file names, relating on the given search request.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
+    :return: A list of csv file names, relating on the given per_iteration_request.
     """
     name_list = []
-    for object_type in search_requests:
-        for request_tuple in search_requests.get(object_type):
+    for object_type in per_iteration_requests:
+        for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             name_list.append(object_type + '_' + aspect +
                              constants.CSV_FILE_ENDING)

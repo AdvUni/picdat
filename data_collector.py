@@ -94,26 +94,28 @@ def map_lun_path(line, lun_path, lun_path_dict):
         return lun_path
 
 
-def process_search_requests(line, search_requests, recent_iteration, headers_sets, table_values):
+def process_per_iteration_requests(line, per_iteration_requests, recent_iteration, headers_sets,
+                                   table_values):
     """
-    Searches a String for all search requests from main. In case it finds something, it writes the
-    results into the correct place in table_values. During the first iteration it collects the
+    Searches a String for all per_iteration_requests from main. In case it finds something, 
+    it writes the results into the correct place in table_values. During the first iteration it collects the
     instance names of all requested object types as well and writes them into table_headers.
     :param line: A string from a PerfStat output file which should be searched
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
     :param recent_iteration: An integer which says, in which perfStat iteration the function call
     happened
     :param headers_sets: A list of OrderedSets which contains all previous collected instance
     names, the program has values for in table_values.
     :param table_values: A list of lists which contains all previous collected values.
-    Each inner list contains all values relating on exact one search request.
+    Each inner list contains all values relating on exact one per_iteration_request.
     :return: None
     """
     request_index = 0
-    for object_type in search_requests:
+    for object_type in per_iteration_requests:
         if object_type + ':' in line:
-            inner_tuples = search_requests[object_type]
+            inner_tuples = per_iteration_requests[object_type]
 
             for tuple_iterator in range(len(inner_tuples)):
                 aspect = inner_tuples[tuple_iterator][0]
@@ -130,37 +132,38 @@ def process_search_requests(line, search_requests, recent_iteration, headers_set
                     # Pay attention, that this conversion implies an adaption in the visualizer
                     # module, where the unit is written out and also should be changed to MB/s!!!
                     if unit == 'b/s':
-                        value = str(round(int(value)/1000000))
+                        value = str(round(int(value) / 1000000))
 
                     util.tablelist_insertion(table_values, request_index, recent_iteration,
                                              instance, value)
                     return
                 request_index += 1
         else:
-            request_index += len(search_requests[object_type])
+            request_index += len(per_iteration_requests[object_type])
 
 
-def replace_lun_ids(search_requests, header_row_list, lun_path_dict):
+def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
     """
     All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
     name or path. To make the resulting charts more readable, this function replaces their IDs
     with the paths.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create charts for.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
     :param header_row_list: A list of lists which contains all instance names, the program
     found values for.
     :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
     :return: The manipulated table_headers.
     """
-    if 'lun' in search_requests:
+    if 'lun' in per_iteration_requests:
 
         index_first_lun_request = 0
-        for object_type in search_requests:
+        for object_type in per_iteration_requests:
             if object_type != 'lun':
-                for _ in search_requests[object_type]:
+                for _ in per_iteration_requests[object_type]:
                     index_first_lun_request += 1
 
-        for i in range(len(search_requests['lun'])):
+        for i in range(len(per_iteration_requests['lun'])):
 
             insertion_index = index_first_lun_request + i
 
@@ -175,12 +178,13 @@ def replace_lun_ids(search_requests, header_row_list, lun_path_dict):
     return header_row_list
 
 
-def read_data_file(perfstat_data_file, search_requests):
+def read_data_file(perfstat_data_file, per_iteration_requests):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: all information needed to write the csv tables: table headers, table values,
     and the iterations start times, all packed in a dictionary.
     """
@@ -232,8 +236,9 @@ def read_data_file(perfstat_data_file, search_requests):
 
             # filter for the values you wish to visualize
             else:
-                process_search_requests(line, search_requests, iteration_begin_counter, header_sets,
-                                        table_content)
+                process_per_iteration_requests(line, per_iteration_requests, iteration_begin_counter,
+                                               header_sets,
+                                               table_content)
     data.close()
 
     # postprocessing
@@ -255,7 +260,7 @@ def read_data_file(perfstat_data_file, search_requests):
     value_rows_list = [table[1] for table in table_list]
 
     # replace lun's IDs in headers through their path names
-    replace_lun_ids(search_requests, header_row_list, lun_path_dict)
+    replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
 
     return {'tables_headers': header_row_list, 'tables_content': value_rows_list,
             'timestamps': start_times}

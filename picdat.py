@@ -29,25 +29,27 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def init(search_requests):
+def init(per_iteration_requests):
     """
-    Sets the value for search_request.
-    :param search_requests: Empty OrderedDict.
+    Sets the value for per_iteration_request.
+    :param per_iteration_requests: Empty OrderedDict.
     :return: None
     """
-    search_requests['aggregate'] = [('total_transfers', '/s')]
-    search_requests['processor'] = [('processor_busy', '%')]
-    search_requests['volume'] = [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]
-    search_requests['lun'] = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
+    per_iteration_requests['aggregate'] = [('total_transfers', '/s')]
+    per_iteration_requests['processor'] = [('processor_busy', '%')]
+    per_iteration_requests['volume'] = [('total_ops', '/s'), ('avg_latency', 'us'),
+                                        ('read_data', 'b/s')]
+    per_iteration_requests['lun'] = [('total_ops', '/s'), ('avg_latency', 'ms'),
+                                     ('read_data', 'b/s')]
 
 
-def run(search_requests):
+def run(per_iteration_requests):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
-    :param search_requests: An OrderedDict of lists which contains all requested object types
-    mapped to the relating aspects and units which the tool should create graphs for.
-    Might be empty, in this case the default height will be used.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
+    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: None
     """
 
@@ -71,8 +73,8 @@ def run(search_requests):
             if os.path.isdir(destination_directory):
                 destination_directory += os.sep
                 break
-            elif input('This directory does not exist. Would you like to create it? (Enter '
-                       'y) ') == 'y':
+            elif input('This directory does not exist. Would you like to create it? (Enter y) ') \
+                    == 'y':
                 os.makedirs(destination_directory)
                 print('Created directory ' + destination_directory)
                 destination_directory += os.sep
@@ -89,7 +91,7 @@ def run(search_requests):
 
     # collect data from file
     print('Read data...')
-    collected_data = data_collector.read_data_file(perfstat_output_file, search_requests)
+    collected_data = data_collector.read_data_file(perfstat_output_file, per_iteration_requests)
     tables_headers = collected_data['tables_headers']
     tables_content = collected_data['tables_content']
     timestamps = collected_data['timestamps']
@@ -103,7 +105,7 @@ def run(search_requests):
     copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
 
     # generate file names for csv tables
-    csv_filenames = util.get_csv_file_names(search_requests)
+    csv_filenames = util.get_csv_file_names(per_iteration_requests)
     csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
 
     # write data into csv tables
@@ -115,7 +117,7 @@ def run(search_requests):
 
     # write html file
     print('Create html file...')
-    visualizer.create_html(html_filepath, csv_filenames, search_requests, tables_headers,
+    visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests, tables_headers,
                            perfstat_output_absolute_path)
 
     # finally
@@ -123,6 +125,6 @@ def run(search_requests):
 
 
 # run
-init_search_requests = OrderedDict()
-init(init_search_requests)
-run(init_search_requests)
+init_per_iteration_requests = OrderedDict()
+init(init_per_iteration_requests)
+run(init_per_iteration_requests)
