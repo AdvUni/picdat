@@ -121,10 +121,9 @@
     -ms-transform: rotate(-90deg);
 }
 
-/* The following part is an addition by Marie Lohbeck, developer of PicDat*/
+/* The following part is an addition by Marie Lohbeck, developer of PicDat */
 
 .legend-div {
-    background-color: lightblue;
     position: relative;
     top: 20px;
 }
