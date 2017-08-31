@@ -61,6 +61,8 @@ def run(search_requests):
             break
         elif not os.path.isfile(perfstat_output_file):
             print('This file does not exist. Try again.')
+        else:
+            break
 
     # receive destination directory from user
     while True:
