@@ -60,7 +60,7 @@ def run(search_requests):
             perfstat_output_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
             break
         elif not os.path.isfile(perfstat_output_file):
-            print('This seems not to be a file. Try again.')
+            print('This file does not exist. Try again.')
 
     # receive destination directory from user
     while True:
@@ -69,8 +69,14 @@ def run(search_requests):
             if os.path.isdir(destination_directory):
                 destination_directory += os.sep
                 break
+            elif input('This directory does not exist. Would you like to create it? (Enter '
+                       'y) ') == 'y':
+                os.makedirs(destination_directory)
+                print('Created directory ' + destination_directory)
+                destination_directory += os.sep
+                break
             else:
-                print('This seems not to be a directory. Try again.')
+                print('So, try again.')
         else:
             break
 
