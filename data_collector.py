@@ -231,6 +231,7 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
 
         for line in data:
             line = line.strip()
+
             # first, search for the planned number of iteration in the file's header.
             # Once set, skip this check.
             if number_of_iterations == 0:
@@ -239,6 +240,13 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
                 except ValueError:
                     raise InvalidDataInputException(perfstat_data_file)
 
+            # '--' marks, that a sysstat_x_1sec block ends.
+            elif line == '--':
+                inside_sysstat_block = False
+
+            elif inside_sysstat_block:
+                # TODO: process sysstat_requests
+                pass
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
                 if found_iteration_begin(line, start_times):
@@ -248,7 +256,7 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
                 elif found_sysstat_1sec_begin(line):
                     inside_sysstat_block = True
                     sysstat_times.append(data_collector_util.get_sysstat_timestamp(next(data)))
-
+                    next(data)
 
             elif 'LUN ' in line:
                 lun_path = map_lun_path(line, lun_path, lun_path_dict)
