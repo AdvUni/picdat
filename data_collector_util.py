@@ -22,26 +22,49 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def build_date(iteration_timestamp):
+def build_date(timestamp_string):
     """
-    Extract a date from a PerfStat output line which marks an iteration's beginning or ending
-    :param iteration_timestamp: a string like
-    =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Fri Mar 24 09:42:59 CET 2017
+    Auxiliary function for get_iteration_timestamp and get_sysstat_timestamp. Parses a String to 
+    a datetime object.
+    :param time_stamp_string: a string like 
+    Mon Jan 01 00:00:00 GMT 2000
     :return: a datetime object which contains the input's information
     """
-    timestamp_list = iteration_timestamp.split()
 
-    month = util.get_month_number(timestamp_list[6])
-    day = int(timestamp_list[7])
-    time = timestamp_list[8].split(":")
-    # time_zone = (header_list[9])
-    year = int(timestamp_list[10])
+    timestamp_list = timestamp_string.split()
+
+    month = util.get_month_number(timestamp_list[1])
+    day = int(timestamp_list[2])
+    time = timestamp_list[3].split(":")
+    # time_zone = (header_list[4])
+    year = int(timestamp_list[5])
 
     hour = int(time[0])
     minute = int(time[1])
     second = int(time[2])
 
     return datetime.datetime(year, month, day, hour, minute, second, 0, None)
+
+
+def get_iteration_timestamp(iteration_timestamp_line):
+    """
+    Extract a date from a PerfStat output line which marks an iteration's beginning or ending
+    :param iteration_timestamp_line: a string like
+    =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Mon Jan 01 00:00:00 GMT 2000
+    :return: a datetime object which contains the input's time information
+    """
+    return build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
+
+
+def get_sysstat_timestamp(sysstat_timestamp_line):
+    """
+    Extract a date from a PerfStat output line which contains the time, a sysstat_x_1sec block 
+    begins.
+    :param sysstat_timestamp_line: a string like
+    PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
+    :return: a datetime object which contains the input's time information
+    """
+    return build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
 
 
 def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):

@@ -49,7 +49,7 @@ def found_iteration_begin(line, start_times):
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
-        start_times.append(data_collector_util.build_date(line))
+        start_times.append(data_collector_util.get_iteration_timestamp(line))
         return True
     else:
         return False
@@ -64,10 +64,19 @@ def found_iteration_end(line, end_times):
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
-        end_times.append(data_collector_util.build_date(line))
+        end_times.append(data_collector_util.get_iteration_timestamp(line))
         return True
     else:
         return False
+
+def found_sysstat_1sec_begin(line):
+    """
+    Looks, whether a String marks the beginning of a sysstat_x_1sec section.
+    :param line: A string from a PerfStat output file which should be searched
+    :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False otherwise
+    """
+    return 'sysstat_x_1sec' in line
+
 
 
 def map_lun_path(line, lun_path, lun_path_dict):
@@ -204,6 +213,12 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     # the relating time stamps:
     end_times = []
 
+    # boolean, whether program is currently reading in a sysstat_x_1sec block:
+    inside_sysstat_block = False
+
+    # time stamps which mark the beginnings of a sysstat_x_1sec block:
+    sysstat_times = []
+
     table_content = []
     header_sets = []
 
@@ -230,16 +245,23 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
                     iteration_begin_counter += 1
                 elif found_iteration_end(line, end_times):
                     iteration_end_counter += 1
+                elif found_sysstat_1sec_begin(line):
+                    inside_sysstat_block = True
+                    sysstat_times.append(data_collector_util.get_sysstat_timestamp(next(data)))
+
 
             elif 'LUN ' in line:
                 lun_path = map_lun_path(line, lun_path, lun_path_dict)
 
             # filter for the values you wish to visualize
             else:
-                process_per_iteration_requests(line, per_iteration_requests, iteration_begin_counter,
-                                               header_sets,
-                                               table_content)
+                process_per_iteration_requests(line, per_iteration_requests,
+                                               iteration_begin_counter, header_sets, table_content)
     data.close()
+
+    #print('sysstat_times: ' + str(sysstat_times))
+    #print('iteration begins:' + str(start_times))
+    #print('iteration ends:' + str(end_times))
 
     # postprocessing
 
