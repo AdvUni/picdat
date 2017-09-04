@@ -153,8 +153,28 @@ def process_per_iteration_requests(line, per_iteration_requests, recent_iteratio
             request_index += len(per_iteration_requests[object_type])
 
 
-def process_sysstat_percent_requests(line, sysstat_percent_requests, index_list):
-    pass
+def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_indices,
+                             sysstat_percent_values, sysstat_mbs_values):
+    """
+    This function collects all relevant information from a line in a sysstat_x_1sec block. In
+    case, the line doesn't contain values, but a sub header, the function ignores it.
+    :param value_line: A String which is a line from a sysstat_x_1sec block
+    :param sysstat_percent_indices: A list of numbers. They index the numbers of columns which
+    contain values for the sysstat percent chart.
+    :param sysstat_mbs_indices: A list of numbers. They index the numbers of columns which
+    contain values for the sysstat MB/s chart.
+    :param sysstat_percent_values: A list, holding tuples of values for the percent chart,
+    grouped like the lines in the sysstat block. This function will append one tuple to the list.
+    :param sysstat_mbs_values: A list, holding tuples of values for the MB/s chart, grouped like
+    the lines in the sysstat block. This function will append one tuple to the list.
+    :return: None
+    """
+    line_split = value_line.split()
+
+    if str.isdigit(line_split[0].strip('%')):
+        sysstat_percent_values.append(tuple([line_split[index].strip('%') for index in
+                                             sysstat_percent_indices]))
+        sysstat_mbs_values.append(tuple([line_split[index] for index in sysstat_mbs_indices]))
 
 
 def process_sysstat_header(first_header_line, second_header_line, sysstat_percent_requests,
@@ -174,7 +194,7 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
     measurement in the first place. In the second place is another tuple, containing two
     parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
-    but will converted into MB/s. The data for them should appear in one chart together.
+    but will be converted into MB/s. The data for them should appear in one chart together.
     matching to sysstat_mbs_requests.
     indices belonging to sysstat_mbs_headers in the same order.
     :return: Quadruple of the lists sysstat_percent_headers, sysstat_mbs_headers,
