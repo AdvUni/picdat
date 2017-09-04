@@ -158,8 +158,7 @@ def process_sysstat_percent_requests(line, sysstat_percent_requests, index_list)
 
 
 def process_sysstat_header(first_header_line, second_header_line, sysstat_percent_requests,
-                           sysstat_percent_headers, sysstat_percent_indices, sysstat_mbs_requests,
-                           sysstat_mbs_headers, sysstat_mbs_indices):
+                           sysstat_mbs_requests):
     """
     Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
     for the requested columns. Saves the headers matching the requests to lists. Also saves the
@@ -170,20 +169,28 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     measurement in the first place and an additional identifier, which appears in the second
     header line, in the second place. The expected unit of these measurements is %. The data for
     them should appear in one chart together.
-    :param sysstat_percent_headers: An empty list. The function will fill it with all headers
     matching to sysstat_percent_requests.
-    :param sysstat_percent_indices: An empty list. The function will fill it with the column
     indices belonging to sysstat_percent_headers in the same order.
     :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
     measurement in the first place. In the second place is another tuple, containing two
     parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
     but will converted into MB/s. The data for them should appear in one chart together.
-    :param sysstat_mbs_headers:  An empty list. The function will fill it with all headers
     matching to sysstat_mbs_requests.
-    :param sysstat_mbs_indices: An empty list. The function will fill it with the column
     indices belonging to sysstat_mbs_headers in the same order.
-    :return: None
+    :return: Quadruple of the lists sysstat_percent_headers, sysstat_mbs_headers,
+    sysstat_percent_indices and sysstat_mbs_indices. sysstat_percent_headers contains all headers
+    matching to sysstat_percent_requests. sysstat_mbs_headers contains all headers
+    matching to sysstat_mbs_requests. sysstat_percent_indices contains all column
+    indices belonging to sysstat_percent_headers in the same order. sysstat_mbs_indices contains
+    all column indices belonging to sysstat_mbs_headers in the same order.
     """
+
+    # initalisation
+
+    sysstat_percent_headers = []
+    sysstat_percent_indices = []
+    sysstat_mbs_headers = []
+    sysstat_mbs_indices = []
 
     # Split the first line into single words and save them to header_line_split.
     # Simultaneously, memorize the line indices, at which the words end, into endpoints.
@@ -215,6 +222,9 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
                 # so we find them and add their columns to header_list and index_list at once
                 sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
                 sysstat_mbs_indices.append(index + 1)
+
+    return (
+        sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, sysstat_mbs_indices)
 
 
 def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
