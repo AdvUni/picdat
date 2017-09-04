@@ -1,6 +1,7 @@
 """
 Is responsible for collecting all information of note from PerfStat output
 """
+import re
 
 import util
 import data_collector_util
@@ -69,6 +70,7 @@ def found_iteration_end(line, end_times):
     else:
         return False
 
+
 def found_sysstat_1sec_begin(line):
     """
     Looks, whether a String marks the beginning of a sysstat_x_1sec section.
@@ -76,7 +78,6 @@ def found_sysstat_1sec_begin(line):
     :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False otherwise
     """
     return 'sysstat_x_1sec' in line
-
 
 
 def map_lun_path(line, lun_path, lun_path_dict):
@@ -106,12 +107,13 @@ def map_lun_path(line, lun_path, lun_path_dict):
 def process_per_iteration_requests(line, per_iteration_requests, recent_iteration, headers_sets,
                                    table_values):
     """
-    Searches a String for all per_iteration_requests from main. In case it finds something, 
-    it writes the results into the correct place in table_values. During the first iteration it collects the
-    instance names of all requested object types as well and writes them into table_headers.
+    Searches a String for all per_iteration_requests from main. In case it finds something,
+    it writes the results into the correct place in table_values. During the first iteration it
+    collects the instance names of all requested object types as well and writes them into
+    table_headers.
     :param line: A string from a PerfStat output file which should be searched
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :param recent_iteration: An integer which says, in which perfStat iteration the function call
     happened
@@ -151,13 +153,77 @@ def process_per_iteration_requests(line, per_iteration_requests, recent_iteratio
             request_index += len(per_iteration_requests[object_type])
 
 
+def process_sysstat_percent_requests(line, sysstat_percent_requests, index_list):
+    pass
+
+
+def process_sysstat_header(first_header_line, second_header_line, sysstat_percent_requests,
+                           sysstat_percent_headers, sysstat_percent_indices, sysstat_mbs_requests,
+                           sysstat_mbs_headers, sysstat_mbs_indices):
+    """
+    Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
+    for the requested columns. Saves the headers matching the requests to lists. Also saves the
+    column numbers belonging to those headers.
+    :param first_header_line: The first line of a sysstat_x_1sec header
+    :param second_header_line: The second line of a sysstat_x_1sec header
+    :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place and an additional identifier, which appears in the second
+    header line, in the second place. The expected unit of these measurements is %. The data for
+    them should appear in one chart together.
+    :param sysstat_percent_headers: An empty list. The function will fill it with all headers
+    matching to sysstat_percent_requests.
+    :param sysstat_percent_indices: An empty list. The function will fill it with the column
+    indices belonging to sysstat_percent_headers in the same order.
+    :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place. In the second place is another tuple, containing two
+    parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
+    but will converted into MB/s. The data for them should appear in one chart together.
+    :param sysstat_mbs_headers:  An empty list. The function will fill it with all headers
+    matching to sysstat_mbs_requests.
+    :param sysstat_mbs_indices: An empty list. The function will fill it with the column
+    indices belonging to sysstat_mbs_headers in the same order.
+    :return: None
+    """
+
+    # Split the first line into single words and save them to header_line_split.
+    # Simultaneously, memorize the line indices, at which the words end, into endpoints.
+    header_line_split, endpoints = zip(
+        *[(m.group(0), m.end()) for m in re.finditer(r'\S+', first_header_line)])
+
+    # iterate over header_line_split:
+    for index in range(len(header_line_split)):
+
+        # iterate over the sysstat requests, which belong to the unit %:
+        for request in sysstat_percent_requests:
+            if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
+                                                       second_header_line, request[0], request[1]):
+                if request[1] == ' ':
+                    sysstat_percent_headers.append(request[0])
+                else:
+                    sysstat_percent_headers.append(str(request[0]) + '_' + str(request[1]))
+                sysstat_percent_indices.append(index)
+
+        # iterate over the sysstat requests, which belong to the unit MB/s:
+        for request in sysstat_mbs_requests:
+            if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
+                                                       second_header_line, request[0],
+                                                       request[1][0]):
+                sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][0]))
+                sysstat_mbs_indices.append(index)
+                # Measurements for the MB/s chart always come with two parameters, e.g. 'read' and
+                # 'write'. There is no way to read them from the header lines separately,
+                # so we find them and add their columns to header_list and index_list at once
+                sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
+                sysstat_mbs_indices.append(index + 1)
+
+
 def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
     """
     All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
     name or path. To make the resulting charts more readable, this function replaces their IDs
     with the paths.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :param header_row_list: A list of lists which contains all instance names, the program
     found values for.
@@ -191,8 +257,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: all information needed to write the csv tables: table headers, table values,
     and the iterations start times, all packed in a dictionary.
@@ -267,9 +333,9 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
                                                iteration_begin_counter, header_sets, table_content)
     data.close()
 
-    #print('sysstat_times: ' + str(sysstat_times))
-    #print('iteration begins:' + str(start_times))
-    #print('iteration ends:' + str(end_times))
+    # print('sysstat_times: ' + str(sysstat_times))
+    # print('iteration begins:' + str(start_times))
+    # print('iteration ends:' + str(end_times))
 
     # postprocessing
 
