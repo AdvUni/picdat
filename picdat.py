@@ -50,6 +50,14 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
     to collect once per iteration. It's an OrderedDict of lists which contains all requested 
     object types mapped to the relating aspects and units which the tool should create graphs for.
+    :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place and an additional identifier, which appears in the second
+    header line, in the second place. The expected unit of these measurements is %. The data for
+    them should appear in one chart together.
+    :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place. In the second place is another tuple, containing two
+    parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
+    but will be converted into MB/s. The data for them should appear in one chart together.
     :return: None
     """
 
