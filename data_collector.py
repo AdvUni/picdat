@@ -212,9 +212,6 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     indices belonging to sysstat_percent_headers in the same order. sysstat_mbs_indices contains
     all column indices belonging to sysstat_mbs_headers in the same order.
     """
-    print('output header:')
-    print(first_header_line)
-    print(second_header_line)
 
     # initalisation
 
@@ -430,12 +427,11 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
             if number_of_iterations == 0:
                 number_of_iterations = search_for_number_of_iterations(line)
 
-            # '--' marks, that a sysstat_x_1sec block ends.
-            elif line == '--':
-                inside_sysstat_block = False
-
             elif inside_sysstat_block:
-                if sysstat_header_needed:
+                # '--' marks, that a sysstat_x_1sec block ends.
+                if line == '--':
+                    inside_sysstat_block = False
+                elif sysstat_header_needed:
 
                     sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, \
                     sysstat_mbs_indices = \
