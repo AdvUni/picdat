@@ -168,7 +168,7 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
     grouped like the lines in the sysstat block. This function will append one tuple to the list.
     :param sysstat_mbs_values: A list, holding lists of values for the MB/s chart, grouped like
     the lines in the sysstat block. This function will append one tuple to the list.
-    :return: None
+    :return: True, if value_line really contained values and False, if it just was a sub header.
     """
     line_split = value_line.split()
 
@@ -177,9 +177,10 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
                                                           sysstat_percent_indices])
         sysstat_mbs_values.append(
             [str(timestamp)] + [line_split[index] for index in sysstat_mbs_indices])
+        return True
 
     else:
-        timestamp -= constants.ONE_SECOND
+        return False
 
 
 def process_sysstat_header(first_header_line, second_header_line, sysstat_percent_requests,
@@ -436,10 +437,10 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                                                sysstat_mbs_requests)
                     sysstat_header_needed = False
                 else:
-                    process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
+                    if process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
                                              sysstat_percent_values, sysstat_mbs_values,
-                                             recent_sysstat_timestamp)
-                    recent_sysstat_timestamp += constants.ONE_SECOND
+                                             recent_sysstat_timestamp):
+                        recent_sysstat_timestamp += constants.ONE_SECOND
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
                 if found_iteration_begin(line, start_times):
