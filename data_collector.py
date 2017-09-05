@@ -164,9 +164,9 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
     contain values for the sysstat percent chart.
     :param sysstat_mbs_indices: A list of numbers. They index the numbers of columns which
     contain values for the sysstat MB/s chart.
-    :param sysstat_percent_values: A list, holding tuples of values for the percent chart,
+    :param sysstat_percent_values: A list, holding lists of values for the percent chart,
     grouped like the lines in the sysstat block. This function will append one tuple to the list.
-    :param sysstat_mbs_values: A list, holding tuples of values for the MB/s chart, grouped like
+    :param sysstat_mbs_values: A list, holding lists of values for the MB/s chart, grouped like
     the lines in the sysstat block. This function will append one tuple to the list.
     :return: None
     """
@@ -194,14 +194,10 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     measurement in the first place and an additional identifier, which appears in the second
     header line, in the second place. The expected unit of these measurements is %. The data for
     them should appear in one chart together.
-    matching to sysstat_percent_requests.
-    indices belonging to sysstat_percent_headers in the same order.
     :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
     measurement in the first place. In the second place is another tuple, containing two
     parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
     but will be converted into MB/s. The data for them should appear in one chart together.
-    matching to sysstat_mbs_requests.
-    indices belonging to sysstat_mbs_headers in the same order.
     :return: Quadruple of the lists sysstat_percent_headers, sysstat_mbs_headers,
     sysstat_percent_indices and sysstat_mbs_indices. sysstat_percent_headers contains all headers
     matching to sysstat_percent_requests. sysstat_mbs_headers contains all headers
@@ -291,8 +287,8 @@ def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
     return header_row_list
 
 
-def postprocessing_per_iteration_data(per_iteration_tables, per_iteration_headers,
-                                      iteration_timestamps, per_iteration_requests, lun_path_dict):
+def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
+                              iteration_timestamps, per_iteration_requests, lun_path_dict):
     """
     Simplifies data structures: Turns per_iteration_headers, which was a list of OrderedSets into
     a list of lists containing each header for each chart. In addition, flattens the table
@@ -327,9 +323,21 @@ def postprocessing_per_iteration_data(per_iteration_tables, per_iteration_header
     return header_row_list, value_rows_list
 
 
-def combine_results(per_iteration_headers,
-                    per_iteration_values, sysstat_percent_headers,
+def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
                     sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values):
+    """
+    This function sticks the results of all three request types together.
+    :param per_iteration_headers: A list of list, holding the headers for each per-iteration chart.
+    :param per_iteration_values: A list, holding all values referring the per_iteration_requests.
+    It's nested twice.
+    :param sysstat_percent_headers: A list, holding the headers for the sysstat-percent chart.
+    :param sysstat_percent_values: A list, holding lists of values for the percent chart,
+    grouped like the lines in the sysstat block.
+    :param sysstat_mbs_headers: A list, holding the headers for the sysstat-mbs chart.
+    :param sysstat_mbs_values: A list, holding lists of values for the mbs chart,
+    grouped like the lines in the sysstat block.
+    :return: All headers in one list, followed by all values in one list.
+    """
     combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers]
     combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values]
 
@@ -344,7 +352,16 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
     :param per_iteration_requests: A data structure carrying all requests for data, the tool is
     going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
-    :return: all information needed to write the csv tables, packed in a tuple
+    :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place and an additional identifier, which appears in the second
+    header line, in the second place. The expected unit of these measurements is %. The data for
+    them should appear in one chart together.
+    :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place. In the second place is another tuple, containing two
+    parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
+    but will be converted into MB/s. The data for them should appear in one chart together.
+    :return: a list of all headers and a list of all values. The headers are grouped by table.
+    The values are grouped by table and by row. Each value row already starts with its timestamp.
     """
 
     # initialisation
@@ -414,16 +431,15 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                 if sysstat_header_needed:
 
                     sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, \
-                    sysstat_mbs_indices = process_sysstat_header(line, next(data),
-                                                                 sysstat_percent_requests,
-                                                                 sysstat_mbs_requests)
+                    sysstat_mbs_indices = \
+                        process_sysstat_header(line, next(data), sysstat_percent_requests,
+                                               sysstat_mbs_requests)
                     sysstat_header_needed = False
                 else:
                     process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
                                              sysstat_percent_values, sysstat_mbs_values,
                                              recent_sysstat_timestamp)
                     recent_sysstat_timestamp += constants.ONE_SECOND
-                pass
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
                 if found_iteration_begin(line, start_times):
@@ -445,14 +461,6 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                                                per_iteration_tables)
     data.close()
 
-    # print('sysstat_times: ' + str(sysstat_times))
-    # print('iteration begins:' + str(start_times))
-    # print('iteration ends:' + str(end_times))
-
-    print('sysstat headers:')
-    print(sysstat_percent_headers)
-    print(sysstat_mbs_headers)
-
     # postprocessing
 
     if number_of_iterations == 0:
@@ -464,12 +472,9 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                                                    iteration_end_counter)
 
     # simplify data structures for per-iteration data
-    per_iteration_headers, per_iteration_values = postprocessing_per_iteration_data(
+    per_iteration_headers, per_iteration_values = rework_per_iteration_data(
         per_iteration_tables, per_iteration_headers, start_times,
         per_iteration_requests, lun_path_dict)
-
-    print('iteration headers:')
-    print(per_iteration_headers)
 
     return combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
                            sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values)

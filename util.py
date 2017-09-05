@@ -108,9 +108,9 @@ def empty_directory(preferred_directory_path):
 
 def get_units(per_iteration_requests):
     """
-    Gets all units from a per_iteration_request dict.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of all units.
     """
@@ -129,10 +129,10 @@ def get_units(per_iteration_requests):
 def get_titles(per_iteration_requests):
     """
     Generates proper titles for charts.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
-    :return: A list of chart titles, relating on the given per_iteration_requests.
+    :return: A list of chart titles.
     """
     title_list = []
     for object_type in per_iteration_requests:
@@ -147,9 +147,9 @@ def get_titles(per_iteration_requests):
 
 def get_object_ids(per_iteration_requests):
     """
-    Gets all object IDs from a per_iteration_request.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    Gets all object IDs from a per_iteration_request. Also adds IDs for sysstat charts.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of all object IDs.
     """
@@ -168,10 +168,10 @@ def get_object_ids(per_iteration_requests):
 def get_csv_filenames(per_iteration_requests):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
-    :return: A list of csv file names, relating on the given per_iteration_request.
+    :return: A list of csv file names.
     """
     name_list = []
     for object_type in per_iteration_requests:

@@ -29,7 +29,7 @@ def create_csv(csv_filepaths, header_row, value_rows):
     :param header_row: table's first row which contains the instance names this table has values
     for.
     :param value_rows: rows of table which contain value material.
-    :param timestamps: a list of timestamps, each belonging to a value row in the table.
+    
     """
 
     for table in range(len(csv_filepaths)):
@@ -39,7 +39,6 @@ def create_csv(csv_filepaths, header_row, value_rows):
             # write first row which contains the headers into csv
             headline = 'time'  # first column in table should label the x-axis
             for instance in header_row[table]:
-                # print(instance)
                 headline += ', '
                 headline += instance
 
@@ -54,7 +53,7 @@ def create_csv(csv_filepaths, header_row, value_rows):
 
                 data_line = ''
 
-                # write a value from each instance into one line
+                # write a value from each column into one line
                 for entry in row_list[:-1]:
                     data_line += entry
                     data_line += ', '
@@ -64,4 +63,4 @@ def create_csv(csv_filepaths, header_row, value_rows):
                 table_file.write(data_line + os.linesep)
 
         table_file.close()
-        print('Wrote graph values into ' + csv_filepaths[table])
+        print('Wrote chart values into ' + csv_filepaths[table])

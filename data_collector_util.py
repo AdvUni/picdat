@@ -57,7 +57,7 @@ def build_date(timestamp_string):
     """
     Auxiliary function for get_iteration_timestamp and get_sysstat_timestamp. Parses a String to
     a datetime object.
-    :param time_stamp_string: a string like
+    :param timestamp_string: a string like
     Mon Jan 01 00:00:00 GMT 2000
     :return: a datetime object which contains the input's information
     """
