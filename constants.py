@@ -1,6 +1,7 @@
 """
 Constants
 """
+import datetime
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -22,6 +23,8 @@ SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('S
 SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
                         ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 
+ONE_SECOND = datetime.timedelta(seconds=1)
+
 # program uses this path for it's analysis if user's input for that is empty:
 DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 
@@ -29,10 +32,12 @@ DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 DEFAULT_DIRECTORY_NAME = 'results'
 
 # program names csv files with the name of the chart they belong to, and the following ending:
-CSV_FILE_ENDING = '_graph_values.csv'
+CSV_FILE_ENDING = '_chart_values.csv'
 
 # program names html file inside the result directory like this:
-HTML_FILENAME = 'graphs.html'
+HTML_FILENAME = 'charts.html'
+
+SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 
 # this is the path to the text file the program uses as template to create the html head:
 HTML_HEAD_TEMPLATE = 'graph_html_head_template.txt'

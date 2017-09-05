@@ -52,7 +52,7 @@ class Table:
             else:
                 self.outer_dict[iteration][instance] = item
 
-    def get_rows(self, instance_set, number_of_iterations):
+    def get_rows(self, instance_set, iteration_timestamps):
         """
         Simplifies the data structure into lists of table content equating table rows.
         :param instance_set: A Set containing all instance names (column names) occurring in the
@@ -67,15 +67,17 @@ class Table:
         for instance in instance_set:
             header_row.append(instance)
 
-        for iteration in range(1, number_of_iterations+1):
-            iteration_dict = self.outer_dict[iteration]
-            row = []
+        for iteration in range(len(iteration_timestamps)):
+            iteration_dict = self.outer_dict[iteration + 1]
+            row = [str(iteration_timestamps[iteration])]
             for header in header_row:
                 if header in iteration_dict:
                     row.append(iteration_dict[header])
                 else:
                     row.append(' ')
-                    print('Value for ' + str(header) + ' in iteration ' + str(iteration)
+                    print('Value for ' + str(header) + ' in iteration ' + str(iteration + 1)
                           + ' is missing!')
             value_rows.append(row)
+
+        #header_row = ['time'] + header_row
         return header_row, value_rows

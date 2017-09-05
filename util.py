@@ -119,6 +119,10 @@ def get_units(per_iteration_requests):
         for request_tuple in per_iteration_requests.get(object_type):
             unit = request_tuple[1]
             unit_list.append(unit)
+
+    unit_list.append('%')
+    unit_list.append('kB/s')
+
     return unit_list
 
 
@@ -135,6 +139,9 @@ def get_titles(per_iteration_requests):
         for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             title_list.append(object_type + ':' + aspect)
+
+    title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
+    title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
     return title_list
 
 
@@ -151,10 +158,14 @@ def get_object_ids(per_iteration_requests):
         for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             id_list.append(object_type + '_' + aspect)
+
+    id_list.append(constants.SYSSTAT_CHART_TITLE + '_percent')
+    id_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs')
+
     return id_list
 
 
-def get_csv_file_names(per_iteration_requests):
+def get_csv_filenames(per_iteration_requests):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
@@ -168,4 +179,8 @@ def get_csv_file_names(per_iteration_requests):
             aspect = request_tuple[0]
             name_list.append(object_type + '_' + aspect +
                              constants.CSV_FILE_ENDING)
+
+    name_list.append(constants.SYSSTAT_CHART_TITLE + '_percent' + constants.CSV_FILE_ENDING)
+    name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_ENDING)
+
     return name_list

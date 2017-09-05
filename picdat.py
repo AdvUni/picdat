@@ -91,7 +91,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
 
     # collect data from file
     print('Read data...')
-    iteration_timestamps, per_iteration_headers, per_iteration_values = \
+    table_headers, table_values = \
         data_collector.read_data_file(perfstat_output_file, per_iteration_requests,
                                       sysstat_percent_requests, sysstat_mbs_requests)
 
@@ -104,26 +104,23 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
 
     # generate file names for csv tables
-    csv_filenames = util.get_csv_file_names(per_iteration_requests)
+    csv_filenames = util.get_csv_filenames(per_iteration_requests)
     csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
 
     # write data into csv tables
     print('Create csv tables...')
-    table_writer.create_csv(csv_filepaths, per_iteration_headers, per_iteration_values,
-                            iteration_timestamps)
+    table_writer.create_csv(csv_filepaths, table_headers, table_values)
 
     # frame html file path
-
-
     html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME
 
     # write html file
     print('Create html file...')
     visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests,
-                           per_iteration_headers, perfstat_output_absolute_path)
+                           table_headers, perfstat_output_absolute_path)
 
     # finally
-    print('Done. You will find graphs under: ' + os.path.abspath(html_filepath))
+    print('Done. You will find charts under: ' + os.path.abspath(html_filepath))
 
 
 # run
