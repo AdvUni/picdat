@@ -23,6 +23,8 @@ SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('S
 SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
                         ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 
+# timedelta object describing one second. The data_collector needs it to count up the time to
+# adress sysstat_1sec values correctly.
 ONE_SECOND = datetime.timedelta(seconds=1)
 
 # program uses this path for it's analysis if user's input for that is empty:
@@ -37,6 +39,7 @@ CSV_FILE_ENDING = '_chart_values.csv'
 # program names html file inside the result directory like this:
 HTML_FILENAME = 'charts.html'
 
+# the standard string to name charts about the sysstat_x_1sec block:
 SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 
 # this is the path to the text file the program uses as template to create the html head:
