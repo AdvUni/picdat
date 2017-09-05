@@ -453,6 +453,11 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                     iteration_begin_counter += 1
                 elif found_iteration_end(line, end_times):
                     iteration_end_counter += 1
+                    # write an empty line into the sysstat tables to cut line in resulting charts
+                    #  between different iterations:
+                    if iteration_end_counter != number_of_iterations:
+                        data_collector_util.add_empty_lines(sysstat_percent_values,
+                                                            sysstat_mbs_values)
                 elif found_sysstat_1sec_begin(line):
                     inside_sysstat_block = True
                     recent_sysstat_timestamp = data_collector_util.get_sysstat_timestamp(next(data))

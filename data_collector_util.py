@@ -98,6 +98,16 @@ def get_sysstat_timestamp(sysstat_timestamp_line):
     return build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
 
 
+def add_empty_lines(sysstat_percent_values, sysstat_mbs_values):
+    if sysstat_percent_values[0] is not None:
+        percent_columns = len(sysstat_percent_values[0])
+        sysstat_percent_values.append([' ' for i in range(percent_columns + 1)])
+
+    if sysstat_mbs_values[0] is not None:
+        mbs_columns = len(sysstat_mbs_values[0])
+        sysstat_mbs_values.append([' ' for i in range(mbs_columns + 1)])
+
+
 def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):
     """
     Test whether the PerfStat terminated and is complete
