@@ -91,10 +91,8 @@ def run(per_iteration_requests):
 
     # collect data from file
     print('Read data...')
-    collected_data = data_collector.read_data_file(perfstat_output_file, per_iteration_requests)
-    tables_headers = collected_data['tables_headers']
-    tables_content = collected_data['tables_content']
-    timestamps = collected_data['timestamps']
+    iteration_timestamps, per_iteration_headers, per_iteration_values = data_collector.read_data_file(
+        perfstat_output_file, per_iteration_requests)
 
     # create directory and copy the necessary dygraphs files into it
     print('Prepare directory...')
@@ -110,15 +108,16 @@ def run(per_iteration_requests):
 
     # write data into csv tables
     print('Create csv tables...')
-    table_writer.create_csv(csv_filepaths, tables_headers, tables_content, timestamps)
+    table_writer.create_csv(csv_filepaths, per_iteration_headers, per_iteration_values,
+                            iteration_timestamps)
 
     # frame html file path
     html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME
 
     # write html file
     print('Create html file...')
-    visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests, tables_headers,
-                           perfstat_output_absolute_path)
+    visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests,
+                           per_iteration_headers, perfstat_output_absolute_path)
 
     # finally
     print('Done. You will find graphs under: ' + os.path.abspath(html_filepath))

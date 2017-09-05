@@ -5,7 +5,7 @@ import re
 
 import util
 import data_collector_util
-from exceptions import InvalidDataInputException, InstanceNameNotFoundException
+from exceptions import InstanceNameNotFoundException
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -105,7 +105,7 @@ def map_lun_path(line, lun_path, lun_path_dict):
 
 
 def process_per_iteration_requests(line, per_iteration_requests, recent_iteration, headers_sets,
-                                   table_values):
+                                   per_iteration_tables):
     """
     Searches a String for all per_iteration_requests from main. In case it finds something,
     it writes the results into the correct place in table_values. During the first iteration it
@@ -119,7 +119,7 @@ def process_per_iteration_requests(line, per_iteration_requests, recent_iteratio
     happened
     :param headers_sets: A list of OrderedSets which contains all previous collected instance
     names, the program has values for in table_values.
-    :param table_values: A list of lists which contains all previous collected values.
+    :param per_iteration_tables: A list of tables which contains all previous collected values.
     Each inner list contains all values relating on exact one per_iteration_request.
     :return: None
     """
@@ -145,7 +145,7 @@ def process_per_iteration_requests(line, per_iteration_requests, recent_iteratio
                     if unit == 'b/s':
                         value = str(round(int(value) / 1000000))
 
-                    util.tablelist_insertion(table_values, request_index, recent_iteration,
+                    util.tablelist_insertion(per_iteration_tables, request_index, recent_iteration,
                                              instance, value)
                     return
                 request_index += 1
@@ -283,6 +283,41 @@ def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
     return header_row_list
 
 
+def postprocessing_per_iteration_data(per_iteration_tables, per_iteration_headers, iterations,
+                                      per_iteration_requests, lun_path_dict):
+    """
+    Simplifies data structures: Turns per_iteration_headers, which was a list of OrderedSets into
+    a list of lists containing each header for each chart. In addition, flattens the table
+    structure per_iteration_tables, so that each value row in the resulting csv tables will be
+    represented by one list. Further, replaces the ID of each LUN in the headers with their
+    paths for better readability.
+    :param per_iteration_tables: A list from type 'Table'. It contains all
+    per-iteration values collected from a PerfStat output file, grouped by iteration and instance.
+    :param per_iteration_headers: A List of Sets containing all instance names (column names)
+    occurring in one table.
+    :param iterations: The number of iterations
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
+    object types mapped to the relating aspects and units which the tool should create graphs for.
+    :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
+    :return: Two lists, representing per-iteration headers and values separately. The first list
+    is nested once. Each inner list is a collection of table headers for one table. The second
+    list is nested twice. The core lists are representations of one value row in one table. To
+    separate several tables from each other, the next list level is used.
+    """
+    table_list = []
+    for i in range(len(per_iteration_tables)):
+        table_list.append(per_iteration_tables[i].get_rows(per_iteration_headers[i], iterations))
+
+    header_row_list = [table[0] for table in table_list]
+    value_rows_list = [table[1] for table in table_list]
+
+    # replace lun's IDs in headers through their path names
+    replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
+
+    return header_row_list, value_rows_list
+
+
 def read_data_file(perfstat_data_file, per_iteration_requests):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
@@ -290,8 +325,7 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     :param per_iteration_requests: A data structure carrying all requests for data, the tool is
     going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
-    :return: all information needed to write the csv tables: table headers, table values,
-    and the iterations start times, all packed in a dictionary.
+    :return: all information needed to write the csv tables, packed in a tuple
     """
 
     # initialisation
@@ -315,15 +349,16 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     # time stamps which mark the beginnings of a sysstat_x_1sec block:
     sysstat_times = []
 
-    table_content = []
-    header_sets = []
+    per_iteration_tables = []
+    per_iteration_headers = []
 
-    lun_path = ''
     lun_path_dict = {}
 
     # collecting data
 
     with open(perfstat_data_file, 'r') as data:
+
+        lun_path = ''
 
         for line in data:
             line = line.strip()
@@ -331,10 +366,7 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
             # first, search for the planned number of iteration in the file's header.
             # Once set, skip this check.
             if number_of_iterations == 0:
-                try:
-                    number_of_iterations = search_for_number_of_iterations(line)
-                except ValueError:
-                    raise InvalidDataInputException(perfstat_data_file)
+                number_of_iterations = search_for_number_of_iterations(line)
 
             # '--' marks, that a sysstat_x_1sec block ends.
             elif line == '--':
@@ -360,7 +392,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
             # filter for the values you wish to visualize
             else:
                 process_per_iteration_requests(line, per_iteration_requests,
-                                               iteration_begin_counter, header_sets, table_content)
+                                               iteration_begin_counter, per_iteration_headers,
+                                               per_iteration_tables)
     data.close()
 
     # print('sysstat_times: ' + str(sysstat_times))
@@ -370,23 +403,16 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     # postprocessing
 
     if number_of_iterations == 0:
-        raise InvalidDataInputException(perfstat_data_file)
+        print('''The file you entered as PerfStat output doesn't even contain, how many
+        iterations it handles.
+        Maybe, it isn't a PerfStat file at all.''')
 
     data_collector_util.final_iteration_validation(number_of_iterations, iteration_begin_counter,
                                                    iteration_end_counter)
 
-    # reformat tables data: flatten the table data structure to lists and finally seperate header
-    #  content and value content in two lists
+    # simplify data structures
+    per_iteration_headers, per_iteration_values = postprocessing_per_iteration_data(
+        per_iteration_tables, per_iteration_headers, iteration_begin_counter,
+        per_iteration_requests, lun_path_dict)
 
-    table_list = []
-    for i in range(len(table_content)):
-        table_list.append(table_content[i].get_rows(header_sets[i], iteration_begin_counter))
-
-    header_row_list = [table[0] for table in table_list]
-    value_rows_list = [table[1] for table in table_list]
-
-    # replace lun's IDs in headers through their path names
-    replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
-
-    return {'tables_headers': header_row_list, 'tables_content': value_rows_list,
-            'timestamps': start_times}
+    return start_times, per_iteration_headers, per_iteration_values

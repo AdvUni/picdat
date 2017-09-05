@@ -15,13 +15,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-
-class InvalidDataInputException(Exception):
-    def __init__(self, data_filename):
-        self.message = data_filename + ' does not contain the required information. ' \
-                                       'Maybe it is no PerfStat output at all.'
-
-
 class InstanceNameNotFoundException(Exception):
     def __init__(self, instance_name):
         self.message = 'Could not find a Name for this instance: ' + instance_name
