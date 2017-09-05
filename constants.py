@@ -20,8 +20,11 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
+SYSSTAT_PERCENT_UNIT = '%'
+
 SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
                         ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
+SYSSTAT_MBS_UNIT = 'MB/s'
 
 # timedelta object describing one second. The data_collector needs it to count up the time to
 # adress sysstat_1sec values correctly.

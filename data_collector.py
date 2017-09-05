@@ -172,11 +172,17 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
     """
     line_split = value_line.split()
 
+    # check, whether line really contains data and not just a sub header
     if str.isdigit(line_split[0].strip('%')):
+
+        # add values specified in percent_indices to percent_values
         sysstat_percent_values.append([str(timestamp)] + [line_split[index].strip('%') for index in
                                                           sysstat_percent_indices])
+        # add values specified in mbs_indices to mbs_values and convert them to MB/s instead of kB/s
+        # Notice, that this needs to be conform to constants.SYSSTAT_MBS_UNIT!
         sysstat_mbs_values.append(
-            [str(timestamp)] + [line_split[index] for index in sysstat_mbs_indices])
+            [str(timestamp)] + [str(round(int(line_split[index]) / 1000)) for index in
+                                sysstat_mbs_indices])
         return True
 
     else:
@@ -438,8 +444,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                     sysstat_header_needed = False
                 else:
                     if process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
-                                             sysstat_percent_values, sysstat_mbs_values,
-                                             recent_sysstat_timestamp):
+                                                sysstat_percent_values, sysstat_mbs_values,
+                                                recent_sysstat_timestamp):
                         recent_sysstat_timestamp += constants.ONE_SECOND
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings

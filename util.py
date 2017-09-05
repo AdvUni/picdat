@@ -120,8 +120,8 @@ def get_units(per_iteration_requests):
             unit = request_tuple[1]
             unit_list.append(unit)
 
-    unit_list.append('%')
-    unit_list.append('kB/s')
+    unit_list.append(constants.SYSSTAT_PERCENT_UNIT)
+    unit_list.append(constants.SYSSTAT_MBS_UNIT)
 
     return unit_list
 
