@@ -18,6 +18,9 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
+SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
+                        ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 
 # program uses this path for it's analysis if user's input for that is empty:
 DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'

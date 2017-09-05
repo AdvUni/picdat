@@ -204,6 +204,9 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     indices belonging to sysstat_percent_headers in the same order. sysstat_mbs_indices contains
     all column indices belonging to sysstat_mbs_headers in the same order.
     """
+    print('output header:')
+    print(first_header_line)
+    print(second_header_line)
 
     # initalisation
 
@@ -318,7 +321,8 @@ def postprocessing_per_iteration_data(per_iteration_tables, per_iteration_header
     return header_row_list, value_rows_list
 
 
-def read_data_file(perfstat_data_file, per_iteration_requests):
+def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_requests,
+                   sysstat_mbs_requests):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
@@ -343,14 +347,32 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     # the relating time stamps:
     end_times = []
 
-    # boolean, whether program is currently reading in a sysstat_x_1sec block:
-    inside_sysstat_block = False
-
     # time stamps which mark the beginnings of a sysstat_x_1sec block:
     sysstat_times = []
 
     per_iteration_tables = []
     per_iteration_headers = []
+
+    # boolean, whether program is currently reading in a sysstat_x_1sec block:
+    inside_sysstat_block = False
+
+    # boolean, which turns to False, once the program saved headers for the sysstat_x_1sec block
+    # (Should be equal for each block):
+    sysstat_header_needed = True
+
+    # reserve names for lists containing the headers of the both sysstat-charts (will be set by
+    # process_sysstat_header):
+    sysstat_percent_headers = None
+    sysstat_mbs_headers = None
+
+    # reserve names for lists containing the column indices being interesting for the both
+    # sysstat-charts (will be set by process_sysstat_header):
+    sysstat_percent_indices = None
+    sysstat_mbs_indices = None
+
+    # lists to hold the values for the both sysstat-charts:
+    sysstat_percent_values = []
+    sysstat_mbs_values = []
 
     lun_path_dict = {}
 
@@ -361,7 +383,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
         lun_path = ''
 
         for line in data:
-            line = line.strip()
+            if not inside_sysstat_block or not sysstat_header_needed:
+                line = line.strip()
 
             # first, search for the planned number of iteration in the file's header.
             # Once set, skip this check.
@@ -373,7 +396,16 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
                 inside_sysstat_block = False
 
             elif inside_sysstat_block:
-                # TODO: process sysstat_requests
+                if sysstat_header_needed:
+
+                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, \
+                    sysstat_mbs_indices = process_sysstat_header(line, next(data),
+                                                                 sysstat_percent_requests,
+                                                                 sysstat_mbs_requests)
+                    sysstat_header_needed = False
+                else:
+                    process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
+                                             sysstat_percent_values, sysstat_mbs_values)
                 pass
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
@@ -399,6 +431,9 @@ def read_data_file(perfstat_data_file, per_iteration_requests):
     # print('sysstat_times: ' + str(sysstat_times))
     # print('iteration begins:' + str(start_times))
     # print('iteration ends:' + str(end_times))
+    print('sysstat headers:')
+    print(sysstat_percent_headers)
+    print(sysstat_mbs_headers)
 
     # postprocessing
 

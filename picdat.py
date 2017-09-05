@@ -43,7 +43,7 @@ def init(per_iteration_requests):
                                      ('read_data', 'b/s')]
 
 
-def run(per_iteration_requests):
+def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
@@ -91,8 +91,9 @@ def run(per_iteration_requests):
 
     # collect data from file
     print('Read data...')
-    iteration_timestamps, per_iteration_headers, per_iteration_values = data_collector.read_data_file(
-        perfstat_output_file, per_iteration_requests)
+    iteration_timestamps, per_iteration_headers, per_iteration_values = \
+        data_collector.read_data_file(perfstat_output_file, per_iteration_requests,
+                                      sysstat_percent_requests, sysstat_mbs_requests)
 
     # create directory and copy the necessary dygraphs files into it
     print('Prepare directory...')
@@ -112,6 +113,8 @@ def run(per_iteration_requests):
                             iteration_timestamps)
 
     # frame html file path
+
+
     html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME
 
     # write html file
@@ -126,4 +129,4 @@ def run(per_iteration_requests):
 # run
 init_per_iteration_requests = OrderedDict()
 init(init_per_iteration_requests)
-run(init_per_iteration_requests)
+run(init_per_iteration_requests, constants.SYSSTAT_PERCENT_REQUESTS, constants.SYSSTAT_MBS_REQUESTS)
