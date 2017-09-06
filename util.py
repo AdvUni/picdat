@@ -200,16 +200,22 @@ def get_csv_filenames(number, per_iteration_requests):
     return name_list
 
 
-def copy_to_temp_dir(zip_folder):
+def extract_to_temp_dir(zip_folder):
+    """
+    This function takes a zip folder, distracts it to a temporary directory and selects all .data
+    files from it.
+    :param zip_folder: The path to a .zip file
+    :return: A tuple of the temporary directory's path and a list of all .output file paths.
+    """
     temp_path = tempfile.mkdtemp()
     with ZipFile(zip_folder, 'r') as zip_file:
         zip_file.extractall(temp_path)
 
     output_files = []
-    for path, subdirs, files in os.walk(temp_path):
+    for path, _, files in os.walk(temp_path):
         for filename in files:
-            f = os.path.join(path, filename)
-            if data_type(f) == 'data':
-                output_files.append(f)
+            file = os.path.join(path, filename)
+            if data_type(file) == 'data':
+                output_files.append(file)
 
     return temp_path, output_files

@@ -48,8 +48,8 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is going
-    to collect once per iteration. It's an OrderedDict of lists which contains all requested 
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
     object types mapped to the relating aspects and units which the tool should create graphs for.
     :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
     measurement in the first place and an additional identifier, which appears in the second
@@ -78,7 +78,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         if util.data_type(entered_file) == 'data':
             perfstat_output_files = [entered_file]
         elif util.data_type(entered_file) == 'zip':
-            temp_path, perfstat_output_files = util.copy_to_temp_dir(entered_file)
+            temp_path, perfstat_output_files = util.extract_to_temp_dir(entered_file)
         else:
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
             continue
