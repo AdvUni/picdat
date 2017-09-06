@@ -325,7 +325,7 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
     value_rows_list = [table[1] for table in table_list]
 
     # replace lun's IDs in headers through their path names
-    #replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
+    replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
 
     return header_row_list, value_rows_list
 
