@@ -325,7 +325,7 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
     value_rows_list = [table[1] for table in table_list]
 
     # replace lun's IDs in headers through their path names
-    replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
+    #replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict)
 
     return header_row_list, value_rows_list
 
@@ -486,6 +486,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
     per_iteration_headers, per_iteration_values = rework_per_iteration_data(
         per_iteration_tables, per_iteration_headers, start_times,
         per_iteration_requests, lun_path_dict)
+
+    print(per_iteration_headers)
 
     return combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
                            sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values)

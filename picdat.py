@@ -2,6 +2,7 @@
 From here, the tool gets started.
 """
 import os
+import shutil
 from shutil import copyfile
 from collections import OrderedDict
 
@@ -118,7 +119,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     for perfstat_output in perfstat_output_files:
         print(perfstat_output)
 
-        # get absolute path for PerfStat data file (just for using it as caption in resulting html)
+        # get absolute path for PerfStat source (just for using it as caption in resulting html)
         perfstat_output_absolute_path = os.path.abspath(perfstat_output)
 
         # collect data from file
@@ -147,7 +148,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         counter += 1
 
     # finally
-    del temp_path
+    shutil.rmtree(temp_path)
     print('Done. You will find charts under: ' + os.path.abspath(final_dest_directory))
 
 
