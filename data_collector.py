@@ -213,7 +213,7 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     all column indices belonging to sysstat_mbs_headers in the same order.
     """
 
-    # initalisation
+    # initialisation
 
     sysstat_percent_headers = []
     sysstat_percent_indices = []
