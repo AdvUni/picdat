@@ -4,7 +4,6 @@ From here, the tool gets started.
 import os
 from shutil import copyfile
 from collections import OrderedDict
-from zipfile import ZipFile
 
 import constants
 import util
@@ -66,6 +65,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
 
     # receive PerfStat file from user:
     perfstat_output_files = None
+    temp_path = None
     while True:
         entered_file = input('Please enter a path to a PerfStat output file: ')
         if entered_file == '':
@@ -77,9 +77,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         if util.data_type(entered_file) == 'data':
             perfstat_output_files = [entered_file]
         elif util.data_type(entered_file) == 'zip':
-            with ZipFile(entered_file, 'r') as zip_file:
-                perfstat_output_files = [file for file in zip_file.namelist() if util.data_type(
-                    file) == 'data']
+            temp_path, perfstat_output_files = util.copy_to_temp_dir(entered_file)
         else:
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
             continue
@@ -149,6 +147,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         counter += 1
 
     # finally
+    del temp_path
     print('Done. You will find charts under: ' + os.path.abspath(final_dest_directory))
 
 

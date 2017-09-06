@@ -2,9 +2,12 @@
 Provides some functions other modules may use.
 """
 import os
+from zipfile import ZipFile
+
 from orderedset import OrderedSet
 from table import Table
 import constants
+import tempfile
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -195,3 +198,18 @@ def get_csv_filenames(number, per_iteration_requests):
         number) + constants.CSV_ENDING)
 
     return name_list
+
+
+def copy_to_temp_dir(zip_folder):
+    temp_path = tempfile.mkdtemp()
+    with ZipFile(zip_folder, 'r') as zip_file:
+        zip_file.extractall(temp_path)
+
+    output_files = []
+    for path, subdirs, files in os.walk(temp_path):
+        for filename in files:
+            f = os.path.join(path, filename)
+            if data_type(f) == 'data':
+                output_files.append(f)
+
+    return temp_path, output_files
