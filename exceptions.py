@@ -18,3 +18,4 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 class InstanceNameNotFoundException(Exception):
     def __init__(self, instance_name):
         self.message = 'Could not find a Name for this instance: ' + instance_name
+

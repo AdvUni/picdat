@@ -23,6 +23,14 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+def data_type(filepath):
+    """
+    Gets a file's data type.
+    :param filepath: The path from a file as String, you want to have the data type for.
+    :return: The data type as String.
+    """
+    return filepath.split('.')[-1]
+
 
 def get_month_number(month_string):
     """
@@ -165,7 +173,7 @@ def get_object_ids(per_iteration_requests):
     return id_list
 
 
-def get_csv_filenames(per_iteration_requests):
+def get_csv_filenames(number, per_iteration_requests):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :param per_iteration_requests: A data structure carrying all requests for data, the tool is
@@ -178,9 +186,12 @@ def get_csv_filenames(per_iteration_requests):
         for request_tuple in per_iteration_requests.get(object_type):
             aspect = request_tuple[0]
             name_list.append(object_type + '_' + aspect +
-                             constants.CSV_FILE_ENDING)
+                             constants.CSV_FILE_NAME_ENDING + str(number) + constants.CSV_ENDING)
 
-    name_list.append(constants.SYSSTAT_CHART_TITLE + '_percent' + constants.CSV_FILE_ENDING)
-    name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_ENDING)
+    name_list.append(
+        constants.SYSSTAT_CHART_TITLE + '_percent' + constants.CSV_FILE_NAME_ENDING + str(
+            number) + constants.CSV_ENDING)
+    name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_NAME_ENDING + str(
+        number) + constants.CSV_ENDING)
 
     return name_list

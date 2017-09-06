@@ -37,10 +37,12 @@ DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 DEFAULT_DIRECTORY_NAME = 'results'
 
 # program names csv files with the name of the chart they belong to, and the following ending:
-CSV_FILE_ENDING = '_chart_values.csv'
+CSV_FILE_NAME_ENDING = '_chart_values'
+CSV_ENDING = '.csv'
 
 # program names html file inside the result directory like this:
-HTML_FILENAME = 'charts.html'
+HTML_FILENAME = 'charts'
+HTML_ENDING = '.html'
 
 # the standard string to name charts about the sysstat_x_1sec block:
 SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'

@@ -4,6 +4,7 @@ From here, the tool gets started.
 import os
 from shutil import copyfile
 from collections import OrderedDict
+from zipfile import ZipFile
 
 import constants
 import util
@@ -64,15 +65,26 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     print('Welcome to PicDat!')
 
     # receive PerfStat file from user:
+    perfstat_output_files = None
     while True:
-        perfstat_output_file = input('Please enter a path to a PerfStat output file: ')
-        if perfstat_output_file == '':
-            perfstat_output_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
-            break
-        elif not os.path.isfile(perfstat_output_file):
+        entered_file = input('Please enter a path to a PerfStat output file: ')
+        if entered_file == '':
+            entered_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+        elif not os.path.isfile(entered_file):
             print('This file does not exist. Try again.')
+            continue
+
+        if util.data_type(entered_file) == 'data':
+            perfstat_output_files = [entered_file]
+        elif util.data_type(entered_file) == 'zip':
+            with ZipFile(entered_file, 'r') as zip_file:
+                perfstat_output_files = [file for file in zip_file.namelist() if util.data_type(
+                    file) == 'data']
         else:
-            break
+            print('Unexpected data type: File must be of type .data or .zip. Try again.')
+            continue
+
+        break
 
     # receive destination directory from user
     while True:
@@ -94,15 +106,6 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
 
     destination_directory += constants.DEFAULT_DIRECTORY_NAME
 
-    # get absolute path for PerfStat data file (just for using it as caption in resulting html)
-    perfstat_output_absolute_path = os.path.abspath(perfstat_output_file)
-
-    # collect data from file
-    print('Read data...')
-    table_headers, table_values = \
-        data_collector.read_data_file(perfstat_output_file, per_iteration_requests,
-                                      sysstat_percent_requests, sysstat_mbs_requests)
-
     # create directory and copy the necessary dygraphs files into it
     print('Prepare directory...')
     final_dest_directory = util.empty_directory(destination_directory)
@@ -111,24 +114,42 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
     copyfile(constants.DYGRAPHS_JS_SRC, dygraphs_js_dest)
     copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
 
-    # generate file names for csv tables
-    csv_filenames = util.get_csv_filenames(per_iteration_requests)
-    csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
+    print(perfstat_output_files)
 
-    # write data into csv tables
-    print('Create csv tables...')
-    table_writer.create_csv(csv_filepaths, table_headers, table_values)
+    counter = 0
+    for perfstat_output in perfstat_output_files:
+        print(perfstat_output)
 
-    # frame html file path
-    html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME
+        # get absolute path for PerfStat data file (just for using it as caption in resulting html)
+        perfstat_output_absolute_path = os.path.abspath(perfstat_output)
 
-    # write html file
-    print('Create html file...')
-    visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests,
-                           table_headers, perfstat_output_absolute_path)
+        # collect data from file
+        print('Read data...')
+        table_headers, table_values = \
+            data_collector.read_data_file(perfstat_output, per_iteration_requests,
+                                          sysstat_percent_requests, sysstat_mbs_requests)
+
+        # frame html file path
+        html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME + str(
+            counter) + constants.HTML_ENDING
+
+        # generate file names for csv tables
+        csv_filenames = util.get_csv_filenames(counter, per_iteration_requests)
+        csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
+
+        # write data into csv tables
+        print('Create csv tables...')
+        table_writer.create_csv(csv_filepaths, table_headers, table_values)
+
+        # write html file
+        print('Create html file...')
+        visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests,
+                               table_headers, perfstat_output_absolute_path)
+
+        counter += 1
 
     # finally
-    print('Done. You will find charts under: ' + os.path.abspath(html_filepath))
+    print('Done. You will find charts under: ' + os.path.abspath(final_dest_directory))
 
 
 # run
