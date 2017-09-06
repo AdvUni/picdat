@@ -44,28 +44,14 @@ def init(per_iteration_requests):
                                      ('read_data', 'b/s')]
 
 
-def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
+def take_perfstats():
     """
-    The tool's main routine. Calls all functions to read the data, write CSVs
-    and finally create an HTML. Handles user communication.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
-    :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
-    measurement in the first place and an additional identifier, which appears in the second
-    header line, in the second place. The expected unit of these measurements is %. The data for
-    them should appear in one chart together.
-    :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
-    measurement in the first place. In the second place is another tuple, containing two
-    parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
-    but will be converted into MB/s. The data for them should appear in one chart together.
-    :return: None
+    This function requests a PerfStat output location of the user and decides, whether its type is
+    data or zip. If applicable, it extracts the zip folder into a temporary directory.
+    :return: The temporary directory's path (might be None, after usage of files inside this
+    directory should become deleted) and a list of all PerfStat data files extracted from user
+    input.
     """
-
-    print('Welcome to PicDat!')
-
-    # receive PerfStat file from user:
-    perfstat_output_files = None
     temp_path = None
     while True:
         entered_file = input('Please enter a path to a PerfStat output file: ')
@@ -78,6 +64,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         if util.data_type(entered_file) == 'data':
             perfstat_output_files = [entered_file]
         elif util.data_type(entered_file) == 'zip':
+            print('Extract zip...')
             temp_path, perfstat_output_files = util.extract_to_temp_dir(entered_file)
         else:
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
@@ -85,7 +72,16 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
 
         break
 
-    # receive destination directory from user
+    return temp_path, perfstat_output_files
+
+
+def take_directory():
+    """
+    This function requests a destination directory of the user. All results of the PicDat program
+    will be written to this directory. If the directory doesn't exist yet, the function asks the
+    user for creating it.
+    :return: 
+    """
     while True:
         destination_directory = input('Please select a destination directory for the results: ')
         if destination_directory != '':
@@ -104,6 +100,33 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
             break
 
     destination_directory += constants.DEFAULT_DIRECTORY_NAME
+    return destination_directory
+
+
+def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
+    """
+    The tool's main routine. Calls all functions to read the data, write CSVs
+    and finally create an HTML. Handles user communication.
+    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
+    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
+    object types mapped to the relating aspects and units which the tool should create graphs for.
+    :param sysstat_percent_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place and an additional identifier, which appears in the second
+    header line, in the second place. The expected unit of these measurements is %. The data for
+    them should appear in one chart together.
+    :param sysstat_mbs_requests: A list of tuples. Each tuple contains the name of a
+    measurement in the first place. In the second place is another tuple, containing two
+    parameters, e.g. 'read' and 'write'. The expected unit of these measurements is kB/s,
+    but will be converted into MB/s. The data for them should appear in one chart together.
+    :return: None
+    """
+    print('Welcome to PicDat!')
+
+    # receive PerfStat file(s) from user:
+    temp_path, perfstat_output_files = take_perfstats()
+
+    # receive destination directory from user
+    destination_directory = take_directory()
 
     # create directory and copy the necessary dygraphs files into it
     print('Prepare directory...')
@@ -148,7 +171,8 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         counter += 1
 
     # finally
-    shutil.rmtree(temp_path)
+    if temp_path is not None:
+        shutil.rmtree(temp_path)
     print('Done. You will find charts under: ' + os.path.abspath(final_dest_directory))
 
 
