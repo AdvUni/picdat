@@ -154,8 +154,8 @@ def process_per_iteration_requests(line, per_iteration_requests, recent_iteratio
             request_index += len(per_iteration_requests[object_type])
 
 
-def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_indices,
-                             sysstat_percent_values, sysstat_mbs_values, timestamp):
+def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices,
+                             sysstat_percent_values, sysstat_mbs_values, sysstat_no_unit_values, timestamp):
     """
     This function collects all relevant information from a line in a sysstat_x_1sec block. In
     case, the line doesn't contain values, but a sub header, the function ignores it.
@@ -183,6 +183,9 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
         sysstat_mbs_values.append(
             [str(timestamp)] + [str(round(int(line_split[index]) / 1000)) for index in
                                 sysstat_mbs_indices])
+                                
+        sysstat_no_unit_values.append([str(timestamp)] + [line_split[index] for index in
+                                                          sysstat_no_unit_indices])
         return True
 
     else:
@@ -190,7 +193,7 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
 
 
 def process_sysstat_header(first_header_line, second_header_line, sysstat_percent_requests,
-                           sysstat_mbs_requests):
+                           sysstat_mbs_requests, sysstat_no_unit_requests):
     """
     Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
     for the requested columns. Saves the headers matching the requests to lists. Also saves the
@@ -219,7 +222,9 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
     sysstat_percent_indices = []
     sysstat_mbs_headers = []
     sysstat_mbs_indices = []
-
+    sysstat_no_unit_headers = []
+    sysstat_no_unit_indices = []
+	
     # Split the first line into single words and save them to header_line_split.
     # Simultaneously, memorize the line indices, at which the words end, into endpoints.
     header_line_split, endpoints = zip(
@@ -250,9 +255,16 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_percen
                 # so we find them and add their columns to header_list and index_list at once
                 sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
                 sysstat_mbs_indices.append(index + 1)
+        
+        # iterate over the sysstat requests, which belong to no unit:
+        for request in sysstat_no_unit_requests:
+            if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
+                                                        second_header_line, request, ' '):
+                sysstat_no_unit_headers.append(request)
+                sysstat_no_unit_indices.append(index)
 
     return (
-        sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, sysstat_mbs_indices)
+        sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers, sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices)
 
 
 def replace_lun_ids(per_iteration_requests, header_row_list, lun_path_dict):
@@ -331,7 +343,7 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
 
 
 def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
-                    sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values):
+                    sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values, sysstat_no_unit_headers, sysstat_no_unit_values):
     """
     This function sticks the results of all three request types together.
     :param per_iteration_headers: A list of list, holding the headers for each per-iteration chart.
@@ -345,14 +357,14 @@ def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent
     grouped like the lines in the sysstat block.
     :return: All headers in one list, followed by all values in one list.
     """
-    combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers]
-    combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values]
+    combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers]
+    combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values, sysstat_no_unit_values]
 
     return combined_headers, combined_values
 
 
 def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_requests,
-                   sysstat_mbs_requests):
+                   sysstat_mbs_requests, sysstat_no_unit_requests):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
@@ -403,15 +415,18 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
     # process_sysstat_header):
     sysstat_percent_headers = None
     sysstat_mbs_headers = None
+    sysstat_no_unit_headers = None
 
     # reserve names for lists containing the column indices being interesting for the both
     # sysstat-charts (will be set by process_sysstat_header):
     sysstat_percent_indices = None
     sysstat_mbs_indices = None
+    sysstat_no_unit_indices = None
 
     # lists to hold the values for the both sysstat-charts:
     sysstat_percent_values = []
     sysstat_mbs_values = []
+    sysstat_no_unit_values = []
 
     lun_path_dict = {}
 
@@ -436,14 +451,14 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                     inside_sysstat_block = False
                 elif sysstat_header_needed:
 
-                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_percent_indices, \
-                    sysstat_mbs_indices = \
+                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers, sysstat_percent_indices, \
+                    sysstat_mbs_indices, sysstat_no_unit_indices = \
                         process_sysstat_header(line, next(data), sysstat_percent_requests,
-                                               sysstat_mbs_requests)
+                                               sysstat_mbs_requests, sysstat_no_unit_requests)
                     sysstat_header_needed = False
                 else:
-                    if process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
-                                                sysstat_percent_values, sysstat_mbs_values,
+                    if process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices,
+                                                sysstat_percent_values, sysstat_mbs_values, sysstat_no_unit_values,
                                                 recent_sysstat_timestamp):
                         recent_sysstat_timestamp += constants.ONE_SECOND
             elif '=-=-=-=-=-=' in line:
@@ -455,8 +470,8 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
                     # write an empty line into the sysstat tables to cut line in resulting charts
                     #  between different iterations:
                     if iteration_end_counter != number_of_iterations:
-                        data_collector_util.add_empty_lines(sysstat_percent_values,
-                                                            sysstat_mbs_values)
+                        data_collector_util.add_empty_lines([sysstat_percent_values,
+                                                            sysstat_mbs_values, sysstat_no_unit_values])
                 elif found_sysstat_1sec_begin(line):
                     inside_sysstat_block = True
                     recent_sysstat_timestamp = data_collector_util.get_sysstat_timestamp(next(data))
@@ -487,7 +502,5 @@ def read_data_file(perfstat_data_file, per_iteration_requests, sysstat_percent_r
         per_iteration_tables, per_iteration_headers, start_times,
         per_iteration_requests, lun_path_dict)
 
-    print(per_iteration_headers)
-
     return combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
-                           sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values)
+                           sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values, sysstat_no_unit_headers, sysstat_no_unit_values)

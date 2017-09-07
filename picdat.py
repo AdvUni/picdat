@@ -40,8 +40,8 @@ def init(per_iteration_requests):
     per_iteration_requests['processor'] = [('processor_busy', '%')]
     per_iteration_requests['volume'] = [('total_ops', '/s'), ('avg_latency', 'us'),
                                         ('read_data', 'b/s')]
-    per_iteration_requests['lun'] = [('total_ops', '/s'), ('avg_latency', 'ms'),
-                                     ('read_data', 'b/s')]
+    #per_iteration_requests['lun'] = [('total_ops', '/s'), ('avg_latency', 'ms'),
+    #                                 ('read_data', 'b/s')]
 
 
 def take_perfstats():
@@ -103,7 +103,7 @@ def take_directory():
     return destination_directory
 
 
-def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
+def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, sysstat_no_unit_requests):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
@@ -149,7 +149,7 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
         print('Read data...')
         table_headers, table_values = \
             data_collector.read_data_file(perfstat_output, per_iteration_requests,
-                                          sysstat_percent_requests, sysstat_mbs_requests)
+                                          sysstat_percent_requests, sysstat_mbs_requests, sysstat_no_unit_requests)
 
         # frame html file path
         html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME + str(
@@ -179,4 +179,4 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests):
 # run
 init_per_iteration_requests = OrderedDict()
 init(init_per_iteration_requests)
-run(init_per_iteration_requests, constants.SYSSTAT_PERCENT_REQUESTS, constants.SYSSTAT_MBS_REQUESTS)
+run(init_per_iteration_requests, constants.SYSSTAT_PERCENT_REQUESTS, constants.SYSSTAT_MBS_REQUESTS, constants.SYSSTAT_NO_UNIT_REQUESTS)

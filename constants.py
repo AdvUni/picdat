@@ -26,6 +26,9 @@ SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk',
                         ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 SYSSTAT_MBS_UNIT = 'MB/s'
 
+SYSSTAT_NO_UNIT_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
+SYSSTAT_NO_UNIT = ' '
+
 # timedelta object describing one second. The data_collector needs it to count up the time to
 # adress sysstat_1sec values correctly.
 ONE_SECOND = datetime.timedelta(seconds=1)

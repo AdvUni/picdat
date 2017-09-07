@@ -133,6 +133,7 @@ def get_units(per_iteration_requests):
 
     unit_list.append(constants.SYSSTAT_PERCENT_UNIT)
     unit_list.append(constants.SYSSTAT_MBS_UNIT)
+    unit_list.append(constants.SYSSTAT_NO_UNIT)
 
     return unit_list
 
@@ -153,6 +154,8 @@ def get_titles(per_iteration_requests):
 
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
+    title_list.append(constants.SYSSTAT_CHART_TITLE + ':noUnit')
+    
     return title_list
 
 
@@ -172,6 +175,7 @@ def get_object_ids(per_iteration_requests):
 
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_percent')
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs')
+    id_list.append(constants.SYSSTAT_CHART_TITLE + '_no_unit')
 
     return id_list
 
@@ -195,6 +199,8 @@ def get_csv_filenames(number, per_iteration_requests):
         constants.SYSSTAT_CHART_TITLE + '_percent' + constants.CSV_FILE_NAME_ENDING + str(
             number) + constants.CSV_ENDING)
     name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_NAME_ENDING + str(
+        number) + constants.CSV_ENDING)
+    name_list.append(constants.SYSSTAT_CHART_TITLE + '_no_unit' + constants.CSV_FILE_NAME_ENDING + str(
         number) + constants.CSV_ENDING)
 
     return name_list
