@@ -37,13 +37,8 @@ def style_line():
     Generates a string to write it into an HTML file. It contains a line configuring the style.
     :return: The line you can write into an HTML file.
     """
-    width_px = None
-    height_px = None
-
-    if width_px is None:
-        width_px = 500
-    if height_px is None:
-        height_px = 300
+    width_px = constants.CHARTS_WIDTH
+    height_px = constants.CHARTS_HEIGHT
     return '     style="width: ' + str(width_px) + 'px; height: ' + str(height_px) + \
            'px;"></div>' + os.linesep
 

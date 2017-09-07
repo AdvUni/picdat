@@ -71,6 +71,11 @@ LEGEND_DIV_CLASS_NAME = 'legend-div'
 
 # this is the javaScript function which is responsible for showing all graphs in one chart at
 # once; the program needs to write this string in the html document:
+
+# proportions of the html charts in px:
+CHARTS_HEIGHT = 600
+CHARTS_WIDTH = 900
+
 SELECT_ALL_FCT = '''
     function selectAll(button, chart, name) {
         var checkboxes = document.getElementsByName(name);
