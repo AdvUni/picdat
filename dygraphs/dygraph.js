@@ -6731,8 +6731,8 @@ return h;}; /**
                  * Annotation of Marie Lohbeck, PicDat developer: I manipulated this method,
                  * because I wasn't satisfied with graph line coloring.
                  * I eliminated the color alternation because it is more confusing than helpful
-                 * in this case. Further, I set saturation and value randomly now to get a higher
-                 * diversity of colors. Constructor options affecting the color doesn't work
+                 * in this case. Further, I increase saturation and value in steps now to get a higher
+                 * diversity of colors. Constructor options affecting the color don't work
                  * anymore.
                  * @private
                  */Dygraph.prototype.setColors_ = function () {
@@ -6749,8 +6749,8 @@ return h;}; /**
                         var label = labels[i + 1];
 
                         var hue = (i+1) / (1 + num);
-                        var val = 0.4 + Math.random() * 0.6;
-                        var sat = 0.7 + Math.random() * 0.3;
+						var val = 0.5 + (0.153 * i) % 0.5;
+						var sat = 0.6 + (0.2 * i) % 0.4
                         var colorStr = utils.hsvToRGB(hue, sat, val);
 
                         this.colors_.push(colorStr);
