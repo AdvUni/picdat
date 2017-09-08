@@ -30,20 +30,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def init(per_iteration_requests):
-    """
-    Sets the value for per_iteration_request.
-    :param per_iteration_requests: Empty OrderedDict.
-    :return: None
-    """
-    per_iteration_requests['aggregate'] = [('total_transfers', '/s')]
-    per_iteration_requests['processor'] = [('processor_busy', '%')]
-    per_iteration_requests['volume'] = [('total_ops', '/s'), ('avg_latency', 'us'),
-                                        ('read_data', 'b/s')]
-    #per_iteration_requests['lun'] = [('total_ops', '/s'), ('avg_latency', 'ms'),
-    #                                 ('read_data', 'b/s')]
-
-
 def take_perfstats():
     """
     This function requests a PerfStat output location of the user and decides, whether its type is
@@ -103,7 +89,7 @@ def take_directory():
     return destination_directory
 
 
-def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, sysstat_no_unit_requests):
+def run():
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
@@ -145,15 +131,14 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, 
         # collect data from file
         print('Read data...')
         table_headers, table_values = \
-            data_collector.read_data_file(perfstat_output, per_iteration_requests,
-                                          sysstat_percent_requests, sysstat_mbs_requests, sysstat_no_unit_requests)
+            data_collector.read_data_file(perfstat_output)
 
         # frame html file path
         html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME + str(
             counter) + constants.HTML_ENDING
 
         # generate file names for csv tables
-        csv_filenames = util.get_csv_filenames(counter, per_iteration_requests)
+        csv_filenames = util.get_csv_filenames(counter)
         csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
 
         # write data into csv tables
@@ -162,8 +147,8 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, 
 
         # write html file
         print('Create html file...')
-        visualizer.create_html(html_filepath, csv_filenames, per_iteration_requests,
-                               table_headers, perfstat_output_absolute_path)
+        visualizer.create_html(html_filepath, csv_filenames, table_headers,
+                               perfstat_output_absolute_path)
 
         counter += 1
 
@@ -174,6 +159,4 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, 
 
 
 # run
-init_per_iteration_requests = OrderedDict()
-init(init_per_iteration_requests)
-run(init_per_iteration_requests, constants.SYSSTAT_PERCENT_REQUESTS, constants.SYSSTAT_MBS_REQUESTS, constants.SYSSTAT_NO_UNIT_REQUESTS)
+run()

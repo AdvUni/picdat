@@ -121,7 +121,7 @@ def create_checkboxes(html_document, chart_id, graph_identifiers):
     html_document.write('</table>' + os.linesep)
 
 
-def create_html(html_filepath, csv_files, per_iteration_requests, header, sourcepath):
+def create_html(html_filepath, csv_files, header, sourcepath):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
@@ -135,9 +135,9 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
     path of the PerfStat output file.
     :return: None
     """
-    titles = util.get_titles(per_iteration_requests)
-    chart_ids = util.get_object_ids(per_iteration_requests)
-    y_labels = util.get_units(per_iteration_requests)
+    titles = util.get_titles()
+    chart_ids = util.get_object_ids()
+    y_labels = util.get_units()
 
     # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
     # Pay attention, that this rename needs to be compatible with the data_collector module,

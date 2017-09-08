@@ -6,6 +6,7 @@ from zipfile import ZipFile
 
 from orderedset import OrderedSet
 from table import Table
+from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_NO_UNIT
 import constants
 import tempfile
 
@@ -117,59 +118,50 @@ def empty_directory(preferred_directory_path):
     return directory_name
 
 
-def get_units(per_iteration_requests):
+def get_units():
     """
     Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of all units.
     """
     unit_list = []
-    for object_type in per_iteration_requests:
-        for request_tuple in per_iteration_requests.get(object_type):
+    for object_type in PER_ITERATION_REQUESTS:
+        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             unit = request_tuple[1]
             unit_list.append(unit)
 
-    unit_list.append(constants.SYSSTAT_PERCENT_UNIT)
-    unit_list.append(constants.SYSSTAT_MBS_UNIT)
-    unit_list.append(constants.SYSSTAT_NO_UNIT)
+    unit_list.append(SYSSTAT_PERCENT_UNIT)
+    unit_list.append(SYSSTAT_MBS_UNIT)
+    unit_list.append(SYSSTAT_NO_UNIT)
 
     return unit_list
 
 
-def get_titles(per_iteration_requests):
+def get_titles():
     """
     Generates proper titles for charts.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of chart titles.
     """
     title_list = []
-    for object_type in per_iteration_requests:
-        for request_tuple in per_iteration_requests.get(object_type):
+    for object_type in PER_ITERATION_REQUESTS:
+        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             title_list.append(object_type + ':' + aspect)
 
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':noUnit')
-    
+
     return title_list
 
 
-def get_object_ids(per_iteration_requests):
+def get_object_ids():
     """
     Gets all object IDs from a per_iteration_request. Also adds IDs for sysstat charts.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of all object IDs.
     """
     id_list = []
-    for object_type in per_iteration_requests:
-        for request_tuple in per_iteration_requests.get(object_type):
+    for object_type in PER_ITERATION_REQUESTS:
+        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             id_list.append(object_type + '_' + aspect)
 
@@ -180,17 +172,14 @@ def get_object_ids(per_iteration_requests):
     return id_list
 
 
-def get_csv_filenames(number, per_iteration_requests):
+def get_csv_filenames(number):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :return: A list of csv file names.
     """
     name_list = []
-    for object_type in per_iteration_requests:
-        for request_tuple in per_iteration_requests.get(object_type):
+    for object_type in PER_ITERATION_REQUESTS:
+        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             name_list.append(object_type + '_' + aspect +
                              constants.CSV_FILE_NAME_ENDING + str(number) + constants.CSV_ENDING)
@@ -200,8 +189,9 @@ def get_csv_filenames(number, per_iteration_requests):
             number) + constants.CSV_ENDING)
     name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_NAME_ENDING + str(
         number) + constants.CSV_ENDING)
-    name_list.append(constants.SYSSTAT_CHART_TITLE + '_no_unit' + constants.CSV_FILE_NAME_ENDING + str(
-        number) + constants.CSV_ENDING)
+    name_list.append(
+        constants.SYSSTAT_CHART_TITLE + '_no_unit' + constants.CSV_FILE_NAME_ENDING + str(
+            number) + constants.CSV_ENDING)
 
     return name_list
 
