@@ -180,7 +180,7 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
         sysstat_percent_values.append([str(timestamp)] + [line_split[index].strip('%') for index in
                                                           sysstat_percent_indices])
         # add values specified in mbs_indices to mbs_values and convert them to MB/s instead of kB/s
-        # Notice, that this needs to be conform to constants.SYSSTAT_MBS_UNIT!
+        # Notice, that this needs to be conform to requests.SYSSTAT_MBS_UNIT!
         sysstat_mbs_values.append(
             [str(timestamp)] + [str(round(int(line_split[index]) / 1000)) for index in
                                 sysstat_mbs_indices])
@@ -265,9 +265,6 @@ def replace_lun_ids(header_row_list, lun_path_dict):
     All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
     name or path. To make the resulting charts more readable, this function replaces their IDs
     with the paths.
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :param header_row_list: A list of lists which contains all instance names, the program
     found values for.
     :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
