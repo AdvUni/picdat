@@ -124,6 +124,12 @@
 /* The following part is an addition by Marie Lohbeck, developer of PicDat */
 
 .legend-div {
-    position: relative;
-    top: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
+.chart-div {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    height: 600px;
 }

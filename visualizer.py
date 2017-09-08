@@ -32,17 +32,6 @@ def graph_id(graph_title):
     return graph_title + '_graph'
 
 
-def style_line():
-    """
-    Generates a string to write it into an HTML file. It contains a line configuring the style.
-    :return: The line you can write into an HTML file.
-    """
-    width_px = constants.CHARTS_WIDTH
-    height_px = constants.CHARTS_HEIGHT
-    return '     style="width: ' + str(width_px) + 'px; height: ' + str(height_px) + \
-           'px;"></div>' + os.linesep
-
-
 def option_line(label, content, argument_is_string):
     """
     Generates a string to write it into an HTML file. It is used to specify an option inside the
@@ -178,12 +167,12 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
         html_document.write('</script>' + os.linesep)
 
         # write caption
-        html_document.write('    <h2> ' + sourcepath + ' </h2>')
+        html_document.write('    <h2> ' + sourcepath + ' </h2>' + os.linesep)
 
         # write rest of body
         for chart in range(len(csv_files)):
-            html_document.write('<div id="' + chart_ids[chart] + '"' + os.linesep)
-            html_document.write(style_line())
+            html_document.write('<div id="' + chart_ids[chart] + '" class="'
+                                + constants.CHART_DIV_CLASS_NAME + '"></div>' + os.linesep)
 
             # create html div element in which the chart legend should be showed
             html_document.write('<div id="' + get_legend_div_id(chart_ids[chart]) + '" class="'
