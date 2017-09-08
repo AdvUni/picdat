@@ -279,12 +279,8 @@ def replace_lun_ids(header_row_list, lun_path_dict):
                 index_first_lun_request += 1
     for i in range(len(PER_ITERATION_REQUESTS['lun'])):
         insertion_index = index_first_lun_request + i
-        print(insertion_index)
-        print(header_row_list)
         header_replacement = []
-        print(i)
         for uuid in header_row_list[insertion_index]:
-            print(uuid)
             if uuid in lun_path_dict:
                 header_replacement.append(lun_path_dict[uuid])
             else:
