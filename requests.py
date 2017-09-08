@@ -54,6 +54,6 @@ SYSSTAT_MBS_UNIT = 'MB/s'
 # These search keys will match many times inside sysstat_x_1sec blocks. They values for them
 # haven't any unit; they're absolute. Data collected about this requests will be shown in one
 # chart together.
-SYSSTAT_NO_UNIT_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
+SYSSTAT_IOPS_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
 
 SYSSTAT_NO_UNIT = ' '

@@ -155,7 +155,7 @@ def get_titles(luns_available):
 
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
-    title_list.append(constants.SYSSTAT_CHART_TITLE + ':noUnit')
+    title_list.append(constants.SYSSTAT_CHART_TITLE + ':IOPS')
 
     return title_list
 
@@ -176,7 +176,7 @@ def get_object_ids(luns_available):
 
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_percent')
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs')
-    id_list.append(constants.SYSSTAT_CHART_TITLE + '_no_unit')
+    id_list.append(constants.SYSSTAT_CHART_TITLE + '_iops')
 
     return id_list
 
@@ -202,7 +202,7 @@ def get_csv_filenames(number, luns_available):
     name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_NAME_ENDING + str(
         number) + constants.CSV_ENDING)
     name_list.append(
-        constants.SYSSTAT_CHART_TITLE + '_no_unit' + constants.CSV_FILE_NAME_ENDING + str(
+        constants.SYSSTAT_CHART_TITLE + '_iops' + constants.CSV_FILE_NAME_ENDING + str(
             number) + constants.CSV_ENDING)
 
     return name_list

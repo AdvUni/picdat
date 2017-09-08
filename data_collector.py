@@ -8,7 +8,7 @@ import util
 import data_collector_util
 from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, \
-    SYSSTAT_NO_UNIT_REQUESTS
+    SYSSTAT_IOPS_REQUESTS
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -249,7 +249,7 @@ def process_sysstat_header(first_header_line, second_header_line):
                 sysstat_mbs_indices.append(index + 1)
 
         # iterate over the sysstat requests, which belong to no unit:
-        for request in SYSSTAT_NO_UNIT_REQUESTS:
+        for request in SYSSTAT_IOPS_REQUESTS:
             if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
                                                        second_header_line, request, ' '):
                 sysstat_no_unit_headers.append(request)
