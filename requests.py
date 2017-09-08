@@ -4,6 +4,23 @@ handled differently an will lead into one ore more charts.
 """
 from collections import OrderedDict
 
+__author__ = 'Marie Lohbeck'
+__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+
+# license notice:
+#
+# This file is part of PicDat.
+# PicDat is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public (at your option) any later version.
+#
+# PicDat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with PicDat. If not,
+# see <http://www.gnu.org/licenses/>.
+
+
 # These search keys will match (at most) once in each iteration. Data collected about these
 # requests will be shown in four charts: One for each of aggregate, processor, volume and lun.
 # About the data structure: It's an OrderedDict of lists which contains all requested object
