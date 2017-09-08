@@ -4,7 +4,6 @@
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +30,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1674">
-              <caret line="93" column="59" lean-forward="false" selection-start-line="93" selection-start-column="59" selection-end-line="93" selection-end-column="59" />
+            <state relative-caret-position="340">
+              <caret line="127" column="38" lean-forward="false" selection-start-line="127" selection-start-column="38" selection-end-line="127" selection-end-column="38" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
@@ -63,11 +62,11 @@
       <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data_collector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="179" column="55" lean-forward="false" selection-start-line="179" selection-start-column="55" selection-end-line="179" selection-end-column="55" />
+            <state relative-caret-position="306">
+              <caret line="359" column="4" lean-forward="false" selection-start-line="359" selection-start-column="4" selection-end-line="359" selection-end-column="4" />
               <folding>
                 <element signature="e#83#92#0" expanded="true" />
-                <marker date="1504868733586" expanded="true" signature="23855:23863" ph="..." />
+                <marker date="1504868963773" expanded="true" signature="22880:22888" ph="..." />
               </folding>
             </state>
           </provider>
@@ -86,8 +85,8 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="22" column="12" lean-forward="false" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+            <state relative-caret-position="181">
+              <caret line="127" column="51" lean-forward="false" selection-start-line="127" selection-start-column="29" selection-end-line="127" selection-end-column="51" />
               <folding>
                 <element signature="e#55#64#0" expanded="true" />
                 <marker date="1504863944565" expanded="true" signature="4210:4641" ph="..." />
@@ -151,6 +150,7 @@
       <find>[</find>
       <find>repla</find>
       <find>aggregate_total_transfers</find>
+      <find>PER_ITERATION_REQUESTS</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -196,7 +196,6 @@
         <option value="$PROJECT_DIR$/results14/charts0.html" />
         <option value="$PROJECT_DIR$/resultsExample/dygraph.css" />
         <option value="$PROJECT_DIR$/dygraphs/dygraph.css" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/data_collector_util.py" />
@@ -205,6 +204,7 @@
         <option value="$PROJECT_DIR$/requests.py" />
         <option value="$PROJECT_DIR$/picdat.py" />
         <option value="$PROJECT_DIR$/constants.py" />
+        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/data_collector.py" />
       </list>
     </option>
@@ -990,7 +990,14 @@
       <option name="project" value="LOCAL" />
       <updated>1504867861673</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Corrected some comments">
+      <created>1504868745067</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1504868745067</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1071,7 +1078,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implemented function to collect data from sysstat_x_1sec blocks" />
     <MESSAGE value="stored postprocessing from per_iteration_data in data_collector.read_data in external function" />
     <MESSAGE value="integrated search for sysstat_x_1sec data in main routine" />
     <MESSAGE value="Completed analyse of sysstat_x_1sec blocks. Changed place to associate timestamps to their values" />
@@ -1096,7 +1102,8 @@
     <MESSAGE value="Accessing requests as constants now" />
     <MESSAGE value="complied pylint rules" />
     <MESSAGE value="added lincense notice" />
-    <option name="LAST_COMMIT_MESSAGE" value="added lincense notice" />
+    <MESSAGE value="Corrected some comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corrected some comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1335,28 +1342,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="22" column="12" lean-forward="false" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
-          <folding>
-            <element signature="e#55#64#0" expanded="true" />
-            <marker date="1504863944565" expanded="true" signature="4210:4641" ph="..." />
-            <marker date="1504863944565" expanded="true" signature="6733:6840" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/picdat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1674">
-          <caret line="93" column="59" lean-forward="false" selection-start-line="93" selection-start-column="59" selection-end-line="93" selection-end-column="59" />
-          <folding>
-            <element signature="e#42#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/constants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
@@ -1365,13 +1350,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/picdat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="127" column="38" lean-forward="false" selection-start-line="127" selection-start-column="38" selection-end-line="127" selection-end-column="38" />
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="127" column="51" lean-forward="false" selection-start-line="127" selection-start-column="29" selection-end-line="127" selection-end-column="51" />
+          <folding>
+            <element signature="e#55#64#0" expanded="true" />
+            <marker date="1504863944565" expanded="true" signature="4210:4641" ph="..." />
+            <marker date="1504863944565" expanded="true" signature="6733:6840" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data_collector.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="179" column="55" lean-forward="false" selection-start-line="179" selection-start-column="55" selection-end-line="179" selection-end-column="55" />
+        <state relative-caret-position="306">
+          <caret line="359" column="4" lean-forward="false" selection-start-line="359" selection-start-column="4" selection-end-line="359" selection-end-column="4" />
           <folding>
             <element signature="e#83#92#0" expanded="true" />
-            <marker date="1504868733586" expanded="true" signature="23855:23863" ph="..." />
+            <marker date="1504868963773" expanded="true" signature="22880:22888" ph="..." />
           </folding>
         </state>
       </provider>
