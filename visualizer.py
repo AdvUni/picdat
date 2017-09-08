@@ -163,6 +163,20 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
             html_document.writelines(template.readlines())
         template.close()
 
+        # implement checkbox functionality and legend formatter in javaScript
+        html_document.write('<script>' + os.linesep)
+        html_document.write('    function change(el, chart) {' + os.linesep)
+        html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
+                            os.linesep)
+        html_document.write('    }' + os.linesep)
+        html_document.write('    function translateNumber(id) {' + os.linesep +
+                            '        return id.split("' + constants.CHECKBOX_ID_SPLITTER
+                            + '")[1];' + os.linesep + '    }')
+        html_document.write(constants.SELECT_ALL_FCT)
+        html_document.write(constants.DESELECT_ALL_FCT)
+        html_document.write(constants.LEGEND_FORMATTER_FCT)
+        html_document.write('</script>' + os.linesep)
+
         # write caption
         html_document.write('    <h2> ' + sourcepath + ' </h2>')
 
@@ -190,6 +204,8 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
             html_document.write(option_line('legend', 'always', True))
             html_document.write(option_line('labelsDiv', 'document.getElementById("' +
                                             get_legend_div_id(chart_ids[chart]) + '")', False))
+            html_document.write(option_line('highlightSeriesOpts', '{strokeWidth: 2}', False))
+            html_document.write(option_line('legendFormatter', 'legendFormatter', False))
             html_document.write('        }' + os.linesep + '    );' + os.linesep)
             html_document.write('</script>' + os.linesep)
 
@@ -201,19 +217,6 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
 
             # give some space between single charts
             html_document.write('<p/>' + os.linesep)
-
-        # implement checkbox functionality in javaScript
-        html_document.write('<script>' + os.linesep)
-        html_document.write('    function change(el, chart) {' + os.linesep)
-        html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
-                            os.linesep)
-        html_document.write('    }' + os.linesep)
-        html_document.write('    function translateNumber(id) {' + os.linesep +
-                            '        return id.split("' + constants.CHECKBOX_ID_SPLITTER
-                            + '")[1];' + os.linesep + '    }')
-        html_document.write(constants.SELECT_ALL_FCT)
-        html_document.write(constants.DESELECT_ALL_FCT)
-        html_document.write('</script>' + os.linesep)
 
         # end html document
         html_document.write('</body>' + os.linesep + '</html>')

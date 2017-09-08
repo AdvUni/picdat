@@ -97,3 +97,25 @@ function deselectAll(button, chart, name) {
         }
     }
 '''
+
+LEGEND_FORMATTER_FCT = '''
+    function legendFormatter(data) {
+        if (data.x == null) {
+            // This happens when there's no selection and {legend: 'always'} is set.
+            return '<br>' + data.series.map(function (series) {
+                    return series.dashHTML + ' ' + series.labelHTML
+                }).join('<br>');
+        }
+
+        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        data.series.forEach(function (series) {
+            if (!series.isVisible) return;
+            var labeledData = series.labelHTML + ': ' + series.yHTML;
+            if (series.isHighlighted) {
+                labeledData = '<b>' + labeledData + '</b>';
+            }
+            html += '<br>' + series.dashHTML + ' ' + labeledData;
+        });
+        return html;
+    }
+'''
