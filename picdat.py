@@ -136,11 +136,8 @@ def run(per_iteration_requests, sysstat_percent_requests, sysstat_mbs_requests, 
     copyfile(constants.DYGRAPHS_JS_SRC, dygraphs_js_dest)
     copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
 
-    print(perfstat_output_files)
-
     counter = 0
     for perfstat_output in perfstat_output_files:
-        print(perfstat_output)
 
         # get absolute path for PerfStat source (just for using it as caption in resulting html)
         perfstat_output_absolute_path = os.path.abspath(perfstat_output)
