@@ -204,9 +204,6 @@ def create_html(html_filepath, csv_files, per_iteration_requests, header, source
             # create checkboxes
             create_checkboxes(html_document, chart_ids[chart], header[chart])
 
-            # give some space between single charts
-            html_document.write('<p/>' + os.linesep)
-
         # end html document
         html_document.write('</body>' + os.linesep + '</html>')
 
