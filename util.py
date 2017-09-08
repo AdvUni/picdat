@@ -211,7 +211,7 @@ def get_csv_filenames(number, luns_available):
 def extract_to_temp_dir(zip_folder):
     """
     This function takes a zip folder, distracts it to a temporary directory and selects all .data
-    files from it.
+    files from it, but it ignores all files in folders named host.
     :param zip_folder: The path to a .zip file
     :return: A tuple of the temporary directory's path and a list of all .output file paths.
     """
@@ -221,9 +221,10 @@ def extract_to_temp_dir(zip_folder):
 
     output_files = []
     for path, _, files in os.walk(temp_path):
+        if 'host' in path:
+            continue
         for filename in files:
             file = os.path.join(path, filename)
             if data_type(file) == 'data':
                 output_files.append(file)
-
     return temp_path, output_files
