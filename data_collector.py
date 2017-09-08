@@ -121,7 +121,7 @@ def process_per_iteration_requests(line, recent_iteration, headers_sets,
     names, the program has values for in table_values.
     :param per_iteration_tables: A list of tables which contains all previous collected values.
     Each inner list contains all values relating on exact one per_iteration_request.
-    :return: None
+    :return: True, if it 
     """
     request_index = 0
     for object_type in PER_ITERATION_REQUESTS:
@@ -147,7 +147,7 @@ def process_per_iteration_requests(line, recent_iteration, headers_sets,
 
                     util.tablelist_insertion(per_iteration_tables, request_index, recent_iteration,
                                              instance, value)
-                    return
+                    return object_type == 'lun'
                 request_index += 1
         else:
             request_index += len(PER_ITERATION_REQUESTS[object_type])
@@ -268,36 +268,34 @@ def replace_lun_ids(header_row_list, lun_path_dict):
     :param header_row_list: A list of lists which contains all instance names, the program
     found values for.
     :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: The manipulated table_headers.
     """
-    if 'lun' in PER_ITERATION_REQUESTS:
 
-        index_first_lun_request = 0
-        for object_type in PER_ITERATION_REQUESTS:
-            if object_type != 'lun':
-                for _ in PER_ITERATION_REQUESTS[object_type]:
-                    index_first_lun_request += 1
-
-        for i in range(len(PER_ITERATION_REQUESTS['lun'])):
-
-            insertion_index = index_first_lun_request + i
-            print(insertion_index)
-            print(header_row_list)
-            header_replacement = []
-            print(i)
-            for uuid in header_row_list[insertion_index]:
-                print(uuid)
-                if uuid in lun_path_dict:
-                    header_replacement.append(lun_path_dict[uuid])
-                else:
-                    raise InstanceNameNotFoundException(uuid)
-            header_row_list[insertion_index] = header_replacement
+    index_first_lun_request = 0
+    for object_type in PER_ITERATION_REQUESTS:
+        if object_type != 'lun':
+            for _ in PER_ITERATION_REQUESTS[object_type]:
+                index_first_lun_request += 1
+    for i in range(len(PER_ITERATION_REQUESTS['lun'])):
+        insertion_index = index_first_lun_request + i
+        print(insertion_index)
+        print(header_row_list)
+        header_replacement = []
+        print(i)
+        for uuid in header_row_list[insertion_index]:
+            print(uuid)
+            if uuid in lun_path_dict:
+                header_replacement.append(lun_path_dict[uuid])
+            else:
+                raise InstanceNameNotFoundException(uuid)
+        header_row_list[insertion_index] = header_replacement
 
     return header_row_list
 
 
 def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
-                              iteration_timestamps, lun_path_dict):
+                              iteration_timestamps, lun_path_dict, luns_available):
     """
     Simplifies data structures: Turns per_iteration_headers, which was a list of OrderedSets into
     a list of lists containing each header for each chart. In addition, flattens the table
@@ -314,6 +312,7 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
     is nested once. Each inner list is a collection of table headers for one table. The second
     list is nested twice. The core lists are representations of one value row in one table. To
     separate several tables from each other, the next list level is used.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     """
     table_list = []
     for i in range(len(per_iteration_tables)):
@@ -324,7 +323,8 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
     value_rows_list = [table[1] for table in table_list]
 
     # replace lun's IDs in headers through their path names
-    replace_lun_ids(header_row_list, lun_path_dict)
+    if 'lun' in PER_ITERATION_REQUESTS and luns_available:
+        replace_lun_ids(header_row_list, lun_path_dict)
 
     return header_row_list, value_rows_list
 
@@ -359,6 +359,8 @@ def read_data_file(perfstat_data_file):
     :param perfstat_data_file: file which should be read
     :return: a list of all headers and a list of all values. The headers are grouped by table.
     The values are grouped by table and by row. Each value row already starts with its timestamp.
+    Additionally, it returns the luns_available boolean which says, whether lun values appeared in
+    the PerfStat at all.
     """
 
     # initialisation
@@ -406,7 +408,12 @@ def read_data_file(perfstat_data_file):
     sysstat_mbs_values = []
     sysstat_no_unit_values = []
 
+    # a dictionary to hold the translations of the lun's IDs into their path names
     lun_path_dict = {}
+
+    # some PerfStat don't contain any values for luns. To prevent program from collapsing in this
+    # case, following boolean will turn to True, as soon as a lun value appears in the PerfStat
+    luns_available = False
 
     # collecting data
 
@@ -430,7 +437,7 @@ def read_data_file(perfstat_data_file):
                 elif sysstat_header_needed:
 
                     sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers, \
-                        sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices = \
+                    sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices = \
                         process_sysstat_header(line, next(data))
                     sysstat_header_needed = False
                 else:
@@ -462,8 +469,9 @@ def read_data_file(perfstat_data_file):
 
             # filter for the values you wish to visualize
             else:
-                process_per_iteration_requests(line, iteration_begin_counter, per_iteration_headers,
-                                               per_iteration_tables)
+                if process_per_iteration_requests(line, iteration_begin_counter,
+                                                  per_iteration_headers, per_iteration_tables):
+                    luns_available = True
     data.close()
 
     # postprocessing
@@ -478,8 +486,8 @@ def read_data_file(perfstat_data_file):
 
     # simplify data structures for per-iteration data
     per_iteration_headers, per_iteration_values = rework_per_iteration_data(
-        per_iteration_tables, per_iteration_headers, start_times, lun_path_dict)
+        per_iteration_tables, per_iteration_headers, start_times, lun_path_dict, luns_available)
 
     return combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
                            sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values,
-                           sysstat_no_unit_headers, sysstat_no_unit_values)
+                           sysstat_no_unit_headers, sysstat_no_unit_values), luns_available

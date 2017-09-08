@@ -118,13 +118,16 @@ def empty_directory(preferred_directory_path):
     return directory_name
 
 
-def get_units():
+def get_units(luns_available):
     """
     Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: A list of all units.
     """
     unit_list = []
     for object_type in PER_ITERATION_REQUESTS:
+        if not luns_available and object_type == 'lun':
+            continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             unit = request_tuple[1]
             unit_list.append(unit)
@@ -136,13 +139,16 @@ def get_units():
     return unit_list
 
 
-def get_titles():
+def get_titles(luns_available):
     """
     Generates proper titles for charts.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: A list of chart titles.
     """
     title_list = []
     for object_type in PER_ITERATION_REQUESTS:
+        if not luns_available and object_type == 'lun':
+            continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             title_list.append(object_type + ':' + aspect)
@@ -154,13 +160,16 @@ def get_titles():
     return title_list
 
 
-def get_object_ids():
+def get_object_ids(luns_available):
     """
     Gets all object IDs from a per_iteration_request. Also adds IDs for sysstat charts.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: A list of all object IDs.
     """
     id_list = []
     for object_type in PER_ITERATION_REQUESTS:
+        if not luns_available and object_type == 'lun':
+            continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             id_list.append(object_type + '_' + aspect)
@@ -172,13 +181,16 @@ def get_object_ids():
     return id_list
 
 
-def get_csv_filenames(number):
+def get_csv_filenames(number, luns_available):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :return: A list of csv file names.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     """
     name_list = []
     for object_type in PER_ITERATION_REQUESTS:
+        if not luns_available and object_type == 'lun':
+            continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
             name_list.append(object_type + '_' + aspect +

@@ -121,23 +121,21 @@ def create_checkboxes(html_document, chart_id, graph_identifiers):
     html_document.write('</table>' + os.linesep)
 
 
-def create_html(html_filepath, csv_files, header, sourcepath):
+def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
     :param csv_files: A list of file names from csv tables which should be visualized
-    :param per_iteration_requests: A data structure carrying all requests for data, the tool is
-    going to collect once per iteration. It's an OrderedDict of lists which contains all requested
-    object types mapped to the relating aspects and units which the tool should create graphs for.
     :param header: A list of lists which contains the csv column names to label
     inside the html reasonably
     :param sourcepath: A file path which is used as caption for the resulting html. Should be the
     path of the PerfStat output file.
+    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: None
     """
-    titles = util.get_titles()
-    chart_ids = util.get_object_ids()
-    y_labels = util.get_units()
+    titles = util.get_titles(luns_available)
+    chart_ids = util.get_object_ids(luns_available)
+    y_labels = util.get_units(luns_available)
 
     # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
     # Pay attention, that this rename needs to be compatible with the data_collector module,

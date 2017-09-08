@@ -118,14 +118,15 @@ def run():
 
         # collect data from file
         print('Read data...')
-        table_headers, table_values = data_collector.read_data_file(perfstat_output)
+        (table_headers, table_values), luns_available = data_collector.read_data_file(
+            perfstat_output)
 
         # frame html file path
         html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME + str(
             counter) + constants.HTML_ENDING
 
         # generate file names for csv tables
-        csv_filenames = util.get_csv_filenames(counter)
+        csv_filenames = util.get_csv_filenames(counter, luns_available)
         csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
 
         # write data into csv tables
@@ -135,7 +136,7 @@ def run():
         # write html file
         print('Create html file...')
         visualizer.create_html(html_filepath, csv_filenames, table_headers,
-                               perfstat_output_absolute_path)
+                               perfstat_output_absolute_path, luns_available)
 
         counter += 1
 
