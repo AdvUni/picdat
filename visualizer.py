@@ -38,7 +38,7 @@ def option_line(label, content, argument_is_string):
     dygraphs object.
     :param label: The option's label.
     :param content: The option's content.
-    :param argument_is_string: Boolean, whether content should be written with quotation marks, 
+    :param argument_is_string: Boolean, whether content should be written with quotation marks,
     because it is meant as String, or not, because it is meant as a javaScript function.
     :return: The line you can write into an HTML file.
     """
@@ -50,7 +50,7 @@ def option_line(label, content, argument_is_string):
 
 def get_checkbox_id(chart_id, graph_number):
     """
-    Generates an simple ID for a checkbox, related on the chart's id, the checkbox belongs to, 
+    Generates an simple ID for a checkbox, related on the chart's id, the checkbox belongs to,
     and a number.
     :param chart_id: A string, containing the chart's id.
     :param graph_number: simple number, representing the graph line, the checkbox belongs to.
@@ -70,9 +70,9 @@ def get_legend_div_id(chart_id):
 
 def create_buttons(html_document, chart_id):
     """
-    Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or 
+    Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or
     deselecting all checkboxes and with this all graph lines of one chart at once.
-    :param html_document: The html file, the checkboxes should be written in.   
+    :param html_document: The html file, the checkboxes should be written in.
     :param chart_id: The id of the chart, the checkboxes should belong to.
     :return: None
     """
@@ -88,10 +88,10 @@ def create_buttons(html_document, chart_id):
 
 def create_checkboxes(html_document, chart_id, graph_identifiers):
     """
-    This function creates checkboxes and related labels for each graph line of one chart. The 
-    checkboxes allow to select and deselect single graph lines individually. For 
+    This function creates checkboxes and related labels for each graph line of one chart. The
+    checkboxes allow to select and deselect single graph lines individually. For
     better readability, they're arranged in an html table.
-    :param html_document: The html file, the checkboxes should be written in.   
+    :param html_document: The html file, the checkboxes should be written in.
     :param chart_id: The id of the chart, the checkboxes should belong to.
     :param graph_identifiers: A list which contains the names of all graph lines.
     :return: None

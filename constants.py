@@ -19,15 +19,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
-SYSSTAT_PERCENT_UNIT = '%'
-
-SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
-                        ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
-SYSSTAT_MBS_UNIT = 'MB/s'
-
-SYSSTAT_NO_UNIT_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
-SYSSTAT_NO_UNIT = ' '
 
 # timedelta object describing one second. The data_collector needs it to count up the time to
 # adress sysstat_1sec values correctly.

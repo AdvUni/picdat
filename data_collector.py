@@ -443,8 +443,8 @@ def read_data_file(perfstat_data_file):
                     inside_sysstat_block = False
                 elif sysstat_header_needed:
 
-                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers, sysstat_percent_indices, \
-                    sysstat_mbs_indices, sysstat_no_unit_indices = \
+                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_no_unit_headers, \
+                        sysstat_percent_indices, sysstat_mbs_indices, sysstat_no_unit_indices = \
                         process_sysstat_header(line, next(data))
                     sysstat_header_needed = False
                 else:

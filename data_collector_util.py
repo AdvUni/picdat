@@ -99,9 +99,15 @@ def get_sysstat_timestamp(sysstat_timestamp_line):
 
 
 def add_empty_lines(sysstat_value_lists):
-
+    """
+    Adds an empty data line to the values about sysstat requests. This is for interrupting the
+    dygraphs graph lines in resulting charts. Therefore, this function should be called between
+    iterations.
+    :param sysstat_value_lists: An iterable of all lists containing values about sysstat requests
+    :return: None
+    """
     for value_list in sysstat_value_lists:
-    
+
         if value_list[0] is not None:
             columns = len(value_list[0])
             value_list.append([' ' for i in range(columns + 1)])

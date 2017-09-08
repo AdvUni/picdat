@@ -57,7 +57,7 @@ class Table:
         Simplifies the data structure into lists of table content equating table rows.
         :param instance_set: A Set containing all instance names (column names) occurring in the
         table.
-        :param iteration_timestamps: A list of datetime objects, marking the beginnings of 
+        :param iteration_timestamps: A list of datetime objects, marking the beginnings of
         iteration. They'll be the table's first column.
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.

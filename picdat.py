@@ -4,7 +4,6 @@ From here, the tool gets started.
 import os
 import shutil
 from shutil import copyfile
-from collections import OrderedDict
 
 import constants
 import util
@@ -66,7 +65,7 @@ def take_directory():
     This function requests a destination directory of the user. All results of the PicDat program
     will be written to this directory. If the directory doesn't exist yet, the function asks the
     user for creating it.
-    :return: 
+    :return: The path to the directory, the results should be written in
     """
     while True:
         destination_directory = input('Please select a destination directory for the results: ')

@@ -29,7 +29,6 @@ def create_csv(csv_filepaths, header_row, value_rows):
     :param header_row: table's first row which contains the instance names this table has values
     for.
     :param value_rows: rows of table which contain value material.
-    
     """
 
     for table in range(len(csv_filepaths)):
