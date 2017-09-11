@@ -74,8 +74,6 @@ def get_timezone(tz_string):
     :return: A pytz.timezone object.
     """
 
-    print(tz_string)
-
     tz_switch = {
         'CEST': pytz.timezone('CET')
     }
