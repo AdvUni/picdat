@@ -135,6 +135,7 @@ def run():
 
         try:
             output_identifier = perfstat_output.split(os.sep)[-2] + '_'
+            print('Handle PerfStat output from ' + output_identifier + ':')
         except IndexError:
             output_identifier = ''
 
