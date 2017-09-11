@@ -31,8 +31,7 @@ DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 DEFAULT_DIRECTORY_NAME = 'results'
 
 # program names csv files with the name of the chart they belong to, and the following ending:
-CSV_FILE_NAME_ENDING = '_chart_values'
-CSV_ENDING = '.csv'
+CSV_FILE_ENDING = '_chart_values.csv'
 
 # program names html file inside the result directory like this:
 HTML_FILENAME = 'charts'

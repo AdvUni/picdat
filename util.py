@@ -204,7 +204,7 @@ def get_object_ids(luns_available):
     return id_list
 
 
-def get_csv_filenames(number, luns_available):
+def get_csv_filenames(output_identifier, luns_available):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :return: A list of csv file names.
@@ -216,17 +216,15 @@ def get_csv_filenames(number, luns_available):
             continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             aspect = request_tuple[0]
-            name_list.append(object_type + '_' + aspect +
-                             constants.CSV_FILE_NAME_ENDING + str(number) + constants.CSV_ENDING)
+            name_list.append(output_identifier + object_type + '_' + aspect +
+                             constants.CSV_FILE_ENDING)
 
-    name_list.append(
-        constants.SYSSTAT_CHART_TITLE + '_percent' + constants.CSV_FILE_NAME_ENDING + str(
-            number) + constants.CSV_ENDING)
-    name_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs' + constants.CSV_FILE_NAME_ENDING + str(
-        number) + constants.CSV_ENDING)
-    name_list.append(
-        constants.SYSSTAT_CHART_TITLE + '_iops' + constants.CSV_FILE_NAME_ENDING + str(
-            number) + constants.CSV_ENDING)
+    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_percent' +
+                     constants.CSV_FILE_ENDING)
+    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_mbs' +
+                     constants.CSV_FILE_ENDING)
+    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_iops' +
+                     constants.CSV_FILE_ENDING)
 
     return name_list
 

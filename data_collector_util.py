@@ -86,11 +86,11 @@ def build_date(timestamp_string):
     minute = int(time[1])
     second = int(time[2])
 
-    if pytz is not None:
+    try:
         return timezone.localize(
             datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
             pytz.timezone('UTC')).replace(tzinfo=None)
-    else:
+    except AttributeError:
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 

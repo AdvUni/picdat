@@ -110,11 +110,12 @@ def run():
     copyfile(constants.DYGRAPHS_JS_SRC, dygraphs_js_dest)
     copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
 
-    counter = 0
     for perfstat_output in perfstat_output_files:
 
-        # get absolute path for PerfStat source (just for using it as caption in resulting html)
-        perfstat_output_absolute_path = os.path.abspath(perfstat_output)
+        try:
+            output_identifier = perfstat_output.split(os.sep)[-2] + '_'
+        except IndexError:
+            output_identifier = ''
 
         # collect data from file
         print('Read data...')
@@ -122,11 +123,11 @@ def run():
             perfstat_output)
 
         # frame html file path
-        html_filepath = final_dest_directory + os.sep + constants.HTML_FILENAME + str(
-            counter) + constants.HTML_ENDING
+        html_filepath = final_dest_directory + os.sep + output_identifier + \
+                        constants.HTML_FILENAME + constants.HTML_ENDING
 
         # generate file names for csv tables
-        csv_filenames = util.get_csv_filenames(counter, luns_available)
+        csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
         csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
 
         # write data into csv tables
@@ -136,9 +137,7 @@ def run():
         # write html file
         print('Create html file...')
         visualizer.create_html(html_filepath, csv_filenames, table_headers,
-                               perfstat_output_absolute_path, luns_available)
-
-        counter += 1
+                               perfstat_output, luns_available)
 
     # finally
     if temp_path is not None:
