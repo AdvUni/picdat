@@ -166,6 +166,8 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
 
         # write caption
         html_document.write('    <h2> ' + sourcepath + ' </h2>' + os.linesep)
+        # write timezone notice
+        html_document.write('    <h2> ' + 'timezone: UTC' + ' </h2>' + os.linesep)
 
         # write rest of body
         for chart in range(len(csv_files)):
