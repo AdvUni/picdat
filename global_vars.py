@@ -1,6 +1,6 @@
 """
-This module holds some variables, which are used in a global context. As they might change at 
-runtime, they're not constant. These variables are meant to be set once during processing one 
+This module holds some variables, which are used in a global context. As they might change at
+runtime, they're not constant. These variables are meant to be set once during processing one
 PerfStat file and reset between two PerfStat files.
 """
 
@@ -34,3 +34,4 @@ def reset():
     """
     global localtimezone
     localtimezone = None
+

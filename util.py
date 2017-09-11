@@ -4,6 +4,8 @@ Provides some functions other modules may use.
 import os
 from zipfile import ZipFile
 
+import global_vars
+
 try:
     import pytz
 except ImportError:
@@ -88,6 +90,7 @@ def get_timezone(tz_string):
             print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
                   'with. Be aware of possible confusion with time values in charts.')
             print('Unexpected timezone identifier: ' + tz_string)
+            global_vars.localtimezone = '???'
 
 
 def inner_ord_set_insertion(outer_list, index, item):

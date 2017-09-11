@@ -13,6 +13,8 @@ Warning: module pytz is not installed. PicDat won't be able to convert timezones
 Be aware of possible confusion with time values in charts.
 ''')
 
+import global_vars
+
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
@@ -73,6 +75,7 @@ def build_date(timestamp_string):
 
     timestamp_list = timestamp_string.split()
 
+    # collect all information needed to create a datetime object from timestamp_string
     month = util.get_month_number(timestamp_list[1])
     day = int(timestamp_list[2])
     time = timestamp_list[3].split(":")
@@ -86,11 +89,17 @@ def build_date(timestamp_string):
     minute = int(time[1])
     second = int(time[2])
 
+    # check, whether global variable 'localetimezone' is already set
+    if global_vars.localtimezone is None:
+        global_vars.localtimezone = timezone
+
+    # convert timezone to global_vars.localtimezone (as possible) and return datetime object
     try:
         return timezone.localize(
             datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
-            pytz.timezone('UTC')).replace(tzinfo=None)
-    except AttributeError:
+            global_vars.localtimezone).replace(tzinfo=None)
+    except (AttributeError, TypeError):
+        global_vars.localtimezone = '???'
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 

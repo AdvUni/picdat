@@ -2,6 +2,7 @@
 Is responsible to write a html file containing the required charts.
 """
 import constants
+import global_vars
 import util
 import os
 
@@ -167,7 +168,8 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
         # write caption
         html_document.write('    <h2> ' + sourcepath + ' </h2>' + os.linesep)
         # write timezone notice
-        html_document.write('    <h2> ' + 'timezone: UTC' + ' </h2>' + os.linesep)
+        html_document.write('    <h2> ' + 'timezone:' + str(global_vars.localtimezone) + ' </h2>' +
+                            os.linesep)
 
         # write rest of body
         for chart in range(len(csv_files)):

@@ -6,6 +6,7 @@ import shutil
 from shutil import copyfile
 
 import constants
+import global_vars
 import util
 import data_collector
 import table_writer
@@ -162,6 +163,9 @@ def run():
         print('Create html file...')
         visualizer.create_html(html_filepath, csv_rel_filepaths, table_headers,
                                perfstat_output, luns_available)
+
+        # reset global variables
+        global_vars.reset()
 
     # finally
     if temp_path is not None:
