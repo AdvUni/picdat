@@ -73,13 +73,23 @@ def get_timezone(tz_string):
     :param tz_string: A timezone identifier from a PerfStat file as String.
     :return: A pytz.timezone object.
     """
-    try:
-        return {
-            'CEST': pytz.timezone('CET')
-        }.get(tz_string, pytz.timezone(tz_string))
-    except pytz.UnknownTimeZoneError:
-        print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
-              'with. Be aware of possible confusion with time values in charts.')
+
+    print(tz_string)
+
+    tz_switch = {
+        'CEST': pytz.timezone('CET')
+    }
+
+    if tz_string in tz_switch:
+        return tz_switch[tz_string]
+
+    else:
+        try:
+            return pytz.timezone(tz_string)
+        except pytz.UnknownTimeZoneError:
+            print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
+                  'with. Be aware of possible confusion with time values in charts.')
+            print('Unexpected timezone identifier: ' + tz_strin)
 
 
 def inner_ord_set_insertion(outer_list, index, item):
