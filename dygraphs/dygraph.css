@@ -24,15 +24,15 @@
     overflow: hidden;
 }
 
-/* styles for a solid line in the legend */
+/* styles for a solid line in the legend
+ * edited by Marie Lohbeck, developer of PicDat, to show a square instead of a line*/
 .dygraph-legend-line {
     display: inline-block;
     position: relative;
-    bottom: .5ex;
-    padding-left: 1em;
+    bottom: 0;
+    padding-left: 12px;
     height: 1px;
-    border-bottom-width: 2px;
-    border-bottom-style: solid;
+    border-bottom: 12px solid;
     /* border-bottom-color is set based on the series color */
 }
 
