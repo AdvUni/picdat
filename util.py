@@ -89,7 +89,7 @@ def get_timezone(tz_string):
         except pytz.UnknownTimeZoneError:
             print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
                   'with. Be aware of possible confusion with time values in charts.')
-            print('Unexpected timezone identifier: ' + tz_strin)
+            print('Unexpected timezone identifier: ' + tz_string)
 
 
 def inner_ord_set_insertion(outer_list, index, item):

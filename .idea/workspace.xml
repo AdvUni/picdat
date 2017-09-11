@@ -101,8 +101,8 @@
               <caret line="91" column="64" lean-forward="false" selection-start-line="91" selection-start-column="64" selection-end-line="91" selection-end-column="64" />
               <folding>
                 <element signature="e#55#64#0" expanded="true" />
-                <marker date="1505131941361" expanded="true" signature="5279:5877" ph="..." />
-                <marker date="1505131941361" expanded="true" signature="8473:8546" ph="..." />
+                <marker date="1505131966833" expanded="true" signature="5279:5877" ph="..." />
+                <marker date="1505131966833" expanded="true" signature="8473:8546" ph="..." />
               </folding>
             </state>
           </provider>
@@ -539,13 +539,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00009" summary="Seperated legend from chart surface into an external div and changed it to be showed always.">
-      <created>1504096955759</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1504096955759</updated>
-    </task>
     <task id="LOCAL-00010" summary="Modified README file minimally.">
       <created>1504100144817</created>
       <option name="number" value="00010" />
@@ -882,7 +875,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505129991832</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="fixed timzone conversion">
+      <created>1505131959630</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1505131959630</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TodoView">
@@ -963,7 +963,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Converted sysstat values from kB/s to MB/s" />
     <MESSAGE value="Cut line between different iterations in sysstat charts" />
     <MESSAGE value="removed debug output" />
     <MESSAGE value="typo" />
@@ -988,7 +987,8 @@
     <MESSAGE value="Converted all timestamps into UTC" />
     <MESSAGE value="Wrote 'import pytz' into try-except constructions so program will kept running on devices the module is not installed" />
     <MESSAGE value="Generated nicer names for written files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Generated nicer names for written files" />
+    <MESSAGE value="fixed timzone conversion" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed timzone conversion" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1269,8 +1269,8 @@
           <caret line="91" column="64" lean-forward="false" selection-start-line="91" selection-start-column="64" selection-end-line="91" selection-end-column="64" />
           <folding>
             <element signature="e#55#64#0" expanded="true" />
-            <marker date="1505131941361" expanded="true" signature="5279:5877" ph="..." />
-            <marker date="1505131941361" expanded="true" signature="8473:8546" ph="..." />
+            <marker date="1505131966833" expanded="true" signature="5279:5877" ph="..." />
+            <marker date="1505131966833" expanded="true" signature="8473:8546" ph="..." />
           </folding>
         </state>
       </provider>
