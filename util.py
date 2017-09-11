@@ -2,6 +2,7 @@
 Provides some functions other modules may use.
 """
 import os
+import pytz
 from zipfile import ZipFile
 
 from orderedset import OrderedSet
@@ -57,6 +58,24 @@ def get_month_number(month_string):
         'Nov': 11,
         'Dec': 12
     }[month_string]
+
+
+def get_timezone(tz_string):
+    """
+    Creates a pytz.timezone object from a timezone String as it appears in a PerfStat file.
+    Usually, the module pytz can handle such Strings by itself, but some timezone identifiers
+    need translation. (For example, CEST is no real timezone but the summer equivalent of CET,
+    and pytz wants to handle it as CET.)
+    :param tz_string: A timezone identifier from a PerfStat file as String.
+    :return: A pytz.timezone object.
+    """
+    try:
+        return {
+            'CEST': pytz.timezone('CET')
+        }.get(tz_string, pytz.timezone(tz_string))
+    except pytz.UnknownTimeZoneError:
+        print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
+              'with. Be aware of possible confusion with time information in charts.')
 
 
 def inner_ord_set_insertion(outer_list, index, item):
