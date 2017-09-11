@@ -3,6 +3,7 @@ Small util module with functions only used by the data collector module.
 """
 import util
 import datetime
+import pytz
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -56,10 +57,10 @@ def check_column_header(word_upper_line, endpoint_upper_word, lower_line, reques
 def build_date(timestamp_string):
     """
     Auxiliary function for get_iteration_timestamp and get_sysstat_timestamp. Parses a String to
-    a datetime object.
+    a datetime object and converts it into UTC.
     :param timestamp_string: a string like
     Mon Jan 01 00:00:00 GMT 2000
-    :return: a datetime object which contains the input's information
+    :return: a datetime object which contains the input's information converted to UTC timezone.
     """
 
     timestamp_list = timestamp_string.split()
@@ -67,14 +68,16 @@ def build_date(timestamp_string):
     month = util.get_month_number(timestamp_list[1])
     day = int(timestamp_list[2])
     time = timestamp_list[3].split(":")
-    # time_zone = (header_list[4])
+    timezone = util.get_timezone(timestamp_list[4])
     year = int(timestamp_list[5])
 
     hour = int(time[0])
     minute = int(time[1])
     second = int(time[2])
 
-    return datetime.datetime(year, month, day, hour, minute, second, 0, None)
+    return timezone.localize(datetime.datetime(year, month, day, hour, minute, second, 0,
+                                               None)).astimezone(pytz.timezone('UTC')).replace(
+        tzinfo=None)
 
 
 def get_iteration_timestamp(iteration_timestamp_line):
