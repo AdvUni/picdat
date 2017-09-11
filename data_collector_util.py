@@ -3,7 +3,15 @@ Small util module with functions only used by the data collector module.
 """
 import util
 import datetime
-import pytz
+
+try:
+    import pytz
+except ImportError:
+    pytz = None
+    print('''
+Warning: module pytz is not installed. PicDat won't be able to convert timezones.
+Be aware of possible confusion with time values in charts.
+''')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -68,16 +76,22 @@ def build_date(timestamp_string):
     month = util.get_month_number(timestamp_list[1])
     day = int(timestamp_list[2])
     time = timestamp_list[3].split(":")
-    timezone = util.get_timezone(timestamp_list[4])
+    if pytz is not None:
+        timezone = util.get_timezone(timestamp_list[4])
+    else:
+        timezone = None
     year = int(timestamp_list[5])
 
     hour = int(time[0])
     minute = int(time[1])
     second = int(time[2])
 
-    return timezone.localize(datetime.datetime(year, month, day, hour, minute, second, 0,
-                                               None)).astimezone(pytz.timezone('UTC')).replace(
-        tzinfo=None)
+    if pytz is not None:
+        return timezone.localize(
+            datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
+            pytz.timezone('UTC')).replace(tzinfo=None)
+    else:
+        return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 
 def get_iteration_timestamp(iteration_timestamp_line):

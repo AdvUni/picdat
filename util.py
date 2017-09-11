@@ -2,8 +2,12 @@
 Provides some functions other modules may use.
 """
 import os
-import pytz
 from zipfile import ZipFile
+
+try:
+    import pytz
+except ImportError:
+    pytz = None
 
 from orderedset import OrderedSet
 from table import Table
@@ -75,7 +79,7 @@ def get_timezone(tz_string):
         }.get(tz_string, pytz.timezone(tz_string))
     except pytz.UnknownTimeZoneError:
         print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
-              'with. Be aware of possible confusion with time information in charts.')
+              'with. Be aware of possible confusion with time values in charts.')
 
 
 def inner_ord_set_insertion(outer_list, index, item):
