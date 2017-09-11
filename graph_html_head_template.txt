@@ -2,8 +2,8 @@
 <head>
     <title>PicDat</title>
     <script type="text/javascript"
-            src="dygraph.js"></script>
-    <link rel="stylesheet" type="text/css" href="dygraph.css"/>
+            src="dygraphs/dygraph.js"></script>
+    <link rel="stylesheet" type="text/css" href="dygraphs/dygraph.css"/>
 </head>
 
 <body>

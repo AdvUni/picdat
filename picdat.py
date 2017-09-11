@@ -84,8 +84,34 @@ def take_directory():
         else:
             break
 
-    destination_directory += constants.DEFAULT_DIRECTORY_NAME
     return destination_directory
+
+
+def prepare_directory(destination_dir):
+    """
+    Creates an empty directory inside the user-given directory, which isn't in use yet. Copies
+    the dygraphs .jss and .css files into the new directory.
+    :param destination_dir: The directory, the user gave in as destination.
+    :return: The path to a directory inside destination_dir. In this directory, PicDat should
+    write all results.
+    """
+    destination_dir += constants.DEFAULT_DIRECTORY_NAME
+
+    print('Prepare directory...')
+    results_dir = util.empty_directory(destination_dir)
+
+    csv_dir = results_dir + os.sep + 'tables'
+    os.makedirs(csv_dir)
+
+    dygraphs_dir = results_dir + os.sep + 'dygraphs'
+    os.makedirs(dygraphs_dir)
+
+    dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
+    dygraphs_css_dest = dygraphs_dir + os.sep + 'dygraph.css'
+    copyfile(constants.DYGRAPHS_JS_SRC, dygraphs_js_dest)
+    copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
+
+    return results_dir, csv_dir
 
 
 def run():
@@ -103,12 +129,7 @@ def run():
     destination_directory = take_directory()
 
     # create directory and copy the necessary dygraphs files into it
-    print('Prepare directory...')
-    final_dest_directory = util.empty_directory(destination_directory)
-    dygraphs_js_dest = final_dest_directory + os.sep + 'dygraph.js'
-    dygraphs_css_dest = final_dest_directory + os.sep + 'dygraph.css'
-    copyfile(constants.DYGRAPHS_JS_SRC, dygraphs_js_dest)
-    copyfile(constants.DYGRAPHS_CSS_SRC, dygraphs_css_dest)
+    result_dir, csv_dir = prepare_directory(destination_directory)
 
     for perfstat_output in perfstat_output_files:
 
@@ -123,26 +144,28 @@ def run():
             perfstat_output)
 
         # frame html file path
-        html_filepath = final_dest_directory + os.sep + output_identifier + \
-                        constants.HTML_FILENAME + constants.HTML_ENDING
+        html_filepath = result_dir + os.sep + output_identifier + constants.HTML_FILENAME + \
+                        constants.HTML_ENDING
 
         # generate file names for csv tables
         csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
-        csv_filepaths = [final_dest_directory + os.sep + filename for filename in csv_filenames]
+        csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
+        csv_rel_filepaths = [csv_dir.split(os.sep)[-1] + os.sep + filename for filename in
+                             csv_filenames]
 
         # write data into csv tables
         print('Create csv tables...')
-        table_writer.create_csv(csv_filepaths, table_headers, table_values)
+        table_writer.create_csv(csv_abs_filepaths, table_headers, table_values)
 
         # write html file
         print('Create html file...')
-        visualizer.create_html(html_filepath, csv_filenames, table_headers,
+        visualizer.create_html(html_filepath, csv_rel_filepaths, table_headers,
                                perfstat_output, luns_available)
 
     # finally
     if temp_path is not None:
         shutil.rmtree(temp_path)
-    print('Done. You will find charts under: ' + os.path.abspath(final_dest_directory))
+    print('Done. You will find charts under: ' + os.path.abspath(result_dir))
 
 
 # run
