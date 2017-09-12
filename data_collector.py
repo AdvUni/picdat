@@ -6,8 +6,7 @@ import util
 import data_collector_util
 from sysstat_object import SysstatObject
 from exceptions import InstanceNameNotFoundException
-from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, \
-    SYSSTAT_IOPS_REQUESTS
+from requests import PER_ITERATION_REQUESTS
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -295,8 +294,9 @@ def read_data_file(perfstat_data_file):
             # Once set, skip this check.
             if number_of_iterations == 0:
                 number_of_iterations = search_for_number_of_iterations(line)
+                continue
 
-            elif sysstat_object.inside_sysstat_block:
+            if sysstat_object.inside_sysstat_block:
                 # '--' marks, that a sysstat_x_1sec block ends.
                 if line == '--':
                     sysstat_object.inside_sysstat_block = False
@@ -305,7 +305,9 @@ def read_data_file(perfstat_data_file):
                 else:
                     if sysstat_object.process_sysstat_requests(line, recent_sysstat_timestamp):
                         recent_sysstat_timestamp += constants.ONE_SECOND
-            elif '=-=-=-=-=-=' in line:
+                continue
+
+            if '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
                 if found_iteration_begin(line, start_times):
                     iteration_begin_counter += 1
@@ -320,15 +322,16 @@ def read_data_file(perfstat_data_file):
                     sysstat_object.inside_sysstat_block = True
                     recent_sysstat_timestamp = data_collector_util.get_sysstat_timestamp(next(data))
                     next(data)
+                continue
 
-            elif 'LUN ' in line:
+            if 'LUN ' in line:
                 lun_path = map_lun_path(line, lun_path, lun_path_dict)
+                continue
 
             # filter for the values you wish to visualize
-            else:
-                if process_per_iteration_requests(line, iteration_begin_counter,
-                                                  per_iteration_headers, per_iteration_tables):
-                    luns_available = True
+            if process_per_iteration_requests(line, iteration_begin_counter,
+                                              per_iteration_headers, per_iteration_tables):
+                luns_available = True
     data.close()
 
     # postprocessing
