@@ -107,8 +107,7 @@ def map_lun_path(line, lun_path, lun_path_dict):
         return lun_path
 
 
-def process_per_iteration_requests(line, recent_iteration, headers_sets,
-                                   per_iteration_tables):
+def process_per_iteration_requests(line, recent_iteration, headers_sets, per_iteration_tables):
     """
     Searches a String for all per_iteration_requests from main. In case it finds something,
     it writes the results into the correct place in table_values. During the first iteration it
@@ -121,7 +120,7 @@ def process_per_iteration_requests(line, recent_iteration, headers_sets,
     names, the program has values for in table_values.
     :param per_iteration_tables: A list of tables which contains all previous collected values.
     Each inner list contains all values relating on exact one per_iteration_request.
-    :return: True, if it 
+    :return: True, if it found a value for a lun and false otherwise.
     """
     request_index = 0
     for object_type in PER_ITERATION_REQUESTS:
