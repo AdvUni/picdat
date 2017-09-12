@@ -158,18 +158,9 @@ def process_sysstat_requests(value_line, sysstat_object, timestamp):
     This function collects all relevant information from a line in a sysstat_x_1sec block. In
     case, the line doesn't contain values, but a sub header, the function ignores it.
     :param value_line: A String which is a line from a sysstat_x_1sec block
-    :param sysstat_percent_indices: A list of numbers. They index the numbers of columns which
-    contain values for the sysstat percent chart.
-    :param sysstat_mbs_indices: A list of numbers. They index the numbers of columns which
-    contain values for the sysstat MB/s chart.
-    :param sysstat_iops_indices: A list of numbers. They index the numbers of columns which
-    contain values for the sysstat IOPS chart.
-    :param sysstat_percent_values: A list, holding lists of values for the percent chart,
-    grouped like the lines in the sysstat block. This function will append one tuple to the list.
-    :param sysstat_mbs_values: A list, holding lists of values for the MB/s chart, grouped like
-    the lines in the sysstat block. This function will append one tuple to the list.
-    :param sysstat_iops_values: A list, holding lists of values for the IOPS chart, grouped like
-    the lines in the sysstat block. This function will append one tuple to the list.
+    :param sysstat_object: An object carrying all relevent sysstat information together. This 
+    functions is going to append one sublist onto its value lists. Therefore, it uses its index 
+    lists to find the right value places inside the sysstat block.
     :param timestamp: A datetime object describing the exact time the values from value_line
     belonging to.
     :return: True, if value_line really contained values and False, if it just was a sub header.
@@ -203,12 +194,9 @@ def process_sysstat_header(first_header_line, second_header_line, sysstat_object
     column numbers belonging to those headers.
     :param first_header_line: The first line of a sysstat_x_1sec header
     :param second_header_line: The second line of a sysstat_x_1sec header
-    :return: Quadruple of the lists sysstat_percent_headers, sysstat_mbs_headers,
-    sysstat_percent_indices and sysstat_mbs_indices. sysstat_percent_headers contains all headers
-    matching to sysstat_percent_requests. sysstat_mbs_headers contains all headers
-    matching to sysstat_mbs_requests. sysstat_percent_indices contains all column
-    indices belonging to sysstat_percent_headers in the same order. sysstat_mbs_indices contains
-    all column indices belonging to sysstat_mbs_headers in the same order.
+    :param sysstat_object: An object carrying all relevent sysstat information together. This 
+    functions is going to write onto its header and index lists.
+    :return: None
     """
 
     # Split the first line into single words and save them to header_line_split.
@@ -446,6 +434,6 @@ def read_data_file(perfstat_data_file):
         per_iteration_tables, per_iteration_headers, start_times, lun_path_dict, luns_available)
 
     return combine_results(per_iteration_headers, per_iteration_values,
-                           sysstat_object.percent_headers,
-                           sysstat_object.percent_values, sysstat_object.mbs_headers, sysstat_object.mbs_values,
+                           sysstat_object.percent_headers, sysstat_object.percent_values,
+                           sysstat_object.mbs_headers, sysstat_object.mbs_values,
                            sysstat_object.iops_headers, sysstat_object.iops_values), luns_available
