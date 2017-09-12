@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/per_iteration_object.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/per_iteration_object.py" afterPath="$PROJECT_DIR$/per_iteration_object.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -54,8 +53,8 @@
       <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_collector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="51" lean-forward="false" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
+            <state relative-caret-position="290">
+              <caret line="195" column="0" lean-forward="true" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
               <folding>
                 <element signature="e#83#109#0" expanded="true" />
                 <marker date="1505227740078" expanded="true" signature="9180:9181" ph="..." />
@@ -67,8 +66,8 @@
       <file leaf-file-name="per_iteration_object.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/per_iteration_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-546">
-              <caret line="98" column="17" lean-forward="true" selection-start-line="98" selection-start-column="17" selection-end-line="98" selection-end-column="17" />
+            <state relative-caret-position="2412">
+              <caret line="134" column="96" lean-forward="true" selection-start-line="134" selection-start-column="96" selection-end-line="134" selection-end-column="96" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
               </folding>
@@ -86,21 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="volume_avg_latency_chart_values.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/results/tables/volume_avg_latency_chart_values.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="307">
-              <caret line="29" column="18" lean-forward="false" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
+            <state relative-caret-position="271">
+              <caret line="27" column="24" lean-forward="true" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="98" />
               <folding>
                 <element signature="e#43#54#0" expanded="true" />
               </folding>
@@ -231,8 +220,8 @@
         <option value="$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
         <option value="$PROJECT_DIR$/disk_statistics_object.py" />
         <option value="$PROJECT_DIR$/sysstat_object.py" />
-        <option value="$PROJECT_DIR$/per_iteration_object.py" />
         <option value="$PROJECT_DIR$/data_collector.py" />
+        <option value="$PROJECT_DIR$/per_iteration_object.py" />
       </list>
     </option>
   </component>
@@ -612,13 +601,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00031" summary="Converted sysstat values from kB/s to MB/s">
-      <created>1504620078270</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1504620078270</updated>
-    </task>
     <task id="LOCAL-00032" summary="Cut line between different iterations in sysstat charts">
       <created>1504621163392</created>
       <option name="number" value="00032" />
@@ -955,7 +937,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505222736548</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Moved code, handling the per_iteration_requests into own class">
+      <created>1505227831610</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1505227831610</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1036,7 +1025,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed identifier 'no unit' into 'iops' or 'IOPS' globally" />
     <MESSAGE value="Added method to translate timezone identifiers from a PerfStat file into pytz.timezone objects" />
     <MESSAGE value="Converted all timestamps into UTC" />
     <MESSAGE value="Wrote 'import pytz' into try-except constructions so program will kept running on devices the module is not installed" />
@@ -1061,7 +1049,8 @@
     <MESSAGE value="Creation of disk-statistic charts for statit blocks" />
     <MESSAGE value="Added Docstrings" />
     <MESSAGE value="Program handles sysstat timestamps, headers and values all in sysstat object now" />
-    <option name="LAST_COMMIT_MESSAGE" value="Program handles sysstat timestamps, headers and values all in sysstat object now" />
+    <MESSAGE value="Moved code, handling the per_iteration_requests into own class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved code, handling the per_iteration_requests into own class" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1384,16 +1373,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="307">
-          <caret line="29" column="18" lean-forward="false" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
-          <folding>
-            <element signature="e#43#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="163">
@@ -1422,8 +1401,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data_collector.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="51" lean-forward="false" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
+        <state relative-caret-position="290">
+          <caret line="195" column="0" lean-forward="true" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
           <folding>
             <element signature="e#83#109#0" expanded="true" />
             <marker date="1505227740078" expanded="true" signature="9180:9181" ph="..." />
@@ -1431,10 +1410,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="27" column="24" lean-forward="true" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="98" />
+          <folding>
+            <element signature="e#43#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/per_iteration_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-546">
-          <caret line="98" column="17" lean-forward="true" selection-start-line="98" selection-start-column="17" selection-end-line="98" selection-end-column="17" />
+        <state relative-caret-position="2412">
+          <caret line="134" column="96" lean-forward="true" selection-start-line="134" selection-start-column="96" selection-end-line="134" selection-end-column="96" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
           </folding>

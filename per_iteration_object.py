@@ -24,12 +24,28 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 
 class PerIterationObject:
+    """
+    This object type is responsible for holding the information collected in one PerfStat file
+    about the per_iteration_requests. It's a centralization of headers and values for per_iteration
+    charts. Further, it contains some values needed to visualize the data correctly.
+    """
     def __init__(self):
+
+        # A list from type 'Table'. It collects all per-iteration values from a  PerfStat output
+        # file, grouped by iteration and instance:
         self.tables = []
+
+        # A List of Sets collecting all instance names (column names) occurring in one table:
         self.instance_names = []
 
+        # A boolean, whether lun values appeared in the PerfStat at all:
         self.luns_available = False
+
+        # A dictionary translating the LUNs IDs into their paths:
         self.lun_path_dict = {}
+
+        # To translate lun IDs into their paths, it needs to read more than one line. Following
+        # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
     def process_per_iteration_requests(self, line, recent_iteration):
@@ -39,12 +55,8 @@ class PerIterationObject:
         collects the instance names of all requested object types as well and writes them into
         table_headers.
         :param line: A string from a PerfStat output file which should be searched
-        :param recent_iteration: An integer which says, in which perfStat iteration the function call
-        happened
-        :param headers_sets: A list of OrderedSets which contains all previous collected instance
-        names, the program has values for in table_values.
-        :param per_iteration_tables: A list of tables which contains all previous collected values.
-        Each inner list contains all values relating on exact one per_iteration_request.
+        :param recent_iteration: An integer which says, in which perfStat iteration the function
+        call happened
         :return: None
         """
         if 'LUN ' in line:
@@ -87,7 +99,7 @@ class PerIterationObject:
                         # we want to convert b/s into MB/s, so if the unit is b/s, lower the value
                         # about factor 10^6.
                         # Pay attention, that this conversion implies an adaption in the visualizer
-                        # module, where the unit is written out and also should be changed to MB/s!!!
+                        # module, where the unit is written out and also should be changed to MB/s!
                         if unit == 'b/s':
                             value = str(round(int(value) / 1000000))
 
@@ -106,8 +118,6 @@ class PerIterationObject:
         path name. In case a uuid is found, it writes the uuid in the lun_path_dict together with
         the lun path name last buffered.
         :param line: A string from a PerfStat output file which should be searched
-        :param lun_path: The last buffered lun_path
-        :param lun_path_dict: The dict in which the uuid-path-pairs should be written in
         :return: None
         """
         if 'LUN Path: ' in line:
@@ -118,26 +128,20 @@ class PerIterationObject:
             else:
                 lun_uuid = line.split()[2]
                 self.lun_path_dict[lun_uuid] = self.lun_buffer
-                return str('')
+                self.lun_buffer = ''
 
     def rework_per_iteration_data(self, iteration_timestamps):
         """
-        Simplifies data structures: Turns per_iteration_headers, which was a list of OrderedSets into
-        a list of lists containing each header for each chart. In addition, flattens the table
+        Simplifies data structures: Turns per_iteration_headers, which was a list of OrderedSets
+        into a list of lists containing each header for each chart. In addition, flattens the table
         structure per_iteration_tables, so that each value row in the resulting csv tables will be
         represented by one list. Further, replaces the ID of each LUN in the headers with their
         paths for better readability.
-        :param per_iteration_tables: A list from type 'Table'. It contains all
-        per-iteration values collected from a PerfStat output file, grouped by iteration and instance.
-        :param per_iteration_headers: A List of Sets containing all instance names (column names)
-        occurring in one table.
         :param iteration_timestamps: The number of iterations
-        :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
         :return: Two lists, representing per-iteration headers and values separately. The first list
         is nested once. Each inner list is a collection of table headers for one table. The second
         list is nested twice. The core lists are representations of one value row in one table. To
         separate several tables from each other, the next list level is used.
-        :param None
         """
         table_list = []
         for i in range(len(self.tables)):
@@ -158,11 +162,9 @@ class PerIterationObject:
         All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
         name or path. To make the resulting charts more readable, this function replaces their IDs
         with the paths.
-        :param header_row_list: A list of lists which contains all instance names, the program
+        :param header_list: A list of lists which contains all instance names, the program
         found values for.
-        :param lun_path_dict: A dictionary translating the LUNs IDs into their paths.
-        :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
-        :return: The manipulated table_headers.
+        :return: None.
         """
 
         index_first_lun_request = 0
