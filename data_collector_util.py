@@ -124,21 +124,6 @@ def get_sysstat_timestamp(sysstat_timestamp_line):
     return build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
 
 
-def add_empty_lines(sysstat_value_lists):
-    """
-    Adds an empty data line to the values about sysstat requests. This is for interrupting the
-    dygraphs graph lines in resulting charts. Therefore, this function should be called between
-    iterations.
-    :param sysstat_value_lists: An iterable of all lists containing values about sysstat requests
-    :return: None
-    """
-    for value_list in sysstat_value_lists:
-
-        if value_list[0] is not None:
-            columns = len(value_list[0])
-            value_list.append([' ' for i in range(columns + 1)])
-
-
 def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):
     """
     Test whether the PerfStat terminated and is complete

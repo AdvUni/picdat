@@ -6,6 +6,7 @@ import re
 import constants
 import util
 import data_collector_util
+from sysstat_object import SysstatObject
 from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, \
     SYSSTAT_IOPS_REQUESTS
@@ -152,9 +153,7 @@ def process_per_iteration_requests(line, recent_iteration, headers_sets, per_ite
             request_index += len(PER_ITERATION_REQUESTS[object_type])
 
 
-def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_indices,
-                             sysstat_iops_indices, sysstat_percent_values, sysstat_mbs_values,
-                             sysstat_iops_values, timestamp):
+def process_sysstat_requests(value_line, sysstat_object, timestamp):
     """
     This function collects all relevant information from a line in a sysstat_x_1sec block. In
     case, the line doesn't contain values, but a sub header, the function ignores it.
@@ -181,23 +180,23 @@ def process_sysstat_requests(value_line, sysstat_percent_indices, sysstat_mbs_in
     if str.isdigit(line_split[0].strip('%')):
 
         # add values specified in percent_indices to percent_values
-        sysstat_percent_values.append([str(timestamp)] + [line_split[index].strip('%') for index in
-                                                          sysstat_percent_indices])
+        sysstat_object.percent_values.append([str(timestamp)] + [line_split[index].strip(
+            '%') for index in sysstat_object.percent_indices])
         # add values specified in mbs_indices to mbs_values and convert them to MB/s instead of kB/s
         # Notice, that this needs to be conform to requests.SYSSTAT_MBS_UNIT!
-        sysstat_mbs_values.append(
-            [str(timestamp)] + [str(round(int(line_split[index]) / 1000)) for index in
-                                sysstat_mbs_indices])
+        sysstat_object.mbs_values.append(
+            [str(timestamp)] +
+            [str(round(int(line_split[index]) / 1000)) for index in sysstat_object.mbs_indices])
 
-        sysstat_iops_values.append([str(timestamp)] + [line_split[index] for index in
-                                                       sysstat_iops_indices])
+        sysstat_object.iops_values.append([str(timestamp)] + [line_split[index] for index in
+                                                              sysstat_object.iops_indices])
         return True
 
     else:
         return False
 
 
-def process_sysstat_header(first_header_line, second_header_line):
+def process_sysstat_header(first_header_line, second_header_line, sysstat_object):
     """
     Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
     for the requested columns. Saves the headers matching the requests to lists. Also saves the
@@ -212,15 +211,6 @@ def process_sysstat_header(first_header_line, second_header_line):
     all column indices belonging to sysstat_mbs_headers in the same order.
     """
 
-    # initialisation
-
-    sysstat_percent_headers = []
-    sysstat_percent_indices = []
-    sysstat_mbs_headers = []
-    sysstat_mbs_indices = []
-    sysstat_iops_headers = []
-    sysstat_iops_indices = []
-
     # Split the first line into single words and save them to header_line_split.
     # Simultaneously, memorize the line indices, at which the words end, into endpoints.
     header_line_split, endpoints = zip(
@@ -234,34 +224,30 @@ def process_sysstat_header(first_header_line, second_header_line):
             if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
                                                        second_header_line, request[0], request[1]):
                 if request[1] == ' ':
-                    sysstat_percent_headers.append(request[0])
+                    sysstat_object.percent_headers.append(request[0])
                 else:
-                    sysstat_percent_headers.append(str(request[0]) + '_' + str(request[1]))
-                sysstat_percent_indices.append(index)
+                    sysstat_object.percent_headers.append(str(request[0]) + '_' + str(request[1]))
+                sysstat_object.percent_indices.append(index)
 
         # iterate over the sysstat requests, which belong to the unit MB/s:
         for request in SYSSTAT_MBS_REQUESTS:
             if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
                                                        second_header_line, request[0],
                                                        request[1][0]):
-                sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][0]))
-                sysstat_mbs_indices.append(index)
+                sysstat_object.mbs_headers.append(str(request[0]) + '_' + str(request[1][0]))
+                sysstat_object.mbs_indices.append(index)
                 # Measurements for the MB/s chart always come with two parameters, e.g. 'read' and
                 # 'write'. There is no way to read them from the header lines separately,
                 # so we find them and add their columns to header_list and index_list at once
-                sysstat_mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
-                sysstat_mbs_indices.append(index + 1)
+                sysstat_object.mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
+                sysstat_object.mbs_indices.append(index + 1)
 
         # iterate over the sysstat requests, which belong to no unit:
         for request in SYSSTAT_IOPS_REQUESTS:
             if data_collector_util.check_column_header(header_line_split[index], endpoints[index],
                                                        second_header_line, request, ' '):
-                sysstat_iops_headers.append(request)
-                sysstat_iops_indices.append(index)
-
-    return (
-        sysstat_percent_headers, sysstat_mbs_headers, sysstat_iops_headers,
-        sysstat_percent_indices, sysstat_mbs_indices, sysstat_iops_indices)
+                sysstat_object.iops_headers.append(request)
+                sysstat_object.iops_indices.append(index)
 
 
 def replace_lun_ids(header_row_list, lun_path_dict):
@@ -384,29 +370,8 @@ def read_data_file(perfstat_data_file):
     per_iteration_tables = []
     per_iteration_headers = []
 
-    # boolean, whether program is currently reading in a sysstat_x_1sec block:
-    inside_sysstat_block = False
-
-    # boolean, which turns to False, once the program saved headers for the sysstat_x_1sec block
-    # (Should be equal for each block):
-    sysstat_header_needed = True
-
-    # reserve names for lists containing the headers of the both sysstat-charts (will be set by
-    # process_sysstat_header):
-    sysstat_percent_headers = None
-    sysstat_mbs_headers = None
-    sysstat_iops_headers = None
-
-    # reserve names for lists containing the column indices being interesting for the both
-    # sysstat-charts (will be set by process_sysstat_header):
-    sysstat_percent_indices = None
-    sysstat_mbs_indices = None
-    sysstat_iops_indices = None
-
-    # lists to hold the values for the both sysstat-charts:
-    sysstat_percent_values = []
-    sysstat_mbs_values = []
-    sysstat_no_iops_values = []
+    # this object collects all information the program finds during processing sysstat_x_1sec blocks
+    sysstat_object = SysstatObject()
 
     # a dictionary to hold the translations of the lun's IDs into their path names
     lun_path_dict = {}
@@ -422,7 +387,7 @@ def read_data_file(perfstat_data_file):
         lun_path = ''
 
         for line in data:
-            if not inside_sysstat_block or not sysstat_header_needed:
+            if not sysstat_object.inside_sysstat_block or not sysstat_object.sysstat_header_needed:
                 line = line.strip()
 
             # first, search for the planned number of iteration in the file's header.
@@ -430,22 +395,15 @@ def read_data_file(perfstat_data_file):
             if number_of_iterations == 0:
                 number_of_iterations = search_for_number_of_iterations(line)
 
-            elif inside_sysstat_block:
+            elif sysstat_object.inside_sysstat_block:
                 # '--' marks, that a sysstat_x_1sec block ends.
                 if line == '--':
-                    inside_sysstat_block = False
-                elif sysstat_header_needed:
-
-                    sysstat_percent_headers, sysstat_mbs_headers, sysstat_iops_headers, \
-                    sysstat_percent_indices, sysstat_mbs_indices, sysstat_iops_indices = \
-                        process_sysstat_header(line, next(data))
-                    sysstat_header_needed = False
+                    sysstat_object.inside_sysstat_block = False
+                elif sysstat_object.sysstat_header_needed:
+                    process_sysstat_header(line, next(data), sysstat_object)
+                    sysstat_object.sysstat_header_needed = False
                 else:
-                    if process_sysstat_requests(line, sysstat_percent_indices, sysstat_mbs_indices,
-                                                sysstat_iops_indices,
-                                                sysstat_percent_values, sysstat_mbs_values,
-                                                sysstat_no_iops_values,
-                                                recent_sysstat_timestamp):
+                    if process_sysstat_requests(line, sysstat_object, recent_sysstat_timestamp):
                         recent_sysstat_timestamp += constants.ONE_SECOND
             elif '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
@@ -456,11 +414,10 @@ def read_data_file(perfstat_data_file):
                     # write an empty line into the sysstat tables to cut line in resulting charts
                     #  between different iterations:
                     if iteration_end_counter != number_of_iterations:
-                        data_collector_util.add_empty_lines([sysstat_percent_values,
-                                                             sysstat_mbs_values,
-                                                             sysstat_no_iops_values])
+                        sysstat_object.add_empty_lines()
+
                 elif found_sysstat_1sec_begin(line):
-                    inside_sysstat_block = True
+                    sysstat_object.inside_sysstat_block = True
                     recent_sysstat_timestamp = data_collector_util.get_sysstat_timestamp(next(data))
                     next(data)
 
@@ -488,6 +445,7 @@ def read_data_file(perfstat_data_file):
     per_iteration_headers, per_iteration_values = rework_per_iteration_data(
         per_iteration_tables, per_iteration_headers, start_times, lun_path_dict, luns_available)
 
-    return combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
-                           sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values,
-                           sysstat_iops_headers, sysstat_no_iops_values), luns_available
+    return combine_results(per_iteration_headers, per_iteration_values,
+                           sysstat_object.percent_headers,
+                           sysstat_object.percent_values, sysstat_object.mbs_headers, sysstat_object.mbs_values,
+                           sysstat_object.iops_headers, sysstat_object.iops_values), luns_available
