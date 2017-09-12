@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constants.py" afterPath="$PROJECT_DIR$/constants.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/disk_statistics_object.py" afterPath="$PROJECT_DIR$/disk_statistics_object.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requests.py" afterPath="$PROJECT_DIR$/requests.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -57,7 +53,7 @@
       <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_collector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
+            <state relative-caret-position="2744">
               <caret line="242" column="13" lean-forward="false" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
               <folding>
                 <element signature="e#83#99#0" expanded="true" />
@@ -77,23 +73,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="172.27.10.61_statit_disk_statistics_chart_values.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv">
+      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="8" column="95" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="95" />
-              <folding />
+            <state relative-caret-position="-17">
+              <caret line="56" column="86" lean-forward="true" selection-start-line="56" selection-start-column="86" selection-end-line="56" selection-end-column="86" />
+              <folding>
+                <element signature="e#43#54#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
+      <file leaf-file-name="sysstat_object.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sysstat_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="53" column="38" lean-forward="false" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
+            <state relative-caret-position="270">
+              <caret line="78" column="22" lean-forward="true" selection-start-line="74" selection-start-column="22" selection-end-line="78" selection-end-column="22" />
               <folding>
-                <element signature="e#43#54#0" expanded="true" />
+                <element signature="e#41#50#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -169,11 +167,11 @@
       <find>== 'lu</find>
       <find>PER_ITERATION_REQUESTS</find>
       <find>host</find>
-      <find>print</find>
       <find>CESt</find>
       <find>legend</find>
       <find>UTC</find>
       <find>no_uni</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -275,20 +273,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="results17" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -572,13 +556,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Fixed second counting for sysstat values">
-      <created>1504618508224</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1504618508224</updated>
     </task>
     <task id="LOCAL-00029" summary="Edited docstring">
       <created>1504618908137</created>
@@ -916,7 +893,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505210744352</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Creation of disk-statistic charts for statit blocks">
+      <created>1505219318898</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1505219318917</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TodoView">
@@ -997,7 +981,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Made program to recognize, whether PerfStat contains lun values" />
     <MESSAGE value="Removed debug output" />
     <MESSAGE value="Made program to ignore output.data files being in folders named host" />
     <MESSAGE value="Changed identifier 'no unit' into 'iops' or 'IOPS' globally" />
@@ -1022,7 +1005,8 @@
     <MESSAGE value="Modified comments" />
     <MESSAGE value="Removed unused import" />
     <MESSAGE value="Changed if-elif-else construction in data_collector to if-continue block" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed if-elif-else construction in data_collector to if-continue block" />
+    <MESSAGE value="Creation of disk-statistic charts for statit blocks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Creation of disk-statistic charts for statit blocks" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1283,16 +1267,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1422">
-          <caret line="79" column="79" lean-forward="false" selection-start-line="79" selection-start-column="79" selection-end-line="79" selection-end-column="79" />
-          <folding>
-            <element signature="e#41#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1247971765/_collections.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
@@ -1381,7 +1355,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data_collector.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
+        <state relative-caret-position="2744">
           <caret line="242" column="13" lean-forward="false" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
           <folding>
             <element signature="e#83#99#0" expanded="true" />
@@ -1390,10 +1364,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="78" column="22" lean-forward="true" selection-start-line="74" selection-start-column="22" selection-end-line="78" selection-end-column="22" />
+          <folding>
+            <element signature="e#41#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="53" column="38" lean-forward="false" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
+        <state relative-caret-position="-17">
+          <caret line="56" column="86" lean-forward="true" selection-start-line="56" selection-start-column="86" selection-end-line="56" selection-end-column="86" />
           <folding>
             <element signature="e#43#54#0" expanded="true" />
           </folding>
