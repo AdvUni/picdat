@@ -1,7 +1,6 @@
 """
 Is responsible for collecting all information of note from PerfStat output
 """
-import constants
 import util
 import data_collector_util
 from sysstat_object import SysstatObject
@@ -265,9 +264,6 @@ def read_data_file(perfstat_data_file):
     # the relating time stamps:
     end_times = []
 
-    # time stamps which mark the beginnings of a sysstat_x_1sec block:
-    recent_sysstat_timestamp = None
-
     per_iteration_tables = []
     per_iteration_headers = []
 
@@ -301,15 +297,7 @@ def read_data_file(perfstat_data_file):
                 continue
 
             if sysstat_object.inside_sysstat_block:
-                # '--' marks, that a sysstat_x_1sec block ends.
-                if line == '--':
-                    sysstat_object.inside_sysstat_block = False
-                elif sysstat_object.sysstat_header_needed:
-                    sysstat_object.process_sysstat_header(line, next(data))
-                else:
-                    if sysstat_object.process_sysstat_requests(line, recent_sysstat_timestamp):
-                        recent_sysstat_timestamp += constants.ONE_SECOND
-                continue
+                sysstat_object.process_sysstat_block(line)
 
             if '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
@@ -324,7 +312,8 @@ def read_data_file(perfstat_data_file):
 
                 elif found_sysstat_1sec_begin(line):
                     sysstat_object.inside_sysstat_block = True
-                    recent_sysstat_timestamp = data_collector_util.get_sysstat_timestamp(next(data))
+                    sysstat_object.recent_timestamp = data_collector_util.get_sysstat_timestamp(
+                        next(data))
                     next(data)
                 continue
 

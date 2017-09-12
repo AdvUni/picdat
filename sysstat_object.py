@@ -3,6 +3,7 @@ Contains the class SysstatObject
 """
 import re
 
+import constants
 import util
 from requests import SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS
 
@@ -40,6 +41,9 @@ class SysstatObject:
         # (Header should be equal for each block):
         self.sysstat_header_needed = True
 
+        # the recent time:
+        self.recent_timestamp = None
+
         # lists to hold the headers for the both sysstat-charts:
         self.percent_headers = []
         self.mbs_headers = []
@@ -54,6 +58,17 @@ class SysstatObject:
         self.percent_values = []
         self.mbs_values = []
         self.iops_values = []
+
+        # to analyse a sysstat header, it is necessary to look at two lines at once. But because
+        # the program reads line by line, this variable is for buffering the first header line:
+        self.buffered_header = None
+
+    def increment_time(self):
+        """
+        Increases the object's datetime object 'recent_timestamp' about one second.
+        :return: None
+        """
+        self.recent_timestamp += constants.ONE_SECOND
 
     def add_empty_lines(self):
         """
@@ -70,7 +85,7 @@ class SysstatObject:
                 columns = len(value_list[0])
                 value_list.append([' ' for _ in range(columns + 1)])
 
-    def process_sysstat_requests(self, value_line, timestamp):
+    def process_sysstat_requests(self, value_line):
         """
         This function collects all relevant information from a line in a sysstat_x_1sec block. In
         case, the line doesn't contain values, but a sub header, the function ignores it.
@@ -78,31 +93,25 @@ class SysstatObject:
         Therefore, it uses the object's index lists to find the right value places inside the
         sysstat block.
         :param value_line: A String which is a line from a sysstat_x_1sec block
-        :param timestamp: A datetime object describing the exact time the values from value_line
-        belonging to.
         :return: True, if value_line really contained values and False, if it just was a sub header.
         """
         line_split = value_line.split()
 
         # check, whether line really contains data and not just a sub header
         if str.isdigit(line_split[0].strip('%')):
-
             # add values specified in percent_indices to percent_values
-            self.percent_values.append([str(timestamp)] + [line_split[index].strip(
+            self.percent_values.append([str(self.recent_timestamp)] + [line_split[index].strip(
                 '%') for index in self.percent_indices])
             # add values specified in mbs_indices to mbs_values and convert them to MB/s instead of
             # kB/s.
             # Notice, that this needs to be conform to requests.SYSSTAT_MBS_UNIT!
             self.mbs_values.append(
-                [str(timestamp)] +
+                [str(self.recent_timestamp)] +
                 [str(round(int(line_split[index]) / 1000)) for index in self.mbs_indices])
 
-            self.iops_values.append([str(timestamp)] + [line_split[index] for index in
-                                                        self.iops_indices])
-            return True
-
-        else:
-            return False
+            self.iops_values.append([str(self.recent_timestamp)] + [line_split[index] for index in
+                                                                    self.iops_indices])
+            self.increment_time()
 
     def process_sysstat_header(self, first_header_line, second_header_line):
         """
@@ -138,8 +147,7 @@ class SysstatObject:
             # iterate over the sysstat requests, which belong to the unit MB/s:
             for request in SYSSTAT_MBS_REQUESTS:
                 if util.check_column_header(header_line_split[index], endpoints[index],
-                                            second_header_line, request[0],
-                                            request[1][0]):
+                                            second_header_line, request[0], request[1][0]):
                     self.mbs_headers.append(str(request[0]) + '_' + str(request[1][0]))
                     self.mbs_indices.append(index)
                     # Measurements for the MB/s chart always come with two parameters, e.g. 'read'
@@ -154,3 +162,23 @@ class SysstatObject:
                                             second_header_line, request, ' '):
                     self.iops_headers.append(request)
                     self.iops_indices.append(index)
+
+    def process_sysstat_block(self, line):
+        """
+        Collects all relevant information from a sysstat_x_1sec block. If the header isn't
+        analysed yet, it will do this. Otherwise it only takes care of the values. Further,
+        it recognizes if the sysstat block is over.
+        :param line: A line from a PerfStat file as String.
+        :return: None.
+        """
+
+        # '--' marks, that a sysstat_x_1sec block ends.
+        if line == '--':
+            self.inside_sysstat_block = False
+        elif self.sysstat_header_needed:
+            if self.buffered_header is None:
+                self.buffered_header = line
+            else:
+                self.process_sysstat_header(self.buffered_header, line)
+        else:
+            self.process_sysstat_requests(line)
