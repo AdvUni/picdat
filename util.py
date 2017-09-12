@@ -14,7 +14,8 @@ except ImportError:
 
 from orderedset import OrderedSet
 from table import Table
-from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_NO_UNIT
+from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, \
+    SYSSTAT_NO_UNIT, STATIT_DISK_STAT_UNIT
 import constants
 import tempfile
 
@@ -240,6 +241,7 @@ def get_units(luns_available):
     unit_list.append(SYSSTAT_PERCENT_UNIT)
     unit_list.append(SYSSTAT_MBS_UNIT)
     unit_list.append(SYSSTAT_NO_UNIT)
+    unit_list.append(STATIT_DISK_STAT_UNIT)
 
     return unit_list
 
@@ -261,6 +263,7 @@ def get_titles(luns_available):
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
     title_list.append(constants.SYSSTAT_CHART_TITLE + ':IOPS')
+    title_list.append(constants.STATIT_CHART_TITLE)
 
     return title_list
 
@@ -282,6 +285,7 @@ def get_object_ids(luns_available):
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_percent')
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs')
     id_list.append(constants.SYSSTAT_CHART_TITLE + '_iops')
+    id_list.append(constants.STATIT_CHART_TITLE)
 
     return id_list
 
@@ -307,6 +311,7 @@ def get_csv_filenames(output_identifier, luns_available):
                      constants.CSV_FILE_ENDING)
     name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_iops' +
                      constants.CSV_FILE_ENDING)
+    name_list.append(output_identifier + constants.STATIT_CHART_TITLE + constants.CSV_FILE_ENDING)
 
     return name_list
 

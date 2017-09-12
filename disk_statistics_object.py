@@ -1,7 +1,7 @@
 """
 Contains the class DiskStatsObject
 """
-import data_collector_util
+import util
 from table import Table
 
 __author__ = 'Marie Lohbeck'
@@ -23,7 +23,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 
 class DiskStatsObject:
-
     def __init__(self):
         self.statit_counter = 0
         self.statit_timestamps = []
@@ -32,6 +31,7 @@ class DiskStatsObject:
         self.inside_disk_stats_block = False
 
         self.table = Table()
+        self.disk_names = set()
 
     def check_statit_begin(self, line):
         if '---- statit ---' in line:
@@ -42,7 +42,7 @@ class DiskStatsObject:
     def process_disc_stats(self, line):
         line_split = line.split()
         if self.inside_disk_stats_block:
-            if line == '':
+            if len(line_split) == 0:
                 self.inside_statit_block = False
                 self.inside_disk_stats_block = False
                 return
@@ -53,12 +53,18 @@ class DiskStatsObject:
             disk = line_split[0]
             ut_percent = line_split[1]
 
+            self.disk_names.add(disk)
             self.table.insert(self.statit_counter, disk, ut_percent)
 
         else:
+            if len(line_split) == 0:
+                return
             if len(self.statit_timestamps) < self.statit_counter:
                 if 'Begin: ' in line:
-                    self.statit_timestamps.append(util.build_date(line.split(' ',1)[1]))
+                    self.statit_timestamps.append(util.build_date(line.split(' ', 1)[1]))
                 return
             if line_split[0] == 'disk':
                 self.inside_disk_stats_block = True
+
+    def flatten_table(self):
+        return self.table.get_rows(self.disk_names, self.statit_timestamps)

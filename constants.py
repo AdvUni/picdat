@@ -40,6 +40,9 @@ HTML_ENDING = '.html'
 # the standard string to name charts about the sysstat_x_1sec block:
 SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 
+# the standard string to name the chart about the statit block:
+STATIT_CHART_TITLE = 'statit_disk_statistics'
+
 # this is the path to the text file the program uses as template to create the html head:
 HTML_HEAD_TEMPLATE = 'graph_html_head_template.txt'
 

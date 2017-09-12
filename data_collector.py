@@ -5,6 +5,7 @@ import constants
 import util
 import data_collector_util
 from sysstat_object import SysstatObject
+from disk_statistics_object import DiskStatsObject
 from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS
 
@@ -217,7 +218,7 @@ def rework_per_iteration_data(per_iteration_tables, per_iteration_headers,
 
 def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
                     sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values,
-                    sysstat_iops_headers, sysstat_iops_values):
+                    sysstat_iops_headers, sysstat_iops_values, statit_headers, statit_values):
     """
     This function sticks the results of all three request types together.
     :param per_iteration_headers: A list of list, holding the headers for each per-iteration chart.
@@ -232,9 +233,9 @@ def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent
     :return: All headers in one list, followed by all values in one list.
     """
     combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers,
-                                                sysstat_iops_headers]
+                                                sysstat_iops_headers, statit_headers]
     combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values,
-                                              sysstat_iops_values]
+                                              sysstat_iops_values, statit_values]
 
     return combined_headers, combined_values
 
@@ -272,6 +273,9 @@ def read_data_file(perfstat_data_file):
 
     # this object collects all information the program finds during processing sysstat_x_1sec blocks
     sysstat_object = SysstatObject()
+
+    # this object collects all information the program finds during processing statit blocks
+    statit_object = DiskStatsObject()
 
     # a dictionary to hold the translations of the lun's IDs into their path names
     lun_path_dict = {}
@@ -324,6 +328,13 @@ def read_data_file(perfstat_data_file):
                     next(data)
                 continue
 
+            if statit_object.inside_statit_block:
+                statit_object.process_disc_stats(line)
+                continue
+
+            if statit_object.check_statit_begin(line):
+                continue
+
             if 'LUN ' in line:
                 lun_path = map_lun_path(line, lun_path, lun_path_dict)
                 continue
@@ -348,7 +359,10 @@ def read_data_file(perfstat_data_file):
     per_iteration_headers, per_iteration_values = rework_per_iteration_data(
         per_iteration_tables, per_iteration_headers, start_times, lun_path_dict, luns_available)
 
+    statit_headers, statit_values = statit_object.flatten_table()
+
     return combine_results(per_iteration_headers, per_iteration_values,
                            sysstat_object.percent_headers, sysstat_object.percent_values,
                            sysstat_object.mbs_headers, sysstat_object.mbs_values,
-                           sysstat_object.iops_headers, sysstat_object.iops_values), luns_available
+                           sysstat_object.iops_headers, sysstat_object.iops_values,
+                           statit_headers, statit_values), luns_available

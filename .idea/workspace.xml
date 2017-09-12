@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constants.py" afterPath="$PROJECT_DIR$/constants.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/disk_statistics_object.py" afterPath="$PROJECT_DIR$/disk_statistics_object.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requests.py" afterPath="$PROJECT_DIR$/requests.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +20,7 @@
     <SUITE FILE_PATH="coverage/Perf_orator$table.coverage" NAME="table Coverage Results" MODIFIED="1491572999299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$main.coverage" NAME="main Coverage Results" MODIFIED="1503993789444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$util.coverage" NAME="util Coverage Results" MODIFIED="1504868562583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505209234872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505216781962" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$util.coverage" NAME="util Coverage Results" MODIFIED="1491912558007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$Playground.coverage" NAME="Playground Coverage Results" MODIFIED="1500411879544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$data_collector.coverage" NAME="data_collector Coverage Results" MODIFIED="1504870507915" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -31,8 +35,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="154" column="59" lean-forward="false" selection-start-line="154" selection-start-column="59" selection-end-line="154" selection-end-column="59" />
+            <state relative-caret-position="631">
+              <caret line="152" column="38" lean-forward="false" selection-start-line="152" selection-start-column="38" selection-end-line="152" selection-end-column="38" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
@@ -40,50 +44,56 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/constants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="522">
+              <caret line="43" column="44" lean-forward="false" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data_collector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
+            <state relative-caret-position="422">
+              <caret line="242" column="13" lean-forward="false" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
               <folding>
                 <element signature="e#83#99#0" expanded="true" />
-                <marker date="1505210317359" expanded="true" signature="16118:16119" ph="..." />
+                <marker date="1505215707245" expanded="true" signature="16688:16689" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_collector_util.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_collector_util.py">
+      <file leaf-file-name="Playground.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Playground.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-              <folding>
-                <element signature="e#81#92#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="162">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="172.27.10.61_statit_disk_statistics_chart_values.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="8" column="95" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="95" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="791">
-              <caret line="60" column="81" lean-forward="false" selection-start-line="60" selection-start-column="81" selection-end-line="60" selection-end-column="81" />
+            <state relative-caret-position="314">
+              <caret line="53" column="38" lean-forward="false" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
               <folding>
-                <element signature="e#43#69#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sysstat_object.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sysstat_object.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-749">
-              <caret line="79" column="79" lean-forward="true" selection-start-line="79" selection-start-column="79" selection-end-line="79" selection-end-column="79" />
-              <folding>
-                <element signature="e#41#50#0" expanded="true" />
+                <element signature="e#43#54#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -92,8 +102,8 @@
       <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-72">
-              <caret line="23" column="12" lean-forward="true" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
+            <state relative-caret-position="106">
+              <caret line="54" column="8" lean-forward="false" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -102,12 +112,12 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="709">
-              <caret line="164" column="0" lean-forward="false" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+            <state relative-caret-position="-1061">
+              <caret line="243" column="42" lean-forward="false" selection-start-line="243" selection-start-column="42" selection-end-line="243" selection-end-column="42" />
               <folding>
                 <element signature="e#55#70#0" expanded="true" />
-                <marker date="1505209919991" expanded="true" signature="8469:9067" ph="..." />
-                <marker date="1505209919991" expanded="true" signature="11663:11736" ph="..." />
+                <marker date="1505215707201" expanded="true" signature="8498:9096" ph="..." />
+                <marker date="1505215707201" expanded="true" signature="11837:12009" ph="..." />
               </folding>
             </state>
           </provider>
@@ -116,18 +126,8 @@
       <file leaf-file-name="requests.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/requests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="900">
-              <caret line="50" column="34" lean-forward="false" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="global_vars.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/global_vars.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="35" column="24" lean-forward="false" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
+            <state relative-caret-position="667">
+              <caret line="60" column="26" lean-forward="false" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -185,7 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/bothwaysdict.py" />
         <option value="$PROJECT_DIR$/fct_archive.py" />
         <option value="$PROJECT_DIR$/orderedset.py" />
         <option value="$PROJECT_DIR$/MIT_license_dygraphs.txt" />
@@ -218,8 +217,6 @@
         <option value="$PROJECT_DIR$/table.py" />
         <option value="$PROJECT_DIR$/table_writer.py" />
         <option value="$PROJECT_DIR$/results10/charts0.html" />
-        <option value="$PROJECT_DIR$/requests.py" />
-        <option value="$PROJECT_DIR$/constants.py" />
         <option value="$PROJECT_DIR$/graph_html_head_template.txt" />
         <option value="$PROJECT_DIR$/results30/charts.html" />
         <option value="$PROJECT_DIR$/resultsExample/172.27.10.61_charts.html" />
@@ -231,11 +228,14 @@
         <option value="$PROJECT_DIR$/Playground.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
-        <option value="$PROJECT_DIR$/disk_statistics_object.py" />
         <option value="$PROJECT_DIR$/data_collector_util.py" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/sysstat_object.py" />
         <option value="$PROJECT_DIR$/data_collector.py" />
+        <option value="$PROJECT_DIR$/constants.py" />
+        <option value="$PROJECT_DIR$/requests.py" />
+        <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
+        <option value="$PROJECT_DIR$/disk_statistics_object.py" />
       </list>
     </option>
   </component>
@@ -275,6 +275,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results17" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -347,7 +361,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="JavaScript Debug.AU_charts.html">
     <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -367,16 +381,16 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results3/charts.html">
+    <configuration default="false" name="charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results16/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="172.27.10.61_charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results7/172.27.10.61_charts.html">
+    <configuration default="false" name="172.27.10.61_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results17/172.27.10.61_charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="172.27.10.61_charts.html (2)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results8/172.27.10.61_charts.html">
+    <configuration default="false" name="172.27.10.62_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results17/172.27.10.62_charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results10/charts.html">
+    <configuration default="false" name="AU_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results18/AU_charts.html">
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -531,16 +545,16 @@
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
       <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (1)" />
-      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (2)" />
-      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.62_charts.html" />
+      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.AU_charts.html" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (2)" />
-        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (1)" />
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.AU_charts.html" />
+        <item index="1" class="java.lang.String" itemvalue="Python.main" />
+        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.62_charts.html" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html" />
         <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
       </list>
     </recent_temporary>
@@ -558,20 +572,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Completed analyse of sysstat_x_1sec blocks. Changed place to associate timestamps to their values">
-      <created>1504614290201</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1504614290201</updated>
-    </task>
-    <task id="LOCAL-00027" summary="readjusted comments">
-      <created>1504617930125</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1504617930125</updated>
     </task>
     <task id="LOCAL-00028" summary="Fixed second counting for sysstat values">
       <created>1504618508224</created>
@@ -902,7 +902,21 @@
       <option name="project" value="LOCAL" />
       <updated>1505210339500</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Removed unused import">
+      <created>1505210357018</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1505210357018</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Changed if-elif-else construction in data_collector to if-continue block">
+      <created>1505210744352</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1505210744352</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TodoView">
@@ -924,7 +938,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20719844" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29863814" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21984436" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2081712" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5063492" order="2" side_tool="true" content_ui="tabs" />
@@ -983,8 +997,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added lincense notice" />
-    <MESSAGE value="Corrected some comments" />
     <MESSAGE value="Made program to recognize, whether PerfStat contains lun values" />
     <MESSAGE value="Removed debug output" />
     <MESSAGE value="Made program to ignore output.data files being in folders named host" />
@@ -1008,7 +1020,9 @@
     <MESSAGE value="Moved build_date from data_collector_util to util" />
     <MESSAGE value="Moved process_sysstat_header and process_sysstat_requests from data_collector to SysstatObject" />
     <MESSAGE value="Modified comments" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modified comments" />
+    <MESSAGE value="Removed unused import" />
+    <MESSAGE value="Changed if-elif-else construction in data_collector to if-continue block" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed if-elif-else construction in data_collector to if-continue block" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1019,17 +1033,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results2/sysstat_x_1sec_mbs_chart_values.csv" />
-    <entry file="file://$PROJECT_DIR$/results/sysstat_x_1sec_mbs_chart_values.csv" />
-    <entry file="file:///usr/lib64/python3.4/genericpath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resultsresults1results2results3results4results5results6/charts.html" />
     <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1247971765/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="52650">
@@ -1190,14 +1193,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-33">
-          <caret line="33" column="9" lean-forward="false" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib64/python3.4/os.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
@@ -1270,67 +1265,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-72">
-          <caret line="23" column="12" lean-forward="true" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playground.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="1" lean-forward="false" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/visualizer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="302">
           <caret line="172" column="0" lean-forward="false" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/requests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="50" column="34" lean-forward="false" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="791">
-          <caret line="60" column="81" lean-forward="false" selection-start-line="60" selection-start-column="81" selection-end-line="60" selection-end-column="81" />
-          <folding>
-            <element signature="e#43#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/picdat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="154" column="59" lean-forward="false" selection-start-line="154" selection-start-column="59" selection-end-line="154" selection-end-column="59" />
-          <folding>
-            <element signature="e#42#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="709">
-          <caret line="164" column="0" lean-forward="false" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
-          <folding>
-            <element signature="e#55#70#0" expanded="true" />
-            <marker date="1505209919991" expanded="true" signature="8469:9067" ph="..." />
-            <marker date="1505209919991" expanded="true" signature="11663:11736" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1344,23 +1283,119 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_collector.py">
+    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
+        <state relative-caret-position="1422">
+          <caret line="79" column="79" lean-forward="false" selection-start-line="79" selection-start-column="79" selection-end-line="79" selection-end-column="79" />
           <folding>
-            <element signature="e#83#99#0" expanded="true" />
-            <marker date="1505210317359" expanded="true" signature="16118:16119" ph="..." />
+            <element signature="e#41#50#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
+    <entry file="file://$USER_HOME$/.PyCharm2017.1/system/python_stubs/-1247971765/_collections.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-749">
-          <caret line="79" column="79" lean-forward="true" selection-start-line="79" selection-start-column="79" selection-end-line="79" selection-end-column="79" />
+        <state relative-caret-position="203">
+          <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="54" column="8" lean-forward="false" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="43" column="44" lean-forward="false" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="667">
+          <caret line="60" column="26" lean-forward="false" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="47" lean-forward="true" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1061">
+          <caret line="243" column="42" lean-forward="false" selection-start-line="243" selection-start-column="42" selection-end-line="243" selection-end-column="42" />
           <folding>
-            <element signature="e#41#50#0" expanded="true" />
+            <element signature="e#55#70#0" expanded="true" />
+            <marker date="1505215707201" expanded="true" signature="8498:9096" ph="..." />
+            <marker date="1505215707201" expanded="true" signature="11837:12009" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playground.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results18/tables/AU_statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="27" column="118" lean-forward="false" selection-start-line="27" selection-start-column="118" selection-end-line="27" selection-end-column="118" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="95" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/picdat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="631">
+          <caret line="152" column="38" lean-forward="false" selection-start-line="152" selection-start-column="38" selection-end-line="152" selection-end-column="38" />
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_collector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="422">
+          <caret line="242" column="13" lean-forward="false" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
+          <folding>
+            <element signature="e#83#99#0" expanded="true" />
+            <marker date="1505215707245" expanded="true" signature="16688:16689" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="53" column="38" lean-forward="false" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
+          <folding>
+            <element signature="e#43#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
