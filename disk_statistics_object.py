@@ -58,8 +58,7 @@ class DiskStatsObject:
         else:
             if len(self.statit_timestamps) < self.statit_counter:
                 if 'Begin: ' in line:
-                    self.statit_timestamps.append(data_collector_util.build_date(line.split(' ',
-                                                                                            1)[1]))
+                    self.statit_timestamps.append(util.build_date(line.split(' ',1)[1]))
                 return
             if line_split[0] == 'disk':
                 self.inside_disk_stats_block = True

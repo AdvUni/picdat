@@ -1,6 +1,7 @@
 """
 Provides some functions other modules may use.
 """
+import datetime
 import os
 from zipfile import ZipFile
 
@@ -91,6 +92,45 @@ def get_timezone(tz_string):
                   'with. Be aware of possible confusion with time values in charts.')
             print('Unexpected timezone identifier: ' + tz_string)
             global_vars.localtimezone = '???'
+
+
+def build_date(timestamp_string):
+    """
+    Auxiliary function for get_iteration_timestamp and get_sysstat_timestamp. Parses a String to
+    a datetime object and converts it into UTC.
+    :param timestamp_string: a string like
+    Mon Jan 01 00:00:00 GMT 2000
+    :return: a datetime object which contains the input's information converted to UTC timezone.
+    """
+
+    timestamp_list = timestamp_string.split()
+
+    # collect all information needed to create a datetime object from timestamp_string
+    month = get_month_number(timestamp_list[1])
+    day = int(timestamp_list[2])
+    time = timestamp_list[3].split(":")
+    if pytz is not None:
+        timezone = get_timezone(timestamp_list[4])
+    else:
+        timezone = None
+    year = int(timestamp_list[5])
+
+    hour = int(time[0])
+    minute = int(time[1])
+    second = int(time[2])
+
+    # check, whether global variable 'localetimezone' is already set
+    if global_vars.localtimezone is None:
+        global_vars.localtimezone = timezone
+
+    # convert timezone to global_vars.localtimezone (as possible) and return datetime object
+    try:
+        return timezone.localize(
+            datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
+            global_vars.localtimezone).replace(tzinfo=None)
+    except (AttributeError, TypeError):
+        global_vars.localtimezone = '???'
+        return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 
 def inner_ord_set_insertion(outer_list, index, item):
