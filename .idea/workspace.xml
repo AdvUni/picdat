@@ -4,7 +4,6 @@
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sysstat_object.py" afterPath="$PROJECT_DIR$/sysstat_object.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -560,13 +559,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00025" summary="integrated search for sysstat_x_1sec data in main routine">
-      <created>1504603775202</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1504603775202</updated>
-    </task>
     <task id="LOCAL-00026" summary="Completed analyse of sysstat_x_1sec blocks. Changed place to associate timestamps to their values">
       <created>1504614290201</created>
       <option name="number" value="00026" />
@@ -903,7 +895,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505209980167</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Modified comments">
+      <created>1505210339500</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1505210339500</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TodoView">
@@ -925,7 +924,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20719844" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29863814" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21984436" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21984436" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5063492" order="2" side_tool="true" content_ui="tabs" />
@@ -1005,11 +1004,11 @@
     <MESSAGE value="Completed docstring" />
     <MESSAGE value="Changed variable names containing 'no_unit' to 'iops' instead and completed docstring" />
     <MESSAGE value="Created SysstatObject to carry all information about sysstat_x_1sec blocks, which simplifies the data_collector reading procedure" />
-    <MESSAGE value="Modified comments" />
     <MESSAGE value="Added module disk_statistics" />
     <MESSAGE value="Moved build_date from data_collector_util to util" />
     <MESSAGE value="Moved process_sysstat_header and process_sysstat_requests from data_collector to SysstatObject" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved process_sysstat_header and process_sysstat_requests from data_collector to SysstatObject" />
+    <MESSAGE value="Modified comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

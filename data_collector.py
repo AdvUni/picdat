@@ -1,8 +1,6 @@
 """
 Is responsible for collecting all information of note from PerfStat output
 """
-import re
-
 import constants
 import util
 import data_collector_util
