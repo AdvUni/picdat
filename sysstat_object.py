@@ -74,10 +74,10 @@ class SysstatObject:
         """
         This function collects all relevant information from a line in a sysstat_x_1sec block. In
         case, the line doesn't contain values, but a sub header, the function ignores it.
+        Otherwise, the function is going to append one sublist onto each of the own value lists.
+        Therefore, it uses the object's index lists to find the right value places inside the
+        sysstat block.
         :param value_line: A String which is a line from a sysstat_x_1sec block
-        :param sysstat_object: An object carrying all relevent sysstat information together. This 
-        functions is going to append one sublist onto its value lists. Therefore, it uses its index 
-        lists to find the right value places inside the sysstat block.
         :param timestamp: A datetime object describing the exact time the values from value_line
         belonging to.
         :return: True, if value_line really contained values and False, if it just was a sub header.
@@ -107,12 +107,10 @@ class SysstatObject:
     def process_sysstat_header(self, first_header_line, second_header_line):
         """
         Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
-        for the requested columns. Saves the headers matching the requests to lists. Also saves the
-        column numbers belonging to those headers.
+        for the requested columns. Saves the headers matching the requests to object's header
+        lists. Also saves the column numbers belonging to those headers to object's index lists.
         :param first_header_line: The first line of a sysstat_x_1sec header
         :param second_header_line: The second line of a sysstat_x_1sec header
-        :param sysstat_object: An object carrying all relevent sysstat information together. This 
-        functions is going to write onto its header and index lists.
         :return: None
         """
 
