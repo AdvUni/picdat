@@ -133,6 +133,37 @@ def build_date(timestamp_string):
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 
+def check_column_header(word_upper_line, endpoint_upper_word, lower_line, request_upper_string,
+                        request_lower_string):
+    """
+    This function helps checking, whether a column name in a pure text file, which is split over
+    two lines, matches the request. Example: There is a text-based table with following headers:
+
+    Disk   kB/s   Disk   OTHER    FCP  iSCSI     FCP   kB/s   iSCSI   kB/s
+    read  write   util                            in    out      in    out
+
+    You are looking for the 'Disk util' column. Therefore, you need to consider both lines. This
+    function takes a word from the first line, compares it to a request, you would expect in the
+    first line as well (Here: 'Disk') and finally compares the word in the second line right
+    under the other word (for this it needs the parameter 'endpoint_upper_word' with the request
+    word, you would expect in the second line (Here: 'util').
+    :param word_upper_line: A word from the first header line
+    :param endpoint_upper_word: The line index, the previous word ends
+    :param lower_line: The whole second header line
+    :param request_upper_string: Word from request you are looking for, expected in the upper line
+    :param request_lower_string: Word from request you are looking for, expected in the lower line
+    :return: True, if the word_upper_line you gave in belongs to the request you gave in and
+    False otherwise.
+    """
+    if word_upper_line == request_upper_string:
+        end = endpoint_upper_word
+        start = end - len(request_lower_string)
+
+        return request_lower_string == lower_line[start:end]
+    else:
+        return False
+
+
 def inner_ord_set_insertion(outer_list, index, item):
     """
     Inserts an item into a list of OrderedDicts. Inserts the item in the OrderedDict at the place of
