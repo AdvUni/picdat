@@ -93,7 +93,6 @@ class DiskStatsObject:
             #print(line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip())
 
             if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
-                print('hello')
                 self.disk_names.add(disk)
                 self.table.insert(self.statit_counter, disk, ut_percent)
 
