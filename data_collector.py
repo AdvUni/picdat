@@ -79,9 +79,7 @@ def found_sysstat_1sec_begin(line):
     return 'sysstat_x_1sec' in line
 
 
-def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent_headers,
-                    sysstat_percent_values, sysstat_mbs_headers, sysstat_mbs_values,
-                    sysstat_iops_headers, sysstat_iops_values, statit_headers, statit_values):
+def combine_results(per_iteration_object, sysstat_object, statit_object):
     """
     This function sticks the results of all three request types together.
     :param per_iteration_headers: A list of list, holding the headers for each per-iteration chart.
@@ -95,6 +93,20 @@ def combine_results(per_iteration_headers, per_iteration_values, sysstat_percent
     grouped like the lines in the sysstat block.
     :return: All headers in one list, followed by all values in one list.
     """
+
+    per_iteration_headers = per_iteration_object.flat_headers
+    per_iteration_values = per_iteration_object.flat_values
+
+    sysstat_percent_headers = sysstat_object.percent_headers
+    sysstat_percent_values = sysstat_object.percent_values
+    sysstat_mbs_headers = sysstat_object.mbs_headers
+    sysstat_mbs_values = sysstat_object.mbs_values
+    sysstat_iops_headers = sysstat_object.iops_headers
+    sysstat_iops_values = sysstat_object.iops_values
+
+    statit_headers = statit_object.flat_headers
+    statit_values = statit_object.flat_values
+
     combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers,
                                                 sysstat_iops_headers, statit_headers]
     combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values,
@@ -203,13 +215,9 @@ def read_data_file(perfstat_data_file):
                                                    iteration_end_counter)
 
     # simplify data structures for per-iteration data
-    per_iteration_headers, per_iteration_values = per_iteration_object.rework_per_iteration_data(
-        start_times)
+    per_iteration_object.rework_per_iteration_data(start_times)
 
-    statit_headers, statit_values = statit_object.flatten_table()
+    statit_object.flatten_table()
 
-    return combine_results(per_iteration_headers, per_iteration_values,
-                           sysstat_object.percent_headers, sysstat_object.percent_values,
-                           sysstat_object.mbs_headers, sysstat_object.mbs_values,
-                           sysstat_object.iops_headers, sysstat_object.iops_values,
-                           statit_headers, statit_values), per_iteration_object.luns_available
+    return combine_results(per_iteration_object, sysstat_object, statit_object), \
+           per_iteration_object.luns_available

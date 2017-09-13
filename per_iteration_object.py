@@ -49,6 +49,9 @@ class PerIterationObject:
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
+        self.flat_headers = None
+        self.flat_values = None
+
     def process_per_iteration_requests(self, line, recent_iteration):
         """
         Searches a String for all per_iteration_requests from main. In case it finds something,
@@ -136,14 +139,12 @@ class PerIterationObject:
             table_list.append(
                 self.tables[i].get_rows(self.instance_names[i], iteration_timestamps))
 
-        header_list = [table[0] for table in table_list]
-        value_lists = [table[1] for table in table_list]
+        self.flat_headers = [table[0] for table in table_list]
+        self.flat_values = [table[1] for table in table_list]
 
         # replace lun's IDs in headers through their path names
         if 'lun' in PER_ITERATION_REQUESTS and self.luns_available:
-            self.replace_lun_ids(header_list)
-
-        return header_list, value_lists
+            self.replace_lun_ids(self.flat_headers)
 
     def replace_lun_ids(self, header_list):
         """

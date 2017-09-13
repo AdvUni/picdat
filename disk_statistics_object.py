@@ -29,6 +29,7 @@ class DiskStatsObject:
     Further, it contains all other information necessary to read headers and values from a
     PerfStat file.
     """
+
     def __init__(self):
         self.statit_counter = 0
         self.statit_timestamps = []
@@ -38,6 +39,9 @@ class DiskStatsObject:
 
         self.table = Table()
         self.disk_names = set()
+
+        self.flat_headers = None
+        self.flat_values = None
 
     def check_statit_begin(self, line):
         """
@@ -90,4 +94,5 @@ class DiskStatsObject:
                 self.inside_disk_stats_block = True
 
     def flatten_table(self):
-        return self.table.get_rows(self.disk_names, self.statit_timestamps)
+        self.flat_headers, self.flat_values = self.table.get_rows(self.disk_names,
+                                                                  self.statit_timestamps)
