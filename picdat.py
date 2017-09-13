@@ -121,56 +121,61 @@ def run():
     and finally create an HTML. Handles user communication.
     :return: None
     """
-    print('Welcome to PicDat!')
+    temp_path = None
 
-    # receive PerfStat file(s) from user:
-    temp_path, perfstat_output_files = take_perfstats()
+    try:
 
-    # receive destination directory from user
-    destination_directory = take_directory()
+        print('Welcome to PicDat!')
 
-    # create directory and copy the necessary dygraphs files into it
-    result_dir, csv_dir = prepare_directory(destination_directory)
+        # receive PerfStat file(s) from user:
+        temp_path, perfstat_output_files = take_perfstats()
 
-    for perfstat_output in perfstat_output_files:
+        # receive destination directory from user
+        destination_directory = take_directory()
 
-        try:
-            output_identifier = perfstat_output.split(os.sep)[-2] + '_'
-            print('Handle PerfStat output from ' + output_identifier + ':')
-        except IndexError:
-            output_identifier = ''
+        # create directory and copy the necessary dygraphs files into it
+        result_dir, csv_dir = prepare_directory(destination_directory)
 
-        # collect data from file
-        print('Read data...')
-        (table_headers, table_values), luns_available = data_collector.read_data_file(
-            perfstat_output)
+        for perfstat_output in perfstat_output_files:
 
-        # frame html file path
-        html_filepath = result_dir + os.sep + output_identifier + constants.HTML_FILENAME + \
-                        constants.HTML_ENDING
+            try:
+                output_identifier = perfstat_output.split(os.sep)[-2] + '_'
+                print('Handle PerfStat output from ' + output_identifier + ':')
+            except IndexError:
+                output_identifier = ''
 
-        # generate file names for csv tables
-        csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
-        csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-        csv_rel_filepaths = [csv_dir.split(os.sep)[-1] + os.sep + filename for filename in
-                             csv_filenames]
+            # collect data from file
+            print('Read data...')
+            (table_headers, table_values), luns_available = data_collector.read_data_file(
+                perfstat_output)
 
-        # write data into csv tables
-        print('Create csv tables...')
-        table_writer.create_csv(csv_abs_filepaths, table_headers, table_values)
+            # frame html file path
+            html_filepath = result_dir + os.sep + output_identifier + constants.HTML_FILENAME + \
+                            constants.HTML_ENDING
 
-        # write html file
-        print('Create html file...')
-        visualizer.create_html(html_filepath, csv_rel_filepaths, table_headers,
-                               perfstat_output, luns_available)
+            # generate file names for csv tables
+            csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
+            csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
+            csv_rel_filepaths = [csv_dir.split(os.sep)[-1] + os.sep + filename for filename in
+                                 csv_filenames]
 
-        # reset global variables
-        global_vars.reset()
+            # write data into csv tables
+            print('Create csv tables...')
+            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values)
 
-    # finally
-    if temp_path is not None:
-        shutil.rmtree(temp_path)
-    print('Done. You will find charts under: ' + os.path.abspath(result_dir))
+            # write html file
+            print('Create html file...')
+            visualizer.create_html(html_filepath, csv_rel_filepaths, table_headers,
+                                   perfstat_output, luns_available)
+
+            # reset global variables
+            global_vars.reset()
+
+        print('Done. You will find charts under: ' + os.path.abspath(result_dir))
+
+    finally:
+        if temp_path is not None:
+            shutil.rmtree(temp_path)
 
 
 # run
