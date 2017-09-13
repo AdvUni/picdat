@@ -89,9 +89,6 @@ class DiskStatsObject:
             # the program checks, whether the second word from 'line' is actually the same as the
             # one lying directly under the column header 'ut%':
 
-            #print(ut_percent)
-            #print(line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip())
-
             if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
                 self.disk_names.add(disk)
                 self.table.insert(self.statit_counter, disk, ut_percent)
