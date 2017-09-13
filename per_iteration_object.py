@@ -29,6 +29,7 @@ class PerIterationObject:
     about the per_iteration_requests. It's a centralization of headers and values for per_iteration
     charts. Further, it contains some values needed to visualize the data correctly.
     """
+
     def __init__(self):
 
         # A list from type 'Table'. It collects all per-iteration values from a  PerfStat output
@@ -81,20 +82,7 @@ class PerIterationObject:
                         instance = line_split[1]
                         util.inner_ord_set_insertion(self.instance_names, request_index, instance)
 
-                        try:
-                            value = line_split[3][:-len(unit)]
-                        except ValueError:
-                            print(ValueError)
-                            print(line)
-                            print(object_type)
-                            print(aspect)
-                            print(unit)
-                        print(line)
-                        print(object_type)
-                        print(aspect)
-                        print(unit)
-                        print(instance)
-                        print(value)
+                        value = line_split[3][:-len(unit)]
 
                         # we want to convert b/s into MB/s, so if the unit is b/s, lower the value
                         # about factor 10^6.
