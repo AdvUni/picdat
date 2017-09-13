@@ -37,6 +37,10 @@ class DiskStatsObject:
         self.inside_statit_block = False
         self.inside_disk_stats_block = False
 
+        # Saves a tuple of the line's start end end index from the word 'ut%' in Disk statistics
+        # header.
+        self.ut_column_indices = None
+
         self.table = Table()
         self.disk_names = set()
 
@@ -80,8 +84,18 @@ class DiskStatsObject:
             disk = line_split[0]
             ut_percent = line_split[1]
 
-            self.disk_names.add(disk)
-            self.table.insert(self.statit_counter, disk, ut_percent)
+            # In Disk Statistics blocks, PerfStat seems to break some lines out of nowhere
+            # sometimes. To distinguish between fresh lines and some line break snippets,
+            # the program checks, whether the second word from 'line' is actually the same as the
+            # one lying directly under the column header 'ut%':
+
+            #print(ut_percent)
+            #print(line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip())
+
+            if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
+                print('hello')
+                self.disk_names.add(disk)
+                self.table.insert(self.statit_counter, disk, ut_percent)
 
         else:
             if len(line_split) == 0:
@@ -92,6 +106,9 @@ class DiskStatsObject:
                 return
             if line_split[0] == 'disk':
                 self.inside_disk_stats_block = True
+                ut_start_index = line.index('ut%')
+                ut_end_index = ut_start_index + len('ut%')
+                self.ut_column_indices = (ut_start_index, ut_end_index)
 
     def flatten_table(self):
         self.flat_headers, self.flat_values = self.table.get_rows(self.disk_names,
