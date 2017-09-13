@@ -24,8 +24,9 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 class Table:
     """
     This is a data structure to represent table content. It's a dict of dicts; each outer dict maps
-    an iteration (equates row) to an inner dict, each inner dict maps an instance (equates table
-    column) to a specific table value. So each table value has a determined row and column.
+    an iteration or statit number (equates row) to an inner dict, each inner dict maps an 
+    instance/disk name (equates table column) to a specific table value. So each table value has 
+    a determined row and column.
     """
 
     def __init__(self):
@@ -34,49 +35,49 @@ class Table:
     def __str__(self):
         return str(self.outer_dict)
 
-    def insert(self, iteration, instance, item):
+    def insert(self, row, column, item):
         """
         Inserts an value dependably into a specific place in the Table.
-        :param iteration: Number of the iteration, the value belongs to (equates table row).
-        :param instance: Name of the instance, the value belongs to (equates table column).
+        :param row: Number of the iteration/statit, the value belongs to (equates table row).
+        :param column: Name of the instance/disk, the value belongs to (equates table column).
         :param item: Value you want to insert.
         :return: None.
         """
-        if iteration not in self.outer_dict:
-            inner_dict = {instance: item}
-            self.outer_dict[iteration] = inner_dict
+        if row not in self.outer_dict:
+            inner_dict = {column: item}
+            self.outer_dict[row] = inner_dict
         else:
-            inner_dict = self.outer_dict[iteration]
-            if instance not in inner_dict:
-                inner_dict[instance] = item
+            inner_dict = self.outer_dict[row]
+            if column not in inner_dict:
+                inner_dict[column] = item
             else:
-                self.outer_dict[iteration][instance] = item
+                self.outer_dict[row][column] = item
 
-    def get_rows(self, instance_set, iteration_timestamps):
+    def get_rows(self, column_names, timestamps):
         """
         Simplifies the data structure into lists of table content equating table rows.
-        :param instance_set: A Set containing all instance names (column names) occurring in the
-        table.
-        :param iteration_timestamps: A list of datetime objects, marking the beginnings of
-        iteration. They'll be the table's first column.
+        :param column_names: A Set containing all instance/disk names (column names) occurring in 
+        the table.
+        :param timestamps: A list of datetime objects, marking the beginnings of
+        iterations/statits. They'll be the table's first column.
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.
         """
         value_rows = []
         header_row = []
-        for instance in instance_set:
+        for instance in column_names:
             header_row.append(instance)
 
-        for iteration in range(len(iteration_timestamps)):
-            iteration_dict = self.outer_dict[iteration + 1]
-            row = [str(iteration_timestamps[iteration])]
+        for row in range(len(timestamps)):
+            iteration_dict = self.outer_dict[row + 1]
+            row_timestamp = timestamps[row]
+            value_row = [str(row_timestamp)]
             for header in header_row:
                 if header in iteration_dict:
-                    row.append(iteration_dict[header])
+                    value_row.append(iteration_dict[header])
                 else:
-                    row.append(' ')
-                    print('Value for ' + str(header) + ' in iteration ' + str(iteration + 1)
-                          + ' is missing!')
-            value_rows.append(row)
+                    value_row.append(' ')
+                    print('Value for ' + str(header) + ' is missing! (' + str(row_timestamp) + ')')
+            value_rows.append(value_row)
 
         return header_row, value_rows
