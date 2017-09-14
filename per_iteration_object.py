@@ -137,7 +137,7 @@ class PerIterationObject:
         table_list = []
         for i in range(len(self.tables)):
             table_list.append(
-                self.tables[i].get_rows(self.instance_names[i], iteration_timestamps))
+                self.tables[i].flatten(self.instance_names[i], iteration_timestamps))
 
         self.flat_headers = [table[0] for table in table_list]
         self.flat_values = [table[1] for table in table_list]

@@ -116,8 +116,8 @@ class DiskStatsObject:
         places.
         :return: None
         """
-        self.flat_headers, self.flat_values = self.table.get_rows(self.disk_names,
-                                                                  self.statit_timestamps)
+        self.flat_headers, self.flat_values = self.table.flatten(self.disk_names,
+                                                                 self.statit_timestamps)
         self.add_empty_lines(iteration_timestamps)
 
     def add_empty_lines(self, iteration_end_timestamps):

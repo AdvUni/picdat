@@ -53,7 +53,7 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def get_rows(self, column_names, timestamps):
+    def flatten(self, column_names, timestamps):
         """
         Simplifies the data structure into lists of table content equating table rows.
         :param column_names: A Set containing all instance/disk names (column names) occurring in 
