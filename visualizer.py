@@ -197,6 +197,10 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
                                             get_legend_div_id(chart_ids[chart]) + '")', False))
             html_document.write(option_line('highlightSeriesOpts', '{strokeWidth: 2}', False))
             html_document.write(option_line('legendFormatter', 'legendFormatter', False))
+            html_document.write(option_line('drawGapEdgePoints', 'true', False))
+            html_document.write(option_line('pointSize', '3', False))
+            html_document.write(option_line('animatedZooms', 'true', False))
+            html_document.write(option_line('fillGraph', 'true', False))
             html_document.write('        }' + os.linesep + '    );' + os.linesep)
             html_document.write('</script>' + os.linesep)
 
