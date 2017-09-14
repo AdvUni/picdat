@@ -83,6 +83,10 @@ class PerIterationObject:
 
                 for tuple_iterator in range(len(inner_tuples)):
                     aspect = inner_tuples[tuple_iterator][0]
+
+                    # lun: ... :read_align_histo.x values shouldn't be visualized related on
+                    # timestamps, but on the value x in range 0-8. So, they need to be handled
+                    # specially:
                     if aspect == 'read_align_histo':
                         if aspect in line_split[2]:
                             unit = inner_tuples[tuple_iterator][1]
@@ -92,6 +96,7 @@ class PerIterationObject:
 
                             self.alaign_table.insert(number, instance, value)
                             self.alaign_instances.add(instance)
+                            return
                     if line_split[2] == aspect:
                         unit = inner_tuples[tuple_iterator][1]
 
@@ -111,6 +116,8 @@ class PerIterationObject:
                                                  instance, value)
                         if object_type == 'lun':
                             self.luns_available = True
+
+                        return
                     request_index += 1
             else:
                 request_index += len(PER_ITERATION_REQUESTS[object_type])
