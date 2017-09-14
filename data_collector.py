@@ -82,15 +82,10 @@ def found_sysstat_1sec_begin(line):
 def combine_results(per_iteration_object, sysstat_object, statit_object):
     """
     This function sticks the results of all three request types together.
-    :param per_iteration_headers: A list of list, holding the headers for each per-iteration chart.
-    :param per_iteration_values: A list, holding all values referring the per_iteration_requests.
-    It's nested twice.
-    :param sysstat_percent_headers: A list, holding the headers for the sysstat-percent chart.
-    :param sysstat_percent_values: A list, holding lists of values for the percent chart,
-    grouped like the lines in the sysstat block.
-    :param sysstat_mbs_headers: A list, holding the headers for the sysstat-mbs chart.
-    :param sysstat_mbs_values: A list, holding lists of values for the mbs chart,
-    grouped like the lines in the sysstat block.
+    :param per_iteration_object: object that holds all relevant information about 
+    per_iteration_requests.
+    :param sysstat_object: objet that holds all relevant information about sysstat_requests.
+    :param statit_object: object that holds all relevant inforamtion read from statit blocks.
     :return: All headers in one list, followed by all values in one list.
     """
 
