@@ -49,17 +49,6 @@ def option_line(label, content, argument_is_string):
         return '            ' + label + ': ' + content + ',' + os.linesep
 
 
-def get_checkbox_id(chart_id, graph_number):
-    """
-    Generates an simple ID for a checkbox, related on the chart's id, the checkbox belongs to,
-    and a number.
-    :param chart_id: A string, containing the chart's id.
-    :param graph_number: simple number, representing the graph line, the checkbox belongs to.
-    :return: simple ID as String
-    """
-    return chart_id + constants.CHECKBOX_ID_SPLITTER + str(graph_number)
-
-
 def get_legend_div_id(chart_id):
     """
     Generates a simple id for a chart legend's div element through adding a string to the chart id.
@@ -85,41 +74,6 @@ def create_buttons(html_document, chart_id):
                         + chart_id + ', ' + "'" + chart_id + "'" +
                         ')">deselect all</button>' + os.linesep)
     html_document.write('</p>' + os.linesep)
-
-
-def create_checkboxes(html_document, chart_id, graph_identifiers):
-    """
-    This function creates checkboxes and related labels for each graph line of one chart. The
-    checkboxes allow to select and deselect single graph lines individually. For
-    better readability, they're arranged in an html table.
-    :param html_document: The html file, the checkboxes should be written in.
-    :param chart_id: The id of the chart, the checkboxes should belong to.
-    :param graph_identifiers: A list which contains the names of all graph lines.
-    :return: None
-    """
-    instance_counter = 0
-    html_document.write('<table>' + os.linesep)
-    html_document.write('<tr>' + os.linesep)
-    for instance in graph_identifiers:
-
-        # for better readability, checkboxes are arranged in a table. Therefore,
-        # it needs a linebreak after a view checkboxes:
-        if (instance_counter % constants.COLUMN_NUMBER_OF_CHECKBOXES == 0) \
-                and instance_counter != 0:
-            html_document.write('    </tr>' + os.linesep + '    <tr>' + os.linesep)
-
-        # create html code for checkbox
-        html_document.write('        <td><input type=checkbox id="'
-                            + get_checkbox_id(chart_id, instance_counter) + '" name="'
-                            + chart_id + '" onClick="change(this, '
-                            + chart_id + ')" checked>' + os.linesep)
-        # create html code for label
-        html_document.write('        <label for="' + get_checkbox_id(chart_id,
-                                                                     instance_counter) + '">' +
-                            instance + '</label></td>' + os.linesep)
-        instance_counter += 1
-    html_document.write('</tr>' + os.linesep)
-    html_document.write('</table>' + os.linesep)
 
 
 def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
@@ -197,9 +151,6 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])
-
-            # create checkboxes
-            #create_checkboxes(html_document, chart_ids[chart], header[chart])
 
         # end html document
         html_document.write('</body>' + os.linesep + '</html>')

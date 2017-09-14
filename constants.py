@@ -72,50 +72,6 @@ CHART_DIV_CLASS_NAME = 'chart-div'
 CHARTS_HEIGHT = 600
 CHARTS_WIDTH = 900
 
-SELECT_ALL_FCT = '''
-    function selectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            checkboxes[i].checked = true;
-            chart.setVisibility(i, true);
-        }
-    }
-'''
-
-# this is the javaScript function which is responsible for hiding all graphs in one chart at
-# once; the program needs to write this string in the html document:
-DESELECT_ALL_FCT = '''
-function deselectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            checkboxes[i].checked = false;
-            chart.setVisibility(i, false);
-        }
-    }
-'''
-
-LEGEND_FORMATTER_FCT = '''
-    function legendFormatter(data) {
-        if (data.x == null) {
-            // This happens when there's no selection and {legend: 'always'} is set.
-            return '<br>' + data.series.map(function (series) {
-                    return series.dashHTML + ' ' + series.labelHTML
-                }).join('<br>');
-        }
-
-        var html = this.getLabels()[0] + ': ' + data.xHTML;
-        data.series.forEach(function (series) {
-            if (!series.isVisible) return;
-            var labeledData = series.labelHTML + ': ' + series.yHTML;
-            if (series.isHighlighted) {
-                labeledData = '<b>' + labeledData + '</b>';
-            }
-            html += '<br>' + series.dashHTML + ' ' + labeledData;
-        });
-        return html;
-    }
-'''
-
 JS_FUNCTIONS = '''
     function change(el, chart, graph) {
         chart.setVisibility(graph, el.checked);
