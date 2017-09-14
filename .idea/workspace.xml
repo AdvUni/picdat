@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/table.py" afterPath="$PROJECT_DIR$/table.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constants.py" afterPath="$PROJECT_DIR$/constants.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dygraphs/dygraph.js" afterPath="$PROJECT_DIR$/dygraphs/dygraph.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/visualizer.py" afterPath="$PROJECT_DIR$/visualizer.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +18,7 @@
     <SUITE FILE_PATH="coverage/Perf_orator$table.coverage" NAME="table Coverage Results" MODIFIED="1491572999299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$main.coverage" NAME="main Coverage Results" MODIFIED="1503993789444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$util.coverage" NAME="util Coverage Results" MODIFIED="1504868562583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505393123199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505399261827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$util.coverage" NAME="util Coverage Results" MODIFIED="1491912558007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$Playground.coverage" NAME="Playground Coverage Results" MODIFIED="1500411879544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$data_collector.coverage" NAME="data_collector Coverage Results" MODIFIED="1504870507915" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -65,31 +67,93 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Playground.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Playground.py">
+      <file leaf-file-name="charts.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results/charts.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="8" column="1" lean-forward="false" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="51" />
+            <state relative-caret-position="342">
+              <caret line="19" column="8" lean-forward="false" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="58" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="table.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/table.py">
+      <file leaf-file-name="dygraph.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results/dygraphs/dygraph.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-620">
-              <caret line="26" column="26" lean-forward="false" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
+            <state relative-caret-position="2161">
+              <caret line="10819" column="75" lean-forward="false" selection-start-line="10819" selection-start-column="35" selection-end-line="10819" selection-end-column="75" />
+              <folding>
+                <marker date="1505397051612" expanded="true" signature="591:585182" ph="{...}" />
+                <marker date="1505397051612" expanded="true" signature="1465:585165" ph="{...}" />
+                <marker date="1505397051612" expanded="true" signature="155144:155150" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="155150:155156" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="158142:158150" ph="…" />
+                <marker date="1505397051612" expanded="true" signature="162988:162992" ph="&lt;" />
+                <marker date="1505397051612" expanded="true" signature="162995:162999" ph="&gt;" />
+                <marker date="1505397051612" expanded="true" signature="173515:173531" ph="..." />
+                <marker date="1505397051612" expanded="true" signature="187478:187484" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="187484:187490" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="189033:189039" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="189039:189045" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="189074:189080" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="189080:189086" ph=" " />
+                <marker date="1505397051612" expanded="true" signature="530613:548463" ph="[...]" />
+                <marker date="1505397051612" expanded="true" signature="530650:548436" ph="{...}" />
+                <marker date="1505397051612" expanded="true" signature="543876:543923" ph="..." />
+                <marker date="1505397051612" expanded="true" signature="544456:544484" ph="..." />
+                <marker date="1505397051612" expanded="true" signature="544522:544528" ph="..." />
+                <marker date="1505397051612" expanded="true" signature="545678:545713" ph="..." />
+                <marker date="1505397051612" expanded="true" signature="548166:548239" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="visualizer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/visualizer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="244">
+              <caret line="156" column="53" lean-forward="false" selection-start-line="156" selection-start-column="53" selection-end-line="156" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="requests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/requests.py">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="32" column="31" lean-forward="false" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+            <state relative-caret-position="3096">
+              <caret line="172" column="0" lean-forward="false" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="charts.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results5/charts.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1116">
+              <caret line="65" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="charts.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results3/charts.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1692">
+              <caret line="94" column="47" lean-forward="false" selection-start-line="94" selection-start-column="47" selection-end-line="94" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="charts.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results4/charts.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="468">
+              <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -106,11 +170,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>[</find>
-      <find>repla</find>
-      <find>aggregate_total_transfers</find>
-      <find>== 'lu</find>
-      <find>PER_ITERATION_REQUESTS</find>
       <find>host</find>
       <find>CESt</find>
       <find>UTC</find>
@@ -119,7 +178,6 @@
       <find>legend</find>
       <find>dash</find>
       <find>legend-line</find>
-      <find>setVi</find>
       <find>aler</find>
       <find>visi</find>
       <find>visibility</find>
@@ -135,6 +193,12 @@
       <find>7:</find>
       <find>1:</find>
       <find>8:</find>
+      <find>setVis</find>
+      <find>setVi</find>
+      <find>var dygra</find>
+      <find>var data =</find>
+      <find>var series</find>
+      <find>var series =</find>
       <find>print</find>
     </findStrings>
   </component>
@@ -147,18 +211,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/results8/graphs.html" />
-        <option value="$PROJECT_DIR$/.idea/workspace.xml" />
-        <option value="$PROJECT_DIR$/resultsExample/graphs.html" />
-        <option value="$PROJECT_DIR$/results3/graphs.html" />
-        <option value="$PROJECT_DIR$/results7/graphs.html" />
-        <option value="$PROJECT_DIR$/results11/graphs.html" />
         <option value="$PROJECT_DIR$/results12/dygraph.css" />
         <option value="$PROJECT_DIR$/results12/graphs.html" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/results12/dygraph.js" />
-        <option value="$PROJECT_DIR$/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/results13/sysstat_x_1sec_mbs_chart_values.csv" />
         <option value="$PROJECT_DIR$/results/sysstat_x_1sec_mbs_chart_values.csv" />
@@ -180,17 +237,12 @@
         <option value="$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/globals.py" />
         <option value="$PROJECT_DIR$/data_collector_util.py" />
-        <option value="$PROJECT_DIR$/constants.py" />
         <option value="$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
         <option value="$PROJECT_DIR$/Playground.py" />
         <option value="$PROJECT_DIR$/picdat.py" />
-        <option value="$PROJECT_DIR$/results/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/results/dygraphs/dygraph.css" />
-        <option value="$PROJECT_DIR$/results/charts.html" />
         <option value="$PROJECT_DIR$/sysstat_object.py" />
         <option value="$PROJECT_DIR$/util.py" />
-        <option value="$PROJECT_DIR$/visualizer.py" />
-        <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/results13/charts.html" />
         <option value="$PROJECT_DIR$/align_object.py" />
         <option value="$PROJECT_DIR$/requests.py" />
@@ -198,6 +250,18 @@
         <option value="$PROJECT_DIR$/data_collector.py" />
         <option value="$PROJECT_DIR$/per_iteration_object.py" />
         <option value="$PROJECT_DIR$/table.py" />
+        <option value="$PROJECT_DIR$/results1/charts.html" />
+        <option value="$PROJECT_DIR$/resultsPlay/charts.html" />
+        <option value="$PROJECT_DIR$/results/charts.html" />
+        <option value="$PROJECT_DIR$/results/dygraphs/dygraph.js" />
+        <option value="$PROJECT_DIR$/results2/dygraphs/dygraph.js" />
+        <option value="$PROJECT_DIR$/results2/charts.html" />
+        <option value="$PROJECT_DIR$/dygraphs/dygraph.js" />
+        <option value="$PROJECT_DIR$/results3/charts.html" />
+        <option value="$PROJECT_DIR$/visualizer.py" />
+        <option value="$PROJECT_DIR$/visualizer.py" />
+        <option value="$PROJECT_DIR$/results5/charts.html" />
+        <option value="$PROJECT_DIR$/constants.py" />
       </list>
     </option>
   </component>
@@ -293,7 +357,35 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="results1" />
+              <option name="myItemId" value="results6" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results5" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results3" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -304,7 +396,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Playground.py" />
-    <property name="SearchEverywhereHistoryKey" value="req&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;re&#9;null&#9;null&#10;util&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="vis&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/visualizer.py&#10;req&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;re&#9;null&#9;null&#10;util&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -323,7 +415,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.charts.html">
+  <component name="RunManager" selected="JavaScript Debug.charts.html (2)">
     <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -343,16 +435,16 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results12/charts.html">
+    <configuration default="false" name="charts.html (3)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results2/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="172.27.10.61_charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results13/172.27.10.61_charts.html">
+    <configuration default="false" name="charts.html (4)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results3/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="172.27.10.62_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results13/172.27.10.62_charts.html">
+    <configuration default="false" name="charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results5/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results1/charts.html">
+    <configuration default="false" name="charts.html (2)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results6/charts.html">
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -506,18 +598,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
-      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (1)" />
-      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.62_charts.html" />
-      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (3)" />
+      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (4)" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (2)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (2)" />
         <item index="1" class="java.lang.String" itemvalue="Python.main" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.62_charts.html" />
-        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.172.27.10.61_charts.html (1)" />
-        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (4)" />
+        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (3)" />
       </list>
     </recent_temporary>
   </component>
@@ -534,13 +626,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00048" summary="Corrected some comments">
-      <created>1504868745067</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1504868745067</updated>
     </task>
     <task id="LOCAL-00049" summary="Corrected some comments">
       <created>1504868966269</created>
@@ -878,7 +963,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505393403183</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="Modified comment">
+      <created>1505393557262</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1505393557263</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TodoView">
@@ -892,7 +984,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="1173" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.70474344" sideWeight="0.50213903" order="7" side_tool="true" content_ui="tabs" />
@@ -900,7 +991,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20719844" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29863814" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16417113" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16417113" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32879376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -959,7 +1050,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Completed docstring" />
     <MESSAGE value="Changed variable names containing 'no_unit' to 'iops' instead and completed docstring" />
     <MESSAGE value="Created SysstatObject to carry all information about sysstat_x_1sec blocks, which simplifies the data_collector reading procedure" />
     <MESSAGE value="Added module disk_statistics" />
@@ -984,7 +1074,8 @@
     <MESSAGE value="Createt lun:read_align_histo chart" />
     <MESSAGE value="removed debug output" />
     <MESSAGE value="Added empty return statements in process_per_iteration_requets to quit loop" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added empty return statements in process_per_iteration_requets to quit loop" />
+    <MESSAGE value="Modified comment" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified comment" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -995,12 +1086,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results/dygraph.js" />
-    <entry file="file://$PROJECT_DIR$/results/aggregate_total_transfers_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results/sysstat_x_1sec_mbs_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results11/sysstat_x_1sec_mbs_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results11/aggregate_total_transfers_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results27/charts.html" />
     <entry file="file:///usr/lib64/python3.4/os.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
@@ -1028,6 +1113,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="486">
           <caret line="48" column="65" lean-forward="false" selection-start-line="48" selection-start-column="65" selection-end-line="48" selection-end-column="65" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1072,14 +1158,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="774">
-          <caret line="43" column="44" lean-forward="false" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/results18/tables/AU_statit_disk_statistics_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv" />
@@ -1098,14 +1176,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dygraphs/dygraph.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="7329" column="3" lean-forward="false" selection-start-line="7329" selection-start-column="3" selection-end-line="7329" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1118,33 +1188,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="559">
           <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/results/dygraphs/dygraph.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147402">
-          <caret line="8192" column="19" lean-forward="false" selection-start-line="8192" selection-start-column="19" selection-end-line="8192" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <marker date="1505304708556" expanded="true" signature="155144:155150" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="155150:155156" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="158142:158150" ph="…" />
-            <marker date="1505304708556" expanded="true" signature="162988:162992" ph="&lt;" />
-            <marker date="1505304708556" expanded="true" signature="162995:162999" ph="&gt;" />
-            <marker date="1505304708556" expanded="true" signature="173515:173531" ph="..." />
-            <marker date="1505304708556" expanded="true" signature="187478:187484" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="187484:187490" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="189033:189039" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="189039:189045" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="189074:189080" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="189080:189086" ph=" " />
-            <marker date="1505304708556" expanded="true" signature="543876:543923" ph="..." />
-            <marker date="1505304708556" expanded="true" signature="544456:544484" ph="..." />
-            <marker date="1505304708556" expanded="true" signature="544522:544528" ph="..." />
-            <marker date="1505304708556" expanded="true" signature="545678:545713" ph="..." />
-            <marker date="1505304708556" expanded="true" signature="548166:548239" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1204,62 +1247,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/results/charts.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="2843" column="16" lean-forward="false" selection-start-line="2843" selection-start-column="12" selection-end-line="2843" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resultsPlay/dygraphs/dygraph.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="8475" column="25" lean-forward="true" selection-start-line="8475" selection-start-column="25" selection-end-line="8475" selection-end-column="25" />
-          <folding>
-            <marker date="1505378985496" expanded="true" signature="109670:109676" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="109676:109682" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="111788:111796" ph="…" />
-            <marker date="1505378985496" expanded="true" signature="115102:115106" ph="&lt;" />
-            <marker date="1505378985496" expanded="true" signature="115109:115113" ph="&gt;" />
-            <marker date="1505378985496" expanded="true" signature="122481:122497" ph="..." />
-            <marker date="1505378985496" expanded="true" signature="131848:131854" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="131854:131860" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="132935:132941" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="132941:132947" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="132976:132982" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="132982:132988" ph=" " />
-            <marker date="1505378985496" expanded="true" signature="368315:368362" ph="..." />
-            <marker date="1505378985496" expanded="true" signature="368741:368769" ph="..." />
-            <marker date="1505378985496" expanded="true" signature="368807:368813" ph="..." />
-            <marker date="1505378985496" expanded="true" signature="369554:369589" ph="..." />
-            <marker date="1505378985496" expanded="true" signature="371342:371415" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resultsPlay/charts.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="37" column="14" lean-forward="false" selection-start-line="37" selection-start-column="14" selection-end-line="37" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/visualizer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3546">
-          <caret line="200" column="69" lean-forward="false" selection-start-line="200" selection-start-column="69" selection-end-line="200" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="47">
           <caret line="153" column="9" lean-forward="false" selection-start-line="153" selection-start-column="9" selection-end-line="153" selection-end-column="9" />
           <folding>
-            <element signature="e#42#51#0" expanded="true" />
+            <element signature="e#42#51#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1305,22 +1298,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
           <caret line="1943" column="25" lean-forward="false" selection-start-line="1943" selection-start-column="25" selection-end-line="1943" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/requests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="32" column="31" lean-forward="false" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playground.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="1" lean-forward="false" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="51" />
           <folding />
         </state>
       </provider>
@@ -1372,10 +1349,206 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/results1/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1440">
+          <caret line="83" column="73" lean-forward="false" selection-start-line="83" selection-start-column="73" selection-end-line="83" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/table.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-620">
           <caret line="26" column="26" lean-forward="false" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resultsPlay/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1172">
+          <caret line="8588" column="42" lean-forward="false" selection-start-line="8588" selection-start-column="33" selection-end-line="8588" selection-end-column="42" />
+          <folding>
+            <marker date="1505378985496" expanded="true" signature="109670:109676" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="109676:109682" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="111788:111796" ph="…" />
+            <marker date="1505378985496" expanded="true" signature="115102:115106" ph="&lt;" />
+            <marker date="1505378985496" expanded="true" signature="115109:115113" ph="&gt;" />
+            <marker date="1505378985496" expanded="true" signature="122481:122497" ph="..." />
+            <marker date="1505378985496" expanded="true" signature="131848:131854" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="131854:131860" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="132935:132941" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="132941:132947" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="132976:132982" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="132982:132988" ph=" " />
+            <marker date="1505378985496" expanded="true" signature="368315:368362" ph="..." />
+            <marker date="1505378985496" expanded="true" signature="368741:368769" ph="..." />
+            <marker date="1505378985496" expanded="true" signature="368807:368813" ph="..." />
+            <marker date="1505378985496" expanded="true" signature="369554:369589" ph="..." />
+            <marker date="1505378985496" expanded="true" signature="371342:371415" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playground.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="1" lean-forward="false" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="32" column="31" lean-forward="false" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resultsPlay/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="41" column="8" lean-forward="false" selection-start-line="41" selection-start-column="8" selection-end-line="42" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2161">
+          <caret line="10819" column="75" lean-forward="false" selection-start-line="10819" selection-start-column="35" selection-end-line="10819" selection-end-column="75" />
+          <folding>
+            <marker date="1505397051612" expanded="true" signature="591:585182" ph="{...}" />
+            <marker date="1505397051612" expanded="true" signature="1465:585165" ph="{...}" />
+            <marker date="1505397051612" expanded="true" signature="155144:155150" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="155150:155156" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="158142:158150" ph="…" />
+            <marker date="1505397051612" expanded="true" signature="162988:162992" ph="&lt;" />
+            <marker date="1505397051612" expanded="true" signature="162995:162999" ph="&gt;" />
+            <marker date="1505397051612" expanded="true" signature="173515:173531" ph="..." />
+            <marker date="1505397051612" expanded="true" signature="187478:187484" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="187484:187490" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="189033:189039" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="189039:189045" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="189074:189080" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="189080:189086" ph=" " />
+            <marker date="1505397051612" expanded="true" signature="530613:548463" ph="[...]" />
+            <marker date="1505397051612" expanded="true" signature="530650:548436" ph="{...}" />
+            <marker date="1505397051612" expanded="true" signature="543876:543923" ph="..." />
+            <marker date="1505397051612" expanded="true" signature="544456:544484" ph="..." />
+            <marker date="1505397051612" expanded="true" signature="544522:544528" ph="..." />
+            <marker date="1505397051612" expanded="true" signature="545678:545713" ph="..." />
+            <marker date="1505397051612" expanded="true" signature="548166:548239" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results2/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1152">
+          <caret line="64" column="5" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="64" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results2/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="8486" column="27" lean-forward="false" selection-start-line="8486" selection-start-column="27" selection-end-line="8487" selection-end-column="25" />
+          <folding>
+            <marker date="1505397051408" expanded="true" signature="109670:109676" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="109676:109682" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="111788:111796" ph="…" />
+            <marker date="1505397051408" expanded="true" signature="115102:115106" ph="&lt;" />
+            <marker date="1505397051408" expanded="true" signature="115109:115113" ph="&gt;" />
+            <marker date="1505397051408" expanded="true" signature="122481:122497" ph="..." />
+            <marker date="1505397051408" expanded="true" signature="131848:131854" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="131854:131860" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="132935:132941" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="132941:132947" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="132976:132982" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="132982:132988" ph=" " />
+            <marker date="1505397051408" expanded="true" signature="368342:368389" ph="..." />
+            <marker date="1505397051408" expanded="true" signature="368768:368796" ph="..." />
+            <marker date="1505397051408" expanded="true" signature="368834:368840" ph="..." />
+            <marker date="1505397051408" expanded="true" signature="369581:369616" ph="..." />
+            <marker date="1505397051408" expanded="true" signature="371369:371442" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="326">
+          <caret line="8488" column="50" lean-forward="false" selection-start-line="8488" selection-start-column="50" selection-end-line="8488" selection-end-column="50" />
+          <folding>
+            <marker date="1505398108233" expanded="true" signature="109670:109676" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="109676:109682" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="111788:111796" ph="…" />
+            <marker date="1505398108233" expanded="true" signature="115102:115106" ph="&lt;" />
+            <marker date="1505398108233" expanded="true" signature="115109:115113" ph="&gt;" />
+            <marker date="1505398108233" expanded="true" signature="122481:122497" ph="..." />
+            <marker date="1505398108233" expanded="true" signature="131848:131854" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="131854:131860" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="132935:132941" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="132941:132947" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="132976:132982" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="132982:132988" ph=" " />
+            <marker date="1505398108233" expanded="true" signature="368473:368520" ph="..." />
+            <marker date="1505398108233" expanded="true" signature="368899:368927" ph="..." />
+            <marker date="1505398108233" expanded="true" signature="368965:368971" ph="..." />
+            <marker date="1505398108233" expanded="true" signature="369712:369747" ph="..." />
+            <marker date="1505398108233" expanded="true" signature="371500:371573" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="19" column="8" lean-forward="false" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results4/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/visualizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="156" column="53" lean-forward="false" selection-start-line="156" selection-start-column="53" selection-end-line="156" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results3/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1692">
+          <caret line="94" column="47" lean-forward="false" selection-start-line="94" selection-start-column="47" selection-end-line="94" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results5/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1116">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3096">
+          <caret line="172" column="0" lean-forward="false" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
           <folding />
         </state>
       </provider>

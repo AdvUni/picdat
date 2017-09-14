@@ -153,16 +153,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
 
         # implement checkbox functionality and legend formatter in javaScript
         html_document.write('<script>' + os.linesep)
-        html_document.write('    function change(el, chart) {' + os.linesep)
-        html_document.write('        chart.setVisibility(translateNumber(el.id), el.checked);' +
-                            os.linesep)
-        html_document.write('    }' + os.linesep)
-        html_document.write('    function translateNumber(id) {' + os.linesep +
-                            '        return id.split("' + constants.CHECKBOX_ID_SPLITTER
-                            + '")[1];' + os.linesep + '    }')
-        html_document.write(constants.SELECT_ALL_FCT)
-        html_document.write(constants.DESELECT_ALL_FCT)
-        html_document.write(constants.LEGEND_FORMATTER_FCT)
+        html_document.write(constants.JS_FUNCTIONS)
         html_document.write('</script>' + os.linesep)
 
         # write caption
@@ -208,7 +199,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
             create_buttons(html_document, chart_ids[chart])
 
             # create checkboxes
-            create_checkboxes(html_document, chart_ids[chart], header[chart])
+            #create_checkboxes(html_document, chart_ids[chart], header[chart])
 
         # end html document
         html_document.write('</body>' + os.linesep + '</html>')

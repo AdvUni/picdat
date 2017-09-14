@@ -8484,7 +8484,9 @@ Legend.generateLegendHTML = function (g, x, sel_points, oneEmWidth, row) {
         label: labels[i],
         labelHTML: escapeHTML(labels[i]),
         isVisible: series.visible,
-        color: series.color
+        color: series.color,
+        graphIndex: i-1 // Addition from Marie Lohbeck, developer of PicDat; needed to toggle
+                        // graphs visibility out of the legend
       };
 
       data.series.push(seriesData);

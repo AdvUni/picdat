@@ -115,3 +115,60 @@ LEGEND_FORMATTER_FCT = '''
         return html;
     }
 '''
+
+JS_FUNCTIONS = '''
+    function change(el, chart, graph) {
+        chart.setVisibility(graph, el.checked);
+    }
+
+    function selectAll(button, chart, name) {
+        var checkboxes = document.getElementsByName(name);
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            chart.setVisibility(i, true);
+        }
+    }
+
+    function deselectAll(button, chart, name) {
+        var checkboxes = document.getElementsByName(name);
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            chart.setVisibility(i, false);
+        }
+    }
+    function createCheckBox(chartID, graphID, checked) {
+        if (checked) {
+            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
+                '"name="' + chartID + '" onClick="change(this, ' + chartID + ',' +
+                graphID + ')"checked>'
+        } else {
+            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
+                '"name="' + chartID + '" onClick="change(this, ' + chartID + ',' + graphID + ')">';
+        }
+    }
+
+    function legendFormatter(data) {
+        if (data.x == null) {
+            // This happens when there's no selection and {legend: 'always'} is set.
+
+            var chartID = data.dygraph.toString().split(' ')[1].split(']')[0];
+
+            return '<br>' + data.series.map(function (series) {
+                    var graphID = series.graphIndex;
+                    var checked = series.isVisible;
+                    return series.dashHTML + ' ' + createCheckBox(chartID, graphID, checked) +
+                        ' ' + series.labelHTML
+                }).join('<br>');
+        }
+
+        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        data.series.forEach(function (series) {
+            if (!series.isVisible) return;
+            var labeledData = series.labelHTML + ': ' + series.yHTML;
+            if (series.isHighlighted) {
+                labeledData = '<b>' + labeledData + '</b>';
+            }
+            html += '<br>' + series.dashHTML + ' ' + labeledData;
+        });
+        return html;
+    }
+
+'''
