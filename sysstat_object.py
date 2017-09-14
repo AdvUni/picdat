@@ -77,13 +77,10 @@ class SysstatObject:
         iterations.
         :return: None
         """
-        sysstat_value_lists = [self.percent_values, self.mbs_values, self.iops_values]
-
-        for value_list in sysstat_value_lists:
-
-            if value_list[0] is not None:
-                columns = len(value_list[0])
-                value_list.append([' ' for _ in range(columns + 1)])
+        for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
+            empty_line = util.empty_line(value_list)
+            if empty_line is not None:
+                value_list.append(empty_line)
 
     def process_sysstat_requests(self, value_line):
         """

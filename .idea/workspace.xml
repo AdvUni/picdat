@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_collector.py" afterPath="$PROJECT_DIR$/data_collector.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/disk_statistics_object.py" afterPath="$PROJECT_DIR$/disk_statistics_object.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sysstat_object.py" afterPath="$PROJECT_DIR$/sysstat_object.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +19,7 @@
     <SUITE FILE_PATH="coverage/Perf_orator$table.coverage" NAME="table Coverage Results" MODIFIED="1491572999299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$main.coverage" NAME="main Coverage Results" MODIFIED="1503993789444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$util.coverage" NAME="util Coverage Results" MODIFIED="1504868562583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505291233869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505376684178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$util.coverage" NAME="util Coverage Results" MODIFIED="1491912558007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$Playground.coverage" NAME="Playground Coverage Results" MODIFIED="1500411879544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$data_collector.coverage" NAME="data_collector Coverage Results" MODIFIED="1504870507915" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -31,8 +34,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="138" column="18" lean-forward="false" selection-start-line="138" selection-start-column="18" selection-end-line="138" selection-end-column="18" />
+            <state relative-caret-position="-59">
+              <caret line="153" column="9" lean-forward="false" selection-start-line="153" selection-start-column="9" selection-end-line="153" selection-end-column="9" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
@@ -40,24 +43,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/constants.py">
+      <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_collector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="774">
-              <caret line="43" column="44" lean-forward="false" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
-              <folding />
+            <state relative-caret-position="2536">
+              <caret line="219" column="40" lean-forward="false" selection-start-line="219" selection-start-column="40" selection-end-line="219" selection-end-column="40" />
+              <folding>
+                <element signature="e#83#109#0" expanded="true" />
+                <marker date="1505378180225" expanded="true" signature="9157:9158" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data_collector.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data_collector.py">
+      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1332">
-              <caret line="218" column="0" lean-forward="false" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
+            <state relative-caret-position="287">
+              <caret line="115" column="15" lean-forward="true" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="15" />
               <folding>
-                <element signature="e#83#109#0" expanded="true" />
-                <marker date="1505286138741" expanded="true" signature="9143:9144" ph="..." />
+                <element signature="e#43#54#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="util.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/util.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="773">
+              <caret line="346" column="65" lean-forward="false" selection-start-line="346" selection-start-column="65" selection-end-line="346" selection-end-column="65" />
+              <folding>
+                <marker date="1505378180321" expanded="true" signature="8498:9096" ph="..." />
+                <marker date="1505378180321" expanded="true" signature="11837:12009" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sysstat_object.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sysstat_object.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="79" column="51" lean-forward="true" selection-start-line="79" selection-start-column="51" selection-end-line="79" selection-end-column="51" />
+              <folding>
+                <element signature="e#41#50#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,74 +96,8 @@
       <file leaf-file-name="per_iteration_object.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/per_iteration_object.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-55">
+            <state relative-caret-position="395">
               <caret line="146" column="51" lean-forward="false" selection-start-line="146" selection-start-column="51" selection-end-line="146" selection-end-column="51" />
-              <folding>
-                <element signature="e#47#58#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="requests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/requests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1080">
-              <caret line="60" column="26" lean-forward="false" selection-start-line="60" selection-start-column="26" selection-end-line="60" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="95" column="28" lean-forward="false" selection-start-line="95" selection-start-column="28" selection-end-line="95" selection-end-column="28" />
-              <folding>
-                <element signature="e#43#54#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Playground.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Playground.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="7" column="52" lean-forward="false" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sysstat_object.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sysstat_object.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="130" column="12" lean-forward="false" selection-start-line="130" selection-start-column="12" selection-end-line="130" selection-end-column="85" />
-              <folding>
-                <element signature="e#41#50#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="re.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/lib64/python3.4/re.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/table.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1386">
-              <caret line="77" column="21" lean-forward="false" selection-start-line="77" selection-start-column="21" selection-end-line="77" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -150,19 +114,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>processor_processor_busy_checkbox3</find>
-      <find>unit</find>
-      <find>colorValue</find>
-      <find>series color</find>
-      <find>color</find>
-      <find>hue</find>
-      <find>torgb</find>
-      <find>hsvtorgb</find>
-      <find>sear</find>
-      <find>sea</find>
-      <find>search</find>
-      <find>sp</find>
-      <find>.s</find>
       <find>sysstat_percent_requests</find>
       <find>percent_re</find>
       <find>1^^</find>
@@ -175,11 +126,24 @@
       <find>PER_ITERATION_REQUESTS</find>
       <find>host</find>
       <find>CESt</find>
-      <find>legend</find>
       <find>UTC</find>
       <find>no_uni</find>
       <find>print</find>
       <find>total_ops</find>
+      <find>legend</find>
+      <find>dash</find>
+      <find>legend-line</find>
+      <find>setVi</find>
+      <find>aler</find>
+      <find>visi</find>
+      <find>visibility</find>
+      <find>setvisibility</find>
+      <find>setVisi</find>
+      <find>alert</find>
+      <find>legend-linh</find>
+      <find>setV</find>
+      <find>Dygraph</find>
+      <find>setvis</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -191,9 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/orderedset.py" />
-        <option value="$PROJECT_DIR$/MIT_license_dygraphs.txt" />
-        <option value="$PROJECT_DIR$/MIT_license_orderedset.txt" />
         <option value="$PROJECT_DIR$/results5/graphs.html" />
         <option value="$PROJECT_DIR$/results6/graphs.html" />
         <option value="$PROJECT_DIR$/results8/graphs.html" />
@@ -228,20 +189,23 @@
         <option value="$PROJECT_DIR$/dygraphs/dygraph.css" />
         <option value="$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/globals.py" />
-        <option value="$PROJECT_DIR$/picdat.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/visualizer.py" />
         <option value="$PROJECT_DIR$/data_collector_util.py" />
         <option value="$PROJECT_DIR$/constants.py" />
         <option value="$PROJECT_DIR$/requests.py" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
-        <option value="$PROJECT_DIR$/sysstat_object.py" />
         <option value="$PROJECT_DIR$/Playground.py" />
         <option value="$PROJECT_DIR$/table.py" />
         <option value="$PROJECT_DIR$/per_iteration_object.py" />
+        <option value="$PROJECT_DIR$/picdat.py" />
+        <option value="$PROJECT_DIR$/results/dygraphs/dygraph.js" />
+        <option value="$PROJECT_DIR$/results/dygraphs/dygraph.css" />
+        <option value="$PROJECT_DIR$/results/charts.html" />
         <option value="$PROJECT_DIR$/data_collector.py" />
+        <option value="$PROJECT_DIR$/sysstat_object.py" />
         <option value="$PROJECT_DIR$/disk_statistics_object.py" />
+        <option value="$PROJECT_DIR$/util.py" />
       </list>
     </option>
   </component>
@@ -273,62 +237,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="results36" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="results19" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="picdat" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="results" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="Project Files">
           <PATH>
@@ -371,12 +279,150 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results10" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results10" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tables" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results9" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results9" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tables" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tables" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="results" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Playground.py" />
-    <property name="SearchEverywhereHistoryKey" value="Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="util&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -395,7 +441,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.10.2.248.139_charts.html (3)">
+  <component name="RunManager" selected="JavaScript Debug.charts.html (4)">
     <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -415,16 +461,16 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="10.2.248.139_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results30/10.2.248.139_charts.html">
+    <configuration default="false" name="charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results1/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="10.2.248.139_charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results32/10.2.248.139_charts.html">
+    <configuration default="false" name="charts.html (2)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results2/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="10.2.248.139_charts.html (2)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results33/10.2.248.139_charts.html">
+    <configuration default="false" name="charts.html (3)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results9/charts.html">
       <method />
     </configuration>
-    <configuration default="false" name="10.2.248.139_charts.html (3)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results36/10.2.248.139_charts.html">
+    <configuration default="false" name="charts.html (4)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results10/charts.html">
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -578,18 +624,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
-      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (1)" />
-      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (2)" />
-      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (3)" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (2)" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (3)" />
+      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (4)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (3)" />
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (4)" />
         <item index="1" class="java.lang.String" itemvalue="Python.main" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (2)" />
-        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html (1)" />
-        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.10.2.248.139_charts.html" />
+        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (3)" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (2)" />
       </list>
     </recent_temporary>
   </component>
@@ -606,34 +652,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Deleted tmp directory properly">
-      <created>1504708793805</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1504708793805</updated>
-    </task>
-    <task id="LOCAL-00037" summary="enabled lun replacement again">
-      <created>1504708988021</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1504708988021</updated>
-    </task>
-    <task id="LOCAL-00038" summary="added docstring">
-      <created>1504710367064</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1504710367064</updated>
-    </task>
-    <task id="LOCAL-00039" summary="stored handling user input into functions on their own">
-      <created>1504712473668</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1504712473668</updated>
     </task>
     <task id="LOCAL-00040" summary="Added value formatter to charts and enabled highlightSeries-option">
       <created>1504856967525</created>
@@ -950,7 +968,35 @@
       <option name="project" value="LOCAL" />
       <updated>1505286206122</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="Distinguished fresh lines from linebreak snippets in Disk Statistics">
+      <created>1505291629146</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1505291629146</updated>
+    </task>
+    <task id="LOCAL-00086" summary="Removed debug output">
+      <created>1505292186556</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1505292186556</updated>
+    </task>
+    <task id="LOCAL-00087" summary="Wrote deletion auf tmp files in main routine inside a finally block">
+      <created>1505292227009</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1505292227009</updated>
+    </task>
+    <task id="LOCAL-00088" summary="Removed debug output">
+      <created>1505292248768</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1505292248769</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TodoView">
@@ -963,26 +1009,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="1920" height="1173" extended-state="0" />
+    <frame x="0" y="27" width="1920" height="1173" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16149732" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.70474344" sideWeight="0.50213903" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.56031126" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20719844" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29863814" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22568093" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5063492" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16417113" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32879376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5063492" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32879376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1030,9 +1077,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Generated nicer names for written files" />
-    <MESSAGE value="fixed timzone conversion" />
-    <MESSAGE value="removed debug output" />
     <MESSAGE value="Added timezone notice to html" />
     <MESSAGE value="Grouped files inside results in sub directories" />
     <MESSAGE value="Generated command line output between processing of different data files" />
@@ -1055,7 +1099,10 @@
     <MESSAGE value="Removed Debug Output" />
     <MESSAGE value="Fitted table variable names" />
     <MESSAGE value="Simplified arguments in combine_result function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Simplified arguments in combine_result function" />
+    <MESSAGE value="Distinguished fresh lines from linebreak snippets in Disk Statistics" />
+    <MESSAGE value="Wrote deletion auf tmp files in main routine inside a finally block" />
+    <MESSAGE value="Removed debug output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed debug output" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1066,38 +1113,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results9/lun_total_ops_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results11/charts1.html" />
-    <entry file="file://$PROJECT_DIR$/results11/dygraph.js" />
-    <entry file="file://$PROJECT_DIR$/results11/dygraph.css" />
-    <entry file="file://$PROJECT_DIR$/results11/charts0.html" />
-    <entry file="file://$PROJECT_DIR$/results14/charts0.html" />
-    <entry file="file://$PROJECT_DIR$/results14/dygraph.css" />
-    <entry file="file://$PROJECT_DIR$/resultsExample/dygraph.css" />
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/typing.pyi">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="276" column="8" lean-forward="false" selection-start-line="276" selection-start-column="8" selection-end-line="276" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib64/python3.4/shutil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="458" column="0" lean-forward="false" selection-start-line="458" selection-start-column="0" selection-end-line="458" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/table_writer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="29" column="8" lean-forward="false" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/results5/charts0.html" />
     <entry file="file://$PROJECT_DIR$/results5/lun_read_data_chart_values0.csv" />
     <entry file="file://$PROJECT_DIR$/results5/lun_avg_latency_chart_values1.csv" />
@@ -1116,13 +1131,7 @@
     <entry file="file://$PROJECT_DIR$/results/sysstat_x_1sec_mbs_chart_values0.csv" />
     <entry file="file://$PROJECT_DIR$/results11/sysstat_x_1sec_mbs_chart_values0.csv" />
     <entry file="file://$PROJECT_DIR$/results11/aggregate_total_transfers_chart_values0.csv" />
-    <entry file="file://$PROJECT_DIR$/results27/charts.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="59" column="42" lean-forward="false" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/results27/charts.html" />
     <entry file="file:///usr/lib64/python3.4/os.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
@@ -1143,14 +1152,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-448">
           <caret line="77" column="34" lean-forward="false" selection-start-line="77" selection-start-column="34" selection-end-line="77" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="9499" column="49" lean-forward="false" selection-start-line="9499" selection-start-column="43" selection-end-line="9499" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1206,7 +1207,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
           <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1218,39 +1218,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="47" lean-forward="true" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1061">
-          <caret line="243" column="42" lean-forward="false" selection-start-line="243" selection-start-column="42" selection-end-line="243" selection-end-column="42" />
-          <folding>
-            <element signature="e#55#70#0" expanded="false" />
-            <marker date="1505215707201" expanded="true" signature="8498:9096" ph="..." />
-            <marker date="1505215707201" expanded="true" signature="11837:12009" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/results18/tables/AU_statit_disk_statistics_chart_values.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="27" column="118" lean-forward="false" selection-start-line="27" selection-start-column="118" selection-end-line="27" selection-end-column="118" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="95" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="95" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
+    <entry file="file://$PROJECT_DIR$/results18/tables/AU_statit_disk_statistics_chart_values.csv" />
+    <entry file="file://$PROJECT_DIR$/results17/tables/172.27.10.61_statit_disk_statistics_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/requests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1080">
@@ -1266,60 +1236,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="77" column="21" lean-forward="false" selection-start-line="77" selection-start-column="21" selection-end-line="77" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/per_iteration_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-55">
-          <caret line="146" column="51" lean-forward="false" selection-start-line="146" selection-start-column="51" selection-end-line="146" selection-end-column="51" />
-          <folding>
-            <element signature="e#47#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_collector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1332">
-          <caret line="218" column="0" lean-forward="false" selection-start-line="218" selection-start-column="0" selection-end-line="218" selection-end-column="0" />
-          <folding>
-            <element signature="e#83#109#0" expanded="true" />
-            <marker date="1505286138741" expanded="true" signature="9143:9144" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/picdat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="138" column="18" lean-forward="false" selection-start-line="138" selection-start-column="18" selection-end-line="138" selection-end-column="18" />
-          <folding>
-            <element signature="e#42#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib64/python3.4/re.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="130" column="12" lean-forward="false" selection-start-line="130" selection-start-column="12" selection-end-line="130" selection-end-column="85" />
-          <folding>
-            <element signature="e#41#50#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1331,12 +1252,182 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="7329" column="3" lean-forward="false" selection-start-line="7329" selection-start-column="3" selection-end-line="7329" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="9352" column="19" lean-forward="false" selection-start-line="9352" selection-start-column="19" selection-end-line="9352" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/dygraphs/dygraph.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/dygraphs/dygraph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147402">
+          <caret line="8192" column="19" lean-forward="false" selection-start-line="8192" selection-start-column="19" selection-end-line="8192" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+            <marker date="1505304708556" expanded="true" signature="155144:155150" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="155150:155156" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="158142:158150" ph="…" />
+            <marker date="1505304708556" expanded="true" signature="162988:162992" ph="&lt;" />
+            <marker date="1505304708556" expanded="true" signature="162995:162999" ph="&gt;" />
+            <marker date="1505304708556" expanded="true" signature="173515:173531" ph="..." />
+            <marker date="1505304708556" expanded="true" signature="187478:187484" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="187484:187490" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="189033:189039" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="189039:189045" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="189074:189080" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="189080:189086" ph=" " />
+            <marker date="1505304708556" expanded="true" signature="543876:543923" ph="..." />
+            <marker date="1505304708556" expanded="true" signature="544456:544484" ph="..." />
+            <marker date="1505304708556" expanded="true" signature="544522:544528" ph="..." />
+            <marker date="1505304708556" expanded="true" signature="545678:545713" ph="..." />
+            <marker date="1505304708556" expanded="true" signature="548166:548239" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="9" lean-forward="false" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results/charts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="702">
+          <caret line="39" column="32" lean-forward="false" selection-start-line="39" selection-start-column="32" selection-end-line="39" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="701">
+          <caret line="74" column="12" lean-forward="false" selection-start-line="74" selection-start-column="12" selection-end-line="74" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/picdat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-59">
+          <caret line="153" column="9" lean-forward="false" selection-start-line="153" selection-start-column="9" selection-end-line="153" selection-end-column="9" />
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results3/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results2/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results5/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results9/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results10/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results6/tables/statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="95" column="28" lean-forward="false" selection-start-line="95" selection-start-column="28" selection-end-line="95" selection-end-column="28" />
+        <state relative-caret-position="287">
+          <caret line="115" column="15" lean-forward="true" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="15" />
           <folding>
             <element signature="e#43#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/per_iteration_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="146" column="51" lean-forward="false" selection-start-line="146" selection-start-column="51" selection-end-line="146" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sysstat_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="79" column="51" lean-forward="true" selection-start-line="79" selection-start-column="51" selection-end-line="79" selection-end-column="51" />
+          <folding>
+            <element signature="e#41#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_collector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2536">
+          <caret line="219" column="40" lean-forward="false" selection-start-line="219" selection-start-column="40" selection-end-line="219" selection-end-column="40" />
+          <folding>
+            <element signature="e#83#109#0" expanded="true" />
+            <marker date="1505378180225" expanded="true" signature="9157:9158" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="773">
+          <caret line="346" column="65" lean-forward="false" selection-start-line="346" selection-start-column="65" selection-end-line="346" selection-end-column="65" />
+          <folding>
+            <marker date="1505378180321" expanded="true" signature="8498:9096" ph="..." />
+            <marker date="1505378180321" expanded="true" signature="11837:12009" ph="..." />
           </folding>
         </state>
       </provider>

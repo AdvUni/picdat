@@ -217,7 +217,7 @@ def read_data_file(perfstat_data_file):
     # simplify data structures for per-iteration data
     per_iteration_object.rework_per_iteration_data(start_times)
 
-    statit_object.flatten_table()
+    statit_object.rework_statit_data(end_times)
 
     return combine_results(per_iteration_object, sysstat_object, statit_object), \
            per_iteration_object.luns_available

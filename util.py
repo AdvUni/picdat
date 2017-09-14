@@ -336,3 +336,16 @@ def extract_to_temp_dir(zip_folder):
             if data_type(file) == 'data':
                 output_files.append(file)
     return temp_path, output_files
+
+
+def empty_line(value_list):
+    """
+    Generates an empty data line for a value list. This is for interrupting the
+    dygraphs graph lines in resulting charts. Therefore, this line should be inserted between
+    iterations.
+    :param value_list: the list you want to add an empty line to.
+    :return: A list of empty Strings in the length of value_list.
+    """
+    if value_list[0] is not None:
+        columns = len(value_list[0])
+        return [' ' for _ in range(columns + 1)]

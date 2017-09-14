@@ -106,6 +106,42 @@ class DiskStatsObject:
                 ut_end_index = ut_start_index + len('ut%')
                 self.ut_column_indices = (ut_start_index, ut_end_index)
 
-    def flatten_table(self):
+    def rework_statit_data(self, iteration_timestamps):
+        """
+        Simplifies statit data: Flattens the table data structure into the lists flat_headers and
+        flat_values. Also inserts empty data lines into flat_values, to separate iterations in
+        resulting charts from each other.
+        :param iteration_timestamps: A list of datetime objects, marking the ends of all
+        iterations in one PerfStat file. They are needed to insert the empty lines at the right
+        places.
+        :return: None
+        """
         self.flat_headers, self.flat_values = self.table.get_rows(self.disk_names,
                                                                   self.statit_timestamps)
+        self.add_empty_lines(iteration_timestamps)
+
+    def add_empty_lines(self, iteration_end_timestamps):
+        """
+        Inserts empty data lines into the flat_values list retroactively. The empty lines are
+        inserted between two rows belonging to different iterations. This is for interrupting the
+        dygraphs graph lines between iterations in resulting charts.
+        :param iteration_end_timestamps: A list of datetime objects, marking the ends of all
+        iterations in one PerfStat file.
+        :return: None
+        """
+        iter_iterations = iter(iteration_end_timestamps)
+        next_iteration = next(iter_iterations)
+        counter = 0
+
+        try:
+            for statit in self.statit_timestamps:
+                print('statit:    ' + str(statit))
+                print('iteration: ' + str(next_iteration))
+                print()
+                if next_iteration < statit:
+                    self.flat_values.insert(counter, util.empty_line(self.flat_values))
+                    next_iteration = next(iter_iterations)
+                    counter += 1
+                counter += 1
+        except StopIteration:
+            pass
