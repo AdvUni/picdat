@@ -29,7 +29,8 @@ PER_ITERATION_REQUESTS = OrderedDict([
     ('aggregate', [('total_transfers', '/s')]),
     ('processor', [('processor_busy', '%')]),
     ('volume', [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]),
-    ('lun', [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')])
+    ('lun', [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s'),
+             ('read_align_histo', '%')])
 ])
 
 # These search keys will match many times inside sysstat_x_1sec blocks. They all belong to unit

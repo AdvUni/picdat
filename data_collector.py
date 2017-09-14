@@ -199,6 +199,9 @@ def read_data_file(perfstat_data_file):
 
     data.close()
 
+    print(per_iteration_object.alaign_table)
+    print(per_iteration_object.tables[6])
+
     # postprocessing
 
     if number_of_iterations == 0:

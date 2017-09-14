@@ -53,7 +53,7 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def flatten(self, column_names, timestamps):
+    def flatten(self, column_names, timestamps, offset):
         """
         Simplifies the data structure into lists of table content equating table rows.
         :param column_names: A Set containing all instance/disk names (column names) occurring in 
@@ -63,21 +63,25 @@ class Table:
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.
         """
+        rownames = timestamps
+        if timestamps is None:
+            rownames = list(range(len(self.outer_dict)))
+
         value_rows = []
         header_row = []
         for instance in column_names:
             header_row.append(instance)
 
-        for row in range(len(timestamps)):
-            iteration_dict = self.outer_dict[row + 1]
-            row_timestamp = timestamps[row]
-            value_row = [str(row_timestamp)]
+        for row in range(len(rownames)):
+            row_dict = self.outer_dict[row + offset]
+            rowname = rownames[row]
+            value_row = [str(rowname)]
             for header in header_row:
-                if header in iteration_dict:
-                    value_row.append(iteration_dict[header])
+                if header in row_dict:
+                    value_row.append(row_dict[header])
                 else:
                     value_row.append(' ')
-                    print('Value for ' + str(header) + ' is missing! (' + str(row_timestamp) + ')')
+                    print('Value for ' + str(header) + ' is missing! (' + str(rowname) + ')')
             value_rows.append(value_row)
 
         return header_row, value_rows

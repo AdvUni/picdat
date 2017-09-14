@@ -4,6 +4,7 @@ Contains the class PerIterationObject.
 import util
 from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS
+from table import Table
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -38,6 +39,9 @@ class PerIterationObject:
 
         # A List of Sets collecting all instance names (column names) occurring in one table:
         self.instance_names = []
+
+        self.alaign_table = Table()
+        self.alaign_instances = set()
 
         # A boolean, whether lun values appeared in the PerfStat at all:
         self.luns_available = False
@@ -79,6 +83,15 @@ class PerIterationObject:
 
                 for tuple_iterator in range(len(inner_tuples)):
                     aspect = inner_tuples[tuple_iterator][0]
+                    if aspect == 'read_align_histo':
+                        if aspect in line_split[2]:
+                            unit = inner_tuples[tuple_iterator][1]
+                            instance = line_split[1]
+                            number = int(line_split[2][-1])
+                            value = line_split[3][:-len(unit)]
+
+                            self.alaign_table.insert(number, instance, value)
+                            self.alaign_instances.add(instance)
                     if line_split[2] == aspect:
                         unit = inner_tuples[tuple_iterator][1]
 
@@ -137,10 +150,20 @@ class PerIterationObject:
         table_list = []
         for i in range(len(self.tables)):
             table_list.append(
-                self.tables[i].flatten(self.instance_names[i], iteration_timestamps))
+                self.tables[i].flatten(self.instance_names[i], iteration_timestamps, 1))
 
         self.flat_headers = [table[0] for table in table_list]
         self.flat_values = [table[1] for table in table_list]
+        print(self.flat_headers)
+        print()
+        print(self.flat_values)
+
+        flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
+                                                                          None, 0)
+        self.flat_headers.append(flat_align_headers)
+        self.flat_values.append(flat_align_values)
+
+        self.instance_names.append(self.alaign_instances)
 
         # replace lun's IDs in headers through their path names
         if 'lun' in PER_ITERATION_REQUESTS and self.luns_available:
