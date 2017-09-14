@@ -154,9 +154,6 @@ class PerIterationObject:
 
         self.flat_headers = [table[0] for table in table_list]
         self.flat_values = [table[1] for table in table_list]
-        print(self.flat_headers)
-        print()
-        print(self.flat_values)
 
         flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
                                                                           None, 0)
