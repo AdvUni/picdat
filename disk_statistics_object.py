@@ -135,9 +135,6 @@ class DiskStatsObject:
 
         try:
             for statit in self.statit_timestamps:
-                print('statit:    ' + str(statit))
-                print('iteration: ' + str(next_iteration))
-                print()
                 if next_iteration < statit:
                     self.flat_values.insert(counter, util.empty_line(self.flat_values))
                     next_iteration = next(iter_iterations)
