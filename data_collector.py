@@ -196,7 +196,11 @@ def read_data_file(perfstat_data_file):
 
                     sysstat_object.recent_timestamp = data_collector_util.get_sysstat_timestamp(
                         next(data), start_times[-1])
-                    next(data)
+
+                    line = next(data)
+                    while len(line.strip()) == 0:
+                        line = next(data)
+
                 continue
 
             if statit_object.inside_statit_block:

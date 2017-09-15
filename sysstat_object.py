@@ -3,6 +3,8 @@ Contains the class SysstatObject
 """
 import re
 
+import sys
+
 import constants
 import util
 from requests import SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS
@@ -93,6 +95,8 @@ class SysstatObject:
         :return: True, if value_line really contained values and False, if it just was a sub header.
         """
         line_split = value_line.split()
+        if len(line_split) == 0:
+            return
 
         # check, whether line really contains data and not just a sub header
         if str.isdigit(line_split[0].strip('%')):
@@ -119,6 +123,7 @@ class SysstatObject:
         :param second_header_line: The second line of a sysstat_x_1sec header
         :return: None
         """
+
         self.sysstat_header_needed = False
 
         # Split the first line into single words and save them to header_line_split.
@@ -167,9 +172,8 @@ class SysstatObject:
         :param line: A line from a PerfStat file as String.
         :return: None.
         """
-
         # '--' marks, that a sysstat_x_1sec block ends.
-        if line == '--':
+        if '--' in line:
             self.inside_sysstat_block = False
         elif self.sysstat_header_needed:
             if self.buffered_header is None:
