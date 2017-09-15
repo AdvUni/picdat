@@ -40,7 +40,7 @@ def search_for_number_of_iterations(line):
         return 0
 
 
-def found_iteration_begin(line, start_times):
+def found_iteration_begin(line, start_times, last_end_time):
     """
     Searches for an iteration begin marker in a string and, if applicable,
     adds the timestamp given in this marker to start_times.
@@ -49,13 +49,13 @@ def found_iteration_begin(line, start_times):
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
-        start_times.append(data_collector_util.get_iteration_timestamp(line))
+        start_times.append(data_collector_util.get_iteration_timestamp(line, last_end_time))
         return True
     else:
         return False
 
 
-def found_iteration_end(line, end_times):
+def found_iteration_end(line, end_times, last_start_time):
     """
     Searches for an iteration end marker in a string and, if applicable,
     adds the timestamp given in this marker to end_times.
@@ -64,7 +64,7 @@ def found_iteration_end(line, end_times):
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
-        end_times.append(data_collector_util.get_iteration_timestamp(line))
+        end_times.append(data_collector_util.get_iteration_timestamp(line, last_start_time))
         return True
     else:
         return False
@@ -172,9 +172,13 @@ def read_data_file(perfstat_data_file):
 
             if '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
-                if found_iteration_begin(line, start_times):
+                if len(end_times) == 0:
+                    last_end_time = None
+                else:
+                    last_end_time = end_times[-1]
+                if found_iteration_begin(line, start_times, last_end_time):
                     iteration_begin_counter += 1
-                elif found_iteration_end(line, end_times):
+                elif found_iteration_end(line, end_times, start_times[-1]):
                     iteration_end_counter += 1
                     # write an empty line into the sysstat tables to cut line in resulting charts
                     # between different iterations (not after the last):
@@ -183,6 +187,7 @@ def read_data_file(perfstat_data_file):
 
                 elif found_sysstat_1sec_begin(line):
                     sysstat_object.inside_sysstat_block = True
+
                     sysstat_object.recent_timestamp = data_collector_util.get_sysstat_timestamp(
                         next(data))
                     next(data)

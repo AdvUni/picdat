@@ -2,7 +2,7 @@
 Small util module with functions only used by the data collector module.
 """
 import util
-import datetime
+import sys
 
 try:
     import pytz
@@ -12,8 +12,6 @@ except ImportError:
 Warning: module pytz is not installed. PicDat won't be able to convert timezones.
 Be aware of possible confusion with time values in charts.
 ''')
-
-import global_vars
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -33,14 +31,32 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def get_iteration_timestamp(iteration_timestamp_line):
+def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
     """
     Extract a date from a PerfStat output line which marks an iteration's beginning or ending
     :param iteration_timestamp_line: a string like
     =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Mon Jan 01 00:00:00 GMT 2000
     :return: a datetime object which contains the input's time information
     """
-    return util.build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
+
+    try:
+        return util.build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
+    except KeyError:
+        print()
+        print('Warning: PerfStat bug. Could not read any timestamp from line:')
+        print(iteration_timestamp_line)
+
+        if last_timestamp is None:
+            print('This should have been the first timestamp. PicDat can\'t handle this.')
+            sys.exit(1)
+
+        print('PicDat is using last collected iteration timestamp (timestamp from a \'BEGIN '
+              'Iteration\' or \'END Iteration\' line) instead')
+        print('This timestamp is: ' + str(last_timestamp))
+        print('Note that this may lead to falsifications in charts!')
+        print()
+
+        return last_timestamp
 
 
 def get_sysstat_timestamp(sysstat_timestamp_line):
