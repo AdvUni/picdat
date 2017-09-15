@@ -46,6 +46,9 @@ def found_iteration_begin(line, start_times, last_end_time):
     adds the timestamp given in this marker to start_times.
     :param line: A string from a PerfStat output file which should be searched
     :param start_times: A list of all iteration start timestamps
+    :param last_end_time: The last collected timestamp of an iteration's end. It would be
+    used as recent timestamp, in case that there is no timestamp available in line on account of
+    a PerfStat bug.
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
@@ -61,6 +64,9 @@ def found_iteration_end(line, end_times, last_start_time):
     adds the timestamp given in this marker to end_times.
     :param line: A string from a PerfStat output file which should be searched
     :param end_times: A list of all iteration end timestamps
+    :param last_start_time: The last collected timestamp of an iteration's beginning. It would be
+    used as recent timestamp, in case that there is no timestamp available in line on account of
+    a PerfStat bug.
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:

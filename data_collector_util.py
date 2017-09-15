@@ -36,6 +36,9 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
     Extract a date from a PerfStat output line which marks an iteration's beginning or ending
     :param iteration_timestamp_line: a string like
     =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Mon Jan 01 00:00:00 GMT 2000
+    :param last_timestamp: The last iteration timestamp, the program has collected. It would be
+    used as recent timestamp, in case that there is no timestamp available in
+    iteration_timestamp_line on account of a PerfStat bug.
     :return: a datetime object which contains the input's time information
     """
 
