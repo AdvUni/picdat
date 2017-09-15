@@ -78,8 +78,8 @@ def get_sysstat_timestamp(sysstat_timestamp_line, iteration_timestamp):
     except IndexError:
         print()
         print('Warning: PerfStat bug. Could not read any timestamp from line:')
-        print(sysstat_timestamp_line)
-        print('PicDat is using the timestamp from the iteration\'s begin intead.')
+        print(sysstat_timestamp_line.strip())
+        print('PicDat is using the timestamp from the iteration\'s begin instead.')
         print('This timestamp is: ' + str(iteration_timestamp))
         print('Note that this may lead to falsifications in charts!')
         print()
