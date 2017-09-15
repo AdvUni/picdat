@@ -62,15 +62,28 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
         return last_timestamp
 
 
-def get_sysstat_timestamp(sysstat_timestamp_line):
+def get_sysstat_timestamp(sysstat_timestamp_line, iteration_timestamp):
     """
     Extract a date from a PerfStat output line which contains the time, a sysstat_x_1sec block
     begins.
     :param sysstat_timestamp_line: a string like
+    :param iteration_timestamp: The the recent iteration's beginning timestamp. It would be
+    used as sysstat beginning timestamp, in case that there is no timestamp available in
+    sysstat_timestamp_line on account of a PerfStat bug.
     PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
     :return: a datetime object which contains the input's time information
     """
-    return util.build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
+    try:
+        return util.build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
+    except IndexError:
+        print()
+        print('Warning: PerfStat bug. Could not read any timestamp from line:')
+        print(sysstat_timestamp_line)
+        print('PicDat is using the timestamp from the iteration\'s begin intead.')
+        print('This timestamp is: ' + str(iteration_timestamp))
+        print('Note that this may lead to falsifications in charts!')
+        print()
+        return iteration_timestamp
 
 
 def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):
