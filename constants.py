@@ -73,6 +73,7 @@ CHARTS_HEIGHT = 600
 CHARTS_WIDTH = 900
 
 JS_FUNCTIONS = '''
+
     function change(el, chart, graph) {
         chart.setVisibility(graph, el.checked);
     }
@@ -114,16 +115,30 @@ JS_FUNCTIONS = '''
                         ' ' + series.labelHTML
                 }).join('<br>');
         }
-
-        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        var graphNumbers = 0;
         data.series.forEach(function (series) {
-            if (!series.isVisible) return;
-            var labeledData = series.labelHTML + ': ' + series.yHTML;
-            if (series.isHighlighted) {
-                labeledData = '<b>' + labeledData + '</b>';
-            }
-            html += '<br>' + series.dashHTML + ' ' + labeledData;
+            if (series.isVisible) graphNumbers++;
         });
+        
+        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        if (graphNumbers > 25) {
+            data.series.forEach(function (series) {
+                if (series.isHighlighted) {
+                    var labeledData = series.labelHTML + ': ' + series.yHTML;
+                    labeledData = '<b>' + labeledData + '</b>';
+                    html += '<br>' + series.dashHTML + ' ' + labeledData;
+                }
+            });
+        } else {
+            data.series.forEach(function (series) {
+                if (!series.isVisible) return;
+                var labeledData = series.labelHTML + ': ' + series.yHTML;
+                if (series.isHighlighted) {
+                    labeledData = '<b>' + labeledData + '</b>';
+                }
+                html += '<br>' + series.dashHTML + ' ' + labeledData;
+            });
+        }
         return html;
     }
 
