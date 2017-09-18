@@ -346,6 +346,6 @@ def empty_line(value_list):
     :param value_list: the list you want to add an empty line to.
     :return: A list of empty Strings in the length of value_list.
     """
-    if value_list[0] is not None:
+    if len(value_list) != 0 and value_list[0] is not None:
         columns = len(value_list[0])
         return [' ' for _ in range(columns + 1)]
