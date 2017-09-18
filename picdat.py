@@ -158,7 +158,7 @@ def run():
             # generate file names for csv tables
             csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
             csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-            csv_rel_filepaths = [csv_dir.split(os.sep)[-1] + os.sep + filename for filename in
+            csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
                                  csv_filenames]
 
             # write data into csv tables
@@ -167,7 +167,7 @@ def run():
 
             # write html file
             print('Create html file...')
-            visualizer.create_html(html_filepath, csv_rel_filepaths, table_headers,
+            visualizer.create_html(html_filepath, csv_filelinks, table_headers,
                                    perfstat_output, luns_available)
 
             # reset global variables
