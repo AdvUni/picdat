@@ -73,7 +73,9 @@ class DiskStatsObject:
         """
         line_split = line.split()
         if self.inside_disk_stats_block:
-            if len(line_split) == 0:
+            if len(line_split) == 0 \
+                    or line == 'Aggregate statistics:' \
+                    or line == 'Spares and other disks:':
                 self.inside_statit_block = False
                 self.inside_disk_stats_block = False
                 return
