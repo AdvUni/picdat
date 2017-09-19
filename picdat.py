@@ -148,8 +148,8 @@ def run():
             print('Read data...')
             (table_headers, table_values), luns_available = data_collector.read_data_file(
                 perfstat_output)
-
-            print('Info: Seems like PerfStat doesn\'t contain any information about LUNs.')
+            if not luns_available:
+                print('Info: Seems like PerfStat doesn\'t contain any information about LUNs.')
 
             # frame html file path
             html_filepath = result_dir + os.sep + output_identifier + constants.HTML_FILENAME + \
