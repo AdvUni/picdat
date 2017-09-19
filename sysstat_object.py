@@ -123,7 +123,6 @@ class SysstatObject:
         :param second_header_line: The second line of a sysstat_x_1sec header
         :return: None
         """
-
         self.sysstat_header_needed = False
 
         # Split the first line into single words and save them to header_line_split.
@@ -173,13 +172,15 @@ class SysstatObject:
         :return: None.
         """
         # '--' marks, that a sysstat_x_1sec block ends.
-        if '--' in line:
+        if line.startswith('--'):
             self.inside_sysstat_block = False
+            self.buffered_header = False
         elif self.sysstat_header_needed:
             if self.buffered_header is None:
                 if len(line.strip()) != 0:
                     self.buffered_header = line
             else:
                 self.process_sysstat_header(self.buffered_header, line)
+                self.buffered_header = None
         else:
             self.process_sysstat_requests(line)
