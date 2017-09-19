@@ -38,27 +38,23 @@ def take_perfstats():
     directory should become deleted) and a list of all PerfStat data files extracted from user
     input.
     """
-    temp_path = None
     while True:
-        entered_file = input('Please enter a path to a PerfStat output file: ')
-        if entered_file == '':
-            entered_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
-        elif not os.path.isfile(entered_file):
+        user_input = input('Please enter a path to a PerfStat output file: ')
+        if user_input == '':
+            user_input = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+        elif not os.path.isfile(user_input):
             print('This file does not exist. Try again.')
             continue
 
-        if util.data_type(entered_file) == 'data':
-            perfstat_output_files = [entered_file]
-        elif util.data_type(entered_file) == 'zip':
-            print('Extract zip...')
-            temp_path, perfstat_output_files = util.extract_to_temp_dir(entered_file)
-        else:
+        data_type = util.data_type(user_input)
+
+        if data_type != 'data' and data_type != 'zip':
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
             continue
 
         break
 
-    return temp_path, perfstat_output_files
+    return user_input
 
 
 def take_directory():
@@ -128,13 +124,20 @@ def run():
         print('Welcome to PicDat!')
 
         # receive PerfStat file(s) from user:
-        temp_path, perfstat_output_files = take_perfstats()
+        user_input = take_perfstats()
 
         # receive destination directory from user
         destination_directory = take_directory()
 
         # create directory and copy the necessary dygraphs files into it
         result_dir, csv_dir = prepare_directory(destination_directory)
+
+        perfstat_output_files = None
+        if util.data_type(user_input) == 'data':
+            perfstat_output_files = [user_input]
+        elif util.data_type(user_input) == 'zip':
+            print('Extract zip...')
+            temp_path, perfstat_output_files = util.extract_to_temp_dir(user_input)
 
         for perfstat_output in perfstat_output_files:
 
