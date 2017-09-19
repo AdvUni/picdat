@@ -132,6 +132,7 @@ def run():
         # create directory and copy the necessary dygraphs files into it
         result_dir, csv_dir = prepare_directory(destination_directory)
 
+        # extract zip if necessary
         perfstat_output_files = None
         if util.data_type(user_input) == 'data':
             perfstat_output_files = [user_input]
@@ -162,7 +163,7 @@ def run():
             csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
             csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
             csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                                 csv_filenames]
+                             csv_filenames]
 
             # write data into csv tables
             print('Create csv tables...')
