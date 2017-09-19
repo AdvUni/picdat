@@ -197,5 +197,5 @@ class PerIterationObject:
                 else:
                     print('Could not find path for LUN "' + uuid + '"! LUN will be displayed '
                                                                    'with ID.')
-                    #raise InstanceNameNotFoundException(uuid)
+                    header_replacement.append(uuid)
             header_list[insertion_index] = header_replacement
