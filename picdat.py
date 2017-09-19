@@ -177,6 +177,7 @@ def run():
 
     finally:
         if temp_path is not None:
+            print('Delete temporarily extracted files...')
             shutil.rmtree(temp_path)
 
 
