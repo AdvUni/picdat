@@ -4,6 +4,7 @@ From here, the tool gets started.
 import os
 import shutil
 from shutil import copyfile
+import traceback
 
 import constants
 import global_vars
@@ -118,6 +119,8 @@ def run():
     :return: None
     """
     temp_path = None
+    console_file = None
+    identifier_dict = None
 
     try:
 
@@ -138,29 +141,46 @@ def run():
             perfstat_output_files = [user_input]
         elif util.data_type(user_input) == 'zip':
             print('Extract zip...')
-            temp_path, perfstat_output_files = util.extract_to_temp_dir(user_input)
+            temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(user_input)
 
-        for perfstat_output in perfstat_output_files:
-
+        # if given, read cluster and node information from console.log file:
+        if console_file is not None:
+            print('Read console.log file for getting cluster and node names...')
             try:
-                output_identifier = perfstat_output.split(os.sep)[-2] + '_'
-                print('Handle PerfStat output from ' + output_identifier[:-1] + ':')
-            except IndexError:
-                output_identifier = ''
+                identifier_dict = util.read_console_file(console_file)
+            except Exception:
+                print('Info: console.log file from zip couldn\'t be read for some reason:')
+                print(traceback.format_exc())
+                identifier_dict = None
+
+        for perfstat_node in perfstat_output_files:
+
+            # get nice names (if possible) for each PerfStat and the whole html file
+            if identifier_dict is not None:
+                perfstat_address = perfstat_node.split(os.sep)[-2]
+
+                node_identifier = identifier_dict[perfstat_address][1]
+                print('Handle PerfStat from node "' + node_identifier + '":')
+                node_identifier += '_'
+
+                html_title = util.get_html_title(identifier_dict, perfstat_address)
+            else:
+                node_identifier = ''
+                html_title = perfstat_node
 
             # collect data from file
             print('Read data...')
             (table_headers, table_values), luns_available = data_collector.read_data_file(
-                perfstat_output)
+                perfstat_node)
             if not luns_available:
                 print('Info: Seems like PerfStat doesn\'t contain any information about LUNs.')
 
             # frame html file path
-            html_filepath = result_dir + os.sep + output_identifier + constants.HTML_FILENAME + \
+            html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
                             constants.HTML_ENDING
 
             # generate file names for csv tables
-            csv_filenames = util.get_csv_filenames(output_identifier, luns_available)
+            csv_filenames = util.get_csv_filenames(node_identifier, luns_available)
             csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
             csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
                              csv_filenames]
@@ -172,7 +192,7 @@ def run():
             # write html file
             print('Create html file...')
             visualizer.create_html(html_filepath, csv_filelinks, table_headers,
-                                   perfstat_output, luns_available)
+                                   html_title, luns_available)
 
             # reset global variables
             global_vars.reset()
@@ -180,6 +200,7 @@ def run():
         print('Done. You will find charts under: ' + os.path.abspath(result_dir))
 
     finally:
+        # delete extracted zip
         if temp_path is not None:
             print('Delete temporarily extracted files...')
             shutil.rmtree(temp_path)

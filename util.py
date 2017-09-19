@@ -328,14 +328,66 @@ def extract_to_temp_dir(zip_folder):
         zip_file.extractall(temp_path)
 
     output_files = []
+    console_file = None
     for path, _, files in os.walk(temp_path):
         if 'host' in path:
             continue
         for filename in files:
             file = os.path.join(path, filename)
-            if data_type(file) == 'data':
+            if filename == 'console.log':
+                console_file = file
+            elif data_type(filename) == 'data':
                 output_files.append(file)
-    return temp_path, output_files
+    return temp_path, output_files, console_file
+
+
+def read_console_file(console_file):
+    """
+    Reads some information from a console.log file as it is attached to PerfStat output.data files.
+    :param console_file: A console.log file from a PerfStat output bundle.
+    :return: A Dict, mapping the PerfStats node addresses to tuples of their
+    cluster and node names.
+    """
+    with open(console_file, 'r') as log:
+
+        line = ''
+        while not line.startswith('Vserver'):
+            line = next(log)
+
+        next(log)
+        inside_block = True
+        cluster = None
+        identifier_dict = {}
+
+        while inside_block:
+            line = next(log)
+            line_split = line.split()
+
+            if len(line_split) == 0 or 'entries were displayed' in line:
+                inside_block = False
+            elif len(line_split) == 1:
+                cluster = line_split[0]
+            else:
+                adress = line_split[2].split('/')[0]
+                node = line_split[3]
+
+                identifier_dict[adress] = (cluster, node)
+
+        return identifier_dict
+
+
+def get_html_title(identifier_dict, perfstat_adress):
+    """
+    Generates a nice title for writing into the html file, based on cluster and node name of
+    recent PerfStat.
+    :param identifier_dict: A Dict, mapping the PerfStats node addresses to tuples of their
+    cluster and node names.
+    :param perfstat_adress: The node adress of the recent PerfStat (like it is used in PerfStat
+    directory names)
+    :return: A String, containing cluster and node information about a PerfStat.
+    """
+    cluster, node = identifier_dict[perfstat_adress]
+    return 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
 
 
 def empty_line(value_list):
