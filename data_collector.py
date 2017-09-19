@@ -152,13 +152,6 @@ def read_data_file(perfstat_data_file):
     # this object collects all information the program finds during processing statit blocks
     statit_object = DiskStatsObject()
 
-    # a dictionary to hold the translations of the lun's IDs into their path names
-    # lun_path_dict = {}
-
-    # some PerfStat don't contain any values for luns. To prevent program from collapsing in this
-    # case, following boolean will turn to True, as soon as a lun value appears in the PerfStat
-    # luns_available = False
-
     # collecting data
 
     with open(perfstat_data_file, 'r') as data:
