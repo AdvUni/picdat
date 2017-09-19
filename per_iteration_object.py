@@ -162,12 +162,14 @@ class PerIterationObject:
         self.flat_headers = [table[0] for table in table_list]
         self.flat_values = [table[1] for table in table_list]
 
-        flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
-                                                                          None, 0)
-        self.flat_headers.append(flat_align_headers)
-        self.flat_values.append(flat_align_values)
+        if self.luns_available:
 
-        self.instance_names.append(self.alaign_instances)
+            flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
+                                                                              None, 0)
+            self.flat_headers.append(flat_align_headers)
+            self.flat_values.append(flat_align_values)
+
+            self.instance_names.append(self.alaign_instances)
 
         # replace lun's IDs in headers through their path names
         if 'lun' in PER_ITERATION_REQUESTS and self.luns_available:
