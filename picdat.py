@@ -148,7 +148,9 @@ def run():
             print('Read console.log file for getting cluster and node names...')
             try:
                 identifier_dict = util.read_console_file(console_file)
-            except Exception:
+            except KeyboardInterrupt:
+                raise
+            except:
                 print('Info: console.log file from zip couldn\'t be read for some reason:')
                 print(traceback.format_exc())
                 identifier_dict = None
