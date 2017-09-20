@@ -101,7 +101,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
 
     with open(html_filepath, 'w') as html_document:
         # write head
-        with open('graph_html_head_template.txt', 'r') as template:
+        with open(constants.HTML_HEAD_TEMPLATE, 'r') as template:
             html_document.writelines(template.readlines())
         template.close()
 
