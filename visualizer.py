@@ -115,8 +115,8 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
         for chart in range(len(csv_files)):
             # call js function to create Dygraph objects
             html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' + chart_ids[chart]
-                                + '", "' + csv_files[chart] + '", "' + constants.X_LABEL + '", "'
-                                + y_labels[chart] + '"); </script>')
+                                + '", "' + csv_files[chart] + '", "' + titles[chart] + '", "'
+                                + constants.X_LABEL + '", "' + y_labels[chart] + '"); </script>')
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])

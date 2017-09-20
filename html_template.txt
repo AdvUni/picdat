@@ -81,7 +81,7 @@
         return html;
     }
 
-    function makeChart(divName, csv, xLabel, yLabel) {
+    function makeChart(divName, csv, chartName, xLabel, yLabel) {
         var chartDiv = document.createElement('div');
         chartDiv.className = "chart-div";
         chartDiv.id = divName;
@@ -99,7 +99,7 @@
             {
                 xlabel: xLabel,
                 ylabel: yLabel,
-                title: divName,
+                title: chartName,
                 legend: "always",
                 labelsDiv: legendDiv,
                 highlightSeriesOpts: {strokeWidth: 2},
