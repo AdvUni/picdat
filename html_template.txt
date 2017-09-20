@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PicDat</title>
+    <script type="text/javascript"
+            src="dygraphs/dygraph.js"></script>
+    <link rel="stylesheet" type="text/css" href="dygraphs/dygraph.css"/>
+</head>
+
+<body>
+<h1> PicDat: </h1>
+<script type="text/javascript">
+
+
+    function change(el, chart, graph) {
+        chart.setVisibility(graph, el.checked);
+    }
+
+    function selectAll(button, chart, name) {
+        var checkboxes = document.getElementsByName(name);
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            chart.setVisibility(i, true);
+        }
+    }
+
+    function deselectAll(button, chart, name) {
+        var checkboxes = document.getElementsByName(name);
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            chart.setVisibility(i, false);
+        }
+    }
+
+    function createCheckBox(chartID, graphID, checked) {
+        chartID = chartID.split(' ')[1].split(']')[0];
+
+        if (checked) {
+            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
+                '"name="' + chartID +
+                '" onClick="' + chartID + '.setVisibility(' + graphID + ', false)" checked>';
+        } else {
+            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
+                '"name="' + chartID +
+                '" onClick="' + chartID + '.setVisibility(' + graphID + ', true)">';
+        }
+    }
+
+    function legendFormatter(data) {
+        if (data.x == null) {
+            // This happens when there's no selection and {legend: 'always'} is set.
+            var chartID = data.dygraph.toString();
+
+            return '<br>' + data.series.map(function (series) {
+                    var graphID = series.graphIndex;
+                    var checked = series.isVisible;
+                    return series.dashHTML + ' ' + createCheckBox(chartID, graphID, checked) +
+                        ' ' + series.labelHTML
+                }).join('<br>');
+        }
+        var graphNumbers = 0;
+        data.series.forEach(function (series) {
+            if (series.isVisible) graphNumbers++;
+        });
+
+        var html = this.getLabels()[0] + ': ' + data.xHTML;
+        if (graphNumbers > 25) {
+            data.series.forEach(function (series) {
+                if (series.isHighlighted) {
+                    var labeledData = series.labelHTML + ': ' + series.yHTML;
+                    labeledData = '<b>' + labeledData + '</b>';
+                    html += '<br>' + series.dashHTML + ' ' + labeledData;
+                }
+            });
+        } else {
+            data.series.forEach(function (series) {
+                if (!series.isVisible) return;
+                var labeledData = series.labelHTML + ': ' + series.yHTML;
+                if (series.isHighlighted) {
+                    labeledData = '<b>' + labeledData + '</b>';
+                }
+                html += '<br>' + series.dashHTML + ' ' + labeledData;
+            });
+        }
+        return html;
+    }
+
+    function makeChart(divName, csv, xLabel, yLabel) {
+        var chartDiv = document.createElement('div');
+        chartDiv.className = "chart-div";
+        chartDiv.id = divName;
+
+        var legendDiv = document.createElement('div');
+        legendDiv.className = "legend-div";
+
+        document.body.appendChild(chartDiv);
+        document.body.appendChild(legendDiv);
+
+
+        return new Dygraph(
+            chartDiv,
+            csv,
+            {
+                xlabel: xLabel,
+                ylabel: yLabel,
+                title: divName,
+                legend: "always",
+                labelsDiv: legendDiv,
+                highlightSeriesOpts: {strokeWidth: 2},
+                legendFormatter: legendFormatter,
+                drawGapEdgePoints: true,
+                pointSize: 3,
+                animatedZooms: true,
+                fillGraph: true
+            }
+        );
+    }
+
+</script>

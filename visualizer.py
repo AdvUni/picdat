@@ -105,11 +105,6 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
             html_document.writelines(template.readlines())
         template.close()
 
-        # implement checkbox functionality and legend formatter in javaScript
-        html_document.write('<script>' + os.linesep)
-        html_document.write(constants.JS_FUNCTIONS)
-        html_document.write('</script>' + os.linesep)
-
         # write caption
         html_document.write('    <h2> ' + sourcepath + ' </h2>' + os.linesep)
         # write timezone notice
@@ -118,36 +113,10 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
 
         # write rest of body
         for chart in range(len(csv_files)):
-            html_document.write('<div id="' + chart_ids[chart] + '" class="'
-                                + constants.CHART_DIV_CLASS_NAME + '"></div>' + os.linesep)
-
-            # create html div element in which the chart legend should be showed
-            html_document.write('<div id="' + get_legend_div_id(chart_ids[chart]) + '" class="'
-                                + constants.LEGEND_DIV_CLASS_NAME + '"></div>')
-
-            # create dygraph object in java script, which is responsible for all data visualisation
-            html_document.write('<script type="text/javascript">' + os.linesep)
-            html_document.write('    ' + chart_ids[chart] + ' = new Dygraph(' + os.linesep)
-            html_document.write('        document.getElementById("' + chart_ids[chart] + '"),'
-                                                                                         '' +
-                                os.linesep)
-            html_document.write('        "' + csv_files[chart] + '",' + os.linesep)
-            html_document.write('        {' + os.linesep)
-            # write options into dygraph object's constructor.
-            html_document.write(option_line('xlabel', constants.X_LABEL, True))
-            html_document.write(option_line('ylabel', y_labels[chart], True))
-            html_document.write(option_line('title', titles[chart], True))
-            html_document.write(option_line('legend', 'always', True))
-            html_document.write(option_line('labelsDiv', 'document.getElementById("' +
-                                            get_legend_div_id(chart_ids[chart]) + '")', False))
-            html_document.write(option_line('highlightSeriesOpts', '{strokeWidth: 2}', False))
-            html_document.write(option_line('legendFormatter', 'legendFormatter', False))
-            html_document.write(option_line('drawGapEdgePoints', 'true', False))
-            html_document.write(option_line('pointSize', '3', False))
-            html_document.write(option_line('animatedZooms', 'true', False))
-            html_document.write(option_line('fillGraph', 'true', False))
-            html_document.write('        }' + os.linesep + '    );' + os.linesep)
-            html_document.write('</script>' + os.linesep)
+            # call js function to create Dygraph objects
+            html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' + chart_ids[chart]
+                                + '", "' + csv_files[chart] + '", ' + constants.X_LABEL + ', "'
+                                + y_labels[chart] + '"); </script>')
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])

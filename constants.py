@@ -45,7 +45,7 @@ SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 STATIT_CHART_TITLE = 'statit_disk_statistics'
 
 # this is the path to the text file the program uses as template to create the html head:
-HTML_HEAD_TEMPLATE = 'graph_html_head_template.txt'
+HTML_HEAD_TEMPLATE = 'html_template.txt'
 
 # these are the paths to the dygraph files the html document needs to show its charts:
 DYGRAPHS_JS_SRC = 'dygraphs' + sep + 'dygraph.js'
@@ -72,75 +72,3 @@ CHART_DIV_CLASS_NAME = 'chart-div'
 # proportions of the html charts in px:
 CHARTS_HEIGHT = 600
 CHARTS_WIDTH = 900
-
-JS_FUNCTIONS = '''
-
-    function change(el, chart, graph) {
-        chart.setVisibility(graph, el.checked);
-    }
-
-    function selectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            chart.setVisibility(i, true);
-        }
-    }
-
-    function deselectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            chart.setVisibility(i, false);
-        }
-    }
-    function createCheckBox(chartID, graphID, checked) {
-        if (checked) {
-            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
-                '"name="' + chartID + '" onClick="change(this, ' + chartID + ',' +
-                graphID + ')"checked>'
-        } else {
-            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
-                '"name="' + chartID + '" onClick="change(this, ' + chartID + ',' + graphID + ')">';
-        }
-    }
-
-    function legendFormatter(data) {
-        if (data.x == null) {
-            // This happens when there's no selection and {legend: 'always'} is set.
-
-            var chartID = data.dygraph.toString().split(' ')[1].split(']')[0];
-
-            return '<br>' + data.series.map(function (series) {
-                    var graphID = series.graphIndex;
-                    var checked = series.isVisible;
-                    return series.dashHTML + ' ' + createCheckBox(chartID, graphID, checked) +
-                        ' ' + series.labelHTML
-                }).join('<br>');
-        }
-        var graphNumbers = 0;
-        data.series.forEach(function (series) {
-            if (series.isVisible) graphNumbers++;
-        });
-        
-        var html = this.getLabels()[0] + ': ' + data.xHTML;
-        if (graphNumbers > 25) {
-            data.series.forEach(function (series) {
-                if (series.isHighlighted) {
-                    var labeledData = series.labelHTML + ': ' + series.yHTML;
-                    labeledData = '<b>' + labeledData + '</b>';
-                    html += '<br>' + series.dashHTML + ' ' + labeledData;
-                }
-            });
-        } else {
-            data.series.forEach(function (series) {
-                if (!series.isVisible) return;
-                var labeledData = series.labelHTML + ': ' + series.yHTML;
-                if (series.isHighlighted) {
-                    labeledData = '<b>' + labeledData + '</b>';
-                }
-                html += '<br>' + series.dashHTML + ' ' + labeledData;
-            });
-        }
-        return html;
-    }
-
-'''
