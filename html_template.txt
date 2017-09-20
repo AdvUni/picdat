@@ -11,23 +11,21 @@
 <h1> PicDat: </h1>
 <script type="text/javascript">
 
-
-    function change(el, chart, graph) {
-        chart.setVisibility(graph, el.checked);
+    function getAllGraphIndices(checkboxName) {
+        var checkboxes = document.getElementsByName(checkboxName);
+        var indicesArray = [];
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            indicesArray.push(i);
+        }
+        return indicesArray;
     }
 
     function selectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            chart.setVisibility(i, true);
-        }
+        chart.setVisibility(getAllGraphIndices(name), true);
     }
 
     function deselectAll(button, chart, name) {
-        var checkboxes = document.getElementsByName(name);
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            chart.setVisibility(i, false);
-        }
+        chart.setVisibility(getAllGraphIndices(name), false);
     }
 
     function createCheckBox(chartID, graphID, checked) {
@@ -115,3 +113,4 @@
     }
 
 </script>
+
