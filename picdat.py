@@ -41,7 +41,7 @@ def take_perfstats():
     """
     while True:
         print('Please enter a path to a PerfStat output file')
-        user_input = input('(datatype .data or .zip):')
+        user_input = input('(data type .data or .zip):')
 
         if user_input == '':
             user_input = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
