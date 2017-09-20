@@ -247,6 +247,27 @@ def get_units(luns_available):
     return unit_list
 
 
+def get_x_labels_and_plotters(luns_available):
+    x_lable_list = []
+    plotter_list = []
+    for object_type in PER_ITERATION_REQUESTS:
+        if not luns_available and object_type == 'lun':
+            continue
+        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
+            if request_tuple[0] == 'read_align_histo':
+                x_lable_list.append('')
+                plotter_list.append('true')
+            else:
+                x_lable_list.append('time')
+                plotter_list.append('false')
+
+    for _ in range(4):
+        x_lable_list.append('')
+        plotter_list.append('false')
+
+    return x_lable_list, plotter_list
+
+
 def get_titles(luns_available):
     """
     Generates proper titles for charts.
@@ -423,5 +444,5 @@ def get_base_path():
     except AttributeError:
         basepath = os.path.abspath('.') + os.sep
 
-    #return basepath
+    # return basepath
     return ''

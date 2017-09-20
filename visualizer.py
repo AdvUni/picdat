@@ -91,6 +91,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
     titles = util.get_titles(luns_available)
     chart_ids = util.get_object_ids(luns_available)
     y_labels = util.get_units(luns_available)
+    x_labels, plotter_booleans = util.get_x_labels_and_plotters(luns_available)
 
     # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
     # Pay attention, that this rename needs to be compatible with the data_collector module,
@@ -116,7 +117,8 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
             # call js function to create Dygraph objects
             html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' + chart_ids[chart]
                                 + '", "' + csv_files[chart] + '", "' + titles[chart] + '", "'
-                                + constants.X_LABEL + '", "' + y_labels[chart] + '"); </script>')
+                                + x_labels[chart] + '", "' + y_labels[chart] + '", '
+                                + plotter_booleans[chart] + '); </script>')
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])
