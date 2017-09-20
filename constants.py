@@ -2,6 +2,7 @@
 Constants
 """
 import datetime
+from os import sep
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -47,8 +48,8 @@ STATIT_CHART_TITLE = 'statit_disk_statistics'
 HTML_HEAD_TEMPLATE = 'graph_html_head_template.txt'
 
 # these are the paths to the dygraph files the html document needs to show its charts:
-DYGRAPHS_JS_SRC = 'dygraphs/dygraph.js'
-DYGRAPHS_CSS_SRC = 'dygraphs/dygraph.css'
+DYGRAPHS_JS_SRC = 'dygraphs' + sep + 'dygraph.js'
+DYGRAPHS_CSS_SRC = 'dygraphs' + sep + 'dygraph.css'
 
 # this is the label showed on the x-axis in each chart:
 X_LABEL = 'time'
