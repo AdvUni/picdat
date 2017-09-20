@@ -3,6 +3,7 @@ Provides some functions other modules may use.
 """
 import datetime
 import os
+import sys
 from zipfile import ZipFile
 
 import global_vars
@@ -401,3 +402,26 @@ def empty_line(value_list):
     if len(value_list) != 0 and value_list[0] is not None:
         columns = len(value_list[0])
         return [' ' for _ in range(columns + 1)]
+
+
+def get_base_path():
+    """
+    PicDat is meant to be bundled with PyInstaller. PyInstaller is able to pack a program to a
+    single executable file. If so, all files beside Python files belonging to the program needs
+    to be temporarily unpacked first. Running such an executable, all non-Python files will be
+    automatically unpacked into a directory such like '_MEIxxxxxx'. Of course this is different
+    to when the Python script is executed in its original form and all additional files are on
+    their normal places. Therefore, this function checks, how PicDat is executed and returns
+    based on that either an empty string or the temporary directory. This base path should be
+    appended to each path referencing content to be loaded from disk.
+    :return: Either an empty String, if the PicDat script is executed in its original form,
+    or a temporary path name like '_MEIxxxxxx/' if PicDat is exeuted from a one-file bundled
+    executable.
+    """
+    try:
+        basepath = os.path.abspath(getattr(sys, '_MEIPASS') + os.sep)
+    except AttributeError:
+        basepath = os.path.abspath('.') + os.sep
+
+    #return basepath
+    return ''
