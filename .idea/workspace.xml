@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="New function to pick output.data files from each folder (not only from zips)">
+    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
     </list>
@@ -31,8 +31,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="191" column="42" lean-forward="true" selection-start-line="191" selection-start-column="42" selection-end-line="191" selection-end-column="42" />
+            <state relative-caret-position="584">
+              <caret line="174" column="0" lean-forward="true" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
@@ -556,13 +556,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00085" summary="Distinguished fresh lines from linebreak snippets in Disk Statistics">
-      <created>1505291629146</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1505291629146</updated>
-    </task>
     <task id="LOCAL-00086" summary="Removed debug output">
       <created>1505292186556</created>
       <option name="number" value="00086" />
@@ -899,7 +892,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505986773292</updated>
     </task>
-    <option name="localTasksCounter" value="134" />
+    <task id="LOCAL-00134" summary="Implemented working processing of folders (additional to .data and .zip files)">
+      <created>1505989843243</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1505989843243</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TodoView">
@@ -980,7 +980,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Corrected request, whether list doesn't contain any values before adding an empty line to it." />
     <MESSAGE value="Don't raise exceptions, if lun path not found" />
     <MESSAGE value="Bugfix: terminate sysstat blocks when line startswith '--', not if line just contains '--'" />
     <MESSAGE value="Bugfix: include LUN uuid if path is not found" />
@@ -1005,7 +1004,8 @@
     <MESSAGE value="Removed checkboxes and added toClick-functionality to legend-dashes, so you can now change graph visibilities bei clicking them directly" />
     <MESSAGE value="Name modifactions in html template" />
     <MESSAGE value="New function to pick output.data files from each folder (not only from zips)" />
-    <option name="LAST_COMMIT_MESSAGE" value="New function to pick output.data files from each folder (not only from zips)" />
+    <MESSAGE value="Implemented working processing of folders (additional to .data and .zip files)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented working processing of folders (additional to .data and .zip files)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1273,8 +1273,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="191" column="42" lean-forward="true" selection-start-line="191" selection-start-column="42" selection-end-line="191" selection-end-column="42" />
+        <state relative-caret-position="584">
+          <caret line="174" column="0" lean-forward="true" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
           <folding>
             <element signature="e#42#51#0" expanded="true" />
           </folding>

@@ -169,6 +169,9 @@ def run():
                 print('Info: console.log file from zip couldn\'t be read for some reason:')
                 print(traceback.format_exc())
                 identifier_dict = None
+        else:
+            print('Info: Did not find a console.log file to extract perfstat\'s cluster and node '
+                  'name.')
 
         for perfstat_node in perfstat_output_files:
 
@@ -183,7 +186,7 @@ def run():
 
                     html_title = util.get_html_title(identifier_dict, perfstat_address)
                 except KeyError:
-                    print('Info: Did not found a node name for address \'' + perfstat_address
+                    print('Info: Did not find a node name for address \'' + perfstat_address
                           + '\' in \'console.log\'. Will use just \'' + perfstat_address
                           + '\' instead.')
                     html_title = perfstat_node
