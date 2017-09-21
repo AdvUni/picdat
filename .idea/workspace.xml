@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
+    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="New function to pick output.data files from each folder (not only from zips)">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,7 +16,7 @@
     <SUITE FILE_PATH="coverage/Perf_orator$table.coverage" NAME="table Coverage Results" MODIFIED="1491572999299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$main.coverage" NAME="main Coverage Results" MODIFIED="1503993789444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$util.coverage" NAME="util Coverage Results" MODIFIED="1504868562583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505984261624" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/picdat$main.coverage" NAME="main Coverage Results" MODIFIED="1505988060787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$util.coverage" NAME="util Coverage Results" MODIFIED="1491912558007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Perf_orator$Playground.coverage" NAME="Playground Coverage Results" MODIFIED="1500411879544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/picdat$data_collector.coverage" NAME="data_collector Coverage Results" MODIFIED="1504870507915" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -28,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="picdat.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="picdat.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-36">
-              <caret line="51" column="46" lean-forward="false" selection-start-line="51" selection-start-column="46" selection-end-line="51" selection-end-column="46" />
+            <state relative-caret-position="404">
+              <caret line="191" column="42" lean-forward="true" selection-start-line="191" selection-start-column="42" selection-end-line="191" selection-end-column="42" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
@@ -40,15 +40,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="util.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="215">
+              <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="705">
-              <caret line="375" column="4" lean-forward="false" selection-start-line="375" selection-start-column="4" selection-end-line="375" selection-end-column="4" />
+            <state relative-caret-position="260">
+              <caret line="423" column="7" lean-forward="true" selection-start-line="423" selection-start-column="7" selection-end-line="423" selection-end-column="7" />
               <folding>
                 <element signature="e#55#70#0" expanded="true" />
-                <marker date="1505986730338" expanded="true" signature="8509:9107" ph="..." />
-                <marker date="1505986730338" expanded="true" signature="12513:12685" ph="..." />
+                <marker date="1505986772642" expanded="true" signature="8509:9107" ph="..." />
+                <marker date="1505986772642" expanded="true" signature="12513:12685" ph="..." />
               </folding>
             </state>
           </provider>
@@ -79,8 +89,8 @@
       <file leaf-file-name="visualizer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/visualizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2106">
-              <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+            <state relative-caret-position="530">
+              <caret line="78" column="4" lean-forward="false" selection-start-line="78" selection-start-column="4" selection-end-line="78" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -190,7 +200,6 @@
         <option value="$PROJECT_DIR$/per_iteration_object.py" />
         <option value="$PROJECT_DIR$/disk_statistics_object.py" />
         <option value="$PROJECT_DIR$/results/charts.html" />
-        <option value="$PROJECT_DIR$/picdat.py" />
         <option value="$PROJECT_DIR$/results/test.html" />
         <option value="$PROJECT_DIR$/results28/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/graph_html_head_template.txt" />
@@ -209,6 +218,7 @@
         <option value="$PROJECT_DIR$/results38/charts.html" />
         <option value="$PROJECT_DIR$/html_template.txt" />
         <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/picdat.py" />
       </list>
     </option>
   </component>
@@ -304,7 +314,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="results39" />
+              <option name="myItemId" value="results43" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -334,7 +344,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.charts.html (1)">
+  <component name="RunManager" selected="JavaScript Debug.hbmess30_charts.html">
     <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -354,9 +364,6 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="Bardusch-cl1-02_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results36/Bardusch-cl1-02_charts.html">
-      <method />
-    </configuration>
     <configuration default="false" name="Bardusch-cl1-01_charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results37/Bardusch-cl1-01_charts.html">
       <method />
     </configuration>
@@ -364,6 +371,9 @@
       <method />
     </configuration>
     <configuration default="false" name="charts.html (1)" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results39/charts.html">
+      <method />
+    </configuration>
+    <configuration default="false" name="hbmess30_charts.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/picdat/results43/hbmess30_charts.html">
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -517,18 +527,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
-      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-02_charts.html" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-01_charts.html (1)" />
-      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
-      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-01_charts.html (1)" />
+      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.hbmess30_charts.html" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.hbmess30_charts.html" />
         <item index="1" class="java.lang.String" itemvalue="Python.main" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
-        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-01_charts.html (1)" />
-        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-02_charts.html" />
+        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
+        <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.Bardusch-cl1-01_charts.html (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -545,13 +555,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Simplified arguments in combine_result function">
-      <created>1505286206122</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1505286206122</updated>
     </task>
     <task id="LOCAL-00085" summary="Distinguished fresh lines from linebreak snippets in Disk Statistics">
       <created>1505291629146</created>
@@ -889,7 +892,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505984330900</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="New function to pick output.data files from each folder (not only from zips)">
+      <created>1505986773291</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1505986773292</updated>
+    </task>
+    <option name="localTasksCounter" value="134" />
     <servers />
   </component>
   <component name="TodoView">
@@ -905,15 +915,16 @@
     <frame x="0" y="27" width="1920" height="1173" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23130342" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976654" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328807" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.70474344" sideWeight="0.50213903" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2560621" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2783705" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3443259" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3443259" sideWeight="0.49786097" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328807" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23130342" sideWeight="0.4936508" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32783705" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5063492" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -922,7 +933,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32783705" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -970,7 +980,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed os.sep in the csv references in html files to '/'; otherwise it would't work under windows" />
     <MESSAGE value="Corrected request, whether list doesn't contain any values before adding an empty line to it." />
     <MESSAGE value="Don't raise exceptions, if lun path not found" />
     <MESSAGE value="Bugfix: terminate sysstat blocks when line startswith '--', not if line just contains '--'" />
@@ -995,7 +1004,8 @@
     <MESSAGE value="Added a plotter to lun_read_align_histo chart to present the content as a bar chart" />
     <MESSAGE value="Removed checkboxes and added toClick-functionality to legend-dashes, so you can now change graph visibilities bei clicking them directly" />
     <MESSAGE value="Name modifactions in html template" />
-    <option name="LAST_COMMIT_MESSAGE" value="Name modifactions in html template" />
+    <MESSAGE value="New function to pick output.data files from each folder (not only from zips)" />
+    <option name="LAST_COMMIT_MESSAGE" value="New function to pick output.data files from each folder (not only from zips)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1054,13 +1064,6 @@
           <folding>
             <marker date="1505824707154" expanded="true" signature="9239:9240" ph="..." />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="71" column="6" lean-forward="false" selection-start-line="71" selection-start-column="6" selection-end-line="71" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -1173,14 +1176,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/visualizer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2106">
-          <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/requests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="576">
@@ -1248,24 +1243,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/picdat.py">
+    <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-36">
-          <caret line="51" column="46" lean-forward="false" selection-start-line="51" selection-start-column="46" selection-end-line="51" selection-end-column="46" />
-          <folding>
-            <element signature="e#42#51#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="215">
+          <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/visualizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="78" column="4" lean-forward="false" selection-start-line="78" selection-start-column="4" selection-end-line="78" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/util.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="375" column="4" lean-forward="false" selection-start-line="375" selection-start-column="4" selection-end-line="375" selection-end-column="4" />
+        <state relative-caret-position="260">
+          <caret line="423" column="7" lean-forward="true" selection-start-line="423" selection-start-column="7" selection-end-line="423" selection-end-column="7" />
           <folding>
             <element signature="e#55#70#0" expanded="true" />
-            <marker date="1505986730338" expanded="true" signature="8509:9107" ph="..." />
-            <marker date="1505986730338" expanded="true" signature="12513:12685" ph="..." />
+            <marker date="1505986772642" expanded="true" signature="8509:9107" ph="..." />
+            <marker date="1505986772642" expanded="true" signature="12513:12685" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/picdat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="191" column="42" lean-forward="true" selection-start-line="191" selection-start-column="42" selection-end-line="191" selection-end-column="42" />
+          <folding>
+            <element signature="e#42#51#0" expanded="true" />
           </folding>
         </state>
       </provider>

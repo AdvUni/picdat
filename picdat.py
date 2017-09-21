@@ -6,6 +6,8 @@ import shutil
 from shutil import copyfile
 import traceback
 
+import sys
+
 import constants
 import global_vars
 import util
@@ -45,6 +47,8 @@ def take_perfstats():
 
         if user_input == '':
             user_input = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+        elif os.path.isdir(user_input):
+            break
         elif not os.path.isfile(user_input):
             print('This file does not exist. Try again.')
             continue
@@ -141,11 +145,18 @@ def run():
 
         # extract zip if necessary
         perfstat_output_files = None
-        if util.data_type(user_input) == 'data':
+        if os.path.isdir(user_input):
+            perfstat_output_files, console_file = util.get_all_output_files(user_input)
+        elif util.data_type(user_input) == 'data':
             perfstat_output_files = [user_input]
         elif util.data_type(user_input) == 'zip':
             print('Extract zip...')
             temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(user_input)
+
+        # interrupt program if there are no .data files found
+        if not user_input:
+            print('Info: The input you gave doesn\'t contain any .data files.')
+            sys.exit(0)
 
         # if given, read cluster and node information from console.log file:
         if console_file is not None:
@@ -165,11 +176,17 @@ def run():
             if identifier_dict is not None:
                 perfstat_address = perfstat_node.split(os.sep)[-2]
 
-                node_identifier = identifier_dict[perfstat_address][1]
-                print('Handle PerfStat from node "' + node_identifier + '":')
-                node_identifier += '_'
+                try:
+                    node_identifier = identifier_dict[perfstat_address][1]
+                    print('Handle PerfStat from node "' + node_identifier + '":')
+                    node_identifier += '_'
 
-                html_title = util.get_html_title(identifier_dict, perfstat_address)
+                    html_title = util.get_html_title(identifier_dict, perfstat_address)
+                except KeyError:
+                    print('Info: Did not found a node name for address \'' + perfstat_address
+                          + '\' in \'console.log\'. Will use just \'' + perfstat_address
+                          + '\' instead.')
+                    html_title = perfstat_node
             else:
                 node_identifier = ''
                 html_title = perfstat_node
