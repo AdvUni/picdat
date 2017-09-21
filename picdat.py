@@ -176,20 +176,25 @@ def run():
         for perfstat_node in perfstat_output_files:
 
             # get nice names (if possible) for each PerfStat and the whole html file
-            if identifier_dict is not None:
+            if len(perfstat_output_files) > 0:
                 perfstat_address = perfstat_node.split(os.sep)[-2]
 
-                try:
-                    node_identifier = identifier_dict[perfstat_address][1]
-                    print('Handle PerfStat from node "' + node_identifier + '":')
-                    node_identifier += '_'
-
-                    html_title = util.get_html_title(identifier_dict, perfstat_address)
-                except KeyError:
-                    print('Info: Did not find a node name for address \'' + perfstat_address
-                          + '\' in \'console.log\'. Will use just \'' + perfstat_address
-                          + '\' instead.')
+                if identifier_dict is None:
                     html_title = perfstat_node
+                    node_identifier = perfstat_address
+                else:
+                    try:
+                        node_identifier = identifier_dict[perfstat_address][1]
+                        html_title = util.get_html_title(identifier_dict, perfstat_address)
+                    except (KeyError):
+                        print('Info: Did not find a node name for address \'' + perfstat_address
+                              + '\' in \'console.log\'. Will use just \'' + perfstat_address
+                              + '\' instead.')
+                        html_title = perfstat_node
+                        node_identifier = perfstat_address
+
+                print('Handle PerfStat from node "' + node_identifier + '":')
+                node_identifier += '_'
             else:
                 node_identifier = ''
                 html_title = perfstat_node
