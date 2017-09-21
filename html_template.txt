@@ -28,30 +28,22 @@
         chart.setVisibility(getAllGraphIndices(name), false);
     }
 
-    function createCheckBox(chartID, graphID, checked) {
-        chartID = chartID.split(' ')[1].split(']')[0];
-
-        if (checked) {
-            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
-                '"name="' + chartID +
-                '" onClick="' + chartID + '.setVisibility(' + graphID + ', false)" checked>';
-        } else {
-            return '<td><input type=checkbox id="' + chartID + '_checkbox' + graphID +
-                '"name="' + chartID +
-                '" onClick="' + chartID + '.setVisibility(' + graphID + ', true)">';
-        }
-    }
-
     function legendFormatter(data) {
         if (data.x == null) {
             // This happens when there's no selection and {legend: 'always'} is set.
-            var chartID = data.dygraph.toString();
+            var chartID = data.dygraph.toString().split(' ')[1].split(']')[0];
 
-            return '<br>' + data.series.map(function (series) {
-                    var graphID = series.graphIndex;
-                    var checked = series.isVisible;
-                    return series.dashHTML + ' ' + createCheckBox(chartID, graphID, checked) +
-                        ' ' + series.labelHTML
+           return '<br>' + data.series.map(function (series) {
+
+                   // Add a name and a 'onClick' function to legend Dashs, to enable graph
+                   // selection and deselection by clicking them
+                    var oldDash = series.dashHTML;
+                    var dashInsertion = 'name="' + chartID + '" onClick="' + chartID +
+                        '.setVisibility(' + series.graphIndex + ', ' + !series.isVisible + ');"';
+                    var newDash = oldDash.substr(0, oldDash.indexOf(' ')) + ' ' + dashInsertion +
+                        ' ' + oldDash.substr(oldDash.indexOf(' ')+1);
+
+                    return newDash + ' ' + series.labelHTML
                 }).join('<br>');
         }
         var graphNumbers = 0;
@@ -60,6 +52,7 @@
         });
 
         var html = this.getLabels()[0] + ': ' + data.xHTML;
+
         if (graphNumbers > 25) {
             data.series.forEach(function (series) {
                 if (series.isHighlighted) {
