@@ -25,6 +25,8 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # adress sysstat_1sec values correctly.
 ONE_SECOND = datetime.timedelta(seconds=1)
 
+DEFAULT_TIMESTAMP = datetime.datetime(2017, 1, 1)
+
 # program uses this path for it's analysis if user's input for that is empty:
 DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 

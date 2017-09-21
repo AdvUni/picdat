@@ -1,6 +1,9 @@
 """
 Contains the class DiskStatsObject
 """
+from datetime import datetime
+
+import constants
 import util
 from table import Table
 
@@ -100,7 +103,27 @@ class DiskStatsObject:
                 return
             if len(self.statit_timestamps) < self.statit_counter:
                 if 'Begin: ' in line:
-                    self.statit_timestamps.append(util.build_date(line.split(' ', 1)[1]))
+                    try:
+                        self.statit_timestamps.append(util.build_date(line.split(' ', 1)[1]))
+                    except (KeyError, IndexError, ValueError):
+                        print()
+                        print('Warning: PerfStat bug in statit block. Could not read any timestamp '
+                              'from line:')
+                        print(line.strip())
+
+                        if not self.statit_timestamps:
+                            alternative_timestamp = constants.DEFAULT_TIMESTAMP
+                            print('This should have been the very first statit timestamp of this '
+                                  'document. PicDat is using default timestamp instead.')
+                        else:
+                            alternative_timestamp = self.statit_timestamps[-1]
+                            print(
+                                'PicDat is using the timestamp from the last statit block instead.')
+
+                        print('This timestamp is: ' + str(alternative_timestamp))
+                        print('Note that this may lead to falsifications in charts!')
+                        print()
+                        self.statit_timestamps.append(alternative_timestamp)
                 return
             if line_split[0] == 'disk':
                 self.inside_disk_stats_block = True

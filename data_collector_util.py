@@ -1,8 +1,8 @@
 """
 Small util module with functions only used by the data collector module.
 """
+import constants
 import util
-import sys
 
 try:
     import pytz
@@ -44,21 +44,21 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
 
     try:
         return util.build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
-    except KeyError:
+    except (KeyError, IndexError, ValueError):
         print()
         print('Warning: PerfStat bug. Could not read any timestamp from line:')
         print(iteration_timestamp_line)
 
         if last_timestamp is None:
-            print('This should have been the first timestamp. PicDat can\'t handle this.')
-            sys.exit(1)
-
-        print('PicDat is using last collected iteration timestamp (timestamp from a \'BEGIN '
-              'Iteration\' or \'END Iteration\' line) instead')
+            print('This should have been the very first iteration timestamp. PicDat is using '
+                  'default timestamp instead.')
+            last_timestamp = constants.DEFAULT_TIMESTAMP
+        else:
+            print('PicDat is using last collected iteration timestamp (timestamp from a \'BEGIN '
+                  'Iteration\' or \'END Iteration\' line) instead')
         print('This timestamp is: ' + str(last_timestamp))
         print('Note that this may lead to falsifications in charts!')
         print()
-
         return last_timestamp
 
 
@@ -75,9 +75,9 @@ def get_sysstat_timestamp(sysstat_timestamp_line, iteration_timestamp):
     """
     try:
         return util.build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
-    except IndexError:
+    except (KeyError, IndexError, ValueError):
         print()
-        print('Warning: PerfStat bug. Could not read any timestamp from line:')
+        print('Warning: PerfStat bug in sysstat block. Could not read any timestamp from line:')
         print(sysstat_timestamp_line.strip())
         print('PicDat is using the timestamp from the iteration\'s begin instead.')
         print('This timestamp is: ' + str(iteration_timestamp))
