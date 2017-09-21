@@ -184,3 +184,12 @@ class SysstatObject:
                 self.buffered_header = None
         else:
             self.process_sysstat_requests(line)
+
+    def rework_sysstat_data(self):
+
+        for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
+            try:
+                while value_list[-1][0] == ' ':
+                    del(value_list[-1])
+            except IndexError:
+                pass

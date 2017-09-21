@@ -222,5 +222,7 @@ def read_data_file(perfstat_data_file):
 
     statit_object.rework_statit_data(end_times)
 
+    sysstat_object.rework_sysstat_data()
+
     return combine_results(per_iteration_object, sysstat_object, statit_object), \
            per_iteration_object.luns_available
