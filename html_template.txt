@@ -11,10 +11,10 @@
 <h1> PicDat: </h1>
 <script type="text/javascript">
 
-    function getAllGraphIndices(checkboxName) {
-        var checkboxes = document.getElementsByName(checkboxName);
+    function getAllGraphIndices(chartName) {
+        var legend_dashes = document.getElementsByName(chartName);
         var indicesArray = [];
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
+        for (var i = 0, n = legend_dashes.length; i < n; i++) {
             indicesArray.push(i);
         }
         return indicesArray;
@@ -35,7 +35,7 @@
 
            return '<br>' + data.series.map(function (series) {
 
-                   // Add a name and a 'onClick' function to legend Dashs, to enable graph
+                   // Add a name and a 'onClick' function to legend dashes, to enable graph
                    // selection and deselection by clicking them
                     var oldDash = series.dashHTML;
                     var dashInsertion = 'name="' + chartID + '" onClick="' + chartID +
@@ -46,14 +46,14 @@
                     return newDash + ' ' + series.labelHTML
                 }).join('<br>');
         }
-        var graphNumbers = 0;
+        var graphNumber = 0;
         data.series.forEach(function (series) {
-            if (series.isVisible) graphNumbers++;
+            if (series.isVisible) graphNumber++;
         });
 
         var html = this.getLabels()[0] + ': ' + data.xHTML;
 
-        if (graphNumbers > 25) {
+        if (graphNumber > 25) {
             data.series.forEach(function (series) {
                 if (series.isHighlighted) {
                     var labeledData = series.labelHTML + ': ' + series.yHTML;
