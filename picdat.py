@@ -176,7 +176,7 @@ def run():
         for perfstat_node in perfstat_output_files:
 
             # get nice names (if possible) for each PerfStat and the whole html file
-            if len(perfstat_output_files) > 0:
+            if len(perfstat_output_files) > 1:
                 perfstat_address = perfstat_node.split(os.sep)[-2]
 
                 if identifier_dict is None:
