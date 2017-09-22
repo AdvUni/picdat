@@ -1,7 +1,7 @@
 """
 Contains the class DiskStatsObject
 """
-from datetime import datetime
+import logging
 
 import constants
 import util
@@ -106,64 +106,67 @@ class DiskStatsObject:
                     try:
                         self.statit_timestamps.append(util.build_date(line.split(' ', 1)[1]))
                     except (KeyError, IndexError, ValueError):
-                        print()
-                        print('Warning: PerfStat bug in statit block. Could not read any timestamp '
-                              'from line:')
-                        print(line.strip())
 
                         if not self.statit_timestamps:
                             alternative_timestamp = constants.DEFAULT_TIMESTAMP
-                            print('This should have been the very first statit timestamp of this '
-                                  'document. PicDat is using default timestamp instead.')
+
+                            logging.warning(
+                                'PerfStat bug in statit block. Could not read any timestamp '
+                                'from line: \'%s\' This should have been the very first statit '
+                                'timestamp of this document. PicDat is using default timestamp '
+                                'instead. This timestamp is: \'%s\'. Note that this may lead to '
+                                'falsifications in charts!', line.strip(), alternative_timestamp)
+
                         else:
                             alternative_timestamp = self.statit_timestamps[-1]
-                            print(
-                                'PicDat is using the timestamp from the last statit block instead.')
+                            logging.warning(
+                                'PerfStat bug in statit block. Could not read any timestamp '
+                                'from line: \'%s\' PicDat is using the timestamp from the last '
+                                'statit block instead. This timestamp is: \'%s\'. Note that this '
+                                'may lead to falsifications in charts!',
+                                line.strip(), alternative_timestamp)
 
-                        print('This timestamp is: ' + str(alternative_timestamp))
-                        print('Note that this may lead to falsifications in charts!')
-                        print()
                         self.statit_timestamps.append(alternative_timestamp)
-                return
-            if line_split[0] == 'disk':
-                self.inside_disk_stats_block = True
-                ut_start_index = line.index('ut%')
-                ut_end_index = ut_start_index + len('ut%')
-                self.ut_column_indices = (ut_start_index, ut_end_index)
+                    return
+                if line_split[0] == 'disk':
+                    self.inside_disk_stats_block = True
+                    ut_start_index = line.index('ut%')
+                    ut_end_index = ut_start_index + len('ut%')
+                    self.ut_column_indices = (ut_start_index, ut_end_index)
 
-    def rework_statit_data(self, iteration_timestamps):
-        """
-        Simplifies statit data: Flattens the table data structure into the lists flat_headers and
-        flat_values. Also inserts empty data lines into flat_values, to separate iterations in
-        resulting charts from each other.
-        :param iteration_timestamps: A list of datetime objects, marking the ends of all
-        iterations in one PerfStat file. They are needed to insert the empty lines at the right
-        places.
-        :return: None
-        """
-        self.flat_headers, self.flat_values = self.table.flatten(self.disk_names,
-                                                                 self.statit_timestamps, 1)
-        self.add_empty_lines(iteration_timestamps)
+        def rework_statit_data(self, iteration_timestamps):
+            """
+            Simplifies statit data: Flattens the table data structure into the lists flat_headers and
+            flat_values. Also inserts empty data lines into flat_values, to separate iterations in
+            resulting charts from each other.
+            :param iteration_timestamps: A list of datetime objects, marking the ends of all
+            iterations in one PerfStat file. They are needed to insert the empty lines at the right
+            places.
+            :return: None
+            """
+            self.flat_headers, self.flat_values = self.table.flatten(self.disk_names,
+                                                                     self.statit_timestamps, 1)
+            self.add_empty_lines(iteration_timestamps)
 
-    def add_empty_lines(self, iteration_end_timestamps):
-        """
-        Inserts empty data lines into the flat_values list retroactively. The empty lines are
-        inserted between two rows belonging to different iterations. This is for interrupting the
-        dygraphs graph lines between iterations in resulting charts.
-        :param iteration_end_timestamps: A list of datetime objects, marking the ends of all
-        iterations in one PerfStat file.
-        :return: None
-        """
-        iter_iterations = iter(iteration_end_timestamps)
-        next_iteration = next(iter_iterations)
-        counter = 0
+        def add_empty_lines(self, iteration_end_timestamps):
+            """
+            Inserts empty data lines into the flat_values list retroactively. The empty lines are
+            inserted between two rows belonging to different iterations. This is for interrupting the
+            dygraphs graph lines between iterations in resulting charts.
+            :param iteration_end_timestamps: A list of datetime objects, marking the ends of all
+            iterations in one PerfStat file.
+            :return: None
+            """
+            iter_iterations = iter(iteration_end_timestamps)
+            next_iteration = next(iter_iterations)
+            counter = 0
 
-        try:
-            for statit in self.statit_timestamps:
-                if next_iteration < statit:
-                    self.flat_values.insert(counter, util.empty_line(self.flat_values))
-                    next_iteration = next(iter_iterations)
+            try:
+                for statit in self.statit_timestamps:
+                    if next_iteration < statit:
+                        self.flat_values.insert(counter, util.empty_line(self.flat_values))
+                        next_iteration = next(iter_iterations)
+                        counter += 1
                     counter += 1
-                counter += 1
-        except StopIteration:
-            pass
+            except StopIteration:
+                pass

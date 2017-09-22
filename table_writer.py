@@ -1,7 +1,7 @@
 """
 Is responsible for writing given data into csv files.
 """
-
+import logging
 import os
 
 import util
@@ -66,4 +66,4 @@ def create_csv(csv_filepaths, header_row, value_rows, luns_available):
                 table_file.write(data_line + os.linesep)
 
         table_file.close()
-        print('Wrote chart values into ' + csv_filepaths[table])
+        logging.info('Wrote chart values into %s', csv_filepaths[table])

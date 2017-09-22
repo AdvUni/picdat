@@ -1,6 +1,7 @@
 """
 Contains the class Table.
 """
+import logging
 from collections import defaultdict
 
 __author__ = 'Marie Lohbeck'
@@ -82,7 +83,7 @@ class Table:
                     value_row.append(row_dict[header])
                 else:
                     value_row.append(' ')
-                    print('Value for ' + str(header) + ' is missing! (' + str(rowname) + ')')
+                    logging.info('Value for %s is missing! (%s)', str(header), str(rowname))
             value_rows.append(value_row)
 
         return header_row, value_rows

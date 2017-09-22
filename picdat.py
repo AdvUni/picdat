@@ -1,11 +1,11 @@
 """
 From here, the tool gets started.
 """
+import logging
 import os
 import shutil
 from shutil import copyfile
 import traceback
-
 import sys
 
 import constants
@@ -101,7 +101,7 @@ def prepare_directory(destination_dir):
     """
     destination_dir += constants.DEFAULT_DIRECTORY_NAME
 
-    print('Prepare directory...')
+    logging.info('Prepare directory...')
     results_dir = util.empty_directory(destination_dir)
 
     csv_dir = results_dir + os.sep + 'tables'
@@ -150,28 +150,28 @@ def run():
         elif util.data_type(user_input) == 'data':
             perfstat_output_files = [user_input]
         elif util.data_type(user_input) == 'zip':
-            print('Extract zip...')
+            logging.info('Extract zip...')
             temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(user_input)
 
         # interrupt program if there are no .data files found
         if not user_input:
-            print('Info: The input you gave doesn\'t contain any .data files.')
+            logging.info('The input you gave doesn\'t contain any .data files.')
             sys.exit(0)
 
         # if given, read cluster and node information from console.log file:
         if console_file is not None:
-            print('Read console.log file for getting cluster and node names...')
+            logging.info('Read console.log file for getting cluster and node names...')
             try:
                 identifier_dict = util.read_console_file(console_file)
             except KeyboardInterrupt:
                 raise
             except:
-                print('Info: console.log file from zip couldn\'t be read for some reason:')
+                logging.info('console.log file from zip couldn\'t be read for some reason:')
                 print(traceback.format_exc())
                 identifier_dict = None
         else:
-            print('Info: Did not find a console.log file to extract perfstat\'s cluster and node '
-                  'name.')
+            logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
+                         'name.')
 
         for perfstat_node in perfstat_output_files:
 
@@ -186,25 +186,25 @@ def run():
                     try:
                         node_identifier = identifier_dict[perfstat_address][1]
                         html_title = util.get_html_title(identifier_dict, perfstat_address)
-                    except (KeyError):
-                        print('Info: Did not find a node name for address \'' + perfstat_address
-                              + '\' in \'console.log\'. Will use just \'' + perfstat_address
-                              + '\' instead.')
+                    except KeyError:
+                        logging.info('Did not find a node name for address \'' + perfstat_address
+                                     + '\' in \'console.log\'. Will use just \'' + perfstat_address
+                                     + '\' instead.')
                         html_title = perfstat_node
                         node_identifier = perfstat_address
 
-                print('Handle PerfStat from node "' + node_identifier + '":')
+                    logging.info('Handle PerfStat from node "' + node_identifier + '":')
                 node_identifier += '_'
             else:
                 node_identifier = ''
                 html_title = perfstat_node
 
             # collect data from file
-            print('Read data...')
+            logging.info('Read data...')
             (table_headers, table_values), luns_available = data_collector.read_data_file(
                 perfstat_node)
             if not luns_available:
-                print('Info: Seems like PerfStat doesn\'t contain any information about LUNs.')
+                logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
             # frame html file path
             html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
@@ -217,23 +217,23 @@ def run():
                              csv_filenames]
 
             # write data into csv tables
-            print('Create csv tables...')
+            logging.info('Create csv tables...')
             table_writer.create_csv(csv_abs_filepaths, table_headers, table_values, luns_available)
 
             # write html file
-            print('Create html file...')
+            logging.info('Create html file...')
             visualizer.create_html(html_filepath, csv_filelinks, table_headers,
                                    html_title, luns_available)
 
             # reset global variables
             global_vars.reset()
 
-        print('Done. You will find charts under: ' + os.path.abspath(result_dir))
+        logging.info('Done. You will find charts under: ' + os.path.abspath(result_dir))
 
     finally:
         # delete extracted zip
         if temp_path is not None:
-            print('Delete temporarily extracted files...')
+            logging.info('Delete temporarily extracted files...')
             shutil.rmtree(temp_path)
 
 

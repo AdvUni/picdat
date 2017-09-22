@@ -1,6 +1,8 @@
 """
 Contains the class PerIterationObject.
 """
+import logging
+
 import util
 from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS
@@ -163,7 +165,6 @@ class PerIterationObject:
         self.flat_values = [table[1] for table in table_list]
 
         if self.luns_available:
-
             flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
                                                                               None, 0)
             self.flat_headers.append(flat_align_headers)
@@ -197,7 +198,7 @@ class PerIterationObject:
                 if uuid in self.lun_path_dict:
                     header_replacement.append(self.lun_path_dict[uuid])
                 else:
-                    print('Could not find path for LUN "' + uuid + '"! LUN will be displayed '
-                                                                   'with ID.')
+                    logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
+                                 'with ID.', uuid)
                     header_replacement.append(uuid)
             header_list[insertion_index] = header_replacement

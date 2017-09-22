@@ -1,6 +1,10 @@
 """
 Is responsible for collecting all information of note from PerfStat output
 """
+import logging
+
+import sys
+
 import data_collector_util
 from sysstat_object import SysstatObject
 from disk_statistics_object import DiskStatsObject
@@ -210,9 +214,9 @@ def read_data_file(perfstat_data_file):
     # postprocessing
 
     if number_of_iterations == 0:
-        print('''The file you entered as PerfStat output doesn't even contain, how many
-        iterations it handles.
-        Maybe, it isn't a PerfStat file at all.''')
+        logging.warning('The file you entered as PerfStat output doesn\'t even contain, how many '
+                        'iterations it handles. Maybe, it isn\'t a PerfStat file at all.')
+        sys.exit(1)
 
     data_collector_util.final_iteration_validation(number_of_iterations, iteration_begin_counter,
                                                    iteration_end_counter)

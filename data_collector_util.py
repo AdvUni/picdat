@@ -1,6 +1,7 @@
 """
 Small util module with functions only used by the data collector module.
 """
+import logging
 import constants
 import util
 
@@ -8,10 +9,8 @@ try:
     import pytz
 except ImportError:
     pytz = None
-    print('''
-Warning: module pytz is not installed. PicDat won't be able to convert timezones.
-Be aware of possible confusion with time values in charts.
-''')
+    logging.warning('Module pytz is not installed. PicDat won\'t be able to convert '
+                    'timezones. Be aware of possible confusion with time values in charts.')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -45,20 +44,20 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
     try:
         return util.build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
     except (KeyError, IndexError, ValueError):
-        print()
-        print('Warning: PerfStat bug. Could not read any timestamp from line:')
-        print(iteration_timestamp_line)
 
         if last_timestamp is None:
-            print('This should have been the very first iteration timestamp. PicDat is using '
-                  'default timestamp instead.')
             last_timestamp = constants.DEFAULT_TIMESTAMP
+            logging.warning(
+                'PerfStat bug. Could not read any timestamp from line: \'%s\' This should have '
+                'been the very first iteration timestamp. PicDat is using default timestamp '
+                'instead. This timestamp is: \'%s\'. Note that this may lead to falsifications in '
+                'charts!', iteration_timestamp_line, str(last_timestamp))
         else:
-            print('PicDat is using last collected iteration timestamp (timestamp from a \'BEGIN '
-                  'Iteration\' or \'END Iteration\' line) instead')
-        print('This timestamp is: ' + str(last_timestamp))
-        print('Note that this may lead to falsifications in charts!')
-        print()
+            logging.warning(
+                'PerfStat bug. Could not read any timestamp from line: \'%s\' PicDat is using '
+                'last collected iteration timestamp (timestamp from a \'BEGIN Iteration\' or '
+                '\'END Iteration\' line) instead. This timestamp is: \'%s\'. Note that this may '
+                'lead to falsifications in charts!', iteration_timestamp_line, str(last_timestamp))
         return last_timestamp
 
 
@@ -76,13 +75,10 @@ def get_sysstat_timestamp(sysstat_timestamp_line, iteration_timestamp):
     try:
         return util.build_date(sysstat_timestamp_line.split('[')[1].replace(']', ''))
     except (KeyError, IndexError, ValueError):
-        print()
-        print('Warning: PerfStat bug in sysstat block. Could not read any timestamp from line:')
-        print(sysstat_timestamp_line.strip())
-        print('PicDat is using the timestamp from the iteration\'s begin instead.')
-        print('This timestamp is: ' + str(iteration_timestamp))
-        print('Note that this may lead to falsifications in charts!')
-        print()
+        logging.warning('PerfStat bug in sysstat block. Could not read any timestamp from line: '
+                        '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
+                        'instead. This timestamp is: \'%s\' Note that this may lead to '
+                        'falsifications in charts!')
         return iteration_timestamp
 
 
@@ -97,15 +93,11 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
     handled
     """
     if expected_iteration_number == iteration_beginnings == iteration_endings:
-        print('Planned number of iterations was executed correctly.')
+        logging.info('Planned number of iterations was executed correctly.')
     elif expected_iteration_number != iteration_beginnings:
-        print('''
-        Warning: PerfStat output is incomplete; some iterations weren't executed.
-        If there is an iteration which wasn't finished correctly, it won't be considered in the 
-        resulting charts!
-        ''')
+        logging.warning('Warning: PerfStat output is incomplete; some iterations weren\'t '
+                        'executed. If there is an iteration which wasn\'t finished correctly, '
+                        'it won\'t be considered in the resulting charts!')
     else:
-        print('''
-        Warning: PerfStat output is incomplete; the last iteration didn't terminate.
-        It won't be considered in the resulting charts!
-        ''')
+        logging.warning('PerfStat output is incomplete; the last iteration didn\'t terminate. It '
+                        'won\'t be considered in the resulting charts!')

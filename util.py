@@ -1,6 +1,7 @@
 """
 Provides some functions other modules may use.
 """
+import logging
 import datetime
 import os
 import sys
@@ -90,9 +91,9 @@ def get_timezone(tz_string):
         try:
             return pytz.timezone(tz_string)
         except pytz.UnknownTimeZoneError:
-            print('Warning: PerfStat file contains timezone information PicDat is unable to handle '
-                  'with. Be aware of possible confusion with time values in charts.')
-            print('Unexpected timezone identifier: ' + tz_string)
+            logging.warning('Found unexpected timezone identifier in PerfStat file: \'%s\'. '
+                            'PicDat is not able to harmonize timezones. Be aware of possible '
+                            'confusion with time values in charts.', tz_string)
             global_vars.localtimezone = '???'
 
 
