@@ -255,14 +255,14 @@ def get_x_labels_and_plotters(luns_available):
             continue
         for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
             if request_tuple[0] == 'read_align_histo':
-                x_lable_list.append('')
+                x_lable_list.append('bucket')
                 plotter_list.append('true')
             else:
                 x_lable_list.append('time')
                 plotter_list.append('false')
 
     for _ in range(4):
-        x_lable_list.append('')
+        x_lable_list.append('time')
         plotter_list.append('false')
 
     return x_lable_list, plotter_list

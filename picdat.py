@@ -218,7 +218,7 @@ def run():
 
             # write data into csv tables
             print('Create csv tables...')
-            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values)
+            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values, luns_available)
 
             # write html file
             print('Create html file...')
