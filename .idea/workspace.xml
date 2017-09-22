@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dygraphs/dygraph.css" afterPath="$PROJECT_DIR$/dygraphs/dygraph.css" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,14 +28,46 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="picdat.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="picdat.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-28">
+            <state relative-caret-position="2610">
               <caret line="145" column="34" lean-forward="true" selection-start-line="145" selection-start-column="34" selection-end-line="145" selection-end-column="34" />
               <folding>
                 <element signature="e#42#51#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="disk_statistics_object.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1224">
+              <caret line="143" column="75" lean-forward="false" selection-start-line="143" selection-start-column="75" selection-end-line="143" selection-end-column="75" />
+              <folding>
+                <element signature="e#43#72#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dygraph.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/results51/dygraphs/dygraph.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="296">
+              <caret line="123" column="0" lean-forward="false" selection-start-line="123" selection-start-column="0" selection-end-line="138" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dygraph.css" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/dygraphs/dygraph.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="584">
+              <caret line="138" column="1" lean-forward="false" selection-start-line="138" selection-start-column="1" selection-end-line="138" selection-end-column="1" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -164,10 +196,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/results30/charts.html" />
         <option value="$PROJECT_DIR$/resultsExample/172.27.10.61_charts.html" />
         <option value="$PROJECT_DIR$/resultsExample/dygraphs/dygraph.css" />
-        <option value="$PROJECT_DIR$/dygraphs/dygraph.css" />
         <option value="$PROJECT_DIR$/resultsExample/dygraphs/dygraph.js" />
         <option value="$PROJECT_DIR$/globals.py" />
         <option value="$PROJECT_DIR$/results16/tables/statit_disk_statistics_chart_values.csv" />
@@ -215,6 +245,8 @@
         <option value="$PROJECT_DIR$/data_collector.py" />
         <option value="$PROJECT_DIR$/sysstat_object.py" />
         <option value="$PROJECT_DIR$/picdat.py" />
+        <option value="$PROJECT_DIR$/results51/dygraphs/dygraph.css" />
+        <option value="$PROJECT_DIR$/dygraphs/dygraph.css" />
       </list>
     </option>
   </component>
@@ -324,6 +356,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="results51" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dygraphs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="results49" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -392,6 +442,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="picdat" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dygraphs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -399,7 +463,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Playground.py" />
-    <property name="SearchEverywhereHistoryKey" value="sys&#9;null&#9;null&#10;data&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/data_collector.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;req&#9;null&#9;null&#10;pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;play&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;disk&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/disk_statistics_object.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;visu&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/visualizer.py&#10;const&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;stat&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/disk_statistics_object.py&#10;ut&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;vis&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/visualizer.py&#10;re&#9;null&#9;null&#10;util&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="di&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/disk_statistics_object.py&#10;sys&#9;null&#9;null&#10;data&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/data_collector.py&#10;con&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;table&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/table.py&#10;req&#9;null&#9;null&#10;pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;play&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;disk&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/disk_statistics_object.py&#10;uti&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;visu&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/visualizer.py&#10;const&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/constants.py&#10;stat&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/disk_statistics_object.py&#10;ut&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;vis&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/visualizer.py&#10;re&#9;null&#9;null&#10;util&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/util.py&#10;Pla&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/Playground.py&#10;reque&#9;FILE&#9;file:///home/hilde/PycharmProjects/picdat/requests.py&#10;tod&#9;ACTION&#9;ActivateTODOToolWindow" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -418,7 +482,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.10.131.1.23_charts.html">
+  <component name="RunManager" selected="JavaScript Debug.10.131.1.21_charts.html">
     <configuration default="false" name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -608,8 +672,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.10.131.1.23_charts.html" />
-        <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.10.131.1.21_charts.html" />
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.10.131.1.21_charts.html" />
+        <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.10.131.1.23_charts.html" />
         <item index="2" class="java.lang.String" itemvalue="Python.main" />
         <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.charts.html (1)" />
         <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.charts.html" />
@@ -629,13 +693,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Separated iterations in the Disk statistics chart">
-      <created>1505378235432</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1505378235434</updated>
     </task>
     <task id="LOCAL-00090" summary="Changed function name">
       <created>1505378310102</created>
@@ -973,7 +1030,14 @@
       <option name="project" value="LOCAL" />
       <updated>1505999677760</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="Prevented results from overwriting themselves if no names from console.log file are given">
+      <created>1506000629295</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1506000629295</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1054,7 +1118,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bugfix: print message, that there are no luns available, only if they really aren't" />
     <MESSAGE value="Collect directory name from user before extracting zip" />
     <MESSAGE value="comment" />
     <MESSAGE value="Collected cluster and node names from console.log file" />
@@ -1079,7 +1142,8 @@
     <MESSAGE value="User output, if no console.log file found" />
     <MESSAGE value="improved exception handling about missing timestamps" />
     <MESSAGE value="deleted trailing empty lines from sysstat charts, because otherwise dygraphs won't vizualize them" />
-    <option name="LAST_COMMIT_MESSAGE" value="deleted trailing empty lines from sysstat charts, because otherwise dygraphs won't vizualize them" />
+    <MESSAGE value="Prevented results from overwriting themselves if no names from console.log file are given" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prevented results from overwriting themselves if no names from console.log file are given" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1091,9 +1155,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results38/tables/10.81.30.201_lun_avg_latency_chart_values.csv" />
-    <entry file="file://$PROJECT_DIR$/results37/tables/10.81.30.201_lun_avg_latency_chart_values.csv" />
-    <entry file="file://$PROJECT_DIR$/results37/tables/10.81.30.201_lun_read_data_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/results37/tables/10.81.30.201_lun_total_ops_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/results37/tables/10.81.30.201_lun_read_align_histo_chart_values.csv" />
     <entry file="file://$PROJECT_DIR$/results36/tables/10.81.30.201_lun_read_data_chart_values.csv" />
@@ -1375,7 +1436,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/disk_statistics_object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
+        <state relative-caret-position="1224">
           <caret line="143" column="75" lean-forward="false" selection-start-line="143" selection-start-column="75" selection-end-line="143" selection-end-column="75" />
           <folding>
             <element signature="e#43#72#0" expanded="true" />
@@ -1383,13 +1444,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/results51/tables/10.131.1.21_statit_disk_statistics_chart_values.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-51">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-28">
+        <state relative-caret-position="2610">
           <caret line="145" column="34" lean-forward="true" selection-start-line="145" selection-start-column="34" selection-end-line="145" selection-end-column="34" />
           <folding>
             <element signature="e#42#51#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/results51/dygraphs/dygraph.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="123" column="0" lean-forward="false" selection-start-line="123" selection-start-column="0" selection-end-line="138" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dygraphs/dygraph.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="584">
+          <caret line="138" column="1" lean-forward="false" selection-start-line="138" selection-start-column="1" selection-end-line="138" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
