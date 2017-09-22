@@ -47,6 +47,31 @@ def data_type(filepath):
     return filepath.split('.')[-1]
 
 
+def get_log_level(log_level_string):
+    """
+    Turns a string into a log level, the logging module can understand
+    :param log_level_string: A String representing a log level like 'info' or 'error'.
+    :return: A constant from the logging module, representing a log level.
+    """
+    log_level_dict = {
+        'debug': logging.DEBUG,
+        'DEBUG': logging.DEBUG,
+        'info': logging.INFO,
+        'INFO': logging.INFO,
+        'warning': logging.WARNING,
+        'WARNING': logging.WARNING,
+        'error': logging.ERROR,
+        'ERROR': logging.ERROR,
+        'critical': logging.CRITICAL,
+        'CRITICAL': logging.CRITICAL
+    }
+    try:
+        return log_level_dict[log_level_string]
+    except KeyError:
+        logging.error('No log level like \'%s\' exists. Try one of those: %s', log_level_string,
+                      [entry for entry in log_level_dict])
+
+
 def get_month_number(month_string):
     """
     Find the corresponding month number to a simple month string

@@ -1,6 +1,7 @@
 """
 From here, the tool gets started.
 """
+import getopt
 import logging
 import os
 import shutil
@@ -43,17 +44,17 @@ def take_perfstats():
     """
     while True:
         print('Please enter a path to a PerfStat output file')
-        user_input = input('(data type .data or .zip):')
+        input_file = input('(data type .data or .zip):')
 
-        if user_input == '':
-            user_input = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
-        elif os.path.isdir(user_input):
+        if input_file == '':
+            input_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+        elif os.path.isdir(input_file):
             break
-        elif not os.path.isfile(user_input):
+        elif not os.path.isfile(input_file):
             print('This file does not exist. Try again.')
             continue
 
-        data_type = util.data_type(user_input)
+        data_type = util.data_type(input_file)
 
         if data_type != 'data' and data_type != 'zip':
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
@@ -61,7 +62,7 @@ def take_perfstats():
 
         break
 
-    return user_input
+    return input_file
 
 
 def take_directory():
@@ -120,43 +121,79 @@ def prepare_directory(destination_dir):
     return results_dir, csv_dir
 
 
-def run():
+def handle_user_input(argv):
+    """
+    Processes command line options belonging to PicDat. If no log level is given, takes default 
+    log level instead. If no input file is given, 
+    :param argv: 
+    :return: 
+    """
+    try:
+        opts, _ = getopt.getopt(argv, 'hd:i:o:', ['help', 'debug=', 'inputfile=', 'outputdir='])
+        opts = dict(opts)
+    except getopt.GetoptError:
+        print('error')
+        sys.exit()
+
+    if '-h' in opts or '--help' in opts:
+        sys.exit(0)
+
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
+                        level=constants.DEFAULT_LOG_LEVEL)
+    if '-d' in opts:
+        log_level = util.get_log_level(opts['-d'])
+    elif '--debug' in opts:
+        log_level = util.get_log_level(opts['--debug'])
+    else:
+        log_level = constants.DEFAULT_LOG_LEVEL
+
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
+
+    if '-i' in opts:
+        input_file = opts['-i']
+    elif '--inputfile' in opts:
+        input_file = opts['--inputfile']
+    else:
+        input_file = take_perfstats()
+
+    if '-o' in opts:
+        output_dir = opts['-o']
+    elif '--outputdir' in opts:
+        output_dir = opts['--outputdir']
+    else:
+        output_dir = take_directory()
+
+    return input_file, output_dir
+
+
+def run(input_file, output_dir):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
     :return: None
     """
-    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG)
-
     temp_path = None
     console_file = None
     identifier_dict = None
 
     try:
-
-        print('Welcome to PicDat!')
-
-        # receive PerfStat file(s) from user:
-        user_input = take_perfstats()
-
-        # receive destination directory from user
-        destination_directory = take_directory()
+        logging.info('Welcome to PicDat!')
 
         # create directory and copy the necessary dygraphs files into it
-        result_dir, csv_dir = prepare_directory(destination_directory)
+        result_dir, csv_dir = prepare_directory(output_dir)
 
         # extract zip if necessary
         perfstat_output_files = None
-        if os.path.isdir(user_input):
-            perfstat_output_files, console_file = util.get_all_output_files(user_input)
-        elif util.data_type(user_input) == 'data':
-            perfstat_output_files = [user_input]
-        elif util.data_type(user_input) == 'zip':
+        if os.path.isdir(input_file):
+            perfstat_output_files, console_file = util.get_all_output_files(input_file)
+        elif util.data_type(input_file) == 'data':
+            perfstat_output_files = [input_file]
+        elif util.data_type(input_file) == 'zip':
             logging.info('Extract zip...')
-            temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(user_input)
+            temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(input_file)
 
         # interrupt program if there are no .data files found
-        if not user_input:
+        if not input_file:
             logging.info('The input you gave doesn\'t contain any .data files.')
             sys.exit(0)
 
@@ -168,8 +205,8 @@ def run():
             except KeyboardInterrupt:
                 raise
             except:
-                logging.info('console.log file from zip couldn\'t be read for some reason:')
-                print(traceback.format_exc())
+                logging.info('console.log file from zip couldn\'t be read for some reason: %s',
+                             traceback.format_exc())
                 identifier_dict = None
         else:
             logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
@@ -243,4 +280,5 @@ def run():
 
 
 # run
-run()
+user_input = handle_user_input(sys.argv[1:])
+run(user_input[0], user_input[1])

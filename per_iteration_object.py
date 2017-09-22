@@ -4,7 +4,7 @@ Contains the class PerIterationObject.
 import logging
 
 import util
-from exceptions import InstanceNameNotFoundException
+#from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS
 from table import Table
 
@@ -140,7 +140,8 @@ class PerIterationObject:
             self.lun_buffer = str(line.split()[2])
         elif 'LUN UUID: ' in line:
             if self.lun_buffer == '':
-                raise InstanceNameNotFoundException
+                pass
+                #raise InstanceNameNotFoundException
             else:
                 lun_uuid = line.split()[2]
                 self.lun_path_dict[lun_uuid] = self.lun_buffer

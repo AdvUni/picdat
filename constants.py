@@ -4,6 +4,8 @@ Constants
 import datetime
 from os import sep
 
+import logging
+
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
@@ -20,6 +22,9 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+
+# this log level is used, if the user didn't specify one:
+DEFAULT_LOG_LEVEL = logging.INFO
 
 # timedelta object describing one second. The data_collector needs it to count up the time to
 # adress sysstat_1sec values correctly.
