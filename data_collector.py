@@ -2,7 +2,6 @@
 Is responsible for collecting all information of note from PerfStat output
 """
 import logging
-
 import sys
 
 import data_collector_util
@@ -112,6 +111,17 @@ def combine_results(per_iteration_object, sysstat_object, statit_object):
     statit_headers = statit_object.flat_headers
     statit_values = statit_object.flat_values
 
+    logging.debug('per_iteration_headers: %s', per_iteration_headers)
+    logging.debug('per_iteration_values: %s', per_iteration_values)
+    logging.debug('sysstat_percent_headers: %s', sysstat_percent_headers)
+    logging.debug('sysstat_percent_values: %s', sysstat_percent_values)
+    logging.debug('sysstat_mbs_headers: %s', sysstat_mbs_headers)
+    logging.debug('sysstat_mbs_values: %s', sysstat_mbs_values)
+    logging.debug('sysstat_iops_headers: %s', sysstat_iops_headers)
+    logging.debug('sysstat_iops_values: %s', sysstat_iops_values)
+    logging.debug('statit_headers: %s', statit_headers)
+    logging.debug('statit_values: %s', statit_values)
+
     combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers,
                                                 sysstat_iops_headers, statit_headers]
     combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values,
@@ -159,7 +169,6 @@ def read_data_file(perfstat_data_file):
     # collecting data
 
     with open(perfstat_data_file, 'r') as data:
-
         for line in data:
             if not sysstat_object.inside_sysstat_block or not sysstat_object.sysstat_header_needed:
                 line = line.strip()
@@ -172,6 +181,7 @@ def read_data_file(perfstat_data_file):
 
             if sysstat_object.inside_sysstat_block:
                 sysstat_object.process_sysstat_block(line)
+                continue
 
             if '=-=-=-=-=-=' in line:
                 # filter for iteration beginnings and endings
@@ -206,7 +216,6 @@ def read_data_file(perfstat_data_file):
 
             if statit_object.check_statit_begin(line):
                 continue
-
             per_iteration_object.process_per_iteration_requests(line, iteration_begin_counter)
 
     data.close()
@@ -228,5 +237,5 @@ def read_data_file(perfstat_data_file):
 
     sysstat_object.rework_sysstat_data()
 
-    return combine_results(per_iteration_object, sysstat_object, statit_object), \
-           per_iteration_object.luns_available
+    return combine_results(
+        per_iteration_object, sysstat_object, statit_object), per_iteration_object.luns_available

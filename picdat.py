@@ -126,6 +126,8 @@ def run():
     and finally create an HTML. Handles user communication.
     :return: None
     """
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.DEBUG)
+
     temp_path = None
     console_file = None
     identifier_dict = None
@@ -205,6 +207,9 @@ def run():
                 perfstat_node)
             if not luns_available:
                 logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
+
+            logging.debug('table_headers: %s', table_headers)
+            logging.debug('table_values: %s', table_values)
 
             # frame html file path
             html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
