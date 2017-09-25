@@ -148,8 +148,6 @@ def handle_user_input(argv):
         sys.exit(0)
 
     # extract log level from options if possible
-    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
-                        level=constants.DEFAULT_LOG_LEVEL)
     if '-d' in opts:
         log_level = util.get_log_level(opts['-d'])
     elif '--debug' in opts:

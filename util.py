@@ -70,6 +70,7 @@ def get_log_level(log_level_string):
     except KeyError:
         logging.error('No log level like \'%s\' exists. Try one of those: %s', log_level_string,
                       [entry for entry in log_level_dict])
+        sys.exit(1)
 
 
 def get_month_number(month_string):

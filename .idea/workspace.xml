@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="Command line options">
+    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="Corrected command line options">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +32,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5148">
-              <caret line="286" column="61" lean-forward="true" selection-start-line="286" selection-start-column="61" selection-end-line="286" selection-end-column="61" />
+            <state relative-caret-position="322">
+              <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
               <folding>
                 <element signature="e#42#55#0" expanded="true" />
               </folding>
@@ -66,12 +67,12 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1116">
-              <caret line="68" column="37" lean-forward="false" selection-start-line="68" selection-start-column="37" selection-end-line="68" selection-end-column="37" />
+            <state relative-caret-position="324">
+              <caret line="72" column="18" lean-forward="false" selection-start-line="72" selection-start-column="18" selection-end-line="72" selection-end-column="18" />
               <folding>
                 <element signature="e#55#69#0" expanded="true" />
-                <marker date="1506084689250" expanded="true" signature="9426:10024" ph="..." />
-                <marker date="1506084689250" expanded="true" signature="13440:13612" ph="..." />
+                <marker date="1506327934780" expanded="true" signature="9446:10044" ph="..." />
+                <marker date="1506327934780" expanded="true" signature="13460:13632" ph="..." />
               </folding>
             </state>
           </provider>
@@ -234,9 +235,9 @@
         <option value="$PROJECT_DIR$/disk_statistics_object.py" />
         <option value="$PROJECT_DIR$/data_collector.py" />
         <option value="$PROJECT_DIR$/constants.py" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/per_iteration_object.py" />
         <option value="$PROJECT_DIR$/Playground.py" />
+        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/picdat.py" />
       </list>
     </option>
@@ -577,13 +578,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00096" summary="Added empty return statements in process_per_iteration_requets to quit loop">
-      <created>1505393403183</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1505393403183</updated>
-    </task>
     <task id="LOCAL-00097" summary="Modified comment">
       <created>1505393557262</created>
       <option name="number" value="00097" />
@@ -920,7 +914,14 @@
       <option name="project" value="LOCAL" />
       <updated>1506085360200</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="Corrected command line options">
+      <created>1506327001405</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1506327001405</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1002,7 +1003,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Terminate disk statistics blocks with line 'Aggregate statistics' or 'Spares and other disks:' additionally to empty line, in case empty line is missing." />
     <MESSAGE value="Replaced template path in visualizer with constant" />
     <MESSAGE value="Replaced '/' with os.sep in dygraph paths" />
     <MESSAGE value="Tried to implement a function finding the base path of temporarily extracted files when PicDat is running from one-file executable" />
@@ -1027,7 +1027,8 @@
     <MESSAGE value="Replaced print() statements by use of logging." />
     <MESSAGE value="Bugfix: wrong indentation" />
     <MESSAGE value="Command line options" />
-    <option name="LAST_COMMIT_MESSAGE" value="Command line options" />
+    <MESSAGE value="Corrected command line options" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corrected command line options" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1094,6 +1095,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="68" column="8" lean-forward="false" selection-start-line="68" selection-start-column="4" selection-end-line="68" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1101,6 +1103,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
           <caret line="85" column="62" lean-forward="false" selection-start-line="85" selection-start-column="62" selection-end-line="85" selection-end-column="62" />
+          <folding>
+            <element signature="e#34#48#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1194,18 +1199,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
-          <caret line="68" column="37" lean-forward="false" selection-start-line="68" selection-start-column="37" selection-end-line="68" selection-end-column="37" />
-          <folding>
-            <element signature="e#55#69#0" expanded="true" />
-            <marker date="1506084689250" expanded="true" signature="9426:10024" ph="..." />
-            <marker date="1506084689250" expanded="true" signature="13440:13612" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_collector.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1224">
@@ -1243,10 +1236,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="72" column="18" lean-forward="false" selection-start-line="72" selection-start-column="18" selection-end-line="72" selection-end-column="18" />
+          <folding>
+            <element signature="e#55#69#0" expanded="true" />
+            <marker date="1506327934780" expanded="true" signature="9446:10044" ph="..." />
+            <marker date="1506327934780" expanded="true" signature="13460:13632" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5148">
-          <caret line="286" column="61" lean-forward="true" selection-start-line="286" selection-start-column="61" selection-end-line="286" selection-end-column="61" />
+        <state relative-caret-position="322">
+          <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
           <folding>
             <element signature="e#42#55#0" expanded="true" />
           </folding>
