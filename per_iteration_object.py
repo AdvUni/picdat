@@ -4,7 +4,6 @@ Contains the class PerIterationObject.
 import logging
 
 import util
-#from exceptions import InstanceNameNotFoundException
 from requests import PER_ITERATION_REQUESTS
 from table import Table
 
@@ -137,15 +136,21 @@ class PerIterationObject:
         :return: None
         """
         if 'LUN Path: ' in line:
-            self.lun_buffer = str(line.split()[2])
+            try:
+                self.lun_buffer = str(line.split()[2])
+            except IndexError:
+                logging.warning('Expected a LUN path in line, but didn\'t found any: \'%s\'', line)
         elif 'LUN UUID: ' in line:
-            if self.lun_buffer == '':
-                pass
-                #raise InstanceNameNotFoundException
-            else:
+            try:
                 lun_uuid = line.split()[2]
-                self.lun_path_dict[lun_uuid] = self.lun_buffer
-                self.lun_buffer = ''
+                if self.lun_buffer is None:
+                    logging.info('Found LUN uuid \'%s\' but no corresponding path translation.',
+                                 lun_uuid)
+                else:
+                    self.lun_path_dict[lun_uuid] = self.lun_buffer
+                    self.lun_buffer = None
+            except IndexError:
+                logging.warning('Expected a LUN uuid in line, but didn\'t found any: \'%s\'', line)
 
     def rework_per_iteration_data(self, iteration_timestamps):
         """
