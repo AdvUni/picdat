@@ -126,10 +126,12 @@ def prepare_directory(destination_dir):
     logging.info('Prepare directory...')
 
     csv_dir = destination_dir + os.sep + 'tables'
-    os.makedirs(csv_dir)
+    if not os.path.isdir(csv_dir):
+        os.makedirs(csv_dir)
 
     dygraphs_dir = destination_dir + os.sep + 'dygraphs'
-    os.makedirs(dygraphs_dir)
+    if not os.path.isdir(dygraphs_dir):
+        os.makedirs(dygraphs_dir)
 
     dygraphs_js_source = util.get_base_path() + constants.DYGRAPHS_JS_SRC
     dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
