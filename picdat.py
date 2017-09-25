@@ -34,6 +34,18 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
+def validate_input_file(input_file):
+    if os.path.isdir(input_file):
+        return
+    elif not os.path.isfile(input_file):
+        raise FileNotFoundError
+
+    data_type = util.data_type(input_file)
+
+    if data_type != 'data' and data_type != 'zip':
+        raise TypeError
+
+
 def take_perfstats():
     """
     This function requests a PerfStat output location of the user and decides, whether its type is
@@ -48,21 +60,14 @@ def take_perfstats():
 
         if input_file == '':
             input_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
-        elif os.path.isdir(input_file):
-            break
-        elif not os.path.isfile(input_file):
+
+        try:
+            validate_input_file(input_file)
+            return input_file
+        except FileNotFoundError:
             print('This file does not exist. Try again.')
-            continue
-
-        data_type = util.data_type(input_file)
-
-        if data_type != 'data' and data_type != 'zip':
+        except TypeError:
             print('Unexpected data type: File must be of type .data or .zip. Try again.')
-            continue
-
-        break
-
-    return input_file
 
 
 def take_directory():
@@ -76,17 +81,16 @@ def take_directory():
         destination_directory = input('Please select a destination directory for the results: ')
         if destination_directory != '':
             if os.path.isdir(destination_directory):
-                destination_directory += os.sep
                 break
             elif input('This directory does not exist. Would you like to create it? (Enter y) ') \
                     == 'y':
                 os.makedirs(destination_directory)
                 print('Created directory ' + destination_directory)
-                destination_directory += os.sep
                 break
             else:
                 print('So, try again.')
         else:
+            destination_directory = '.'
             break
 
     return destination_directory
@@ -124,20 +128,26 @@ def prepare_directory(destination_dir):
 def handle_user_input(argv):
     """
     Processes command line options belonging to PicDat. If no log level is given, takes default 
-    log level instead. If no input file is given, 
-    :param argv: 
-    :return: 
+    log level instead. If no input file or output directory is given, PicDat will ask the user 
+    about them at runtime. 
+    :param argv: Command line options.
+    :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to 
+    the output directory.
     """
+
+    # get all options from argv and turn them into a dict
     try:
         opts, _ = getopt.getopt(argv, 'hd:i:o:', ['help', 'debug=', 'inputfile=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
-        print('error')
-        sys.exit()
+        logging.exception('Couldn\'t read command line options.')
+        sys.exit(1)
 
+    # print help information if option 'help' is given
     if '-h' in opts or '--help' in opts:
         sys.exit(0)
 
+    # extract log level from options if possible
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
                         level=constants.DEFAULT_LOG_LEVEL)
     if '-d' in opts:
@@ -149,6 +159,7 @@ def handle_user_input(argv):
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
 
+    # extract inputfile from options if possible
     if '-i' in opts:
         input_file = opts['-i']
     elif '--inputfile' in opts:
@@ -156,12 +167,25 @@ def handle_user_input(argv):
     else:
         input_file = take_perfstats()
 
+    try:
+        validate_input_file(input_file)
+    except FileNotFoundError:
+        logging.error('File %s does not exist.', input_file)
+        sys.exit(1)
+    except TypeError:
+        logging.error('File %s is of unexpected data type.', input_file)
+
+    # extract outputdir from options if possible
     if '-o' in opts:
         output_dir = opts['-o']
     elif '--outputdir' in opts:
         output_dir = opts['--outputdir']
     else:
         output_dir = take_directory()
+
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+    output_dir += os.sep
 
     return input_file, output_dir
 
@@ -194,7 +218,7 @@ def run(input_file, output_dir):
 
         # interrupt program if there are no .data files found
         if not input_file:
-            logging.info('The input you gave doesn\'t contain any .data files.')
+            logging.info('The input you gave (%s) doesn\'t contain any .data files.', input_file)
             sys.exit(0)
 
         # if given, read cluster and node information from console.log file:
