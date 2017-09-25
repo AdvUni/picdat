@@ -233,25 +233,6 @@ def tablelist_insertion(tablelist, list_index, iteration, instance, item):
     tablelist[list_index].insert(iteration, instance, item)
 
 
-def empty_directory(preferred_directory_path):
-    """
-    Creates a directory which doesn't exist yet with a path, as close as possible to the
-    preferred path.
-    :param preferred_directory_path: The path you want to have the directory at.
-    :return: The directory's name created actually.
-    """
-    directory_name = preferred_directory_path
-
-    if os.path.exists(directory_name):
-        i = 1
-        while os.path.exists(directory_name):
-            directory_name = preferred_directory_path + str(i)
-            i += 1
-
-    os.makedirs(directory_name)
-    return directory_name
-
-
 def get_units(luns_available):
     """
     Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
