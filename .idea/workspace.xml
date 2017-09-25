@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="Corrected command line options">
+    <list default="true" id="103113f2-539a-4d8d-9251-a13296647837" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/picdat.py" afterPath="$PROJECT_DIR$/picdat.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,8 +31,8 @@
       <file leaf-file-name="picdat.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/picdat.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+            <state relative-caret-position="-2412">
+              <caret line="40" column="17" lean-forward="true" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
               <folding>
                 <element signature="e#42#55#0" expanded="true" />
               </folding>
@@ -578,13 +577,6 @@
       <option name="presentableId" value="Default" />
       <updated>1491565179852</updated>
     </task>
-    <task id="LOCAL-00097" summary="Modified comment">
-      <created>1505393557262</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1505393557263</updated>
-    </task>
     <task id="LOCAL-00098" summary="Removed checkboxes under the charts and put some inside the legends instead">
       <created>1505399385609</created>
       <option name="number" value="00098" />
@@ -921,7 +913,14 @@
       <option name="project" value="LOCAL" />
       <updated>1506327001405</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="Fix: Don't try to overwrite logging.basicconfig">
+      <created>1506328037445</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1506328037445</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1003,7 +1002,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Replaced template path in visualizer with constant" />
     <MESSAGE value="Replaced '/' with os.sep in dygraph paths" />
     <MESSAGE value="Tried to implement a function finding the base path of temporarily extracted files when PicDat is running from one-file executable" />
     <MESSAGE value="Inform user about the datatypes, the perfstat files may have" />
@@ -1028,7 +1026,8 @@
     <MESSAGE value="Bugfix: wrong indentation" />
     <MESSAGE value="Command line options" />
     <MESSAGE value="Corrected command line options" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrected command line options" />
+    <MESSAGE value="Fix: Don't try to overwrite logging.basicconfig" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix: Don't try to overwrite logging.basicconfig" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1104,7 +1103,7 @@
         <state relative-caret-position="465">
           <caret line="85" column="62" lean-forward="false" selection-start-line="85" selection-start-column="62" selection-end-line="85" selection-end-column="62" />
           <folding>
-            <element signature="e#34#48#0" expanded="true" />
+            <element signature="e#34#48#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1250,8 +1249,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/picdat.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+        <state relative-caret-position="-2412">
+          <caret line="40" column="17" lean-forward="true" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
           <folding>
             <element signature="e#42#55#0" expanded="true" />
           </folding>

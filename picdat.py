@@ -35,6 +35,14 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 
 def validate_input_file(input_file):
+    """
+    This function validates an input file given by the user with some simple criteria.
+    :param input_file: The user-given input file
+    :return: None
+    :raises fileNotFoundError: raises an exception, if input_file is neither a directory nor a file.
+    :raises typeError: raises an exception, if input_file is a file of the wrong data type
+    (neither .data nor .zip).
+    """
     if os.path.isdir(input_file):
         return
     elif not os.path.isfile(input_file):
