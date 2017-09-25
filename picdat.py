@@ -34,6 +34,17 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
+def print_help_and_exit(program_name):
+    """
+    This function prints a String about the program's usage to the command line and then quits 
+    the program.
+    :param program_name: The program's name.
+    :return: None
+    """
+    print(constants.HELP % program_name)
+    sys.exit(0)
+
+
 def validate_input_file(input_file):
     """
     This function validates an input file given by the user with some simple criteria.
@@ -132,25 +143,25 @@ def prepare_directory(destination_dir):
 
 def handle_user_input(argv):
     """
-    Processes command line options belonging to PicDat. If no log level is given, takes default 
-    log level instead. If no input file or output directory is given, PicDat will ask the user 
+    Processes command line options belonging to PicDat. If no log level is given, takes default
+    log level instead. If no input file or output directory is given, PicDat will ask the user
     about them at runtime. 
     :param argv: Command line options.
-    :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to 
+    :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to
     the output directory.
     """
 
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv, 'hd:i:o:', ['help', 'debug=', 'inputfile=', 'outputdir='])
+        opts, _ = getopt.getopt(argv[1:], 'hd:i:o:', ['help', 'debug=', 'inputfile=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
-        sys.exit(1)
+        print_help_and_exit(argv[0])
 
     # print help information if option 'help' is given
     if '-h' in opts or '--help' in opts:
-        sys.exit(0)
+        print_help_and_exit(argv[0])
 
     # extract log level from options if possible
     if '-d' in opts:
@@ -177,6 +188,7 @@ def handle_user_input(argv):
         sys.exit(1)
     except TypeError:
         logging.error('File %s is of unexpected data type.', input_file)
+        sys.exit(1)
 
     # extract outputdir from options if possible
     if '-o' in opts:
@@ -304,5 +316,5 @@ def run(input_file, result_dir):
 
 
 # run
-user_input = handle_user_input(sys.argv[1:])
+user_input = handle_user_input(sys.argv)
 run(user_input[0], user_input[1])

@@ -23,6 +23,23 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
+# String to print together with the program name if user uses command line option --help or -h or
+# any not recognized options:
+HELP = '''
+usage: %s [--help] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
+    --help, -h: prints this message
+    --inputfile "input", -i "input": input is the path to some PerfStat output. Should be a 
+                                     folder, a .zip folder or a .data file.
+    --outputdir "output", -o "output": output is the directory's path, where this program puts its 
+                                       results. If there is no directory existing yet under this 
+                                       path, one would be created. If there already are some 
+                                       PicDat results, they might be overwritten.
+    --debug "level", -d "level": level should be inside debug, info, warning, error, critical. It 
+                                 describes the filtering level of command line output during 
+                                 running this program (default is "info").
+'''
+
+
 # this log level is used, if the user didn't specify one:
 DEFAULT_LOG_LEVEL = logging.INFO
 
