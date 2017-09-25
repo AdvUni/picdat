@@ -9,8 +9,8 @@ try:
     import pytz
 except ImportError:
     pytz = None
-    logging.warning('Module pytz is not installed. PicDat won\'t be able to convert '
-                    'timezones. Be aware of possible confusion with time values in charts.')
+    print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
+          'timezones. Be aware of possible confusion with time values in charts!')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
