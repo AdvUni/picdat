@@ -6,7 +6,7 @@ import sys
 
 import data_collector_util
 from sysstat_object import SysstatObject
-from disk_statistics_object import DiskStatsObject
+from statit_object import StatitObject
 from per_iteration_object import PerIterationObject
 
 __author__ = 'Marie Lohbeck'
@@ -127,7 +127,9 @@ def combine_results(per_iteration_object, sysstat_object, statit_object):
     combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values,
                                               sysstat_iops_values, statit_values]
 
-    return combined_headers, combined_values
+    combined_requests = [per_iteration_object, sysstat_object, statit_object]
+
+    return combined_requests, combined_headers, combined_values
 
 
 def read_data_file(perfstat_data_file):
@@ -164,7 +166,7 @@ def read_data_file(perfstat_data_file):
     sysstat_object = SysstatObject()
 
     # this object collects all information the program finds during processing statit blocks
-    statit_object = DiskStatsObject()
+    statit_object = StatitObject()
 
     # collecting data
 
@@ -237,5 +239,4 @@ def read_data_file(perfstat_data_file):
 
     sysstat_object.rework_sysstat_data()
 
-    return combine_results(
-        per_iteration_object, sysstat_object, statit_object), per_iteration_object.luns_available
+    return combine_results(per_iteration_object, sysstat_object, statit_object)

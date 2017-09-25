@@ -16,8 +16,6 @@ except ImportError:
 
 from orderedset import OrderedSet
 from table import Table
-from requests import PER_ITERATION_REQUESTS, SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, \
-    SYSSTAT_NO_UNIT, STATIT_DISK_STAT_UNIT
 import constants
 import tempfile
 
@@ -233,116 +231,81 @@ def tablelist_insertion(tablelist, list_index, iteration, instance, item):
     tablelist[list_index].insert(iteration, instance, item)
 
 
-def get_units(luns_available):
+def get_all_units(request_objects):
     """
     Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
     :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: A list of all units.
     """
-    unit_list = []
-    for object_type in PER_ITERATION_REQUESTS:
-        if not luns_available and object_type == 'lun':
-            continue
-        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-            unit = request_tuple[1]
-            unit_list.append(unit)
 
-    unit_list.append(SYSSTAT_PERCENT_UNIT)
-    unit_list.append(SYSSTAT_MBS_UNIT)
-    unit_list.append(SYSSTAT_NO_UNIT)
-    unit_list.append(STATIT_DISK_STAT_UNIT)
+    units = []
+    for request_object in request_objects:
+        units += request_object.get_units()
 
-    return unit_list
+    logging.debug('y_labels: %s', units)
+    return units
 
 
-def get_x_labels_and_plotters(luns_available):
+def get_x_labels(request_objects):
     x_lable_list = []
-    plotter_list = []
-    for object_type in PER_ITERATION_REQUESTS:
-        if not luns_available and object_type == 'lun':
-            continue
-        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-            if request_tuple[0] == 'read_align_histo':
-                x_lable_list.append('bucket')
-                plotter_list.append('true')
-            else:
-                x_lable_list.append('time')
-                plotter_list.append('false')
+    for request_object in request_objects:
+        x_lable_list += request_object.get_x_labels()
 
-    for _ in range(4):
-        x_lable_list.append('time')
-        plotter_list.append('false')
-
-    return x_lable_list, plotter_list
+    logging.debug('x_labels: %s', x_lable_list)
+    return x_lable_list
 
 
-def get_titles(luns_available):
+def get_barchart_booleans(request_objects):
+    barchart_list = []
+    for request_object in request_objects:
+        barchart_list += request_object.get_barchart_booleans()
+
+    logging.debug('bar chart list: %s', barchart_list)
+    return barchart_list
+
+
+def get_titles(request_objects):
     """
     Generates proper titles for charts.
     :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: A list of chart titles.
     """
-    title_list = []
-    for object_type in PER_ITERATION_REQUESTS:
-        if not luns_available and object_type == 'lun':
-            continue
-        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-            aspect = request_tuple[0]
-            title_list.append(object_type + ':' + aspect)
+    delimiter = ': '
+    titles = []
+    for request_object in request_objects:
+        titles += request_object.get_request_strings(delimiter)
 
-    title_list.append(constants.SYSSTAT_CHART_TITLE + ':percent')
-    title_list.append(constants.SYSSTAT_CHART_TITLE + ':MBs')
-    title_list.append(constants.SYSSTAT_CHART_TITLE + ':IOPS')
-    title_list.append(constants.STATIT_CHART_TITLE)
-
-    return title_list
+    logging.debug('chart titles: %s', titles)
+    return titles
 
 
-def get_object_ids(luns_available):
+def get_object_ids(request_objects):
     """
-    Gets all object IDs from a per_iteration_request. Also adds IDs for sysstat charts.
+    Generates proper titles for charts.
     :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
-    :return: A list of all object IDs.
+    :return: A list of chart titles.
     """
+    delimiter = '_'
     id_list = []
-    for object_type in PER_ITERATION_REQUESTS:
-        if not luns_available and object_type == 'lun':
-            continue
-        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-            aspect = request_tuple[0]
-            id_list.append(object_type + '_' + aspect)
+    for request_object in request_objects:
+        id_list += request_object.get_request_strings(delimiter)
 
-    id_list.append(constants.SYSSTAT_CHART_TITLE + '_percent')
-    id_list.append(constants.SYSSTAT_CHART_TITLE + '_mbs')
-    id_list.append(constants.SYSSTAT_CHART_TITLE + '_iops')
-    id_list.append(constants.STATIT_CHART_TITLE)
-
+    logging.debug('id list: %s', id_list)
     return id_list
 
 
-def get_csv_filenames(output_identifier, luns_available):
+def get_csv_filenames(request_objects, output_identifier):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :return: A list of csv file names.
     :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     """
     name_list = []
-    for object_type in PER_ITERATION_REQUESTS:
-        if not luns_available and object_type == 'lun':
-            continue
-        for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-            aspect = request_tuple[0]
-            name_list.append(output_identifier + object_type + '_' + aspect +
-                             constants.CSV_FILE_ENDING)
 
-    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_percent' +
-                     constants.CSV_FILE_ENDING)
-    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_mbs' +
-                     constants.CSV_FILE_ENDING)
-    name_list.append(output_identifier + constants.SYSSTAT_CHART_TITLE + '_iops' +
-                     constants.CSV_FILE_ENDING)
-    name_list.append(output_identifier + constants.STATIT_CHART_TITLE + constants.CSV_FILE_ENDING)
+    for object_id in get_object_ids(request_objects):
+        name_list.append(output_identifier + object_id + constants.CSV_FILE_ENDING)
 
+    logging.debug('csv names: %s', name_list)
     return name_list
 
 

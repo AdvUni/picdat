@@ -3,15 +3,11 @@ Contains the class SysstatObject
 """
 import re
 
-import sys
-
 import constants
 import util
-from requests import SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
-
 
 # license notice:
 #
@@ -25,6 +21,18 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
+SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
+SYSSTAT_PERCENT_UNIT = '%'
+
+SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
+                        ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
+SYSSTAT_MBS_UNIT = 'MB/s'
+
+SYSSTAT_IOPS_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
+SYSSTAT_IOPS_UNIT = ' '
+
+SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 
 
 class SysstatObject:
@@ -190,6 +198,25 @@ class SysstatObject:
         for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
             try:
                 while value_list[-1][0] == ' ':
-                    del(value_list[-1])
+                    del (value_list[-1])
             except IndexError:
                 pass
+
+    @staticmethod
+    def get_units():
+        return [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]
+
+    @staticmethod
+    def get_request_strings(delimiter):
+        return [SYSSTAT_CHART_TITLE + delimiter + unit for unit in ['percent', 'MBs',
+                                                                    'IOPS']]
+
+    @staticmethod
+    def get_x_labels():
+        return ['time' for _ in
+                [SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS]]
+
+    @staticmethod
+    def get_barchart_booleans():
+        return ['false' for _ in
+                [SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS]]

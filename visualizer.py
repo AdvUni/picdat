@@ -76,22 +76,21 @@ def create_buttons(html_document, chart_id):
     html_document.write('</p>' + os.linesep)
 
 
-def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
+def create_html(html_filepath, csv_files, html_title, request_objects):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
     :param csv_files: A list of file names from csv tables which should be visualized
-    :param header: A list of lists which contains the csv column names to label
-    inside the html reasonably
-    :param sourcepath: A file path which is used as caption for the resulting html. Should be the
+    :param html_title: A file path which is used as caption for the resulting html. Should be the
     path of the PerfStat output file.
     :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
     :return: None
     """
-    titles = util.get_titles(luns_available)
-    chart_ids = util.get_object_ids(luns_available)
-    y_labels = util.get_units(luns_available)
-    x_labels, plotter_booleans = util.get_x_labels_and_plotters(luns_available)
+    titles = util.get_titles(request_objects)
+    chart_ids = util.get_object_ids(request_objects)
+    y_labels = util.get_all_units(request_objects)
+    x_labels = util.get_x_labels(request_objects)
+    barchart_booleans = util.get_barchart_booleans(request_objects)
 
     # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
     # Pay attention, that this rename needs to be compatible with the data_collector module,
@@ -107,7 +106,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
         template.close()
 
         # write caption
-        html_document.write('    <h2> ' + sourcepath + ' </h2>' + os.linesep)
+        html_document.write('    <h2> ' + html_title + ' </h2>' + os.linesep)
         # write timezone notice
         html_document.write('    <h2> ' + 'timezone:' + str(global_vars.localtimezone) + ' </h2>' +
                             os.linesep)
@@ -118,7 +117,7 @@ def create_html(html_filepath, csv_files, header, sourcepath, luns_available):
             html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' + chart_ids[chart]
                                 + '", "' + csv_files[chart] + '", "' + titles[chart] + '", "'
                                 + x_labels[chart] + '", "' + y_labels[chart] + '", '
-                                + plotter_booleans[chart] + '); </script>')
+                                + barchart_booleans[chart] + '); </script>')
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])

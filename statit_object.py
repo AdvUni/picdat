@@ -1,5 +1,5 @@
 """
-Contains the class DiskStatsObject
+Contains the class StatitObject
 """
 import logging
 
@@ -25,7 +25,10 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-class DiskStatsObject:
+STATIT_DISK_STAT_UNIT = '%'
+STATIT_CHART_TITLE = 'statit%sdisk_statistics'
+
+class StatitObject:
     """
     This object type is responsible for holding several information about statit blocks.
     in PerfStat output. It's a centralization of headers and values for the disk statistic charts.
@@ -171,3 +174,19 @@ class DiskStatsObject:
                 counter += 1
         except StopIteration:
             pass
+
+    @staticmethod
+    def get_units():
+        return [STATIT_DISK_STAT_UNIT]
+
+    @staticmethod
+    def get_request_strings(delimiter):
+        return [STATIT_CHART_TITLE % delimiter]
+
+    @staticmethod
+    def get_x_labels():
+        return ['time']
+
+    @staticmethod
+    def get_barchart_booleans():
+        return ['false']

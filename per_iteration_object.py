@@ -2,9 +2,9 @@
 Contains the class PerIterationObject.
 """
 import logging
+from collections import OrderedDict
 
 import util
-from requests import PER_ITERATION_REQUESTS
 from table import Table
 
 __author__ = 'Marie Lohbeck'
@@ -23,6 +23,15 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
+
+PER_ITERATION_REQUESTS = OrderedDict([
+    ('aggregate', [('total_transfers', '/s')]),
+    ('processor', [('processor_busy', '%')]),
+    ('volume', [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]),
+    ('lun', [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s'),
+             ('read_align_histo', '%')])
+])
 
 
 class PerIterationObject:
@@ -180,6 +189,8 @@ class PerIterationObject:
             self.flat_values.append(flat_align_values)
 
             self.instance_names.append(self.alaign_instances)
+        else:
+            logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
         # replace lun's IDs in headers through their path names
         if 'lun' in PER_ITERATION_REQUESTS and self.luns_available:
@@ -211,3 +222,52 @@ class PerIterationObject:
                                  'with ID.', uuid)
                     header_replacement.append(uuid)
             header_list[insertion_index] = header_replacement
+
+    def get_units(self):
+        unit_list = []
+        for object_type in PER_ITERATION_REQUESTS:
+            if not self.luns_available and object_type == 'lun':
+                continue
+            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
+                unit = request_tuple[1]
+                unit_list.append(unit)
+
+        return unit_list
+
+    def get_request_strings(self, delimiter):
+        title_list = []
+        for object_type in PER_ITERATION_REQUESTS:
+            if not self.luns_available and object_type == 'lun':
+                continue
+            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
+                aspect = request_tuple[0]
+                title_list.append(object_type + delimiter + aspect)
+        return title_list
+
+    def get_x_labels(self):
+        x_lable_list = []
+
+        for object_type in PER_ITERATION_REQUESTS:
+            if not self.luns_available and object_type == 'lun':
+                continue
+            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
+                if request_tuple[0] == 'read_align_histo':
+                    x_lable_list.append('bucket')
+                else:
+                    x_lable_list.append('time')
+
+        return x_lable_list
+
+    def get_barchart_booleans(self):
+        barchart_list = []
+
+        for object_type in PER_ITERATION_REQUESTS:
+            if not self.luns_available and object_type == 'lun':
+                continue
+            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
+                if request_tuple[0] == 'read_align_histo':
+                    barchart_list.append('true')
+                else:
+                    barchart_list.append('false')
+
+        return barchart_list

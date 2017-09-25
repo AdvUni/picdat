@@ -278,10 +278,8 @@ def run(input_file, result_dir):
 
             # collect data from file
             logging.info('Read data...')
-            (table_headers, table_values), luns_available = data_collector.read_data_file(
+            request_objects, table_headers, table_values = data_collector.read_data_file(
                 perfstat_node)
-            if not luns_available:
-                logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
             logging.debug('table_headers: %s', table_headers)
             logging.debug('table_values: %s', table_values)
@@ -291,19 +289,18 @@ def run(input_file, result_dir):
                             constants.HTML_ENDING
 
             # generate file names for csv tables
-            csv_filenames = util.get_csv_filenames(node_identifier, luns_available)
+            csv_filenames = util.get_csv_filenames(request_objects, node_identifier)
             csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
             csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
                              csv_filenames]
 
             # write data into csv tables
             logging.info('Create csv tables...')
-            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values, luns_available)
+            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values, request_objects)
 
             # write html file
             logging.info('Create html file...')
-            visualizer.create_html(html_filepath, csv_filelinks, table_headers,
-                                   html_title, luns_available)
+            visualizer.create_html(html_filepath, csv_filelinks, html_title, request_objects)
 
             # reset global variables
             global_vars.reset()
