@@ -93,12 +93,12 @@ def take_directory():
             elif input('This directory does not exist. Would you like to create it? (Enter y) ') \
                     == 'y':
                 os.makedirs(destination_directory)
-                print('Created directory ' + destination_directory)
+                logging.info('Created directory %s', destination_directory)
                 break
             else:
                 print('So, try again.')
         else:
-            destination_directory = '.'
+            destination_directory = 'results'
             break
 
     return destination_directory
@@ -106,21 +106,18 @@ def take_directory():
 
 def prepare_directory(destination_dir):
     """
-    Creates an empty directory inside the user-given directory, which isn't in use yet. Copies
-    the dygraphs .jss and .css files into the new directory.
+    Copies the dygraphs .jss and .css files into the given directory. Also creates an empty
+    subdirectory for csv tables.
     :param destination_dir: The directory, the user gave in as destination.
-    :return: The path to a directory inside destination_dir. In this directory, PicDat should
-    write all results.
+    :return: The path to the csv directory inside destination_dir. In this directory, PicDat should
+    write all csv tables.
     """
-    destination_dir += constants.DEFAULT_DIRECTORY_NAME
-
     logging.info('Prepare directory...')
-    results_dir = util.empty_directory(destination_dir)
 
-    csv_dir = results_dir + os.sep + 'tables'
+    csv_dir = destination_dir + os.sep + 'tables'
     os.makedirs(csv_dir)
 
-    dygraphs_dir = results_dir + os.sep + 'dygraphs'
+    dygraphs_dir = destination_dir + os.sep + 'dygraphs'
     os.makedirs(dygraphs_dir)
 
     dygraphs_js_source = util.get_base_path() + constants.DYGRAPHS_JS_SRC
@@ -130,7 +127,7 @@ def prepare_directory(destination_dir):
     copyfile(dygraphs_js_source, dygraphs_js_dest)
     copyfile(dygraphs_css_source, dygraphs_css_dest)
 
-    return results_dir, csv_dir
+    return csv_dir
 
 
 def handle_user_input(argv):
@@ -191,12 +188,11 @@ def handle_user_input(argv):
 
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-    output_dir += os.sep
 
     return input_file, output_dir
 
 
-def run(input_file, output_dir):
+def run(input_file, result_dir):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
@@ -207,10 +203,8 @@ def run(input_file, output_dir):
     identifier_dict = None
 
     try:
-        logging.info('Welcome to PicDat!')
-
         # create directory and copy the necessary dygraphs files into it
-        result_dir, csv_dir = prepare_directory(output_dir)
+        csv_dir = prepare_directory(result_dir)
 
         # extract zip if necessary
         perfstat_output_files = None
