@@ -310,8 +310,8 @@ def run(input_file, result_dir):
     finally:
         # delete extracted zip
         if temp_path is not None:
-            logging.info('Delete temporarily extracted files...')
             shutil.rmtree(temp_path)
+            logging.info('(Temporarily extracted files deleted)')
 
 
 # run
