@@ -90,8 +90,8 @@ LEGEND_DIV_CLASS_NAME = 'legend-div'
 # this is the html class name of all div elements which contain dygraph elements:
 CHART_DIV_CLASS_NAME = 'chart-div'
 
-# this is the javaScript function which is responsible for showing all graphs in one chart at
-# once; the program needs to write this string in the html document:
+# this is the expected number of columns in statit blocks:
+STATIT_COLUMNS = 18
 
 # proportions of the html charts in px:
 CHARTS_HEIGHT = 600

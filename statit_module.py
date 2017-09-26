@@ -50,15 +50,13 @@ class StatitClass:
         self.inside_statit_block = False
         self.inside_disk_stats_block = False
 
-        # Saves a tuple of the line's start end end index from the word 'ut%' in Disk statistics
-        # header.
-        self.ut_column_indices = None
-
         self.table = Table()
         self.disk_names = set()
 
         self.flat_headers = None
         self.flat_values = None
+
+        self.line_buffer = None
 
     def check_statit_begin(self, line):
         """
@@ -93,22 +91,41 @@ class StatitClass:
                     or line == 'Spares and other disks:':
                 self.inside_statit_block = False
                 self.inside_disk_stats_block = False
+                self.line_buffer = None
                 return
 
-            if len(line_split) == 1:
+            # don't care about sub headers:
+            if len(line_split) == 1 and line.startswith('/') and line.endswith(':'):
+                self.line_buffer = None
                 return
+
+            # In Disk Statistics blocks, PerfStat seems to break some lines out of nowhere
+            # sometimes.
+            if len(line_split) < constants.STATIT_COLUMNS:
+                if self.line_buffer is None:
+                    self.line_buffer = line
+                    logging.debug('buffered statit line snippet: %s', line)
+                    return
+                else:
+                    line_split = self.line_buffer.split() + line_split
+                    logging.debug('joined statit line: %s', line_split)
 
             disk = line_split[0]
             ut_percent = line_split[1]
+
+            self.disk_names.add(disk)
+            self.table.insert(self.statit_counter, disk, ut_percent)
+
+            self.line_buffer = None
 
             # In Disk Statistics blocks, PerfStat seems to break some lines out of nowhere
             # sometimes. To distinguish between fresh lines and some line break snippets,
             # the program checks, whether the second word from 'line' is actually the same as the
             # one lying directly under the column header 'ut%':
 
-            if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
-                self.disk_names.add(disk)
-                self.table.insert(self.statit_counter, disk, ut_percent)
+            #if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
+            #    self.disk_names.add(disk)
+            #    self.table.insert(self.statit_counter, disk, ut_percent)
 
         else:
             if len(line_split) == 0:
@@ -142,13 +159,10 @@ class StatitClass:
                 return
             if line_split[0] == 'disk':
                 self.inside_disk_stats_block = True
-                ut_start_index = line.index('ut%')
-                ut_end_index = ut_start_index + len('ut%')
-                self.ut_column_indices = (ut_start_index, ut_end_index)
 
     def rework_statit_data(self, iteration_timestamps):
         """
-        Simplifies statit data: Flattens the table data structure into the lists flat_headers and
+        Simplifies statit data: Flattens the table data structure into the lists flat_headers and   
         flat_values. Also inserts empty data lines into flat_values, to separate iterations in
         resulting charts from each other.
         :param iteration_timestamps: A list of datetime objects, marking the ends of all
