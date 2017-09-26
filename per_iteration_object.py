@@ -1,5 +1,11 @@
 """
-Contains the class PerIterationObject.
+Contains the class PerIterationObject. This class is responsible for processing a certain request
+type. Per-iteration requests are looking for values about several aspects of different object types
+which have several instances. There are no specific blocks in the PerfStat in which those values
+appears, but for each triple of an object type, one specific instance and a certain aspect,
+there is expected exactly one value per iteration. PicDat collects these values and is going to
+create one csv table together with one dygraph chart for each aspect about each object type.
+Therefore, one chart will display several instances.
 """
 import logging
 from collections import OrderedDict
@@ -9,7 +15,6 @@ from table import Table
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
-
 
 # license notice:
 #
@@ -25,6 +30,10 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
+# These search keys will match (at most) once in each iteration. Data collected about these
+# requests will be shown in four charts: One for each of aggregate, processor, volume and lun.
+# About the data structure: It's an OrderedDict of lists which contains all requested object
+# types mapped to the relating aspects and units which the tool should create graphs for.
 PER_ITERATION_REQUESTS = OrderedDict([
     ('aggregate', [('total_transfers', '/s')]),
     ('processor', [('processor_busy', '%')]),

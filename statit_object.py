@@ -1,5 +1,12 @@
 """
-Contains the class StatitObject
+Contains the class StatitObject. This class is responsible for processing a certain request
+type. The statit-requests are about some blocks in the PerfStat called something like 'statit'.
+These blocks may appear several times in a PerfStat iteration. PicDat is interested in a special
+subsection of the statit block called 'Disk Statistics'. This subsections holds a table of
+information about all disks of the device the PerfStat is about. PicDat only looks for the first
+two columns of this table: The first one contains the disk names and the second one a related
+number called 'ut%'. PicDat is going to create exactly one csv table and one chart about the
+statit blocks.
 """
 import logging
 
@@ -9,7 +16,6 @@ from table import Table
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
-
 
 # license notice:
 #
@@ -27,6 +33,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 STATIT_DISK_STAT_UNIT = '%'
 STATIT_CHART_TITLE = 'statit%sdisk_statistics'
+
 
 class StatitObject:
     """
