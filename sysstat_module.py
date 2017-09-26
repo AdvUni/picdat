@@ -1,5 +1,5 @@
 """
-Contains the class SysstatObject. This class is responsible for processing certain request
+Contains the class SysstatClass. This class is responsible for processing certain request
 types. The sysstat-requests are about some blocks in the PerfStat called something like
 'sysstat_x_1sec'. These blocks are expected to appear once per PerfStat iteration. The
 blocks are built like tables with a header and many rows of values. The time gap between two rows of
@@ -10,6 +10,8 @@ each one belonging to a specific unit. PicDat is going to create exactly three c
 charts about the sysstat blocks.
 """
 import re
+
+import logging
 
 import constants
 import util
@@ -55,10 +57,11 @@ SYSSTAT_MBS_UNIT = 'MB/s'
 SYSSTAT_IOPS_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
 SYSSTAT_IOPS_UNIT = ' '
 
+SYSSTAT_BLOCK_HEADER = 'sysstat_x_1sec'
 SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 
 
-class SysstatObject:
+class SysstatClass:
     """
     This object type is responsible for holding several information about sysstat_x_1sec blocks
     in PerfStat output. It's a centralization of headers and values for sysstat charts. Further,
@@ -95,6 +98,41 @@ class SysstatObject:
         # to analyse a sysstat header, it is necessary to look at two lines at once. But because
         # the program reads line by line, this variable is for buffering the first header line:
         self.buffered_header = None
+
+    def found_sysstat_1sec_begin(self, line):
+        """
+        Looks, whether a String marks the beginning of a sysstat_x_1sec section.
+        :param line: A string from a PerfStat output file which should be searched
+        :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False otherwise
+        """
+        if SYSSTAT_BLOCK_HEADER in line:
+            self.inside_sysstat_block = True
+            return True
+        else:
+            return False
+
+    def collect_sysstat_timestamp(self, sysstat_timestamp_line, iteration_timestamp):
+        """
+        Extract a date from a PerfStat output line which contains the time, a sysstat_x_1sec block
+        begins.
+        :param sysstat_timestamp_line: a string like
+        :param iteration_timestamp: The the recent iteration's beginning timestamp. It would be
+        used as sysstat beginning timestamp, in case that there is no timestamp available in
+        sysstat_timestamp_line on account of a PerfStat bug.
+        PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
+        :return: a datetime object which contains the input's time information
+        """
+        try:
+            self.recent_timestamp = util.build_date(
+                sysstat_timestamp_line.split('[')[1].replace(']', ''))
+
+        except (KeyError, IndexError, ValueError):
+            logging.warning(
+                'PerfStat bug in sysstat block. Could not read any timestamp from line: '
+                '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
+                'instead. This timestamp is: \'%s\' Note that this may lead to '
+                'falsifications in charts!')
+            self.recent_timestamp = iteration_timestamp
 
     def increment_time(self):
         """

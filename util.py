@@ -13,6 +13,8 @@ try:
     import pytz
 except ImportError:
     pytz = None
+    print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
+          'timezones. Be aware of possible confusion with time values in charts!')
 
 from orderedset import OrderedSet
 from table import Table

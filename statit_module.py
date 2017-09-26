@@ -1,5 +1,5 @@
 """
-Contains the class StatitObject. This class is responsible for processing a certain request
+Contains the class StatitClass. This class is responsible for processing a certain request
 type. The statit-requests are about some blocks in the PerfStat called something like 'statit'.
 These blocks may appear several times in a PerfStat iteration. PicDat is interested in a special
 subsection of the statit block called 'Disk Statistics'. This subsections holds a table of
@@ -35,7 +35,7 @@ STATIT_DISK_STAT_UNIT = '%'
 STATIT_CHART_TITLE = 'statit%sdisk_statistics'
 
 
-class StatitObject:
+class StatitClass:
     """
     This object type is responsible for holding several information about statit blocks.
     in PerfStat output. It's a centralization of headers and values for the disk statistic charts.

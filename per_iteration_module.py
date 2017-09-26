@@ -1,5 +1,5 @@
 """
-Contains the class PerIterationObject. This class is responsible for processing a certain request
+Contains the class PerIterationClass. This class is responsible for processing a certain request
 type. Per-iteration requests are looking for values about several aspects of different object types
 which have several instances. There are no specific blocks in the PerfStat in which those values
 appears, but for each triple of an object type, one specific instance and a certain aspect,
@@ -10,6 +10,7 @@ Therefore, one chart will display several instances.
 import logging
 from collections import OrderedDict
 
+import constants
 import util
 from table import Table
 
@@ -43,7 +44,38 @@ PER_ITERATION_REQUESTS = OrderedDict([
 ])
 
 
-class PerIterationObject:
+def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
+    """
+    Extract a date from a PerfStat output line which marks an iteration's beginning or ending
+    :param iteration_timestamp_line: a string like
+    =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Mon Jan 01 00:00:00 GMT 2000
+    :param last_timestamp: The last iteration timestamp, the program has collected. It would be
+    used as recent timestamp, in case that there is no timestamp available in
+    iteration_timestamp_line on account of a PerfStat bug.
+    :return: a datetime object which contains the input's time information
+    """
+
+    try:
+        return util.build_date(iteration_timestamp_line.split('=-=-=-=-=-=')[2])
+    except (KeyError, IndexError, ValueError):
+
+        if last_timestamp is None:
+            last_timestamp = constants.DEFAULT_TIMESTAMP
+            logging.warning(
+                'PerfStat bug. Could not read any timestamp from line: \'%s\' This should have '
+                'been the very first iteration timestamp. PicDat is using default timestamp '
+                'instead. This timestamp is: \'%s\'. Note that this may lead to falsifications in '
+                'charts!', iteration_timestamp_line, str(last_timestamp))
+        else:
+            logging.warning(
+                'PerfStat bug. Could not read any timestamp from line: \'%s\' PicDat is using '
+                'last collected iteration timestamp (timestamp from a \'BEGIN Iteration\' or '
+                '\'END Iteration\' line) instead. This timestamp is: \'%s\'. Note that this may '
+                'lead to falsifications in charts!', iteration_timestamp_line, str(last_timestamp))
+        return last_timestamp
+
+
+class PerIterationClass:
     """
     This object type is responsible for holding the information collected in one PerfStat file
     about the per_iteration_requests. It's a centralization of headers and values for per_iteration

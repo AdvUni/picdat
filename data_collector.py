@@ -4,10 +4,9 @@ Is responsible for collecting all information of note from PerfStat output
 import logging
 import sys
 
-import data_collector_util
-from sysstat_object import SysstatObject
-from statit_object import StatitObject
-from per_iteration_object import PerIterationObject
+import sysstat_module
+import statit_module
+import per_iteration_module
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -55,7 +54,7 @@ def found_iteration_begin(line, start_times, last_end_time):
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
-        start_times.append(data_collector_util.get_iteration_timestamp(line, last_end_time))
+        start_times.append(per_iteration_module.get_iteration_timestamp(line, last_end_time))
         return True
     else:
         return False
@@ -73,19 +72,31 @@ def found_iteration_end(line, end_times, last_start_time):
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
-        end_times.append(data_collector_util.get_iteration_timestamp(line, last_start_time))
+        end_times.append(per_iteration_module.get_iteration_timestamp(line, last_start_time))
         return True
     else:
         return False
 
 
-def found_sysstat_1sec_begin(line):
+def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):
     """
-    Looks, whether a String marks the beginning of a sysstat_x_1sec section.
-    :param line: A string from a PerfStat output file which should be searched
-    :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False otherwise
+    Test whether the PerfStat terminated and is complete
+    :param expected_iteration_number: the iteration number as it is defined in the PerfStat
+    output header
+    :param iteration_beginnings: the number of iterations which were actually started
+    :param iteration_endings: the number of iterations which actually terminated
+    :return: a string which informs the user whether the data are complete and how they will be
+    handled
     """
-    return 'sysstat_x_1sec' in line
+    if expected_iteration_number == iteration_beginnings == iteration_endings:
+        logging.info('Planned number of iterations was executed correctly.')
+    elif expected_iteration_number != iteration_beginnings:
+        logging.warning('Warning: PerfStat output is incomplete; some iterations weren\'t '
+                        'executed. If there is an iteration which wasn\'t finished correctly, '
+                        'it won\'t be considered in the resulting charts!')
+    else:
+        logging.warning('PerfStat output is incomplete; the last iteration didn\'t terminate. It '
+                        'won\'t be considered in the resulting charts!')
 
 
 def combine_results(per_iteration_object, sysstat_object, statit_object):
@@ -157,16 +168,14 @@ def read_data_file(perfstat_data_file):
     # the relating time stamps:
     end_times = []
 
-    # per_iteration_tables = []
-    # per_iteration_headers = []
     # this object collects all information the program finds outside of sysstat and statit blocks
-    per_iteration_object = PerIterationObject()
+    per_iteration_object = per_iteration_module.PerIterationClass()
 
     # this object collects all information the program finds during processing sysstat_x_1sec blocks
-    sysstat_object = SysstatObject()
+    sysstat_object = sysstat_module.SysstatClass()
 
     # this object collects all information the program finds during processing statit blocks
-    statit_object = StatitObject()
+    statit_object = statit_module.StatitClass()
 
     # collecting data
 
@@ -200,11 +209,8 @@ def read_data_file(perfstat_data_file):
                     if iteration_end_counter != number_of_iterations:
                         sysstat_object.add_empty_lines()
 
-                elif found_sysstat_1sec_begin(line):
-                    sysstat_object.inside_sysstat_block = True
-
-                    sysstat_object.recent_timestamp = data_collector_util.get_sysstat_timestamp(
-                        next(data), start_times[-1])
+                elif sysstat_object.found_sysstat_1sec_begin(line):
+                    sysstat_object.collect_sysstat_timestamp(next(data), start_times[-1])
 
                     line = next(data)
                     while len(line.strip()) == 0:
@@ -229,8 +235,7 @@ def read_data_file(perfstat_data_file):
                         'iterations it handles. Maybe, it isn\'t a PerfStat file at all.')
         sys.exit(1)
 
-    data_collector_util.final_iteration_validation(number_of_iterations, iteration_begin_counter,
-                                                   iteration_end_counter)
+    final_iteration_validation(number_of_iterations, iteration_begin_counter, iteration_end_counter)
 
     # simplify data structures for per-iteration data
     per_iteration_object.rework_per_iteration_data(start_times)
