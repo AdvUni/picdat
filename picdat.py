@@ -305,7 +305,7 @@ def run(input_file, result_dir):
             # reset global variables
             global_vars.reset()
 
-        logging.info('Done. You will find charts under: ' + os.path.abspath(result_dir))
+        logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
 
     finally:
         # delete extracted zip
