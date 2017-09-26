@@ -264,9 +264,9 @@ def run(input_file, result_dir):
                         node_identifier = identifier_dict[perfstat_address][1]
                         html_title = util.get_html_title(identifier_dict, perfstat_address)
                     except KeyError:
-                        logging.info('Did not find a node name for address \'' + perfstat_address
-                                     + '\' in \'console.log\'. Will use just \'' + perfstat_address
-                                     + '\' instead.')
+                        logging.info(
+                            'Did not find a node name for address \'%s\' in \'console.log\'. Will '
+                            'use just \'%s\' instead.', perfstat_address, perfstat_address)
                         html_title = perfstat_node
                         node_identifier = perfstat_address
 
