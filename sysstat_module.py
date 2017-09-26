@@ -133,7 +133,7 @@ class SysstatClass:
                 'PerfStat bug in sysstat block. Could not read any timestamp from line: '
                 '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
                 'instead. This timestamp is: \'%s\' Note that this may lead to '
-                'falsifications in charts!')
+                'falsifications in charts!', sysstat_timestamp_line, iteration_timestamp)
             self.recent_timestamp = iteration_timestamp
 
     def increment_time(self):
