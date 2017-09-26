@@ -147,8 +147,8 @@ class PerIterationClass:
 
                             self.alaign_table.insert(number, instance, value)
                             self.alaign_instances.add(instance)
-                            logging.debug('Found value about %s, %s: %s - %s%s', object_type,
-                                          aspect, instance, value, unit)
+                            logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
+                                          aspect, number, instance, value, unit)
                             return
                     if line_split[2] == aspect:
                         unit = inner_tuples[tuple_iterator][1]
@@ -197,6 +197,7 @@ class PerIterationClass:
                     logging.info('Found LUN uuid \'%s\' but no corresponding path translation.',
                                  lun_uuid)
                 else:
+                    logging.debug('Found translation for LUN %s: \'%s\'', lun_uuid, self.lun_buffer)
                     self.lun_path_dict[lun_uuid] = self.lun_buffer
                     self.lun_buffer = None
             except IndexError:
