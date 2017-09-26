@@ -101,9 +101,11 @@ class SysstatClass:
 
     def found_sysstat_1sec_begin(self, line):
         """
-        Looks, whether a String marks the beginning of a sysstat_x_1sec section.
+        Looks, whether a String marks the beginning of a sysstat_x_1sec section and in case sets 
+        the object's variable inside_sysstat_block.
         :param line: A string from a PerfStat output file which should be searched
-        :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False otherwise
+        :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False
+        otherwise
         """
         if SYSSTAT_BLOCK_HEADER in line:
             self.inside_sysstat_block = True
@@ -114,13 +116,13 @@ class SysstatClass:
     def collect_sysstat_timestamp(self, sysstat_timestamp_line, iteration_timestamp):
         """
         Extract a date from a PerfStat output line which contains the time, a sysstat_x_1sec block
-        begins.
+        begins. Saves the date to the object variable recent_timestamp.
         :param sysstat_timestamp_line: a string like
+        PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
         :param iteration_timestamp: The the recent iteration's beginning timestamp. It would be
         used as sysstat beginning timestamp, in case that there is no timestamp available in
         sysstat_timestamp_line on account of a PerfStat bug.
-        PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
-        :return: a datetime object which contains the input's time information
+        :return: None
         """
         try:
             self.recent_timestamp = util.build_date(
