@@ -74,8 +74,8 @@ def take_perfstats():
     input.
     """
     while True:
-        print('Please enter a path to a PerfStat output file')
-        input_file = input('(data type .data or .zip):')
+        input_file = input('Please enter a path to some PerfStat output (folder or zipfolder '
+                           'or .data file, default is ./output.data):' + os.linesep)
 
         if input_file == '':
             input_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
@@ -92,25 +92,13 @@ def take_perfstats():
 def take_directory():
     """
     This function requests a destination directory of the user. All results of the PicDat program
-    will be written to this directory. If the directory doesn't exist yet, the function asks the
-    user for creating it.
+    will be written to this directory.
     :return: The path to the directory, the results should be written in
     """
-    while True:
-        destination_directory = input('Please select a destination directory for the results: ')
-        if destination_directory != '':
-            if os.path.isdir(destination_directory):
-                break
-            elif input('This directory does not exist. Would you like to create it? (Enter y) ') \
-                    == 'y':
-                os.makedirs(destination_directory)
-                logging.info('Created directory %s', destination_directory)
-                break
-            else:
-                print('So, try again.')
-        else:
-            destination_directory = 'results'
-            break
+    destination_directory = input('Please select a destination directory for the results ('
+                                  'Default is ./results):' + os.linesep)
+    if destination_directory == '':
+        destination_directory = 'results'
 
     return destination_directory
 
