@@ -217,9 +217,6 @@ def run(input_file, result_dir):
     identifier_dict = None
 
     try:
-        # create directory and copy the necessary dygraphs files into it
-        csv_dir = prepare_directory(result_dir)
-
         # extract zip if necessary
         perfstat_output_files = None
         if os.path.isdir(input_file):
@@ -231,7 +228,7 @@ def run(input_file, result_dir):
             temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(input_file)
 
         # interrupt program if there are no .data files found
-        if not input_file:
+        if not perfstat_output_files:
             logging.info('The input you gave (%s) doesn\'t contain any .data files.', input_file)
             sys.exit(0)
 
@@ -249,6 +246,9 @@ def run(input_file, result_dir):
         else:
             logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
                          'name.')
+
+        # create directory and copy the necessary dygraphs files into it
+        csv_dir = prepare_directory(result_dir)
 
         for perfstat_node in perfstat_output_files:
 
