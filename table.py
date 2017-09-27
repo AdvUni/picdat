@@ -71,7 +71,7 @@ class Table:
 
         value_rows = []
         header_row = []
-        for instance in column_names:
+        for instance in sorted(column_names):
             header_row.append(instance)
 
         for row in range(len(rownames)):

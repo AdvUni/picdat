@@ -150,28 +150,29 @@ class PerIterationClass:
                             logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
                                           aspect, number, instance, value, unit)
                             return
-                    if line_split[2] == aspect:
-                        unit = inner_tuples[tuple_iterator][1]
+                    else:
+                        if line_split[2] == aspect:
+                            unit = inner_tuples[tuple_iterator][1]
 
-                        instance = line_split[1]
-                        util.inner_ord_set_insertion(self.instance_names, request_index, instance)
+                            instance = line_split[1]
+                            util.inner_set_insertion(self.instance_names, request_index, instance)
 
-                        value = line_split[3][:-len(unit)]
+                            value = line_split[3][:-len(unit)]
 
-                        # we want to convert b/s into MB/s, so if the unit is b/s, lower the value
-                        # about factor 10^6.
-                        # Pay attention, that this conversion implies an adaption in the visualizer
-                        # module, where the unit is written out and also should be changed to MB/s!
-                        if unit == 'b/s':
-                            value = str(round(int(value) / 1000000))
+                            # we want to convert b/s into MB/s, so if the unit is b/s, lower the
+                            # value about factor 10^6. Pay attention, that this conversion
+                            # implies an adaption in the visualizer module, where the unit is
+                            # written out and also should be changed to MB/s!
+                            if unit == 'b/s':
+                                value = str(round(int(value) / 1000000))
 
-                        util.tablelist_insertion(self.tables, request_index, recent_iteration,
-                                                 instance, value)
-                        if object_type == 'lun':
-                            self.luns_available = True
-                        logging.debug('Found value about %s, %s: %s - %s%s', object_type, aspect,
-                                      instance, value, unit)
-                        return
+                            util.tablelist_insertion(self.tables, request_index, recent_iteration,
+                                                     instance, value)
+                            if object_type == 'lun':
+                                self.luns_available = True
+                            logging.debug('Found value about %s, %s: %s - %s%s', object_type,
+                                          aspect, instance, value, unit)
+                            return
                     request_index += 1
             else:
                 request_index += len(PER_ITERATION_REQUESTS[object_type])
@@ -248,11 +249,14 @@ class PerIterationClass:
         :return: None.
         """
 
+
+
         index_first_lun_request = 0
         for object_type in PER_ITERATION_REQUESTS:
             if object_type != 'lun':
                 for _ in PER_ITERATION_REQUESTS[object_type]:
                     index_first_lun_request += 1
+
         for i in range(len(PER_ITERATION_REQUESTS['lun'])):
             insertion_index = index_first_lun_request + i
             header_replacement = []

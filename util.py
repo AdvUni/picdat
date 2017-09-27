@@ -16,7 +16,6 @@ except ImportError:
     print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
           'timezones. Be aware of possible confusion with time values in charts!')
 
-from orderedset import OrderedSet
 from table import Table
 import constants
 import tempfile
@@ -193,20 +192,20 @@ def check_column_header(word_upper_line, endpoint_upper_word, lower_line, reques
         return False
 
 
-def inner_ord_set_insertion(outer_list, index, item):
+def inner_set_insertion(outer_list, index, item):
     """
-    Inserts an item into a list of OrderedDicts. Inserts the item in the OrderedDict at the place of
-    index. Is index bigger than the number of existing OrderedDicts, new OrderedDicts inside the
+    Inserts an item into a list of Sets. Inserts the item in the Set at the place of
+    index. Is index bigger than the number of existing Sets, new Sets inside the
     list will be created.
-    :param outer_list: The list of OrderedDicts you want to insert an item in.
-    :param index: The OrderedDict's number, in which the item should be inserted in.
+    :param outer_list: The list of Sets you want to insert an item in.
+    :param index: The Set's number, in which the item should be inserted in.
     :param item: The item you want insert.
     :return: None
     """
     if len(outer_list) <= index:
         missing_entries = index + 1 - len(outer_list)
         for _ in range(missing_entries):
-            outer_list.append(OrderedSet())
+            outer_list.append(set())
 
     outer_list[index].add(item)
 
