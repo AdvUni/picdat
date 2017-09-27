@@ -43,6 +43,12 @@ PER_ITERATION_REQUESTS = OrderedDict([
              ('read_align_histo', '%')])
 ])
 
+PER_ITERATION_AGGREGATE_REQUESTS = [('total_transfers', '/s')]
+PER_ITERATION_PROCESSOR_REQUESTS = [('processor_busy', '%')]
+PER_ITERATION_VOLUME_REQUESTS = [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]
+PER_ITERATION_LUN_REQUESTS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
+PER_ITERATION_LUN_ALIGN_REQUEST = ('read_align_histo', '%')
+
 
 def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
     """
@@ -86,13 +92,18 @@ class PerIterationClass:
 
         # A list from type 'Table'. It collects all per-iteration values from a  PerfStat output
         # file, grouped by iteration and instance:
-        self.tables = []
+        #self.tables = []
 
         # A List of Sets collecting all instance names (column names) occurring in one table:
-        self.instance_names = []
+        #self.instance_names = []
+
+        self.aggregate_tables = []
+        self.processor_tables = []
+        self.volume_tables = []
+        self.lun_tables = []
 
         self.alaign_table = Table()
-        self.alaign_instances = set()
+        #self.alaign_instances = set()
 
         # A boolean, whether lun values appeared in the PerfStat at all:
         self.luns_available = False
@@ -104,8 +115,24 @@ class PerIterationClass:
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
-        self.flat_headers = None
-        self.flat_values = None
+        self.flat_headers = []
+        self.flat_values = []
+
+    @staticmethod
+    def whatever(recent_iteration, requests, tables, line_split):
+        counter = 0
+        for (aspect, unit) in requests:
+            if line_split[2] == aspect:
+                instance = line_split[1]
+                value = line_split[3][:-len(unit)]
+                if unit == 'b/s':
+                    value = str(round(int(value) / 1000000))
+
+                util.tablelist_insertion(tables, counter, recent_iteration,
+                                         instance, value)
+                logging.debug('Found value %s: %s - %s%s', aspect, instance, value, unit)
+                return
+            counter += 1
 
     def process_per_iteration_requests(self, line, recent_iteration):
         """
@@ -128,54 +155,82 @@ class PerIterationClass:
         if len(line_split) < 4:
             return
 
-        for object_type in PER_ITERATION_REQUESTS:
-            if line_split[0] == object_type:
+        object_type = line_split[0]
 
-                inner_tuples = PER_ITERATION_REQUESTS[object_type]
+        if object_type == 'aggregate':
+            self.whatever(recent_iteration, PER_ITERATION_AGGREGATE_REQUESTS,
+                          self.aggregate_tables, line_split)
+            return
+        if object_type == 'processor':
+            self.whatever(recent_iteration, PER_ITERATION_PROCESSOR_REQUESTS,
+                          self.processor_tables, line_split)
+            return
+        if object_type == 'volume':
+            self.whatever(recent_iteration, PER_ITERATION_VOLUME_REQUESTS, self.volume_tables, line_split)
+            return
+        if object_type == 'lun':
+            self.luns_available = True
+            align_aspect, align_unit = PER_ITERATION_LUN_ALIGN_REQUEST
+            if align_aspect in line_split[2]:
+                instance = line_split[1]
+                number = int(line_split[2][-1])
+                value = line_split[3][:-len(align_unit)]
 
-                for tuple_iterator in range(len(inner_tuples)):
-                    aspect = inner_tuples[tuple_iterator][0]
-                    # lun: ... :read_align_histo.x values shouldn't be visualized related on
-                    # timestamps, but on the value x in range 0-8. So, they need to be handled
-                    # specially:
-                    if aspect == 'read_align_histo':
-                        if aspect in line_split[2]:
-                            unit = inner_tuples[tuple_iterator][1]
-                            instance = line_split[1]
-                            number = int(line_split[2][-1])
-                            value = line_split[3][:-len(unit)]
-
-                            self.alaign_table.insert(number, instance, value)
-                            self.alaign_instances.add(instance)
-                            logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
-                                          aspect, number, instance, value, unit)
-                            return
-                    else:
-                        if line_split[2] == aspect:
-                            unit = inner_tuples[tuple_iterator][1]
-
-                            instance = line_split[1]
-                            util.inner_set_insertion(self.instance_names, request_index, instance)
-
-                            value = line_split[3][:-len(unit)]
-
-                            # we want to convert b/s into MB/s, so if the unit is b/s, lower the
-                            # value about factor 10^6. Pay attention, that this conversion
-                            # implies an adaption in the visualizer module, where the unit is
-                            # written out and also should be changed to MB/s!
-                            if unit == 'b/s':
-                                value = str(round(int(value) / 1000000))
-
-                            util.tablelist_insertion(self.tables, request_index, recent_iteration,
-                                                     instance, value)
-                            if object_type == 'lun':
-                                self.luns_available = True
-                            logging.debug('Found value about %s, %s: %s - %s%s', object_type,
-                                          aspect, instance, value, unit)
-                            return
-                    request_index += 1
+                self.alaign_table.insert(number, instance, value)
+                logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
+                              align_aspect, number, instance, value, align_unit)
             else:
-                request_index += len(PER_ITERATION_REQUESTS[object_type])
+                self.whatever(recent_iteration, PER_ITERATION_LUN_REQUESTS, self.lun_tables, line_split)
+            return
+        #
+        # for object_type in PER_ITERATION_REQUESTS:
+        #     if line_split[0] == object_type:
+        #
+        #         inner_tuples = PER_ITERATION_REQUESTS[object_type]
+        #
+        #         for tuple_iterator in range(len(inner_tuples)):
+        #             aspect = inner_tuples[tuple_iterator][0]
+        #             # lun: ... :read_align_histo.x values shouldn't be visualized related on
+        #             # timestamps, but on the value x in range 0-8. So, they need to be handled
+        #             # specially:
+        #             if aspect == 'read_align_histo':
+        #                 if aspect in line_split[2]:
+        #                     unit = inner_tuples[tuple_iterator][1]
+        #                     instance = line_split[1]
+        #                     number = int(line_split[2][-1])
+        #                     value = line_split[3][:-len(unit)]
+        #
+        #                     self.alaign_table.insert(number, instance, value)
+        #                     self.alaign_instances.add(instance)
+        #                     logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
+        #                                   aspect, number, instance, value, unit)
+        #                     return
+        #             else:
+        #                 if line_split[2] == aspect:
+        #                     unit = inner_tuples[tuple_iterator][1]
+        #
+        #                     instance = line_split[1]
+        #                     util.inner_set_insertion(self.instance_names, request_index, instance)
+        #
+        #                     value = line_split[3][:-len(unit)]
+        #
+        #                     # we want to convert b/s into MB/s, so if the unit is b/s, lower the
+        #                     # value about factor 10^6. Pay attention, that this conversion
+        #                     # implies an adaption in the visualizer module, where the unit is
+        #                     # written out and also should be changed to MB/s!
+        #                     if unit == 'b/s':
+        #                         value = str(round(int(value) / 1000000))
+        #
+        #                     util.tablelist_insertion(self.tables, request_index, recent_iteration,
+        #                                              instance, value)
+        #                     if object_type == 'lun':
+        #                         self.luns_available = True
+        #                     logging.debug('Found value about %s, %s: %s - %s%s', object_type,
+        #                                   aspect, instance, value, unit)
+        #                     return
+        #             request_index += 1
+        #     else:
+        #         request_index += len(PER_ITERATION_REQUESTS[object_type])
 
     def map_lun_path(self, line):
         """
@@ -217,57 +272,41 @@ class PerIterationClass:
         list is nested twice. The core lists are representations of one value row in one table. To
         separate several tables from each other, the next list level is used.
         """
-        table_list = []
-        for i in range(len(self.tables)):
-            table_list.append(
-                self.tables[i].flatten(self.instance_names[i], iteration_timestamps, 1))
+        # replace lun's IDs in headers through their path names
+        self.replace_lun_ids()
 
-        self.flat_headers = [table[0] for table in table_list]
-        self.flat_values = [table[1] for table in table_list]
-
+        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables
         if self.luns_available:
-            flat_align_headers, flat_align_values = self.alaign_table.flatten(self.alaign_instances,
-                                                                              None, 0)
-            self.flat_headers.append(flat_align_headers)
-            self.flat_values.append(flat_align_values)
-
-            self.instance_names.append(self.alaign_instances)
+            all_tables += self.lun_tables
+            all_tables.append(self.alaign_table)
         else:
             logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
-        # replace lun's IDs in headers through their path names
-        if 'lun' in PER_ITERATION_REQUESTS and self.luns_available:
-            self.replace_lun_ids(self.flat_headers)
+        for table in all_tables:
+            flat_header, flat_value = table.flatten(iteration_timestamps, 1)
+            self.flat_headers.append(flat_header)
+            self.flat_values.append(flat_value)
 
-    def replace_lun_ids(self, header_list):
+    def replace_lun_ids(self):
         """
         All values in PerfStat corresponding to LUNs are given in relation to their UUID, not their
         name or path. To make the resulting charts more readable, this function replaces their IDs
         with the paths.
-        :param header_list: A list of lists which contains all instance names, the program
-        found values for.
         :return: None.
         """
+        if not self.luns_available:
+            return
 
-
-
-        index_first_lun_request = 0
-        for object_type in PER_ITERATION_REQUESTS:
-            if object_type != 'lun':
-                for _ in PER_ITERATION_REQUESTS[object_type]:
-                    index_first_lun_request += 1
-
-        for i in range(len(PER_ITERATION_REQUESTS['lun'])):
-            insertion_index = index_first_lun_request + i
-            header_replacement = []
-            for uuid in self.instance_names[insertion_index]:
-                if uuid in self.lun_path_dict:
-                    header_replacement.append(self.lun_path_dict[uuid])
-                else:
-                    logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
-                                 'with ID.', uuid)
-                    header_replacement.append(uuid)
-            header_list[insertion_index] = header_replacement
+        for table in self.lun_tables + [self.alaign_table]:
+            for outer_key, inner_dict in table.outer_dict.items():
+                replace_dict = {}
+                for uuid in inner_dict:
+                    if uuid in self.lun_path_dict:
+                        replace_dict[self.lun_path_dict[uuid]] = inner_dict[uuid]
+                    else:
+                        logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
+                                     'with ID.', uuid)
+                table.outer_dict[outer_key] = replace_dict
 
     def get_units(self):
         unit_list = []

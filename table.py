@@ -54,17 +54,21 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def flatten(self, column_names, timestamps, offset):
+    def flatten(self, timestamps, offset):
         """
         Simplifies the data structure into lists of table content equating table rows.
-        :param column_names: A Set containing all instance/disk names (column names) occurring in
-        the table.
         :param timestamps: A list of datetime objects, marking the beginnings of
         iterations/statits. They'll be the table's first column. If this argument is None,
         function will replace timestamps with a simple range of numbers.
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.
         """
+        column_names = set()
+
+        for _, inner_dict in self.outer_dict.items():
+            for column_name in inner_dict:
+                column_names.add(column_name)
+
         rownames = timestamps
         if timestamps is None:
             rownames = list(range(len(self.outer_dict)))
