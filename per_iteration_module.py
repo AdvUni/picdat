@@ -169,8 +169,8 @@ class PerIterationClass:
                                      self.processor_tables, line_split)
             return
         if object_type == 'volume':
-            self.process_object_type(recent_iteration, PER_ITERATION_VOLUME_REQUESTS, self.volume_tables,
-                                     line_split)
+            self.process_object_type(recent_iteration, PER_ITERATION_VOLUME_REQUESTS,
+                                     self.volume_tables, line_split)
             return
         if object_type == 'lun':
             self.luns_available = True
@@ -188,8 +188,8 @@ class PerIterationClass:
                 logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
                               align_aspect, number, instance, value, align_unit)
             else:
-                self.process_object_type(recent_iteration, PER_ITERATION_LUN_REQUESTS, self.lun_tables,
-                                         line_split)
+                self.process_object_type(recent_iteration, PER_ITERATION_LUN_REQUESTS,
+                                         self.lun_tables, line_split)
             return
 
     def map_lun_path(self, line):
