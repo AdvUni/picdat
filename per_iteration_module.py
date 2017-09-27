@@ -35,13 +35,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # requests will be shown in four charts: One for each of aggregate, processor, volume and lun.
 # About the data structure: It's an OrderedDict of lists which contains all requested object
 # types mapped to the relating aspects and units which the tool should create graphs for.
-PER_ITERATION_REQUESTS = OrderedDict([
-    ('aggregate', [('total_transfers', '/s')]),
-    ('processor', [('processor_busy', '%')]),
-    ('volume', [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]),
-    ('lun', [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s'),
-             ('read_align_histo', '%')])
-])
+
 
 PER_ITERATION_AGGREGATE_REQUESTS = [('total_transfers', '/s')]
 PER_ITERATION_PROCESSOR_REQUESTS = [('processor_busy', '%')]
@@ -92,10 +86,10 @@ class PerIterationClass:
 
         # A list from type 'Table'. It collects all per-iteration values from a  PerfStat output
         # file, grouped by iteration and instance:
-        #self.tables = []
+        # self.tables = []
 
         # A List of Sets collecting all instance names (column names) occurring in one table:
-        #self.instance_names = []
+        # self.instance_names = []
 
         self.aggregate_tables = []
         self.processor_tables = []
@@ -103,7 +97,7 @@ class PerIterationClass:
         self.lun_tables = []
 
         self.alaign_table = Table()
-        #self.alaign_instances = set()
+        # self.alaign_instances = set()
 
         # A boolean, whether lun values appeared in the PerfStat at all:
         self.luns_available = False
@@ -166,7 +160,8 @@ class PerIterationClass:
                           self.processor_tables, line_split)
             return
         if object_type == 'volume':
-            self.whatever(recent_iteration, PER_ITERATION_VOLUME_REQUESTS, self.volume_tables, line_split)
+            self.whatever(recent_iteration, PER_ITERATION_VOLUME_REQUESTS, self.volume_tables,
+                          line_split)
             return
         if object_type == 'lun':
             self.luns_available = True
@@ -180,57 +175,58 @@ class PerIterationClass:
                 logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
                               align_aspect, number, instance, value, align_unit)
             else:
-                self.whatever(recent_iteration, PER_ITERATION_LUN_REQUESTS, self.lun_tables, line_split)
+                self.whatever(recent_iteration, PER_ITERATION_LUN_REQUESTS, self.lun_tables,
+                              line_split)
             return
-        #
-        # for object_type in PER_ITERATION_REQUESTS:
-        #     if line_split[0] == object_type:
-        #
-        #         inner_tuples = PER_ITERATION_REQUESTS[object_type]
-        #
-        #         for tuple_iterator in range(len(inner_tuples)):
-        #             aspect = inner_tuples[tuple_iterator][0]
-        #             # lun: ... :read_align_histo.x values shouldn't be visualized related on
-        #             # timestamps, but on the value x in range 0-8. So, they need to be handled
-        #             # specially:
-        #             if aspect == 'read_align_histo':
-        #                 if aspect in line_split[2]:
-        #                     unit = inner_tuples[tuple_iterator][1]
-        #                     instance = line_split[1]
-        #                     number = int(line_split[2][-1])
-        #                     value = line_split[3][:-len(unit)]
-        #
-        #                     self.alaign_table.insert(number, instance, value)
-        #                     self.alaign_instances.add(instance)
-        #                     logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
-        #                                   aspect, number, instance, value, unit)
-        #                     return
-        #             else:
-        #                 if line_split[2] == aspect:
-        #                     unit = inner_tuples[tuple_iterator][1]
-        #
-        #                     instance = line_split[1]
-        #                     util.inner_set_insertion(self.instance_names, request_index, instance)
-        #
-        #                     value = line_split[3][:-len(unit)]
-        #
-        #                     # we want to convert b/s into MB/s, so if the unit is b/s, lower the
-        #                     # value about factor 10^6. Pay attention, that this conversion
-        #                     # implies an adaption in the visualizer module, where the unit is
-        #                     # written out and also should be changed to MB/s!
-        #                     if unit == 'b/s':
-        #                         value = str(round(int(value) / 1000000))
-        #
-        #                     util.tablelist_insertion(self.tables, request_index, recent_iteration,
-        #                                              instance, value)
-        #                     if object_type == 'lun':
-        #                         self.luns_available = True
-        #                     logging.debug('Found value about %s, %s: %s - %s%s', object_type,
-        #                                   aspect, instance, value, unit)
-        #                     return
-        #             request_index += 1
-        #     else:
-        #         request_index += len(PER_ITERATION_REQUESTS[object_type])
+            #
+            # for object_type in PER_ITERATION_REQUESTS:
+            #     if line_split[0] == object_type:
+            #
+            #         inner_tuples = PER_ITERATION_REQUESTS[object_type]
+            #
+            #         for tuple_iterator in range(len(inner_tuples)):
+            #             aspect = inner_tuples[tuple_iterator][0]
+            #             # lun: ... :read_align_histo.x values shouldn't be visualized related on
+            #             # timestamps, but on the value x in range 0-8. So, they need to be handled
+            #             # specially:
+            #             if aspect == 'read_align_histo':
+            #                 if aspect in line_split[2]:
+            #                     unit = inner_tuples[tuple_iterator][1]
+            #                     instance = line_split[1]
+            #                     number = int(line_split[2][-1])
+            #                     value = line_split[3][:-len(unit)]
+            #
+            #                     self.alaign_table.insert(number, instance, value)
+            #                     self.alaign_instances.add(instance)
+            #                     logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
+            #                                   aspect, number, instance, value, unit)
+            #                     return
+            #             else:
+            #                 if line_split[2] == aspect:
+            #                     unit = inner_tuples[tuple_iterator][1]
+            #
+            #                     instance = line_split[1]
+            #                     util.inner_set_insertion(self.instance_names, request_index, instance)
+            #
+            #                     value = line_split[3][:-len(unit)]
+            #
+            #                     # we want to convert b/s into MB/s, so if the unit is b/s, lower the
+            #                     # value about factor 10^6. Pay attention, that this conversion
+            #                     # implies an adaption in the visualizer module, where the unit is
+            #                     # written out and also should be changed to MB/s!
+            #                     if unit == 'b/s':
+            #                         value = str(round(int(value) / 1000000))
+            #
+            #                     util.tablelist_insertion(self.tables, request_index, recent_iteration,
+            #                                              instance, value)
+            #                     if object_type == 'lun':
+            #                         self.luns_available = True
+            #                     logging.debug('Found value about %s, %s: %s - %s%s', object_type,
+            #                                   aspect, instance, value, unit)
+            #                     return
+            #             request_index += 1
+            #     else:
+            #         request_index += len(PER_ITERATION_REQUESTS[object_type])
 
     def map_lun_path(self, line):
         """
@@ -309,50 +305,49 @@ class PerIterationClass:
                 table.outer_dict[outer_key] = replace_dict
 
     def get_units(self):
-        unit_list = []
-        for object_type in PER_ITERATION_REQUESTS:
-            if not self.luns_available and object_type == 'lun':
-                continue
-            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-                unit = request_tuple[1]
-                unit_list.append(unit)
+        requests = PER_ITERATION_AGGREGATE_REQUESTS + PER_ITERATION_PROCESSOR_REQUESTS + \
+                   PER_ITERATION_VOLUME_REQUESTS
+        if self.luns_available:
+            requests += PER_ITERATION_LUN_REQUESTS
+            requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
 
-        return unit_list
+        return [unit for (_, unit) in requests]
 
     def get_request_strings(self, delimiter):
         title_list = []
-        for object_type in PER_ITERATION_REQUESTS:
-            if not self.luns_available and object_type == 'lun':
-                continue
-            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-                aspect = request_tuple[0]
-                title_list.append(object_type + delimiter + aspect)
+
+        title_list += ['aggregate' + delimiter + aspect for (aspect, _) in
+                       PER_ITERATION_AGGREGATE_REQUESTS]
+        title_list += ['processor' + delimiter + aspect for (aspect, _) in
+                       PER_ITERATION_PROCESSOR_REQUESTS]
+        title_list += ['volume' + delimiter + aspect for (aspect, _) in
+                       PER_ITERATION_VOLUME_REQUESTS]
+
+        if self.luns_available:
+            title_list += ['lun' + delimiter + aspect for (aspect, _) in
+                           PER_ITERATION_LUN_REQUESTS]
+            title_list.append('lun' + delimiter + PER_ITERATION_LUN_ALIGN_REQUEST[0])
+
         return title_list
 
     def get_x_labels(self):
-        x_lable_list = []
 
-        for object_type in PER_ITERATION_REQUESTS:
-            if not self.luns_available and object_type == 'lun':
-                continue
-            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-                if request_tuple[0] == 'read_align_histo':
-                    x_lable_list.append('bucket')
-                else:
-                    x_lable_list.append('time')
+        x_lable_list = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
+                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS]
+
+        if self.luns_available:
+            x_lable_list += ['time' for _ in PER_ITERATION_LUN_REQUESTS]
+            x_lable_list.append('bucket')
 
         return x_lable_list
 
     def get_barchart_booleans(self):
-        barchart_list = []
 
-        for object_type in PER_ITERATION_REQUESTS:
-            if not self.luns_available and object_type == 'lun':
-                continue
-            for request_tuple in PER_ITERATION_REQUESTS.get(object_type):
-                if request_tuple[0] == 'read_align_histo':
-                    barchart_list.append('true')
-                else:
-                    barchart_list.append('false')
+        barchart_list = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
+                         PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS]
+
+        if self.luns_available:
+            barchart_list += ['false' for _ in PER_ITERATION_LUN_REQUESTS]
+            barchart_list.append('true')
 
         return barchart_list
