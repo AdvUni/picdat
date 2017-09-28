@@ -175,8 +175,7 @@ class SysstatClass:
             self.percent_values.append([str(self.recent_timestamp)] + [line_split[index].strip(
                 '%') for index in self.percent_indices])
             # add values specified in mbs_indices to mbs_values and convert them to MB/s instead of
-            # kB/s.
-            # Notice, that this needs to be conform to requests.SYSSTAT_MBS_UNIT!
+            # kB/s. Notice, that this needs to be conform to the constant SYSSTAT_MBS_UNIT!
             self.mbs_values.append(
                 [str(self.recent_timestamp)] +
                 [str(round(int(line_split[index]) / 1000)) for index in self.mbs_indices])

@@ -122,12 +122,13 @@ class PerIterationClass:
 
                 # we want to convert b/s into MB/s, so if the unit is b/s, lower the
                 # value about factor 10^6. Pay attention, that this conversion
-                # implies an adaption in the visualizer module, where the unit is
-                # written out and also should be changed to MB/s!
+                # implies an adaption in the get_units method, where the unit also should be
+                # changed to MB/s!
                 if unit == 'b/s':
                     value = str(round(int(value) / 1000000))
 
-                util.tablelist_insertion(tables, request_index, iteration_timestamp, instance, value)
+                util.tablelist_insertion(tables, request_index, iteration_timestamp, instance,
+                                         value)
                 logging.debug('Found value about %s, %s: %s - %s%s', line_split[0], aspect,
                               instance, value, unit)
                 return
@@ -266,7 +267,17 @@ class PerIterationClass:
             requests += PER_ITERATION_LUN_REQUESTS
             requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
 
-        return [unit for (_, unit) in requests]
+        all_units = []
+        for (_, unit) in requests:
+            # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
+            # Pay attention, that this rename needs to be compatible with the
+            # process_object_type method, where the affected values should be reduced by the
+            # factor 10^6!
+            if unit == 'b/s':
+                all_units.append('MB/s')
+            else:
+                all_units.append(unit)
+        return all_units
 
     def get_request_strings(self, delimiter):
         title_list = []

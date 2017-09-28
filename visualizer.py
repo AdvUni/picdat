@@ -94,13 +94,6 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
     x_labels = util.get_x_labels(request_objects)
     barchart_booleans = util.get_barchart_booleans(request_objects)
 
-    # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
-    # Pay attention, that this rename needs to be compatible with the data_collector module,
-    # where the affected values should be reduced by the factor 10^6!!!
-    for i in range(len(y_labels)):
-        if y_labels[i] == 'b/s':
-            y_labels[i] = 'MB/s'
-
     with open(html_filepath, 'w') as html_document:
         # write head
         with open(util.get_base_path() + constants.HTML_HEAD_TEMPLATE, 'r') as template:
