@@ -97,8 +97,9 @@ class StatitClass:
                 self.line_buffer = None
                 return
 
-            # In Disk Statistics blocks, PerfStat seems to break some lines out of nowhere
-            # sometimes.
+            # In Disk Statistics blocks, PerfStat sometimes seems to break some lines out of
+            # nowhere. Therefore, the program buffers line snippets and sticks them together at
+            # next method call.
             if len(line_split) < constants.STATIT_COLUMNS:
                 if self.line_buffer is None:
                     self.line_buffer = line
@@ -114,15 +115,6 @@ class StatitClass:
             self.table.insert(self.statit_timestamps[-1], disk, ut_percent)
 
             self.line_buffer = None
-
-            # In Disk Statistics blocks, PerfStat seems to break some lines out of nowhere
-            # sometimes. To distinguish between fresh lines and some line break snippets,
-            # the program checks, whether the second word from 'line' is actually the same as the
-            # one lying directly under the column header 'ut%':
-
-            # if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
-            #    self.disk_names.add(disk)
-            #    self.table.insert(self.statit_counter, disk, ut_percent)
 
         else:
             if len(line_split) == 0:
