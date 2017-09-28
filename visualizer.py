@@ -127,5 +127,4 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
         # end html document
         html_document.write('</body>' + os.linesep + '</html>')
 
-    html_document.close()
     logging.info('Generated html file at %s', html_filepath)

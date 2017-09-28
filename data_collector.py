@@ -202,8 +202,6 @@ def read_data_file(perfstat_data_file):
             if start_times:
                 per_iteration_object.process_per_iteration_requests(line, start_times[-1])
 
-    data.close()
-
     # postprocessing
 
     if number_of_iterations == 0:
