@@ -83,7 +83,7 @@ class Table:
                 else:
                     value_row.append(' ')
                     logging.info('Gap in table: Value is missing in row %s, column %s',
-                                 column, str(row))
+                                 str(row), column)
             value_rows.append(value_row)
 
         logging.debug(value_rows)
