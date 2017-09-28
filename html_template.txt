@@ -126,7 +126,8 @@
                 drawGapEdgePoints: true,
                 pointSize: 3,
                 animatedZooms: true,
-                fillGraph: true
+                fillGraph: true,
+                showRoller: !barChart
             }
         );
     }
