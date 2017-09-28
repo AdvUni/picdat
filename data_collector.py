@@ -224,7 +224,8 @@ def read_data_file(perfstat_data_file):
 
             if statit_object.check_statit_begin(line):
                 continue
-            per_iteration_object.process_per_iteration_requests(line, iteration_begin_counter)
+            if start_times:
+                per_iteration_object.process_per_iteration_requests(line, start_times[-1])
 
     data.close()
 

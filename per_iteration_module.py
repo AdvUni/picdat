@@ -106,11 +106,10 @@ class PerIterationClass:
         self.flat_values = []
 
     @staticmethod
-    def process_object_type(recent_iteration, requests, tables, line_split):
+    def process_object_type(iteration_timestamp, requests, tables, line_split):
         """
         Processes one of the per-iteration request types.
-        :param recent_iteration: An integer which says, in which perfStat iteration the function
-        call happened.
+        :param iteration_timestamp: The timestamp of the PerfStat iteration, the line is from.
         :param requests: One of the module's per-iteration request lists. Method would be search
         for them.
         :param tables: One of the object's table list. Should fit to the requests. If method
@@ -131,21 +130,20 @@ class PerIterationClass:
                 if unit == 'b/s':
                     value = str(round(int(value) / 1000000))
 
-                util.tablelist_insertion(tables, request_index, recent_iteration, instance, value)
+                util.tablelist_insertion(tables, request_index, iteration_timestamp, instance, value)
                 logging.debug('Found value about %s, %s: %s - %s%s', line_split[0], aspect,
                               instance, value, unit)
                 return
             request_index += 1
 
-    def process_per_iteration_requests(self, line, recent_iteration):
+    def process_per_iteration_requests(self, line, iteration_timestamp):
         """
         Searches a String for all per_iteration_requests from main. In case it finds something,
         it writes the results into the correct place in table_values. During the first iteration it
         collects the instance names of all requested object types as well and writes them into
         table_headers.
         :param line: A string from a PerfStat output file which should be searched
-        :param recent_iteration: An integer which says, in which perfStat iteration the function
-        call happened
+        :param iteration_timestamp: The timestamp of the PerfStat iteration, the line is from.
         :return: None
         """
         if 'LUN ' in line:
@@ -161,15 +159,15 @@ class PerIterationClass:
         object_type = line_split[0]
 
         if object_type == 'aggregate':
-            self.process_object_type(recent_iteration, PER_ITERATION_AGGREGATE_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_AGGREGATE_REQUESTS,
                                      self.aggregate_tables, line_split)
             return
         if object_type == 'processor':
-            self.process_object_type(recent_iteration, PER_ITERATION_PROCESSOR_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_REQUESTS,
                                      self.processor_tables, line_split)
             return
         if object_type == 'volume':
-            self.process_object_type(recent_iteration, PER_ITERATION_VOLUME_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_VOLUME_REQUESTS,
                                      self.volume_tables, line_split)
             return
         if object_type == 'lun':
@@ -188,7 +186,7 @@ class PerIterationClass:
                 logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
                               align_aspect, number, instance, value, align_unit)
             else:
-                self.process_object_type(recent_iteration, PER_ITERATION_LUN_REQUESTS,
+                self.process_object_type(iteration_timestamp, PER_ITERATION_LUN_REQUESTS,
                                          self.lun_tables, line_split)
             return
 
@@ -238,7 +236,7 @@ class PerIterationClass:
             logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
         for table in all_tables:
-            flat_header, flat_value = table.flatten(iteration_timestamps, 1)
+            flat_header, flat_value = table.flatten()
             self.flat_headers.append(flat_header)
             self.flat_values.append(flat_value)
 

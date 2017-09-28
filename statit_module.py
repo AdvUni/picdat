@@ -112,7 +112,7 @@ class StatitClass:
             disk = line_split[0]
             ut_percent = line_split[1]
 
-            self.table.insert(self.statit_counter, disk, ut_percent)
+            self.table.insert(self.statit_timestamps[-1], disk, ut_percent)
 
             self.line_buffer = None
 
@@ -168,7 +168,7 @@ class StatitClass:
         places.
         :return: None
         """
-        self.flat_headers, self.flat_values = self.table.flatten(self.statit_timestamps, 1)
+        self.flat_headers, self.flat_values = self.table.flatten()
         self.add_empty_lines(iteration_timestamps)
 
     def add_empty_lines(self, iteration_end_timestamps):

@@ -54,40 +54,35 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def flatten(self, timestamps, offset):
+    def flatten(self):
         """
         Simplifies the data structure into lists of table content equating table rows.
-        :param timestamps: A list of datetime objects, marking the beginnings of
-        iterations/statits. They'll be the table's first column. If this argument is None,
-        function will replace timestamps with a simple range of numbers.
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.
         """
+        row_names = set()
         column_names = set()
-
-        for _, inner_dict in self.outer_dict.items():
+        for row_name, inner_dict in self.outer_dict.items():
+            row_names.add(row_name)
             for column_name in inner_dict:
                 column_names.add(column_name)
 
-        rownames = timestamps
-        if timestamps is None:
-            rownames = list(range(len(self.outer_dict)))
-
-        value_rows = []
         header_row = []
         for instance in sorted(column_names):
             header_row.append(instance)
 
-        for row in range(len(rownames)):
-            row_dict = self.outer_dict[row + offset]
-            rowname = rownames[row]
-            value_row = [str(rowname)]
-            for header in header_row:
-                if header in row_dict:
-                    value_row.append(row_dict[header])
+        value_rows = []
+        for row in sorted(row_names):
+            row_dict = self.outer_dict[row]
+            value_row = [str(row)]
+            for column in sorted(column_names):
+                if column in row_dict:
+                    value_row.append(row_dict[column])
                 else:
                     value_row.append(' ')
-                    logging.info('Value for %s is missing! (%s)', str(header), str(rowname))
+                    logging.info('Gap in table: Value is missing in row %s, column %s',
+                                 column, str(row))
             value_rows.append(value_row)
 
+        logging.debug(value_rows)
         return header_row, value_rows
