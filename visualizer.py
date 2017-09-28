@@ -1,6 +1,8 @@
 """
 Is responsible to write a html file containing the required charts.
 """
+import logging
+
 import constants
 import global_vars
 import util
@@ -126,3 +128,4 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
         html_document.write('</body>' + os.linesep + '</html>')
 
     html_document.close()
+    logging.info('Generated html file at %s', html_filepath)

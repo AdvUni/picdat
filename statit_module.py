@@ -178,7 +178,7 @@ class StatitClass:
         counter = 0
         try:
             for statit in self.statit_timestamps:
-                logging.info('statit timestamp %s vs. iteration timestamp %s', statit,
+                logging.debug('statit timestamp %s vs. iteration timestamp %s', statit,
                              next_iteration)
                 if next_iteration < statit:
                     self.flat_table.insert(counter + 1, util.empty_line(self.flat_table[1:]))

@@ -191,6 +191,8 @@ def handle_user_input(argv):
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
+    logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
+        output_dir))
     return input_file, output_dir
 
 
