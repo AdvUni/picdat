@@ -102,9 +102,6 @@ class PerIterationClass:
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
-        # In here, the method rework_per_iteration_data writes all table data in flattened form:
-        self.flat_tables = []
-
     @staticmethod
     def process_object_type(iteration_timestamp, requests, tables, line_split):
         """
@@ -235,10 +232,11 @@ class PerIterationClass:
 
         x_labels = self.get_x_labels()
 
+        flat_tables = []
         for table in range(len(all_tables)):
-            self.flat_tables.append(all_tables[table].flatten(x_labels[table]))
+            flat_tables.append(all_tables[table].flatten(x_labels[table]))
 
-        return self.flat_tables
+        return flat_tables
 
     def replace_lun_ids(self):
         """

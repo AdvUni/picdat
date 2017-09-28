@@ -95,8 +95,6 @@ class SysstatClass:
         self.mbs_values = []
         self.iops_values = []
 
-        self.tables = []
-
         # to analyse a sysstat header, it is necessary to look at two lines at once. But because
         # the program reads line by line, this variable is for buffering the first header line:
         self.buffered_header = None
@@ -275,11 +273,9 @@ class SysstatClass:
         self.mbs_headers.insert(0, 'time')
         self.iops_headers.insert(0, 'time')
 
-        self.tables = [[self.percent_headers] + self.percent_values] \
-                      + [[self.mbs_headers] + self.mbs_values] \
-                      + [[self.iops_headers] + self.iops_values]
-
-        return self.tables
+        return [[self.percent_headers] + self.percent_values] \
+               + [[self.mbs_headers] + self.mbs_values] \
+               + [[self.iops_headers] + self.iops_values]
 
     @staticmethod
     def get_units():

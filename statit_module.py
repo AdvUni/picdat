@@ -44,16 +44,27 @@ class StatitClass:
     """
 
     def __init__(self):
+        # An integer tracking the number of --- statit --- lines, PicDat read in the PerfStat.#
+        # As the statit timestamp is always some lines beneath, this counter is used to check
+        # whether PicDat needs to look for a new timestamp:
         self.statit_counter = 0
+        # A list of all statit timestamps:
         self.statit_timestamps = []
 
+        # A boolean, which says, whether program is recently inside a statit block (but not
+        # necessarily inside a disk statistic block!):
         self.inside_statit_block = False
+        # A boolean, which says, whether program is recently inside a disk statistic block (a
+        # block inside the statit block):
         self.inside_disk_stats_block = False
 
+        # A variable of type 'Table', should collect all values from disk statistic blocks:
         self.table = Table()
 
+        # This variable should save the self.table content in a flattened form:
         self.flat_table = None
 
+        # If PerfStat broke a line, this variable should buffer the snippet:
         self.line_buffer = None
 
     def check_statit_begin(self, line):
