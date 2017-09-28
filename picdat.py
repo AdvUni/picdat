@@ -266,11 +266,9 @@ def run(input_file, result_dir):
 
             # collect data from file
             logging.info('Read data...')
-            request_objects, table_headers, table_values = data_collector.read_data_file(
-                perfstat_node)
+            request_objects, tables = data_collector.read_data_file(perfstat_node)
 
-            logging.debug('table_headers: %s', table_headers)
-            logging.debug('table_values: %s', table_values)
+            logging.debug('tables: %s', tables)
 
             # frame html file path
             html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
@@ -284,7 +282,7 @@ def run(input_file, result_dir):
 
             # write data into csv tables
             logging.info('Create csv tables...')
-            table_writer.create_csv(csv_abs_filepaths, table_headers, table_values, request_objects)
+            table_writer.create_csv(csv_abs_filepaths, tables)
 
             # write html file
             logging.info('Create html file...')

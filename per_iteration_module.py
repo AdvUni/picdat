@@ -102,8 +102,7 @@ class PerIterationClass:
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
-        self.flat_headers = []
-        self.flat_values = []
+        self.flat_tables = []
 
     @staticmethod
     def process_object_type(iteration_timestamp, requests, tables, line_split):
@@ -217,7 +216,7 @@ class PerIterationClass:
             except IndexError:
                 logging.warning('Expected a LUN uuid in line, but didn\'t found any: \'%s\'', line)
 
-    def rework_per_iteration_data(self, iteration_timestamps):
+    def rework_per_iteration_data(self):
         """
         Simplifies data structures: Flattens all tables from the table lists and sticks them all
         together. Writes the flat results into self.flat_headers and self.flat_values. Further,
@@ -235,10 +234,12 @@ class PerIterationClass:
         else:
             logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
-        for table in all_tables:
-            flat_header, flat_value = table.flatten()
-            self.flat_headers.append(flat_header)
-            self.flat_values.append(flat_value)
+        x_labels = self.get_x_labels()
+
+        for table in range(len(all_tables)):
+            self.flat_tables.append(all_tables[table].flatten(x_labels[table]))
+
+        return self.flat_tables
 
     def replace_lun_ids(self):
         """

@@ -99,7 +99,7 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
                         'won\'t be considered in the resulting charts!')
 
 
-def combine_results(per_iteration_object, sysstat_object, statit_object):
+def combine_results(per_iteration_object, sysstat_object, statit_object, end_times):
     """
     This function sticks the results of all three request types together.
     :param per_iteration_object: object that holds all relevant information about 
@@ -109,38 +109,13 @@ def combine_results(per_iteration_object, sysstat_object, statit_object):
     :return: All headers in one list, followed by all values in one list.
     """
 
-    per_iteration_headers = per_iteration_object.flat_headers
-    per_iteration_values = per_iteration_object.flat_values
-
-    sysstat_percent_headers = sysstat_object.percent_headers
-    sysstat_percent_values = sysstat_object.percent_values
-    sysstat_mbs_headers = sysstat_object.mbs_headers
-    sysstat_mbs_values = sysstat_object.mbs_values
-    sysstat_iops_headers = sysstat_object.iops_headers
-    sysstat_iops_values = sysstat_object.iops_values
-
-    statit_headers = statit_object.flat_headers
-    statit_values = statit_object.flat_values
-
-    logging.debug('per_iteration_headers: %s', per_iteration_headers)
-    logging.debug('per_iteration_values: %s', per_iteration_values)
-    logging.debug('sysstat_percent_headers: %s', sysstat_percent_headers)
-    logging.debug('sysstat_percent_values: %s', sysstat_percent_values)
-    logging.debug('sysstat_mbs_headers: %s', sysstat_mbs_headers)
-    logging.debug('sysstat_mbs_values: %s', sysstat_mbs_values)
-    logging.debug('sysstat_iops_headers: %s', sysstat_iops_headers)
-    logging.debug('sysstat_iops_values: %s', sysstat_iops_values)
-    logging.debug('statit_headers: %s', statit_headers)
-    logging.debug('statit_values: %s', statit_values)
-
-    combined_headers = per_iteration_headers + [sysstat_percent_headers, sysstat_mbs_headers,
-                                                sysstat_iops_headers, statit_headers]
-    combined_values = per_iteration_values + [sysstat_percent_values, sysstat_mbs_values,
-                                              sysstat_iops_values, statit_values]
+    combined_tables = per_iteration_object.rework_per_iteration_data() + \
+                      sysstat_object.rework_sysstat_data() + \
+                      statit_object.rework_statit_data(end_times)
 
     combined_requests = [per_iteration_object, sysstat_object, statit_object]
 
-    return combined_requests, combined_headers, combined_values
+    return combined_requests, combined_tables
 
 
 def read_data_file(perfstat_data_file):
@@ -238,11 +213,4 @@ def read_data_file(perfstat_data_file):
 
     final_iteration_validation(number_of_iterations, iteration_begin_counter, iteration_end_counter)
 
-    # simplify data structures for per-iteration data
-    per_iteration_object.rework_per_iteration_data(start_times)
-
-    statit_object.rework_statit_data(end_times)
-
-    sysstat_object.rework_sysstat_data()
-
-    return combine_results(per_iteration_object, sysstat_object, statit_object)
+    return combine_results(per_iteration_object, sysstat_object, statit_object, end_times)

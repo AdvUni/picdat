@@ -52,8 +52,7 @@ class StatitClass:
 
         self.table = Table()
 
-        self.flat_headers = None
-        self.flat_values = None
+        self.flat_table = None
 
         self.line_buffer = None
 
@@ -121,7 +120,7 @@ class StatitClass:
             # the program checks, whether the second word from 'line' is actually the same as the
             # one lying directly under the column header 'ut%':
 
-            #if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
+            # if ut_percent == line[self.ut_column_indices[0]: self.ut_column_indices[1]].strip():
             #    self.disk_names.add(disk)
             #    self.table.insert(self.statit_counter, disk, ut_percent)
 
@@ -168,8 +167,10 @@ class StatitClass:
         places.
         :return: None
         """
-        self.flat_headers, self.flat_values = self.table.flatten()
+        self.flat_table = self.table.flatten('time')
         self.add_empty_lines(iteration_timestamps)
+
+        return [self.flat_table]
 
     def add_empty_lines(self, iteration_end_timestamps):
         """
@@ -185,8 +186,10 @@ class StatitClass:
         counter = 0
         try:
             for statit in self.statit_timestamps:
+                logging.info('statit timestamp %s vs. iteration timestamp %s', statit,
+                             next_iteration)
                 if next_iteration < statit:
-                    self.flat_values.insert(counter, util.empty_line(self.flat_values))
+                    self.flat_table.insert(counter + 1, util.empty_line(self.flat_table[1:]))
                     next_iteration = next(iter_iterations)
                     counter += 1
                 counter += 1

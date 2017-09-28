@@ -54,9 +54,11 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def flatten(self):
+    def flatten(self, x_label):
         """
         Simplifies the data structure into lists of table content equating table rows.
+        :param x_label: A String which should be in the upper left corner of the table. It's the 
+        label for the first table column naming the rows.
         :return: A list containing all column headers and a list of list, which is a list of
         rows, containing the table values. The order of the values equates the order of the headers.
         """
@@ -67,7 +69,7 @@ class Table:
             for column_name in inner_dict:
                 column_names.add(column_name)
 
-        header_row = []
+        header_row = [x_label]
         for instance in sorted(column_names):
             header_row.append(instance)
 
@@ -85,4 +87,4 @@ class Table:
             value_rows.append(value_row)
 
         logging.debug(value_rows)
-        return header_row, value_rows
+        return [header_row] + value_rows
