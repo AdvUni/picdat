@@ -25,7 +25,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 class Table:
     """
     This is a data structure to represent table content. It's a dict of dicts; each outer dict maps
-    an iteration or statit number (equates row) to an inner dict, each inner dict maps an 
+    an iteration or statit number (equates row) to an inner dict, each inner dict maps an
     instance/disk name (equates table column) to a specific table value. So each table value has 
     a determined row and column.
     """
@@ -39,8 +39,8 @@ class Table:
     def insert(self, row, column, item):
         """
         Inserts an value dependably into a specific place in the Table.
-        :param row: Number of the iteration/statit, the value belongs to (equates table row).
-        :param column: Name of the instance/disk, the value belongs to (equates table column).
+        :param row: Name of the table row, the value belongs to.
+        :param column: Name of the table column, the value belongs to.
         :param item: Value you want to insert.
         :return: None.
         """
@@ -56,11 +56,11 @@ class Table:
 
     def flatten(self, x_label):
         """
-        Simplifies the data structure into lists of table content equating table rows.
-        :param x_label: A String which should be in the upper left corner of the table. It's the 
+        Simplifies the data structure into a nestet list.
+        :param x_label: A String which should be in the upper left corner of the table. It's the
         label for the first table column naming the rows.
-        :return: A list containing all column headers and a list of list, which is a list of
-        rows, containing the table values. The order of the values equates the order of the headers.
+        :return: A nested list: Each inner list holds the values of one row in the table,
+        the outer list holds all rows
         """
         row_names = set()
         column_names = set()

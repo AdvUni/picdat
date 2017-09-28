@@ -151,13 +151,12 @@ class StatitClass:
 
     def rework_statit_data(self, iteration_timestamps):
         """
-        Simplifies statit data: Flattens the table data structure into the lists flat_headers and   
-        flat_values. Also inserts empty data lines into flat_values, to separate iterations in
-        resulting charts from each other.
+        Simplifies statit data: Flattens the table data structure. Also inserts empty data lines
+        to separate iterations in resulting charts from each other.
         :param iteration_timestamps: A list of datetime objects, marking the ends of all
         iterations in one PerfStat file. They are needed to insert the empty lines at the right
         places.
-        :return: None
+        :return: The flattened table in a list.
         """
         self.flat_table = self.table.flatten('time')
         self.add_empty_lines(iteration_timestamps)

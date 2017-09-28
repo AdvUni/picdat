@@ -106,7 +106,9 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     per_iteration_requests.
     :param sysstat_object: objet that holds all relevant information about sysstat_requests.
     :param statit_object: object that holds all relevant inforamtion read from statit blocks.
-    :return: All headers in one list, followed by all values in one list.
+    :param end_times: The end timestamps of all iterations; they are needed to rework the statit
+    data.
+    :return: All tables in one list.
     """
 
     combined_tables = per_iteration_object.rework_per_iteration_data() + \
@@ -122,10 +124,9 @@ def read_data_file(perfstat_data_file):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
-    :return: a list of all headers and a list of all values. The headers are grouped by table.
-    The values are grouped by table and by row. Each value row already starts with its timestamp.
-    Additionally, it returns the luns_available boolean which says, whether lun values appeared in
-    the PerfStat at all.
+    :return: A list of all collected values in a table format. Each table is a nested list as
+    well; the values are grouped by rows. Additionally, it returns a list of the request objects,
+    the data_collector worked with.
     """
 
     # initialisation

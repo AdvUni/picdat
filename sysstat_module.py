@@ -259,7 +259,11 @@ class SysstatClass:
             self.process_sysstat_requests(line)
 
     def rework_sysstat_data(self):
-
+        """
+        Simplifies data structures: Adds 'time' Strings to the header lists, then sticks headers
+        and values for each table together, then sticks all tables together.
+        :return: All sysstat tables in a nested list.
+        """
         for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
             try:
                 while value_list[-1][0] == ' ':

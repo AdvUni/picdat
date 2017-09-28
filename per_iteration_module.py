@@ -102,6 +102,7 @@ class PerIterationClass:
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
 
+        # In here, the method rework_per_iteration_data writes all table data in flattened form:
         self.flat_tables = []
 
     @staticmethod
@@ -149,7 +150,6 @@ class PerIterationClass:
             self.map_lun_path(line)
             return
 
-        request_index = 0
         line_split = line.split(':')
 
         if len(line_split) < 4:
@@ -218,11 +218,10 @@ class PerIterationClass:
 
     def rework_per_iteration_data(self):
         """
-        Simplifies data structures: Flattens all tables from the table lists and sticks them all
-        together. Writes the flat results into self.flat_headers and self.flat_values. Further,
-        replaces the ID of each LUN in the headers with their paths for better readability.
-        :param iteration_timestamps: A list of all iteration begin timestamps.
-        :return: None.
+        Simplifies data structures: Flattens tables from the table lists and sticks them all
+        together. Further, replaces the ID of each LUN in the headers with their paths for better
+        readability.
+        :return: All flattened tables in a list.
         """
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
