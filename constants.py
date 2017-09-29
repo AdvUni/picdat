@@ -26,7 +26,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # String to print together with the program name if user uses command line option --help or -h or
 # any not recognized options:
 HELP = '''
-usage: %s [--help] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
+usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
     --help, -h: prints this message
     --sortbyname, -s: Sorts the legends of most charts alphabetically. Per default, 
                       legend entries are sorted by relevance, means the graph with the
