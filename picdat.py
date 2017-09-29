@@ -136,7 +136,7 @@ def handle_user_input(argv):
     Processes command line options belonging to PicDat. If no log level is given, takes default
     log level instead. If no input file or output directory is given, PicDat will ask the user
     about them at runtime. 
-    :param argv: Command line options.
+    :param argv: Command line parameters.
     :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to
     the output directory.
     """
@@ -203,10 +203,11 @@ def handle_user_input(argv):
     return input_file, output_dir, sort_columns_by_name
 
 
-def run(input_file, result_dir, sort_columns_by_name):
+def run(argv):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
+    :param argv: Command line parameters.
     :return: None
     """
     temp_path = None
@@ -214,6 +215,9 @@ def run(input_file, result_dir, sort_columns_by_name):
     identifier_dict = None
 
     try:
+        # read command line options and take additional user input
+        input_file, result_dir, sort_columns_by_name = handle_user_input(argv)
+
         # extract zip if necessary
         perfstat_output_files = None
         if os.path.isdir(input_file):
@@ -311,5 +315,4 @@ def run(input_file, result_dir, sort_columns_by_name):
 
 
 # run
-user_input = handle_user_input(sys.argv)
-run(user_input[0], user_input[1], user_input[2])
+run(sys.argv)
