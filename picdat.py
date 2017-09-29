@@ -5,7 +5,6 @@ import getopt
 import logging
 import os
 import shutil
-from shutil import copyfile
 import traceback
 import sys
 
@@ -124,8 +123,8 @@ def prepare_directory(destination_dir):
     dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
     dygraphs_css_source = util.get_base_path() + constants.DYGRAPHS_CSS_SRC
     dygraphs_css_dest = dygraphs_dir + os.sep + 'dygraph.css'
-    copyfile(dygraphs_js_source, dygraphs_js_dest)
-    copyfile(dygraphs_css_source, dygraphs_css_dest)
+    shutli.copyfile(dygraphs_js_source, dygraphs_js_dest)
+    shutil.copyfile(dygraphs_css_source, dygraphs_css_dest)
 
     return csv_dir
 
