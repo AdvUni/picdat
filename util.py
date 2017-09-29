@@ -21,7 +21,6 @@ import tempfile
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
-
 # license notice:
 #
 # This file is part of PicDat.
@@ -41,6 +40,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # usually not the best practise, but I wanted to avoid passing it as argument all the time. So
 # make sure to clear this value before you handling a new PerfStat file!
 localtimezone = None
+
 
 def data_type(filepath):
     """
@@ -161,7 +161,7 @@ def build_date(timestamp_string):
     try:
         return timezone.localize(
             datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
-            localtimezone).replace(tzinfo=None)
+                localtimezone).replace(tzinfo=None)
     except (AttributeError, TypeError):
         localtimezone = '???'
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
@@ -318,7 +318,7 @@ def get_csv_filenames(request_objects, output_identifier):
 
 def get_all_output_files(folder):
     """
-    Pics all .data files from a folder. Also picks a file named console.log, if available. 
+    Pics all .data files from a folder. Also picks a file named console.log, if available.
     Therefore, it ignores all sub folders named host.
     :param folder: A folder's path as String, which should be searched.
     :return: A tuple of a list of .data files and the console.log file (might be None).

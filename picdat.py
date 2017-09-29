@@ -34,7 +34,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 def print_help_and_exit(program_name):
     """
-    This function prints a String about the program's usage to the command line and then quits 
+    This function prints a String about the program's usage to the command line and then quits
     the program.
     :param program_name: The program's name.
     :return: None
@@ -133,7 +133,7 @@ def handle_user_input(argv):
     """
     Processes command line options belonging to PicDat. If no log level is given, takes default
     log level instead. If no input file or output directory is given, PicDat will ask the user
-    about them at runtime. 
+    about them at runtime.
     :param argv: Command line parameters.
     :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to
     the output directory.

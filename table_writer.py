@@ -4,8 +4,6 @@ Is responsible for writing given data into csv files.
 import logging
 import os
 
-import util
-
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 

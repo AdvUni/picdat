@@ -56,7 +56,7 @@ class Table:
     def sort_columns_by_relevance(self):
         """
         Generates a list of all column names the table has. They'll be sorted by the sum of their
-        values across all rows. 
+        values across all rows.
         :return: A list of all column names.
         """
         try:
@@ -90,7 +90,7 @@ class Table:
         Simplifies the data structure into a nestet list.
         :param x_label: A String which should be in the upper left corner of the table. It's the
         label for the first table column naming the rows.
-        :param sort_columns_by_name: If True, the columns of the flattened table will be sorted 
+        :param sort_columns_by_name: If True, the columns of the flattened table will be sorted
         alphanumerically, otherwise method sorts them by relevance.
         :return: A nested list: Each inner list holds the values of one row in the table,
         the outer list holds all rows

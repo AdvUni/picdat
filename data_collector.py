@@ -102,7 +102,7 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
 def combine_results(per_iteration_object, sysstat_object, statit_object, end_times):
     """
     This function sticks the results of all three request types together.
-    :param per_iteration_object: object that holds all relevant information about 
+    :param per_iteration_object: object that holds all relevant information about
     per_iteration_requests.
     :param sysstat_object: objet that holds all relevant information about sysstat_requests.
     :param statit_object: object that holds all relevant inforamtion read from statit blocks.

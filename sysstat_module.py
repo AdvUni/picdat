@@ -101,7 +101,7 @@ class SysstatClass:
 
     def found_sysstat_1sec_begin(self, line):
         """
-        Looks, whether a String marks the beginning of a sysstat_x_1sec section and in case sets 
+        Looks, whether a String marks the beginning of a sysstat_x_1sec section and in case sets
         the object's variable inside_sysstat_block.
         :param line: A string from a PerfStat output file which should be searched
         :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False
@@ -264,7 +264,7 @@ class SysstatClass:
         for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
             try:
                 while value_list[-1][0] == ' ':
-                    del (value_list[-1])
+                    del value_list[-1]
             except IndexError:
                 pass
 
