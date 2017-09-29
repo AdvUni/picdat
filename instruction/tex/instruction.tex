@@ -39,7 +39,7 @@
 \section*{Running PicDat}
 Genaral usage: 
 \begin{lstlisting}
-picdat [--help] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
+picdat [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
 \end{lstlisting}
 
 You can run PicDat without any parameters. After you startet it, it'll ask you for some PerfStats. You can enter the path to a single file like output.data or to a whole folder with output.data files inside or to a zip folder. Additionally, PicDat will ask you to enter a directory for its results. Be aware, that content might get overwritten if this directory is not empty! After this, PicDat will start working. 
@@ -79,6 +79,8 @@ Alternatively, you can transmit Perfstat input and output directory as command l
 
 Another available command line option is the -\,-debug or -d flag. It specifies the filtering level for command line output. Pass it together with a string out of those: debug, info, warning, error, critical
 Default is 'info'.
+
+By default, PicDat sorts the different data series by relevance. This means, the graph with the highest sum of values will be displayed at the top of a chart's legend. If you rather wants them to be sorted alphanumeric, use the flag -\,-sortbyname or -s.
 
 To get information about the usage, try option -\,-help or -h.
 \bigskip

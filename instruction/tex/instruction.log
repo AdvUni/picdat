@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/TeX Live for SUSE Linux) (preloaded format=pdflatex 2017.9.18)  29 SEP 2017 10:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/TeX Live for SUSE Linux) (preloaded format=pdflatex 2017.9.18)  29 SEP 2017 14:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -628,7 +628,7 @@ File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 File: ../images/PicDat_hightlight2.png Graphic file (type png)
 
 <use ../images/PicDat_hightlight2.png>
-Package pdftex.def Info: ../images/PicDat_hightlight2.png used on input line 90
+Package pdftex.def Info: ../images/PicDat_hightlight2.png used on input line 92
 .
 (pdftex.def)             Requested size: 509.50743pt x 204.76657pt.
 
@@ -636,10 +636,10 @@ Package pdftex.def Info: ../images/PicDat_hightlight2.png used on input line 90
 File: ../images/PicDat_deselect.png Graphic file (type png)
 
 <use ../images/PicDat_deselect.png>
-Package pdftex.def Info: ../images/PicDat_deselect.png used on input line 96.
+Package pdftex.def Info: ../images/PicDat_deselect.png used on input line 98.
 (pdftex.def)             Requested size: 339.66298pt x 136.30682pt.
 
-Overfull \hbox (22.29771pt too wide) in paragraph at lines 96--97
+Overfull \hbox (22.29771pt too wide) in paragraph at lines 98--99
  [][] 
  []
 
@@ -650,7 +650,7 @@ t2.png>] <../images/PicDat_roller.png, id=11, 1698.345pt x 681.54625pt>
 File: ../images/PicDat_roller.png Graphic file (type png)
 
 <use ../images/PicDat_roller.png>
-Package pdftex.def Info: ../images/PicDat_roller.png used on input line 107.
+Package pdftex.def Info: ../images/PicDat_roller.png used on input line 109.
 (pdftex.def)             Requested size: 509.50743pt x 204.46545pt.
  [2 <../images/PicDat_deselect.png> <../images/PicDat_roller.png>] (./instructi
 on.aux) ) 
@@ -665,7 +665,7 @@ Here is how much of TeX's memory you used:
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts
 /type1/public/lm/lmss8.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb
 ></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb>
-Output written on instruction.pdf (2 pages, 429117 bytes).
+Output written on instruction.pdf (2 pages, 429337 bytes).
 PDF statistics:
  27 PDF objects out of 1000 (max. 8388607)
  16 compressed objects within 1 object stream
