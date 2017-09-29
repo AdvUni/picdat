@@ -54,7 +54,34 @@ class Table:
             else:
                 self.outer_dict[row][column] = item
 
-    def flatten(self, x_label):
+    def sort_columns_by_relevance(self):
+        try:
+            value_dict = {}
+            for _, inner_dict in self.outer_dict.items():
+                for column_name, value in inner_dict.items():
+                    try:
+                        if column_name in value_dict:
+                            value_dict[column_name] += float(value)
+                        else:
+                            value_dict[column_name] = float(value)
+                    except ValueError:
+                        logging.warning('Found value, which is not convertible to float: %s - '
+                                        '%s', column_name, value)
+                        raise
+            logging.debug('value dict: %s', value_dict)
+            return sorted(value_dict, key=value_dict.get, reverse=True)
+        except ValueError:
+            logging.error('Was not able to sort columns by relevance. Sorting them by name '
+                          'instead.')
+
+            column_names = set()
+            for _, inner_dict in self.outer_dict.items():
+                for column_name in inner_dict:
+                    column_names.add(column_name)
+
+            return sorted(column_names)
+
+    def flatten(self, x_label, sort_columns_by_name):
         """
         Simplifies the data structure into a nestet list.
         :param x_label: A String which should be in the upper left corner of the table. It's the
@@ -69,15 +96,16 @@ class Table:
             for column_name in inner_dict:
                 column_names.add(column_name)
 
-        header_row = [x_label]
-        for instance in sorted(column_names):
-            header_row.append(instance)
+        if sort_columns_by_name:
+            header_row = sorted(column_names)
+        else:
+            header_row = self.sort_columns_by_relevance()
 
         value_rows = []
         for row in sorted(row_names):
             row_dict = self.outer_dict[row]
             value_row = [str(row)]
-            for column in sorted(column_names):
+            for column in header_row:
                 if column in row_dict:
                     value_row.append(row_dict[column])
                 else:
@@ -85,6 +113,8 @@ class Table:
                     logging.info('Gap in table: Value is missing in row %s, column %s',
                                  str(row), column)
             value_rows.append(value_row)
+
+        header_row.insert(0, x_label)
 
         logging.debug(value_rows)
         return [header_row] + value_rows

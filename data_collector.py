@@ -120,10 +120,14 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     return combined_requests, combined_tables
 
 
-def read_data_file(perfstat_data_file):
+def read_data_file(perfstat_data_file, sort_columns_by_name):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
+    :param sort_columns_by_name: Some of the charts may have a great amount of charts. Per
+    default, PicDat sorts the corresponding legend entries by relevance, means the graph with the
+    highest values in sum is displayed at the top of the legend. If you rather would sort them
+    alphabetically, this boolean should be true.
     :return: A list of all collected values in a table format. Each table is a nested list as
     well; the values are grouped by rows. Additionally, it returns a list of the request objects,
     the data_collector worked with.
@@ -145,13 +149,13 @@ def read_data_file(perfstat_data_file):
     end_times = []
 
     # this object collects all information the program finds outside of sysstat and statit blocks
-    per_iteration_object = per_iteration_module.PerIterationClass()
+    per_iteration_object = per_iteration_module.PerIterationClass(sort_columns_by_name)
 
     # this object collects all information the program finds during processing sysstat_x_1sec blocks
     sysstat_object = sysstat_module.SysstatClass()
 
     # this object collects all information the program finds during processing statit blocks
-    statit_object = statit_module.StatitClass()
+    statit_object = statit_module.StatitClass(sort_columns_by_name)
 
     # collecting data
 

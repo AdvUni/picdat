@@ -143,7 +143,8 @@ def handle_user_input(argv):
 
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv[1:], 'hd:i:o:', ['help', 'debug=', 'inputfile=', 'outputdir='])
+        opts, _ = getopt.getopt(argv[1:], 'hsd:i:o:', ['help', 'sortbynames', 'debug=',
+                                                       'inputfile=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
@@ -152,6 +153,12 @@ def handle_user_input(argv):
     # print help information if option 'help' is given
     if '-h' in opts or '--help' in opts:
         print_help_and_exit(argv[0])
+
+    # Looks, whether user wants to sort legend entries alphabetically instead of by relevance
+    if '-s' in opts or '--sortbynames' in opts:
+        sort_columns_by_name = True
+    else:
+        sort_columns_by_name = False
 
     # extract log level from options if possible
     if '-d' in opts:
@@ -193,10 +200,10 @@ def handle_user_input(argv):
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
-    return input_file, output_dir
+    return input_file, output_dir, sort_columns_by_name
 
 
-def run(input_file, result_dir):
+def run(input_file, result_dir, sort_columns_by_name):
     """
     The tool's main routine. Calls all functions to read the data, write CSVs
     and finally create an HTML. Handles user communication.
@@ -268,7 +275,8 @@ def run(input_file, result_dir):
 
             # collect data from file
             logging.info('Read data...')
-            request_objects, tables = data_collector.read_data_file(perfstat_node)
+            request_objects, tables = data_collector.read_data_file(perfstat_node,
+                                                                    sort_columns_by_name)
 
             logging.debug('tables: %s', tables)
 
@@ -304,4 +312,4 @@ def run(input_file, result_dir):
 
 # run
 user_input = handle_user_input(sys.argv)
-run(user_input[0], user_input[1])
+run(user_input[0], user_input[1], user_input[2])

@@ -28,6 +28,9 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 HELP = '''
 usage: %s [--help] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
     --help, -h: prints this message
+    --sortbyname, -s: Sorts the legends of most charts alphabetically. Per default, 
+                      legend entries are sorted by relevance, means the graph with the
+                      highest values in sum is displayed at the top of the legend.
     --inputfile "input", -i "input": input is the path to some PerfStat output. Should be a 
                                      folder, a .zip folder or a .data file.
     --outputdir "output", -o "output": output is the directory's path, where this program puts its 

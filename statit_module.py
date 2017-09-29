@@ -43,7 +43,15 @@ class StatitClass:
     PerfStat file.
     """
 
-    def __init__(self):
+    def __init__(self, sort_columns_by_name):
+        """
+        Constructor for StatitClass.
+        :param sort_columns_by_name: Graph lines in statit charts might become pretty many.
+        Per default, PicDat sorts the legend entries by relevance, means the graph with the
+        highest values in sum is displayed at the top of the legend. If you rather would sort
+        them alphabetically, this boolean should be true.
+        """
+
         # An integer tracking the number of --- statit --- lines, PicDat read in the PerfStat.#
         # As the statit timestamp is always some lines beneath, this counter is used to check
         # whether PicDat needs to look for a new timestamp:
@@ -66,6 +74,8 @@ class StatitClass:
 
         # If PerfStat broke a line, this variable should buffer the snippet:
         self.line_buffer = None
+
+        self.sort_columns_by_name = sort_columns_by_name
 
     def check_statit_begin(self, line):
         """
@@ -169,7 +179,7 @@ class StatitClass:
         places.
         :return: The flattened table in a list.
         """
-        self.flat_table = self.table.flatten('time')
+        self.flat_table = self.table.flatten('time', self.sort_columns_by_name)
         self.add_empty_lines(iteration_timestamps)
 
         return [self.flat_table]

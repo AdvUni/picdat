@@ -82,7 +82,14 @@ class PerIterationClass:
     charts. Further, it contains some values needed to visualize the data correctly.
     """
 
-    def __init__(self):
+    def __init__(self, sort_columns_by_name):
+        """
+        Constructor for PerIterationClass.
+        :param sort_columns_by_name: Graph lines in per-iteration charts might become pretty many.
+        Per default, PicDat sorts the legend entries by relevance, means the graph with the
+        highest values in sum is displayed at the top of the legend. If you rather would sort
+        them alphabetically, this boolean should be true.
+        """
 
         # Several lists of type 'Table', one for each of the request lists. They'll collect all
         # per-iteration values from a  PerfStat output file, grouped by iteration and instance:
@@ -101,6 +108,8 @@ class PerIterationClass:
         # To translate lun IDs into their paths, it needs to read more than one line. Following
         # variable is for buffering a lun path until the corresponding ID is found:
         self.lun_buffer = None
+
+        self.sort_columns_by_name = sort_columns_by_name
 
     @staticmethod
     def process_object_type(iteration_timestamp, requests, tables, line_split):
@@ -235,7 +244,8 @@ class PerIterationClass:
 
         flat_tables = []
         for table in range(len(all_tables)):
-            flat_tables.append(all_tables[table].flatten(x_labels[table]))
+            flat_tables.append(
+                all_tables[table].flatten(x_labels[table], self.sort_columns_by_name))
 
         return flat_tables
 
