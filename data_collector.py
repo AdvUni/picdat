@@ -124,7 +124,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
     """
     Reads the requested information from a PerfStat output file and collects them into several lists
     :param perfstat_data_file: file which should be read
-    :param sort_columns_by_name: Some of the charts may have a great amount of charts. Per
+    :param sort_columns_by_name: Some of the charts may have a great amount of graphs. By
     default, PicDat sorts the corresponding legend entries by relevance, means the graph with the
     highest values in sum is displayed at the top of the legend. If you rather would sort them
     alphabetically, this boolean should be true.

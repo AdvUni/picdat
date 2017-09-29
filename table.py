@@ -25,9 +25,8 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 class Table:
     """
     This is a data structure to represent table content. It's a dict of dicts; each outer dict maps
-    an iteration or statit number (equates row) to an inner dict, each inner dict maps an
-    instance/disk name (equates table column) to a specific table value. So each table value has 
-    a determined row and column.
+    a row name to an inner dict, each inner dict maps an column name (equates table column) to a
+    specific table value. So each table value has a determined row and column.
     """
 
     def __init__(self):
@@ -55,6 +54,11 @@ class Table:
                 self.outer_dict[row][column] = item
 
     def sort_columns_by_relevance(self):
+        """
+        Generates a list of all column names the table has. They'll be sorted by the sum of their
+        values across all rows. 
+        :return: A list of all column names.
+        """
         try:
             value_dict = {}
             for _, inner_dict in self.outer_dict.items():
@@ -86,6 +90,8 @@ class Table:
         Simplifies the data structure into a nestet list.
         :param x_label: A String which should be in the upper left corner of the table. It's the
         label for the first table column naming the rows.
+        :param sort_columns_by_name: If True, the columns of the flattened table will be sorted 
+        alphanumerically, otherwise method sorts them by relevance.
         :return: A nested list: Each inner list holds the values of one row in the table,
         the outer list holds all rows
         """
