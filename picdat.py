@@ -10,7 +10,6 @@ import traceback
 import sys
 
 import constants
-import global_vars
 import util
 import data_collector
 import table_writer
@@ -302,8 +301,8 @@ def run(argv):
             logging.info('Create html file...')
             visualizer.create_html(html_filepath, csv_filelinks, html_title, request_objects)
 
-            # reset global variables
-            global_vars.reset()
+            # reset global variable 'localtimezone'
+            util.localtimezone = None
 
         logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
 

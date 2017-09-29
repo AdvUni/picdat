@@ -4,7 +4,6 @@ Is responsible to write a html file containing the required charts.
 import logging
 
 import constants
-import global_vars
 import util
 import os
 
@@ -103,7 +102,7 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
         # write caption
         html_document.write('    <h2> ' + html_title + ' </h2>' + os.linesep)
         # write timezone notice
-        html_document.write('    <h2> ' + 'timezone:' + str(global_vars.localtimezone) + ' </h2>' +
+        html_document.write('    <h2> ' + 'timezone: ' + str(util.localtimezone) + ' </h2>' +
                             os.linesep)
 
         # write rest of body

@@ -7,8 +7,6 @@ import os
 import sys
 from zipfile import ZipFile
 
-import global_vars
-
 try:
     import pytz
 except ImportError:
@@ -36,6 +34,13 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
+# PerfStat output might be somewhat inconsistent in dealing with timezones. Therefore,
+# PicDat wants to convert all time information into local time. As local timezone, it takes the
+# first timezone it finds in the PerfStat file. Note: this is a global var. Global vars are
+# usually not the best practise, but I wanted to avoid passing it as argument all the time. So
+# make sure to clear this value before you handling a new PerfStat file!
+localtimezone = None
 
 def data_type(filepath):
     """
@@ -148,16 +153,17 @@ def build_date(timestamp_string):
     second = int(time[2])
 
     # check, whether global variable 'localetimezone' is already set
-    if global_vars.localtimezone is None:
-        global_vars.localtimezone = timezone
+    global localtimezone
+    if localtimezone is None:
+        localtimezone = timezone
 
     # convert timezone to global_vars.localtimezone (as possible) and return datetime object
     try:
         return timezone.localize(
             datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
-            global_vars.localtimezone).replace(tzinfo=None)
+            localtimezone).replace(tzinfo=None)
     except (AttributeError, TypeError):
-        global_vars.localtimezone = '???'
+        localtimezone = '???'
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 
