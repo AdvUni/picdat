@@ -81,10 +81,11 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
-    :param csv_files: A list of file names from csv tables which should be visualized
+    :param csv_files: A list of file names from csv tables which should be visualized.
     :param html_title: A file path which is used as caption for the resulting html. Should be the
     path of the PerfStat output file.
-    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
+    :param request_objects: A list of all used request objects (necessary to get meta data about
+    the tables)
     :return: None
     """
     titles = util.get_titles(request_objects)
