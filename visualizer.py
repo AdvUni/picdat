@@ -5,7 +5,6 @@ import logging
 
 import constants
 import util
-import os
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -45,9 +44,9 @@ def option_line(label, content, argument_is_string):
     :return: The line you can write into an HTML file.
     """
     if argument_is_string:
-        return '            ' + label + ': "' + content + '",' + os.linesep
+        return '            ' + label + ': "' + content + '",' + '\n'
     else:
-        return '            ' + label + ': ' + content + ',' + os.linesep
+        return '            ' + label + ': ' + content + ',' + '\n'
 
 
 def get_legend_div_id(chart_id):
@@ -67,14 +66,14 @@ def create_buttons(html_document, chart_id):
     :param chart_id: The id of the chart, the checkboxes should belong to.
     :return: None
     """
-    html_document.write('<p>' + os.linesep)
+    html_document.write('<p>' + '\n')
     html_document.write('    <button type="button" onclick="selectAll(this, '
                         + chart_id + ', ' + "'" + chart_id + "'" +
-                        ')">select all</button>' + os.linesep)
+                        ')">select all</button>' + '\n')
     html_document.write('    <button type="button" onclick="deselectAll(this, '
                         + chart_id + ', ' + "'" + chart_id + "'" +
-                        ')">deselect all</button>' + os.linesep)
-    html_document.write('</p>' + os.linesep)
+                        ')">deselect all</button>' + '\n')
+    html_document.write('</p>' + '\n')
 
 
 def create_html(html_filepath, csv_files, html_title, request_objects):
@@ -101,10 +100,9 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
         template.close()
 
         # write caption
-        html_document.write('    <h2> ' + html_title + ' </h2>' + os.linesep)
+        html_document.write('    <h2> ' + html_title + ' </h2>' + '\n')
         # write timezone notice
-        html_document.write('    <h2> ' + 'timezone: ' + str(util.localtimezone) + ' </h2>' +
-                            os.linesep)
+        html_document.write('    <h2> ' + 'timezone: ' + str(util.localtimezone) + ' </h2>' + '\n')
 
         # write rest of body
         for chart in range(len(csv_files)):
@@ -118,6 +116,6 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
             create_buttons(html_document, chart_ids[chart])
 
         # end html document
-        html_document.write('</body>' + os.linesep + '</html>')
+        html_document.write('</body>' + '\n' + '</html>')
 
     logging.info('Generated html file at %s', html_filepath)

@@ -2,7 +2,6 @@
 Is responsible for writing given data into csv files.
 """
 import logging
-import os
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -44,6 +43,6 @@ def create_csv(csv_filepaths, tables):
                 row_line += row[-1]
 
                 # write out line
-                table_file.write(row_line + os.linesep)
+                table_file.write(row_line + '\n')
 
         logging.info('Wrote chart values into %s', csv_filepaths[table_index])
