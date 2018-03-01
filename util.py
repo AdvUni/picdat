@@ -332,7 +332,7 @@ def get_all_output_files(folder):
             file = os.path.join(path, filename)
             if filename == 'console.log':
                 console_file = file
-            elif data_type(filename) == 'data':
+            elif data_type(filename) == 'data' or data_type(filename) == 'out':
                 output_files.append(file)
     return output_files, console_file
 
