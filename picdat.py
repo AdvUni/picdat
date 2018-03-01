@@ -17,7 +17,6 @@ import visualizer
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
-
 # license notice:
 #
 # This file is part of PicDat.
@@ -133,15 +132,15 @@ def handle_user_input(argv):
     """
     Processes command line options belonging to PicDat. If no log level is given, takes default
     log level instead. If no input file or output directory is given, PicDat will ask the user
-    about them at runtime.
+    about them at runtime. If a log file is desired, logging content is redirected into picdat.log.
     :param argv: Command line parameters.
     :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to
     the output directory.
     """
-
+    
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv[1:], 'hsd:i:o:', ['help', 'sortbynames', 'debug=',
+        opts, _ = getopt.getopt(argv[1:], 'hsld:i:o:', ['help', 'sortbynames', 'logfile', 'debug=',
                                                        'inputfile=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
@@ -195,9 +194,16 @@ def handle_user_input(argv):
 
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
+        
+    # decide, whether logging information should be written into a log file
+    if '-l' in opts or '--logfile' in opts:
+        [logging.root.removeHandler(handler) for handler in logging.root.handlers[:]]
+        logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename=output_dir
+                            + os.sep + constants.LOGFILE_NAME, level=log_level)
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
+    
     return input_file, output_dir, sort_columns_by_name
 
 

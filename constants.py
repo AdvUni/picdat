@@ -40,11 +40,15 @@ usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [
     --debug "level", -d "level": level should be inside debug, info, warning, error, critical. It 
                                  describes the filtering level of command line output during 
                                  running this program (default is "info").
+    --logfile, -l: Redirects logging information into a file called picdat.log.
 '''
 
 
 # this log level is used, if the user didn't specify one:
 DEFAULT_LOG_LEVEL = logging.INFO
+
+# name of log file:
+LOGFILE_NAME = 'picdat.log'
 
 # timedelta object describing one second. The data_collector needs it to count up the time to
 # adress sysstat_1sec values correctly.

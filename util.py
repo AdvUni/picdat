@@ -386,6 +386,8 @@ def read_console_file(console_file):
                 node = line_split[3]
 
                 identifier_dict[adress] = (cluster, node)
+                
+        logging.debug('dict with cluster and node: ' + str(identifier_dict))
 
         return identifier_dict
 
