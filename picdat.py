@@ -251,6 +251,8 @@ def run(argv):
         else:
             logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
                          'name.')
+            
+        logging.debug('identifier dict: ' + str(identifier_dict))
 
         # create directory and copy the necessary dygraphs files into it
         csv_dir = prepare_directory(result_dir)
@@ -258,30 +260,26 @@ def run(argv):
         for perfstat_node in perfstat_output_files:
 
             # get nice names (if possible) for each PerfStat and the whole html file
-            if len(perfstat_output_files) > 1:
-                perfstat_address = perfstat_node.split(os.sep)[-2]
-
-                if identifier_dict is None:
+            perfstat_address = perfstat_node.split(os.sep)[-2]
+            logging.debug('perfstat_adress: ' + str(perfstat_address))
+            if identifier_dict is None:
+                html_title = perfstat_node
+                node_identifier = perfstat_address
+            else:
+                try:
+                    node_identifier = identifier_dict[perfstat_address][1]
+                    html_title = util.get_html_title(identifier_dict, perfstat_address)
+                    logging.debug('html title (from identifier dict): ' + str(html_title))
+                except KeyError:
+                    logging.info(
+                        'Did not find a node name for address \'%s\' in \'console.log\'. Will '
+                        'use just \'%s\' instead.', perfstat_address, perfstat_address)
                     html_title = perfstat_node
                     node_identifier = perfstat_address
-                else:
-                    try:
-                        node_identifier = identifier_dict[perfstat_address][1]
-                        html_title = util.get_html_title(identifier_dict, perfstat_address)
-                    except KeyError:
-                        logging.info(
-                            'Did not find a node name for address \'%s\' in \'console.log\'. Will '
-                            'use just \'%s\' instead.', perfstat_address, perfstat_address)
-                        html_title = perfstat_node
-                        node_identifier = perfstat_address
 
-                    logging.info('Handle PerfStat from node "' + node_identifier + '":')
-                node_identifier += '_'
-            else:
-                node_identifier = ''
-                html_title = perfstat_node
+                logging.info('Handle PerfStat from node "' + node_identifier + '":')
+            node_identifier += '_'
 
-            # collect data from file
             logging.info('Read data...')
             request_objects, tables = data_collector.read_data_file(perfstat_node,
                                                                     sort_columns_by_name)
