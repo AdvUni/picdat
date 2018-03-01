@@ -152,7 +152,7 @@ def build_date(timestamp_string):
     minute = int(time[1])
     second = int(time[2])
 
-    # check, whether global variable 'localetimezone' is already set
+    # check, whether global variable 'localtimezone' is already set
     global localtimezone
     if localtimezone is None:
         localtimezone = timezone
