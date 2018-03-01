@@ -261,7 +261,7 @@ def run(argv):
 
             # get nice names (if possible) for each PerfStat and the whole html file
             perfstat_address = perfstat_node.split(os.sep)[-2]
-            logging.debug('perfstat_adress: ' + str(perfstat_address))
+            
             if identifier_dict is None:
                 html_title = perfstat_node
                 node_identifier = perfstat_address
@@ -279,7 +279,11 @@ def run(argv):
 
                 logging.info('Handle PerfStat from node "' + node_identifier + '":')
             node_identifier += '_'
+                
+            if len(perfstat_output_files) == 1:
+                node_identifier = ''
 
+            # collect data from file
             logging.info('Read data...')
             request_objects, tables = data_collector.read_data_file(perfstat_node,
                                                                     sort_columns_by_name)
