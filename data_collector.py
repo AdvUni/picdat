@@ -191,8 +191,10 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
 
                 elif sysstat_object.found_sysstat_1sec_begin(line):
                     sysstat_object.collect_sysstat_timestamp(next(data), start_times[-1])
-
-                    line = next(data)
+                    
+                    # skip lines between time stamp and useful sysstat information
+                    if line.startswith('node'):
+                        line = next(data)
                     while len(line.strip()) == 0:
                         line = next(data)
 
@@ -207,6 +209,8 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
             if start_times:
                 per_iteration_object.process_per_iteration_requests(line, start_times[-1])
 
+    logging.debug('processor data: ' + str(per_iteration_object.processor_tables))
+    
     # postprocessing
 
     if number_of_iterations == 0:

@@ -241,6 +241,8 @@ class PerIterationClass:
             logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
 
         x_labels = self.get_x_labels()
+        
+        logging.debug('per_iteration tables: ' + str(all_tables))
 
         flat_tables = []
         for table in range(len(all_tables)):

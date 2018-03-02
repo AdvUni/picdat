@@ -57,8 +57,7 @@ SYSSTAT_MBS_UNIT = 'MB/s'
 SYSSTAT_IOPS_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
 SYSSTAT_IOPS_UNIT = ' '
 
-SYSSTAT_BLOCK_HEADER = 'sysstat_x_1sec'
-SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
+SYSSTAT_CHART_TITLE = 'sysstat_1sec'
 
 
 class SysstatClass:
@@ -101,13 +100,13 @@ class SysstatClass:
 
     def found_sysstat_1sec_begin(self, line):
         """
-        Looks, whether a String marks the beginning of a sysstat_x_1sec section and in case sets
-        the object's variable inside_sysstat_block.
+        Looks, whether a String marks the beginning of a sysstat_x_1sec respectively sysstat_1sec
+        section and in case sets the object's variable inside_sysstat_block.
         :param line: A string from a PerfStat output file which should be searched
-        :return: True, if the line marks the beginning of a sysstat_x_1sec section, or False
-        otherwise
+        :return: True, if the line marks the beginning of a sysstat_x_1sec or sysstat_1sec section,
+        or False otherwise.
         """
-        if SYSSTAT_BLOCK_HEADER in line:
+        if 'sysstat_x_1sec' in line or '-= sysstat_1sec' in line:
             self.inside_sysstat_block = True
             return True
         else:
@@ -125,10 +124,24 @@ class SysstatClass:
         :return: None
         """
         try:
+            # extract time stamp from cdot perfstat:
             self.recent_timestamp = util.build_date(
                 sysstat_timestamp_line.split('[')[1].replace(']', ''))
-
-        except (KeyError, IndexError, ValueError):
+        
+        except (IndexError):
+            try:
+                # extract time stamp from 7-mode perfstat:
+                self.recent_timestamp = util.build_date(
+                    sysstat_timestamp_line.replace('Begin: ', ''))
+            except (IndexError):
+                logging.warning(
+                'PerfStat bug in sysstat block. Could not read any timestamp from line: '
+                '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
+                'instead. This timestamp is: \'%s\' Note that this may lead to '
+                'falsifications in charts!', sysstat_timestamp_line, iteration_timestamp)
+            self.recent_timestamp = iteration_timestamp
+            
+        except (KeyError, ValueError):
             logging.warning(
                 'PerfStat bug in sysstat block. Could not read any timestamp from line: '
                 '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
@@ -232,6 +245,10 @@ class SysstatClass:
                                             second_header_line, request, ' '):
                     self.iops_headers.append(request)
                     self.iops_indices.append(index)
+                    
+        logging.debug('sysstat_percent_headers: ' + str(self.percent_headers))
+        logging.debug('sysstat_mbs_headers: ' + str(self.mbs_headers))
+        logging.debug('sysstat_iops_headers: ' + str(self.iops_headers))
 
     def process_sysstat_block(self, line):
         """
