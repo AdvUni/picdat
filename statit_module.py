@@ -30,7 +30,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-
 STATIT_DISK_STAT_UNIT = '%'
 STATIT_CHART_TITLE = 'statit%sdisk_statistics'
 
@@ -179,6 +178,9 @@ class StatitClass:
         places.
         :return: The flattened table in a list.
         """
+        if self.table.is_empty():
+            return []
+        
         self.flat_table = self.table.flatten('time', self.sort_columns_by_name)
         self.add_empty_lines(iteration_timestamps)
 
@@ -209,18 +211,22 @@ class StatitClass:
         except StopIteration:
             pass
 
-    @staticmethod
-    def get_units():
+    def get_units(self):
+        if self.table.is_empty():
+            return []
         return [STATIT_DISK_STAT_UNIT]
 
-    @staticmethod
-    def get_request_strings(delimiter):
+    def get_request_strings(self, delimiter):
+        if self.table.is_empty():
+            return []
         return [STATIT_CHART_TITLE % delimiter]
 
-    @staticmethod
-    def get_x_labels():
+    def get_x_labels(self):
+        if self.table.is_empty():
+            return []
         return ['time']
 
-    @staticmethod
-    def get_barchart_booleans():
+    def get_barchart_booleans(self):
+        if self.table.is_empty():
+            return []
         return ['false']
