@@ -201,8 +201,9 @@ class StatitClass:
                 logging.debug('statit timestamp %s vs. iteration timestamp %s', statit,
                               next_iteration)
                 if next_iteration < statit:
-                    self.flat_table.insert(counter + 1, util.empty_line(self.flat_table[1:]))
-                    next_iteration = next(iter_iterations)
+                    if counter > 0:
+                        self.flat_table.insert(counter + 1, util.empty_line(self.flat_table[1:]))
+                        next_iteration = next(iter_iterations)
                     counter += 1
                 counter += 1
         except StopIteration:
