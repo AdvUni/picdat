@@ -124,7 +124,7 @@ def get_timezone(tz_string):
             logging.warning('Found unexpected timezone identifier in PerfStat file: \'%s\'. '
                             'PicDat is not able to harmonize timezones. Be aware of possible '
                             'confusion with time values in charts.', tz_string)
-            global_vars.localtimezone = '???'
+            return '???'
 
 
 def build_date(timestamp_string):
