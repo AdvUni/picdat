@@ -7,7 +7,6 @@ from collections import defaultdict
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
-
 # license notice:
 #
 # This file is part of PicDat.
@@ -52,6 +51,13 @@ class Table:
                 inner_dict[column] = item
             else:
                 self.outer_dict[row][column] = item
+                
+    def is_empty(self):
+        """
+        Checks whether the table is empty.
+        :return: Boolean, whether table is empty or not.
+        """
+        return len(self.outer_dict) == 0
 
     def sort_columns_by_relevance(self):
         """

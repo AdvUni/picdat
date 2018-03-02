@@ -29,7 +29,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-
 # These search keys will match (at most) once in each iteration. They are represented as tuples
 # of an aspect key word and the corresponding unit. Data collected about one tuple will be shown
 # in exactly one chart.
@@ -98,9 +97,6 @@ class PerIterationClass:
         self.volume_tables = []
         self.lun_tables = []
         self.lun_alaign_table = Table()
-
-        # A boolean, whether lun values appeared in the PerfStat at all:
-        self.luns_available = False
 
         # A dictionary translating the LUNs IDs into their paths:
         self.lun_path_dict = {}
@@ -177,8 +173,6 @@ class PerIterationClass:
                                      self.volume_tables, line_split)
             return
         if object_type == 'lun':
-            self.luns_available = True
-
             # lun: ... :read_align_histo.x values shouldn't be visualized related on
             # timestamps, but on the value x in range 0-8. So, they need to be handled
             # specially:
@@ -229,25 +223,22 @@ class PerIterationClass:
         together. Further, replaces the ID of each LUN in the headers with their paths for better
         readability.
         :return: All flattened tables in a list.
-        """
+        """        
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
 
-        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables
-        if self.luns_available:
-            all_tables += self.lun_tables
-            all_tables.append(self.lun_alaign_table)
-        else:
-            logging.info('Seems like PerfStat doesn\'t contain any information about LUNs.')
+        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
+        all_tables.append(self.lun_alaign_table)
+        available_tables = [all_tables[i] for i in range(len(all_tables)) if self.get_availability_list()[i]]
 
         x_labels = self.get_x_labels()
         
-        logging.debug('per_iteration tables: ' + str(all_tables))
+        logging.debug('per_iteration tables: ' + str(available_tables))
 
         flat_tables = []
-        for table in range(len(all_tables)):
+        for table in range(len(available_tables)):
             flat_tables.append(
-                all_tables[table].flatten(x_labels[table], self.sort_columns_by_name))
+                available_tables[table].flatten(x_labels[table], self.sort_columns_by_name))
 
         return flat_tables
 
@@ -258,10 +249,9 @@ class PerIterationClass:
         with the paths.
         :return: None.
         """
-        if not self.luns_available:
-            return
-
         for table in self.lun_tables + [self.lun_alaign_table]:
+            if table.is_empty():
+                continue
             for outer_key, inner_dict in table.outer_dict.items():
                 replace_dict = {}
                 for uuid in inner_dict:
@@ -272,60 +262,88 @@ class PerIterationClass:
                                      'with ID.', uuid)
                 table.outer_dict[outer_key] = replace_dict
 
-    def get_units(self):
-        requests = PER_ITERATION_AGGREGATE_REQUESTS + PER_ITERATION_PROCESSOR_REQUESTS + \
-                   PER_ITERATION_VOLUME_REQUESTS
-        if self.luns_available:
-            requests += PER_ITERATION_LUN_REQUESTS
-            requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
+    def get_availability_list(self):
+        """
+        Not every PerfStat contains information to each search request. This method generates a
+        list containing a boolean for each search request. The list will hold 'false' for each
+        search request, the program didn't found information to.
+        :return: A list of booleans.
+        """
+        availability_list = []
+        availability_list += util.check_tablelist_content(self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
+        availability_list += util.check_tablelist_content(self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
+        availability_list += util.check_tablelist_content(self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
+        availability_list += util.check_tablelist_content(self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
+        availability_list.append(not self.lun_alaign_table.is_empty())
+        return availability_list
 
-        all_units = []
-        for (_, unit) in requests:
-            # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
-            # Pay attention, that this rename needs to be compatible with the
-            # process_object_type method, where the affected values should be reduced by the
-            # factor 10^6!
-            if unit == 'b/s':
-                all_units.append('MB/s')
-            else:
-                all_units.append(unit)
-        return all_units
+    def get_units(self):
+        """
+        Gets units for each per_iteration chart. Therefore, per_iteration requests without results
+        are skipped.
+        :return: A list containing all per_iteration chart units.
+        """
+        requests = PER_ITERATION_AGGREGATE_REQUESTS + PER_ITERATION_PROCESSOR_REQUESTS + \
+                   PER_ITERATION_VOLUME_REQUESTS + PER_ITERATION_LUN_REQUESTS
+        requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
+        
+        unit_list = []
+        for i in range(len(requests)):
+            if self.get_availability_list()[i]:
+                unit = requests[i][1]
+                # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
+                # Pay attention, that this rename needs to be compatible with the
+                # process_object_type method, where the affected values should be reduced by the
+                # factor 10^6!
+                if unit == 'b/s':
+                    unit_list.append('MB/s')
+                else:
+                    unit_list.append(unit)
+        return unit_list
 
     def get_request_strings(self, delimiter):
-        title_list = []
+        """
+        Gets a string for each per_iteration request. Therefore, per_iteration requests without
+        results are skipped.
+        :return: A list containing all per_iteration strings.
+        """
+        all_titles = []
 
-        title_list += ['aggregate' + delimiter + aspect for (aspect, _) in
+        all_titles += ['aggregate' + delimiter + aspect for (aspect, _) in
                        PER_ITERATION_AGGREGATE_REQUESTS]
-        title_list += ['processor' + delimiter + aspect for (aspect, _) in
+        all_titles += ['processor' + delimiter + aspect for (aspect, _) in
                        PER_ITERATION_PROCESSOR_REQUESTS]
-        title_list += ['volume' + delimiter + aspect for (aspect, _) in
+        all_titles += ['volume' + delimiter + aspect for (aspect, _) in
                        PER_ITERATION_VOLUME_REQUESTS]
+        all_titles += ['lun' + delimiter + aspect for (aspect, _) in
+                       PER_ITERATION_LUN_REQUESTS]
+        all_titles.append('lun' + delimiter + PER_ITERATION_LUN_ALIGN_REQUEST[0])
 
-        if self.luns_available:
-            title_list += ['lun' + delimiter + aspect for (aspect, _) in
-                           PER_ITERATION_LUN_REQUESTS]
-            title_list.append('lun' + delimiter + PER_ITERATION_LUN_ALIGN_REQUEST[0])
-
-        return title_list
+        return [all_titles[i] for i in range(len(all_titles)) if self.get_availability_list()[i]]
 
     def get_x_labels(self):
+        """
+        Gets x labels for each per_iteration chart. Therefore, per_iteration requests without
+        results are skipped.
+        :return: A list containing all per_iteration x labels.
+        """
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS + 
+                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS + \
+                        PER_ITERATION_LUN_REQUESTS]
+        all_x_labels.append('bucket')
 
-        x_lable_list = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
-                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS]
-
-        if self.luns_available:
-            x_lable_list += ['time' for _ in PER_ITERATION_LUN_REQUESTS]
-            x_lable_list.append('bucket')
-
-        return x_lable_list
+        return [all_x_labels[i] for i in range(len(all_x_labels)) if self.get_availability_list()[i]]
 
     def get_barchart_booleans(self):
+        """
+        Gets a boolean for each per_iteration request. The boolean says, whether the respective
+        chart should be visualized as bar chart or not. Therefore, per_iteration requests without
+        results are skipped.
+        :return: A list containing all booleans.
+        """
+        all_booleans = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS + 
+                         PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS + \
+                         PER_ITERATION_LUN_REQUESTS]
+        all_booleans.append('true')
 
-        barchart_list = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
-                         PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS]
-
-        if self.luns_available:
-            barchart_list += ['false' for _ in PER_ITERATION_LUN_REQUESTS]
-            barchart_list.append('true')
-
-        return barchart_list
+        return [all_booleans[i] for i in range(len(all_booleans)) if self.get_availability_list()[i]]

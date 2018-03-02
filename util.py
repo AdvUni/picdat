@@ -225,8 +225,7 @@ def tablelist_insertion(tablelist, list_index, iteration, instance, item):
     :param iteration: The number of iteration, your item belongs to - is needed to arrange
     elements inside one table.
     :param instance: The name as string of the instance, your item (which should be a value for
-    this instance) belongs to - is needed to arrange
-    elements inside one table.
+    this instance) belongs to - is needed to arrange elements inside one table.
     :param item: The table value you want to insert. It's related to a specific time and object
     instance, therefore it is the basis for a single measuring point in final charts.
     """
@@ -237,6 +236,23 @@ def tablelist_insertion(tablelist, list_index, iteration, instance, item):
 
     tablelist[list_index].insert(iteration, instance, item)
 
+
+def check_tablelist_content(tablelist, total_size):
+    """
+    This function checks, whether a table list contains content at each expected position. It
+    generates a further list, which holds a boolean for each table list entry. It says False for
+    each empty table and True, otherwise. If the table list isn't even fully built, means if it is
+    shorter than expected, the function will append False entries to the availability list
+    respectively.
+    :param tablelist: A list of type Table.
+    :param total_size: The total number of elements, tablelist should hold, if it would be fully
+    filled.
+    :return: An availability list of size total_size containing booleans.
+    """
+    availability_list = [not table.is_empty() for table in tablelist]
+    while len(availability_list) < total_size:
+        availability_list.append(False) 
+    return availability_list
 
 def get_all_units(request_objects):
     """
