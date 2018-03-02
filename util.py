@@ -241,7 +241,8 @@ def tablelist_insertion(tablelist, list_index, iteration, instance, item):
 def get_all_units(request_objects):
     """
     Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
-    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
+    :param request_objects: A list of all used request objects (necessary to get meta data about
+    the tables)
     :return: A list of all units.
     """
 
@@ -274,7 +275,8 @@ def get_barchart_booleans(request_objects):
 def get_titles(request_objects):
     """
     Generates proper titles for charts.
-    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
+    :param request_objects: A list of all used request objects (necessary to get meta data about
+    the tables)
     :return: A list of chart titles.
     """
     delimiter = ': '
@@ -289,7 +291,8 @@ def get_titles(request_objects):
 def get_object_ids(request_objects):
     """
     Generates proper titles for charts.
-    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
+    :param request_objects: A list of all used request objects (necessary to get meta data about
+    the tables)
     :return: A list of chart titles.
     """
     delimiter = '_'
@@ -305,7 +308,8 @@ def get_csv_filenames(request_objects, output_identifier):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :return: A list of csv file names.
-    :param luns_available: A boolean, whether lun values appeared in the PerfStat at all.
+    :param request_objects: A list of all used request objects (necessary to get meta data about
+    the tables)
     """
     name_list = []
 
