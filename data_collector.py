@@ -171,7 +171,8 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
                 continue
 
             if sysstat_object.inside_sysstat_block:
-                sysstat_object.process_sysstat_block(line)
+                if not line.startswith('node') and len(line.strip()) != 0:
+                    sysstat_object.process_sysstat_block(line)
                 continue
 
             if '=-=-=-=-=-=' in line:
@@ -192,12 +193,6 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
                 elif sysstat_object.found_sysstat_1sec_begin(line):
                     sysstat_object.collect_sysstat_timestamp(next(data), start_times[-1])
                     
-                    # skip lines between time stamp and useful sysstat information
-                    if line.startswith('node'):
-                        line = next(data)
-                    while len(line.strip()) == 0:
-                        line = next(data)
-
                 continue
 
             if statit_object.inside_statit_block:
