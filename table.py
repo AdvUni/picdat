@@ -32,7 +32,7 @@ class Table:
     def __init__(self):
         self.outer_dict = defaultdict(dict)
 
-    def __str__(self):
+    def __repr__(self):
         return str(self.outer_dict)
 
     def insert(self, row, column, item):
