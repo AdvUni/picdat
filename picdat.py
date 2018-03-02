@@ -118,9 +118,9 @@ def prepare_directory(destination_dir):
     if not os.path.isdir(dygraphs_dir):
         os.makedirs(dygraphs_dir)
 
-    dygraphs_js_source = util.get_base_path() + constants.DYGRAPHS_JS_SRC
+    dygraphs_js_source = constants.DYGRAPHS_JS_SRC
     dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
-    dygraphs_css_source = util.get_base_path() + constants.DYGRAPHS_CSS_SRC
+    dygraphs_css_source = constants.DYGRAPHS_CSS_SRC
     dygraphs_css_dest = dygraphs_dir + os.sep + 'dygraph.css'
     shutil.copyfile(dygraphs_js_source, dygraphs_js_dest)
     shutil.copyfile(dygraphs_css_source, dygraphs_css_dest)
