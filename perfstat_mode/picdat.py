@@ -8,6 +8,8 @@ import shutil
 import traceback
 import sys
 
+sys.path.append('..')
+
 from perfstat_mode import constants
 from perfstat_mode import util
 from perfstat_mode import data_collector
@@ -137,11 +139,11 @@ def handle_user_input(argv):
     :return: A tuple of two paths; the first one leads to the PerfStat input, the second one to
     the output directory.
     """
-    
+
     # get all options from argv and turn them into a dict
     try:
         opts, _ = getopt.getopt(argv[1:], 'hsld:i:o:', ['help', 'sortbynames', 'logfile', 'debug=',
-                                                       'inputfile=', 'outputdir='])
+                                                        'inputfile=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
@@ -194,7 +196,7 @@ def handle_user_input(argv):
 
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-        
+
     # decide, whether logging information should be written into a log file
     if '-l' in opts or '--logfile' in opts:
         [logging.root.removeHandler(handler) for handler in logging.root.handlers[:]]
@@ -203,7 +205,7 @@ def handle_user_input(argv):
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
-    
+
     return input_file, output_dir, sort_columns_by_name
 
 
@@ -251,7 +253,7 @@ def run(argv):
         else:
             logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
                          'name.')
-            
+
         logging.debug('identifier dict: ' + str(identifier_dict))
 
         # create directory and copy the necessary templates files into it
@@ -261,7 +263,7 @@ def run(argv):
 
             # get nice names (if possible) for each PerfStat and the whole html file
             perfstat_address = perfstat_node.split(os.sep)[-2]
-            
+
             if identifier_dict is None:
                 html_title = perfstat_node
                 node_identifier = perfstat_address
@@ -279,23 +281,23 @@ def run(argv):
 
                 logging.info('Handle PerfStat from node "' + node_identifier + '":')
             node_identifier += '_'
-                
+
             if len(perfstat_output_files) == 1:
                 node_identifier = ''
 
             # collect data from file
             logging.info('Read data...')
-            request_objects, tables = data_collector.read_data_file(perfstat_node,
+            tables, identifier_dict = data_collector.read_data_file(perfstat_node,
                                                                     sort_columns_by_name)
 
             logging.debug('tables: %s', tables)
+            logging.debug('all identifiers: %s', identifier_dict)
 
             # frame html file path
             html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
-                            constants.HTML_ENDING
+                constants.HTML_ENDING
 
-            # generate file names for csv tables
-            csv_filenames = util.get_csv_filenames(request_objects, node_identifier)
+            csv_filenames = util.get_csv_filenames(identifier_dict['object_ids'], node_identifier)
             csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
             csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
                              csv_filenames]
@@ -306,7 +308,7 @@ def run(argv):
 
             # write html file
             logging.info('Create html file...')
-            visualizer.create_html(html_filepath, csv_filelinks, html_title, request_objects)
+            visualizer.create_html(html_filepath, csv_filelinks, html_title, identifier_dict)
 
             # reset global variable 'localtimezone'
             util.localtimezone = None

@@ -223,16 +223,17 @@ class PerIterationClass:
         together. Further, replaces the ID of each LUN in the headers with their paths for better
         readability.
         :return: All flattened tables in a list.
-        """        
+        """
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
 
         all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
         all_tables.append(self.lun_alaign_table)
-        available_tables = [all_tables[i] for i in range(len(all_tables)) if self.get_availability_list()[i]]
+        available_tables = [all_tables[i]
+                            for i in range(len(all_tables)) if self.get_availability_list()[i]]
 
         x_labels = self.get_x_labels()
-        
+
         logging.debug('per_iteration tables: ' + str(available_tables))
 
         flat_tables = []
@@ -270,10 +271,14 @@ class PerIterationClass:
         :return: A list of booleans.
         """
         availability_list = []
-        availability_list += util.check_tablelist_content(self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
-        availability_list += util.check_tablelist_content(self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
-        availability_list += util.check_tablelist_content(self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
-        availability_list += util.check_tablelist_content(self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
+        availability_list += util.check_tablelist_content(
+            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
+        availability_list += util.check_tablelist_content(
+            self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
+        availability_list += util.check_tablelist_content(
+            self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
+        availability_list += util.check_tablelist_content(
+            self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
         availability_list.append(not self.lun_alaign_table.is_empty())
         return availability_list
 
@@ -284,9 +289,9 @@ class PerIterationClass:
         :return: A list containing all per_iteration chart units.
         """
         requests = PER_ITERATION_AGGREGATE_REQUESTS + PER_ITERATION_PROCESSOR_REQUESTS + \
-                   PER_ITERATION_VOLUME_REQUESTS + PER_ITERATION_LUN_REQUESTS
+            PER_ITERATION_VOLUME_REQUESTS + PER_ITERATION_LUN_REQUESTS
         requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
-        
+
         unit_list = []
         for i in range(len(requests)):
             if self.get_availability_list()[i]:
@@ -327,8 +332,8 @@ class PerIterationClass:
         results are skipped.
         :return: A list containing all per_iteration x labels.
         """
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS + 
-                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS + \
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
+                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
                         PER_ITERATION_LUN_REQUESTS]
         all_x_labels.append('bucket')
 
@@ -341,9 +346,15 @@ class PerIterationClass:
         results are skipped.
         :return: A list containing all booleans.
         """
-        all_booleans = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS + 
-                         PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS + \
-                         PER_ITERATION_LUN_REQUESTS]
+        all_booleans = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
+                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
+                        PER_ITERATION_LUN_REQUESTS]
         all_booleans.append('true')
 
         return [all_booleans[i] for i in range(len(all_booleans)) if self.get_availability_list()[i]]
+
+    def get_titles(self):
+        return self.get_request_strings(': ')
+
+    def get_object_ids(self):
+        return self.get_request_strings('_')

@@ -180,7 +180,7 @@ class StatitClass:
         """
         if self.table.is_empty():
             return []
-        
+
         self.flat_table = self.table.flatten('time', self.sort_columns_by_name)
         self.add_empty_lines(iteration_timestamps)
 
@@ -230,3 +230,9 @@ class StatitClass:
         if self.table.is_empty():
             return []
         return ['false']
+
+    def get_titles(self):
+        return self.get_request_strings(': ')
+
+    def get_object_ids(self):
+        return self.get_request_strings('_')

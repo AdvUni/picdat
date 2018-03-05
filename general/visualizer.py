@@ -76,7 +76,7 @@ def create_buttons(html_document, chart_id):
     html_document.write('</p>' + '\n')
 
 
-def create_html(html_filepath, csv_files, html_title, request_objects):
+def create_html(html_filepath, csv_files, html_title, identifier_dict):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
@@ -87,11 +87,12 @@ def create_html(html_filepath, csv_files, html_title, request_objects):
     the tables)
     :return: None
     """
-    titles = util.get_titles(request_objects)
-    chart_ids = util.get_object_ids(request_objects)
-    y_labels = util.get_all_units(request_objects)
-    x_labels = util.get_x_labels(request_objects)
-    barchart_booleans = util.get_barchart_booleans(request_objects)
+    
+    titles = identifier_dict['titles']
+    chart_ids = identifier_dict['object_ids']
+    y_labels = identifier_dict['units']
+    x_labels = identifier_dict['x_labels']
+    barchart_booleans = identifier_dict['barchart_booleans']
 
     with open(html_filepath, 'w') as html_document:
         # write head

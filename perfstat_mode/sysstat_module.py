@@ -127,7 +127,7 @@ class SysstatClass:
             # extract time stamp from cdot perfstat:
             self.recent_timestamp = util.build_date(
                 sysstat_timestamp_line.split('[')[1].replace(']', ''))
-        
+
         except (IndexError):
             try:
                 # extract time stamp from 7-mode perfstat:
@@ -135,12 +135,12 @@ class SysstatClass:
                     sysstat_timestamp_line.replace('Begin: ', ''))
             except (IndexError):
                 logging.warning(
-                'PerfStat bug in sysstat block. Could not read any timestamp from line: '
-                '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
-                'instead. This timestamp is: \'%s\' Note that this may lead to '
-                'falsifications in charts!', sysstat_timestamp_line, iteration_timestamp)
+                    'PerfStat bug in sysstat block. Could not read any timestamp from line: '
+                    '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
+                    'instead. This timestamp is: \'%s\' Note that this may lead to '
+                    'falsifications in charts!', sysstat_timestamp_line, iteration_timestamp)
             self.recent_timestamp = iteration_timestamp
-            
+
         except (KeyError, ValueError):
             logging.warning(
                 'PerfStat bug in sysstat block. Could not read any timestamp from line: '
@@ -245,7 +245,7 @@ class SysstatClass:
                                             second_header_line, request, ' '):
                     self.iops_headers.append(request)
                     self.iops_indices.append(index)
-                    
+
         logging.debug('sysstat_percent_headers: ' + str(self.percent_headers))
         logging.debug('sysstat_mbs_headers: ' + str(self.mbs_headers))
         logging.debug('sysstat_iops_headers: ' + str(self.iops_headers))
@@ -290,8 +290,8 @@ class SysstatClass:
         self.iops_headers.insert(0, 'time')
 
         return [[self.percent_headers] + self.percent_values] \
-               + [[self.mbs_headers] + self.mbs_values] \
-               + [[self.iops_headers] + self.iops_values]
+            + [[self.mbs_headers] + self.mbs_values] \
+            + [[self.iops_headers] + self.iops_values]
 
     @staticmethod
     def get_units():
@@ -311,3 +311,11 @@ class SysstatClass:
     def get_barchart_booleans():
         return ['false' for _ in
                 [SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS]]
+
+    @staticmethod
+    def get_titles():
+        return SysstatClass.get_request_strings(': ')
+
+    @staticmethod
+    def get_object_ids():
+        return SysstatClass.get_request_strings('_')

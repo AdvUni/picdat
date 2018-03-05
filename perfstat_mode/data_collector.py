@@ -112,12 +112,24 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     """
 
     combined_tables = per_iteration_object.rework_per_iteration_data() + \
-                      sysstat_object.rework_sysstat_data() + \
-                      statit_object.rework_statit_data(end_times)
+        sysstat_object.rework_sysstat_data() + \
+        statit_object.rework_statit_data(end_times)
 
-    combined_requests = [per_iteration_object, sysstat_object, statit_object]
+    combined_units = per_iteration_object.get_units() + sysstat_object.get_units() + \
+        statit_object.get_units()
+    combined_x_lables = per_iteration_object.get_x_labels() + sysstat_object.get_x_labels() + \
+        statit_object.get_x_labels()
+    combined_barchart_booleans = per_iteration_object.get_barchart_booleans(
+    ) + sysstat_object.get_barchart_booleans() + statit_object.get_barchart_booleans()
+    combined_titles = per_iteration_object.get_titles() + sysstat_object.get_titles() + \
+        statit_object.get_titles()
+    combined_object_ids = per_iteration_object.get_object_ids() + sysstat_object.get_object_ids() + \
+        statit_object.get_object_ids()
 
-    return combined_requests, combined_tables
+    identifier_dict = {'titles': combined_titles, 'units': combined_units, 'x_labels': combined_x_lables,
+                       'object_ids': combined_object_ids, 'barchart_booleans': combined_barchart_booleans}
+
+    return combined_tables, identifier_dict
 
 
 def read_data_file(perfstat_data_file, sort_columns_by_name):
@@ -192,7 +204,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
 
                 elif sysstat_object.found_sysstat_1sec_begin(line):
                     sysstat_object.collect_sysstat_timestamp(next(data), start_times[-1])
-                    
+
                 continue
 
             if statit_object.inside_statit_block:
@@ -205,7 +217,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
                 per_iteration_object.process_per_iteration_requests(line, start_times[-1])
 
     logging.debug('processor data: ' + str(per_iteration_object.processor_tables))
-    
+
     # postprocessing
 
     if number_of_iterations == 0:

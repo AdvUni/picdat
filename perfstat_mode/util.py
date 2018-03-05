@@ -251,77 +251,11 @@ def check_tablelist_content(tablelist, total_size):
     """
     availability_list = [not table.is_empty() for table in tablelist]
     while len(availability_list) < total_size:
-        availability_list.append(False) 
+        availability_list.append(False)
     return availability_list
 
 
-def get_all_units(request_objects):
-    """
-    Gets all units from a per_iteration_request dict. Also adds units for sysstat charts.
-    :param request_objects: A list of all used request objects (necessary to get meta data about
-    the tables)
-    :return: A list of all units.
-    """
-
-    units = []
-    for request_object in request_objects:
-        units += request_object.get_units()
-
-    logging.debug('y_labels: %s', units)
-    return units
-
-
-def get_x_labels(request_objects):
-    x_lable_list = []
-    for request_object in request_objects:
-        x_lable_list += request_object.get_x_labels()
-
-    logging.debug('x_labels: %s', x_lable_list)
-    return x_lable_list
-
-
-def get_barchart_booleans(request_objects):
-    barchart_list = []
-    for request_object in request_objects:
-        barchart_list += request_object.get_barchart_booleans()
-
-    logging.debug('bar chart list: %s', barchart_list)
-    return barchart_list
-
-
-def get_titles(request_objects):
-    """
-    Generates proper titles for charts.
-    :param request_objects: A list of all used request objects (necessary to get meta data about
-    the tables)
-    :return: A list of chart titles.
-    """
-    delimiter = ': '
-    titles = []
-    for request_object in request_objects:
-        titles += request_object.get_request_strings(delimiter)
-
-    logging.debug('chart titles: %s', titles)
-    return titles
-
-
-def get_object_ids(request_objects):
-    """
-    Generates proper titles for charts.
-    :param request_objects: A list of all used request objects (necessary to get meta data about
-    the tables)
-    :return: A list of chart titles.
-    """
-    delimiter = '_'
-    id_list = []
-    for request_object in request_objects:
-        id_list += request_object.get_request_strings(delimiter)
-
-    logging.debug('id list: %s', id_list)
-    return id_list
-
-
-def get_csv_filenames(request_objects, output_identifier):
+def get_csv_filenames(object_ids, output_identifier):
     """
     Generates proper names for CSV files containing a selection of PerfStat Data.
     :return: A list of csv file names.
@@ -330,7 +264,7 @@ def get_csv_filenames(request_objects, output_identifier):
     """
     name_list = []
 
-    for object_id in get_object_ids(request_objects):
+    for object_id in object_ids:
         name_list.append(output_identifier + object_id + constants.CSV_FILE_ENDING)
 
     logging.debug('csv names: %s', name_list)
@@ -407,7 +341,7 @@ def read_console_file(console_file):
                 node = line_split[3]
 
                 identifier_dict[adress] = (cluster, node)
-                
+
         logging.debug('dict with cluster and node: ' + str(identifier_dict))
 
         return identifier_dict
