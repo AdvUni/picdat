@@ -13,8 +13,8 @@ import re
 
 import logging
 
-import constants
-import util
+from perfstat_mode import constants
+from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -159,7 +159,7 @@ class SysstatClass:
     def add_empty_lines(self):
         """
         Adds an empty data line to each value list inside this object. This is for interrupting the
-        dygraphs graph lines in resulting charts. Therefore, this function should be called between
+        templates graph lines in resulting charts. Therefore, this function should be called between
         iterations.
         :return: None
         """

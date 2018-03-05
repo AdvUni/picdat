@@ -3,8 +3,8 @@ Is responsible to write a html file containing the required charts.
 """
 import logging
 
-import constants
-import util
+from perfstat_mode import constants
+from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -36,7 +36,7 @@ def graph_id(graph_title):
 def option_line(label, content, argument_is_string):
     """
     Generates a string to write it into an HTML file. It is used to specify an option inside the
-    dygraphs object.
+    templates object.
     :param label: The option's label.
     :param content: The option's content.
     :param argument_is_string: Boolean, whether content should be written with quotation marks,

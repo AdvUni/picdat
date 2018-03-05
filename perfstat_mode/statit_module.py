@@ -10,9 +10,9 @@ statit blocks.
 """
 import logging
 
-import constants
-import util
-from table import Table
+from perfstat_mode import constants
+from perfstat_mode import util
+from general.table import Table
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -190,7 +190,7 @@ class StatitClass:
         """
         Inserts empty data lines into the flat_values list retroactively. The empty lines are
         inserted between two rows belonging to different iterations. This is for interrupting the
-        dygraphs graph lines between iterations in resulting charts.
+        templates graph lines between iterations in resulting charts.
         :param iteration_end_timestamps: A list of datetime objects, marking the ends of all
         iterations in one PerfStat file.
         :return: None

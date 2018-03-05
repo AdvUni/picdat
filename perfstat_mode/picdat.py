@@ -8,11 +8,11 @@ import shutil
 import traceback
 import sys
 
-import constants
-import util
-import data_collector
-import table_writer
-import visualizer
+from perfstat_mode import constants
+from perfstat_mode import util
+from perfstat_mode import data_collector
+from general import table_writer
+from general import visualizer
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -102,7 +102,7 @@ def take_directory():
 
 def prepare_directory(destination_dir):
     """
-    Copies the dygraphs .jss and .css files into the given directory. Also creates an empty
+    Copies the templates .jss and .css files into the given directory. Also creates an empty
     subdirectory for csv tables.
     :param destination_dir: The directory, the user gave in as destination.
     :return: The path to the csv directory inside destination_dir. In this directory, PicDat should
@@ -254,7 +254,7 @@ def run(argv):
             
         logging.debug('identifier dict: ' + str(identifier_dict))
 
-        # create directory and copy the necessary dygraphs files into it
+        # create directory and copy the necessary templates files into it
         csv_dir = prepare_directory(result_dir)
 
         for perfstat_node in perfstat_output_files:

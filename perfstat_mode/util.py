@@ -14,8 +14,8 @@ except ImportError:
     print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
           'timezones. Be aware of possible confusion with time values in charts!')
 
-from table import Table
-import constants
+from general.table import Table
+from perfstat_mode import constants
 import tempfile
 
 __author__ = 'Marie Lohbeck'
@@ -430,7 +430,7 @@ def get_html_title(identifier_dict, perfstat_adress):
 def empty_line(value_list):
     """
     Generates an empty data line for a value list. This is for interrupting the
-    dygraphs graph lines in resulting charts. Therefore, this line should be inserted between
+    templates graph lines in resulting charts. Therefore, this line should be inserted between
     iterations.
     :param value_list: the list you want to add an empty line to.
     :return: A list of empty Strings in the length of value_list.

@@ -9,9 +9,9 @@ Therefore, one chart will display several instances.
 """
 import logging
 
-import constants
-import util
-from table import Table
+from perfstat_mode import constants
+from perfstat_mode import util
+from general.table import Table
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'

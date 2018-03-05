@@ -4,9 +4,9 @@ Is responsible for collecting all information of note from PerfStat output
 import logging
 import sys
 
-import sysstat_module
-import statit_module
-import per_iteration_module
+from perfstat_mode import sysstat_module
+from perfstat_mode import statit_module
+from perfstat_mode import per_iteration_module
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'

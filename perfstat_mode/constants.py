@@ -76,11 +76,11 @@ SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'
 STATIT_CHART_TITLE = 'statit%sdisk_statistics'
 
 # this is the path to the text file the program uses as template to create the html head:
-HTML_HEAD_TEMPLATE = 'html_template.txt'
+HTML_HEAD_TEMPLATE = '..' + sep + 'templates' + sep + 'html_template.txt'
 
 # these are the paths to the dygraph files the html document needs to show its charts:
-DYGRAPHS_JS_SRC = 'dygraphs' + sep + 'dygraph.js'
-DYGRAPHS_CSS_SRC = 'dygraphs' + sep + 'dygraph.css'
+DYGRAPHS_JS_SRC = '..' + sep + 'templates' + sep + 'dygraph.js'
+DYGRAPHS_CSS_SRC = '..' + sep + 'templates' + sep + 'dygraph.css'
 
 # this is the label showed on the x-axis in each chart:
 X_LABEL = 'time'
