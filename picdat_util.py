@@ -5,19 +5,11 @@ import getopt
 import logging
 import os
 import shutil
-import traceback
 import sys
-
-sys.path.append('..')
-
-from perfstat_mode import constants
-from perfstat_mode import util
-from perfstat_mode import data_collector
-from general import table_writer
-from general import visualizer
-
-__author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+import tempfile
+import tarfile
+from zipfile import ZipFile
+from general import constants
 
 # license notice:
 #
@@ -31,6 +23,41 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
+
+def data_type(filepath):
+    """
+    Gets a file's data type.
+    :param filepath: The path from a file as String, you want to have the data type for.
+    :return: The data type as String.
+    """
+    return filepath.split('.')[-1]
+
+
+def get_log_level(log_level_string):
+    """
+    Turns a string into a log level, the logging module can understand
+    :param log_level_string: A String representing a log level like 'info' or 'error'.
+    :return: A constant from the logging module, representing a log level.
+    """
+    log_level_dict = {
+        'debug': logging.DEBUG,
+        'DEBUG': logging.DEBUG,
+        'info': logging.INFO,
+        'INFO': logging.INFO,
+        'warning': logging.WARNING,
+        'WARNING': logging.WARNING,
+        'error': logging.ERROR,
+        'ERROR': logging.ERROR,
+        'critical': logging.CRITICAL,
+        'CRITICAL': logging.CRITICAL
+    }
+    try:
+        return log_level_dict[log_level_string]
+    except KeyError:
+        logging.error('No log level like \'%s\' exists. Try one of those: %s', log_level_string,
+                      [entry for entry in log_level_dict])
+        sys.exit(1)
 
 
 def print_help_and_exit(program_name):
@@ -51,30 +78,29 @@ def validate_input_file(input_file):
     :return: None
     :raises fileNotFoundError: raises an exception, if input_file is neither a directory nor a file.
     :raises typeError: raises an exception, if input_file is a file of the wrong data type
-    (neither .data nor .zip nor .out).
+    (neither .data nor .zip nor .out nor .tgz).
     """
     if os.path.isdir(input_file):
         return
     elif not os.path.isfile(input_file):
         raise FileNotFoundError
 
-    data_type = util.data_type(input_file)
+    type = data_type(input_file)
 
-    if data_type not in ['data', 'zip', 'out']:
+    if type not in ['data', 'zip', 'out', 'tgz']:
         raise TypeError
 
 
 def take_input_file():
     """
-    This function requests a PerfStat output location of the user and decides, whether its type is
-    data or zip. If applicable, it extracts the zip folder into a temporary directory.
+    This function requests a PerfStat output location of the user.
     :return: The temporary directory's path (might be None, after usage of files inside this
     directory should become deleted) and a list of all PerfStat data files extracted from user
     input.
     """
     while True:
         input_file = input('Please enter a path to some PerfStat output (folder or zipfolder '
-                           'or .data or .out file):' + os.linesep)
+                           'or .data or .out file or .tgz archive):' + os.linesep)
 
         try:
             validate_input_file(input_file)
@@ -82,7 +108,7 @@ def take_input_file():
         except FileNotFoundError:
             print('This file does not exist. Try again.')
         except TypeError:
-            print('Unexpected data type: File must be of type .data or .zip. Try again.')
+            print('Unexpected data type: File must be of type .data, .out, .zip, or .tgz. Try again.')
 
 
 def take_directory():
@@ -158,9 +184,9 @@ def handle_user_input(argv):
 
     # extract log level from options if possible
     if '-d' in opts:
-        log_level = util.get_log_level(opts['-d'])
+        log_level = get_log_level(opts['-d'])
     elif '--debug' in opts:
-        log_level = util.get_log_level(opts['--debug'])
+        log_level = get_log_level(opts['--debug'])
     else:
         log_level = constants.DEFAULT_LOG_LEVEL
 
@@ -206,118 +232,55 @@ def handle_user_input(argv):
     return input_file, output_dir, sort_columns_by_name
 
 
-def run(argv):
+def extract_tgz(tgz_file):
+
+    temp_path = tempfile.mkdtemp()
+    info_file = 'CM-STATS-HOURLY-INFO.XML'
+    data_file = 'CM-STATS-HOURLY-DATA.XML'
+
+    with tarfile.open(tgz_file, 'r') as tar:
+        tar.extractall(temp_path, members=[tar.getmember(
+            info_file), tar.getmember(data_file)])
+
+    info_file = os.path.join(temp_path, info_file)
+    data_file = os.path.join(temp_path, data_file)
+
+    return temp_path, info_file, data_file
+
+def get_all_output_files(folder):
     """
-    The tool's main routine. Calls all functions to read the data, write CSVs
-    and finally create an HTML. Handles user communication.
-    :param argv: Command line parameters.
-    :return: None
+    Pics all .data files from a folder. Also picks a file named console.log, if available.
+    Therefore, it ignores all sub folders named host.
+    :param folder: A folder's path as String, which should be searched.
+    :return: A tuple of a list of .data/.out files and the console.log file (might be None).
     """
-    temp_path = None
+    output_files = []
     console_file = None
-    node_dict = None
-
-    try:
-        # read command line options and take additional user input
-        input_file, result_dir, sort_columns_by_name = handle_user_input(argv)
-
-        # extract zip if necessary
-        perfstat_output_files = None
-        if os.path.isdir(input_file):
-            perfstat_output_files, console_file = util.get_all_output_files(input_file)
-        elif util.data_type(input_file) == 'data':
-            perfstat_output_files = [input_file]
-        elif util.data_type(input_file) == 'zip':
-            logging.info('Extract zip...')
-            temp_path, perfstat_output_files, console_file = util.extract_to_temp_dir(input_file)
-
-        # interrupt program if there are no .data files found
-        if not perfstat_output_files:
-            logging.info('The input you gave (%s) doesn\'t contain any .data files.', input_file)
-            sys.exit(0)
-
-        # if given, read cluster and node information from console.log file:
-        if console_file is not None:
-            logging.info('Read console.log file for getting cluster and node names...')
-            try:
-                node_dict = util.read_console_file(console_file)
-            except KeyboardInterrupt:
-                raise
-            except:
-                logging.info('console.log file from zip couldn\'t be read for some reason: %s',
-                             traceback.format_exc())
-                node_dict = None
-        else:
-            logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
-                         'name.')
-
-        logging.debug('node dict: ' + str(node_dict))
-
-        # create directory and copy the necessary templates files into it
-        csv_dir = prepare_directory(result_dir)
-
-        for perfstat_node in perfstat_output_files:
-
-            # get nice names (if possible) for each PerfStat and the whole html file
-            perfstat_address = perfstat_node.split(os.sep)[-2]
-
-            if node_dict is None:
-                html_title = perfstat_node
-                node_identifier = perfstat_address
-            else:
-                try:
-                    node_identifier = node_dict[perfstat_address][1]
-                    html_title = util.get_html_title(node_dict, perfstat_address)
-                    logging.debug('html title (from identifier dict): ' + str(html_title))
-                except KeyError:
-                    logging.info(
-                        'Did not find a node name for address \'%s\' in \'console.log\'. Will '
-                        'use just \'%s\' instead.', perfstat_address, perfstat_address)
-                    html_title = perfstat_node
-                    node_identifier = perfstat_address
-
-                logging.info('Handle PerfStat from node "' + node_identifier + '":')
-            node_identifier += '_'
-
-            if len(perfstat_output_files) == 1:
-                node_identifier = ''
-
-            # collect data from file
-            logging.info('Read data...')
-            tables, identifier_dict = data_collector.read_data_file(perfstat_node,
-                                                                    sort_columns_by_name)
-
-            logging.debug('tables: %s', tables)
-            logging.debug('all identifiers: %s', identifier_dict)
-
-            # frame html file path
-            html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
-                constants.HTML_ENDING
-
-            csv_filenames = util.get_csv_filenames(identifier_dict['object_ids'], node_identifier)
-            csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-            csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                             csv_filenames]
-
-            # write data into csv tables
-            logging.info('Create csv tables...')
-            table_writer.create_csv(csv_abs_filepaths, tables)
-
-            # write html file
-            logging.info('Create html file...')
-            visualizer.create_html(html_filepath, csv_filelinks, html_title, identifier_dict)
-
-            # reset global variable 'localtimezone'
-            util.localtimezone = None
-
-        logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
-
-    finally:
-        # delete extracted zip
-        if temp_path is not None:
-            shutil.rmtree(temp_path)
-            logging.info('(Temporarily extracted files deleted)')
+    for path, _, files in os.walk(folder):
+        if 'host' in path:
+            continue
+        for filename in files:
+            file = os.path.join(path, filename)
+            if filename == 'console.log':
+                console_file = file
+            elif data_type(filename) == 'data' or data_type(filename) == 'out':
+                output_files.append(file)
+    return output_files, console_file
 
 
-# run
-run(sys.argv)
+def extract_zip(zip_folder):
+    """
+    This function takes a zip folder, distracts it to a temporary directory and pics all .data
+    files from it, but it ignores all files in folders named host. Also pics a file named
+    console.log, if available.
+    :param zip_folder: The path to a .zip file as String.
+    :return: A tuple of the temporary directory's path, a list of all .output file paths,
+    and the path to the console.log file (might be None).
+    """
+    temp_path = tempfile.mkdtemp()
+    with ZipFile(zip_folder, 'r') as zip_file:
+        zip_file.extractall(temp_path)
+
+    output_files, console_file = get_all_output_files(temp_path)
+
+    return temp_path, output_files, console_file

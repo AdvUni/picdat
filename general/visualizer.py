@@ -3,7 +3,7 @@ Is responsible to write a html file containing the required charts.
 """
 import logging
 
-from perfstat_mode import constants
+from general import constants
 from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'

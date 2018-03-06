@@ -3,10 +3,7 @@ Provides some functions other modules may use.
 """
 import logging
 import datetime
-import os
 import sys
-from zipfile import ZipFile
-
 try:
     import pytz
 except ImportError:
@@ -15,8 +12,7 @@ except ImportError:
           'timezones. Be aware of possible confusion with time values in charts!')
 
 from general.table import Table
-from perfstat_mode import constants
-import tempfile
+from general import constants
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -269,46 +265,6 @@ def get_csv_filenames(object_ids, output_identifier):
 
     logging.debug('csv names: %s', name_list)
     return name_list
-
-
-def get_all_output_files(folder):
-    """
-    Pics all .data files from a folder. Also picks a file named console.log, if available.
-    Therefore, it ignores all sub folders named host.
-    :param folder: A folder's path as String, which should be searched.
-    :return: A tuple of a list of .data files and the console.log file (might be None).
-    """
-    output_files = []
-    console_file = None
-    for path, _, files in os.walk(folder):
-        if 'host' in path:
-            continue
-        for filename in files:
-            file = os.path.join(path, filename)
-            if filename == 'console.log':
-                console_file = file
-            elif data_type(filename) == 'data' or data_type(filename) == 'out':
-                output_files.append(file)
-    return output_files, console_file
-
-
-def extract_to_temp_dir(zip_folder):
-    """
-    This function takes a zip folder, distracts it to a temporary directory and pics all .data
-    files from it, but it ignores all files in folders named host. Also pics a file named
-    console.log, if available.
-    :param zip_folder: The path to a .zip file as String.
-    :return: A tuple of the temporary directory's path, a list of all .output file paths,
-    and the path to the console.log file (might be None).
-    """
-    temp_path = tempfile.mkdtemp()
-    with ZipFile(zip_folder, 'r') as zip_file:
-        zip_file.extractall(temp_path)
-
-    output_files, console_file = get_all_output_files(temp_path)
-
-    return temp_path, output_files, console_file
-
 
 def read_console_file(console_file):
     """

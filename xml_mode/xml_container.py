@@ -138,8 +138,8 @@ class XmlContainer:
                 logging.error(
                     'Found value which is not convertible to float. Base conversion failed.')
 
-    def get_flat_tables(self):
-        return [(self.tables[request]).flatten('time', True) for request in REQUESTS if not self.tables[request].is_empty()]
+    def get_flat_tables(self, sort_columns_by_name):
+        return [(self.tables[request]).flatten('time', sort_columns_by_name) for request in REQUESTS if not self.tables[request].is_empty()]
 
     def get_csv_filenames(self, available_requests):
         return [object_type + '_' + aspect + '.csv' for (object_type, aspect) in available_requests]

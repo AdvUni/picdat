@@ -81,7 +81,7 @@ def read_data_file(container, data_file):
     container.process_base_heap()
 
 
-def read_xmls(data_file, info_file):
+def read_xmls(data_file, info_file, sort_columns_by_name):
     """
     This function analyzes both, the 'CM-STATS-HOURLY-DATA.XML' and the 'CM-STATS-HOURLY-INFO.XML'
     file. It holds a XmlContainer object to store collected information.
@@ -98,4 +98,4 @@ def read_xmls(data_file, info_file):
     logging.info('Read data file...')
     read_data_file(container, data_file)
 
-    return container.get_flat_tables(), container.build_identifier_dict()
+    return container.get_flat_tables(sort_columns_by_name), container.build_identifier_dict()

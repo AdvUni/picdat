@@ -24,17 +24,13 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run():
-    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
+def run_xml_mode(info_file, data_file, result_dir, csv_dir, sort_columns_by_name):
 
-    data_file = 'somepath'
-    info_file = 'somepath'
     html_title = 'PicDat for XML'
-    html_filepath = 'somepath'
-    csv_dir = 'somepath'
+    html_filepath = os.path.join(result_dir, 'charts.html')
 
     # collect data from file
-    tables, identifier_dict = data_collector.read_xmls(data_file, info_file)
+    tables, identifier_dict = data_collector.read_xmls(data_file, info_file, sort_columns_by_name)
     logging.debug('tables: %s', tables)
     logging.debug('all identifiers: %s', identifier_dict)
 
@@ -50,8 +46,3 @@ def run():
     # write html file
     logging.info('Create html file...')
     visualizer.create_html(html_filepath, csv_filelinks, html_title, identifier_dict)
-
-    #logging.info('Done. You will find charts under: %s', os.path.abspath())
-
-
-run()
