@@ -36,7 +36,8 @@ class Table:
 
     def insert(self, row, column, item):
         """
-        Inserts an value dependably into a specific place in the Table.
+        Inserts an value dependably into a specific place in the Table. If this table spot is
+        already filled, the value will be overwritten.
         :param row: Name of the table row, the value belongs to.
         :param column: Name of the table column, the value belongs to.
         :param item: Value you want to insert.
@@ -51,7 +52,18 @@ class Table:
                 inner_dict[column] = item
             else:
                 self.outer_dict[row][column] = item
-                
+
+    def get_item(self, row, column):
+        """
+        Returns an item from the table.
+        :param row: The table's row, the item should be from
+        :param column: The table's column, the item should be from
+        :return: The item which is stored for row and column
+        :raises IndexError, KeyError: If the table hasn't any item at selected row and column, one
+        of those errors will occur
+        """
+        return self.outer_dict[row][column]
+
     def is_empty(self):
         """
         Checks whether the table is empty.

@@ -27,15 +27,14 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 def run():
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
 
-    data_file = "somepath"
-    info_file = "somepath"
+    data_file = 'somepath'
+    info_file = 'somepath'
     html_title = 'PicDat for XML'
     html_filepath = 'somepath'
     csv_dir = 'somepath'
 
     # collect data from file
-    logging.info('Read data...')
-    tables, identifier_dict = data_collector.read_data(data_file, info_file)
+    tables, identifier_dict = data_collector.read_xmls(data_file, info_file)
     logging.debug('tables: %s', tables)
     logging.debug('all identifiers: %s', identifier_dict)
 
