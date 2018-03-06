@@ -1,5 +1,7 @@
 """
 From here, the tool gets started.
+
+ Handles user communication.
 """
 import logging
 import shutil

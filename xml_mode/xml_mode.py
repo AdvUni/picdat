@@ -1,6 +1,6 @@
-'''
-
-'''
+"""
+This module contains the main routine for the xml mode
+"""
 import logging
 import os
 from xml_mode import data_collector
@@ -25,7 +25,19 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 
 def run_xml_mode(info_file, data_file, result_dir, csv_dir, sort_columns_by_name):
-
+    """
+    The xml mode's main routine. Calls all functions to read xml data, write CSVs
+    and finally create an HTML.
+    :param info_file: path to a 'CM-STATS-HOURLY-INFO.XML' file which contains unit and base
+    information for the data file.
+    :param data_file: path to a'CM-STATS-HOURLY-DATA.XML' file.
+    :param result_dir: path to an existing directory. Function stores its results in here.
+    :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables
+    in here.
+    :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
+    name or by value. 
+    :return: None
+    """
     html_title = 'PicDat for XML'
     html_filepath = os.path.join(result_dir, 'charts.html')
 

@@ -1,5 +1,5 @@
 """
-From here, the tool gets started.
+This module contains the main routine for the perfstat mode
 """
 import logging
 import os
@@ -32,9 +32,16 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 
 def run_perfstat_mode(console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
     """
-    The tool's main routine. Calls all functions to read the data, write CSVs
-    and finally create an HTML. Handles user communication.
-    :param argv: Command line parameters.
+    The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
+    and finally create an HTML.
+    :param console_file: path to a console.log file which contains - if available - meta data for
+    perfstats
+    :param perfstat_output_files: list of paths to perfstat files like output.data or data.out.
+    :param result_dir: path to an existing directory. Function stores its results in here.
+    :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables
+    in here.
+    :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
+    name or by value. 
     :return: None
     """
     node_dict = None
