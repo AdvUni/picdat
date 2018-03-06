@@ -51,7 +51,7 @@ def validate_input_file(input_file):
     :return: None
     :raises fileNotFoundError: raises an exception, if input_file is neither a directory nor a file.
     :raises typeError: raises an exception, if input_file is a file of the wrong data type
-    (neither .data nor .zip).
+    (neither .data nor .zip nor .out).
     """
     if os.path.isdir(input_file):
         return
@@ -60,11 +60,11 @@ def validate_input_file(input_file):
 
     data_type = util.data_type(input_file)
 
-    if data_type != 'data' and data_type != 'zip':
+    if data_type not in ['data', 'zip', 'out']:
         raise TypeError
 
 
-def take_perfstats():
+def take_input_file():
     """
     This function requests a PerfStat output location of the user and decides, whether its type is
     data or zip. If applicable, it extracts the zip folder into a temporary directory.
@@ -74,10 +74,7 @@ def take_perfstats():
     """
     while True:
         input_file = input('Please enter a path to some PerfStat output (folder or zipfolder '
-                           'or .data file, default is ./output.data):' + os.linesep)
-
-        if input_file == '':
-            input_file = constants.DEFAULT_PERFSTAT_OUTPUT_FILE
+                           'or .data or .out file):' + os.linesep)
 
         try:
             validate_input_file(input_file)
@@ -175,7 +172,7 @@ def handle_user_input(argv):
     elif '--inputfile' in opts:
         input_file = opts['--inputfile']
     else:
-        input_file = take_perfstats()
+        input_file = take_input_file()
 
     try:
         validate_input_file(input_file)
@@ -218,7 +215,7 @@ def run(argv):
     """
     temp_path = None
     console_file = None
-    identifier_dict = None
+    node_dict = None
 
     try:
         # read command line options and take additional user input
@@ -243,18 +240,18 @@ def run(argv):
         if console_file is not None:
             logging.info('Read console.log file for getting cluster and node names...')
             try:
-                identifier_dict = util.read_console_file(console_file)
+                node_dict = util.read_console_file(console_file)
             except KeyboardInterrupt:
                 raise
             except:
                 logging.info('console.log file from zip couldn\'t be read for some reason: %s',
                              traceback.format_exc())
-                identifier_dict = None
+                node_dict = None
         else:
             logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
                          'name.')
 
-        logging.debug('identifier dict: ' + str(identifier_dict))
+        logging.debug('node dict: ' + str(node_dict))
 
         # create directory and copy the necessary templates files into it
         csv_dir = prepare_directory(result_dir)
@@ -264,13 +261,13 @@ def run(argv):
             # get nice names (if possible) for each PerfStat and the whole html file
             perfstat_address = perfstat_node.split(os.sep)[-2]
 
-            if identifier_dict is None:
+            if node_dict is None:
                 html_title = perfstat_node
                 node_identifier = perfstat_address
             else:
                 try:
-                    node_identifier = identifier_dict[perfstat_address][1]
-                    html_title = util.get_html_title(identifier_dict, perfstat_address)
+                    node_identifier = node_dict[perfstat_address][1]
+                    html_title = util.get_html_title(node_dict, perfstat_address)
                     logging.debug('html title (from identifier dict): ' + str(html_title))
                 except KeyError:
                     logging.info(
