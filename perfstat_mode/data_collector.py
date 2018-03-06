@@ -108,7 +108,7 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     :param statit_object: object that holds all relevant inforamtion read from statit blocks.
     :param end_times: The end timestamps of all iterations; they are needed to rework the statit
     data.
-    :return: All tables in one list.
+    :return: All tables in one list and an identifier dict providing meta data for all tables
     """
 
     combined_tables = per_iteration_object.rework_per_iteration_data() + \
@@ -141,8 +141,8 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
     highest values in sum is displayed at the top of the legend. If you rather would sort them
     alphabetically, this boolean should be true.
     :return: A list of all collected values in a table format. Each table is a nested list as
-    well; the values are grouped by rows. Additionally, it returns a list of the request objects,
-    the data_collector worked with.
+    well; the values are grouped by rows. Additionally, it returns an identifier_dict which
+    contains meta data such as axis labels or apprpriate file names for all tables.
     """
 
     # initialisation

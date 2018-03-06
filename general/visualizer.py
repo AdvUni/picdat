@@ -83,7 +83,7 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
     :param csv_files: A list of file names from csv tables which should be visualized.
     :param html_title: A file path which is used as caption for the resulting html. Should be the
     path of the PerfStat output file.
-    :param request_objects: A list of all used request objects (necessary to get meta data about
+    :param identifier_dict: A dict containing meta data such as axis labels or names for the charts
     the tables)
     :return: None
     """
