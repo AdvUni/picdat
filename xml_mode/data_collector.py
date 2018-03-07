@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from xml_mode.xml_container import XmlContainer
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 
 # license notice:

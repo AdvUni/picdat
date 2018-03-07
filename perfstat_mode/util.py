@@ -15,7 +15,7 @@ from general.table import Table
 from general import constants
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 # license notice:
 #
@@ -265,6 +265,7 @@ def get_csv_filenames(object_ids, output_identifier):
 
     logging.debug('csv names: %s', name_list)
     return name_list
+
 
 def read_console_file(console_file):
     """

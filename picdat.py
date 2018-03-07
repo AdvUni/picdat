@@ -13,6 +13,9 @@ import picdat_util
 from xml_mode import xml_mode
 from perfstat_mode import perfstat_mode
 
+__author__ = 'Marie Lohbeck'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
+
 # license notice:
 #
 # This file is part of PicDat.

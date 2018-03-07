@@ -8,7 +8,7 @@ from general import table_writer
 from general import visualizer
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 # license notice:
 #

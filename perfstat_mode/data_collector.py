@@ -10,7 +10,7 @@ from perfstat_mode import per_iteration_module
 from perfstat_mode.util import localtimezone
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 
 # license notice:

@@ -15,7 +15,7 @@ from general import table_writer
 from general import visualizer
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 # license notice:
 #
@@ -29,6 +29,7 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
 
 def run_perfstat_mode(console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
     """

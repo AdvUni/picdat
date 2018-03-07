@@ -12,6 +12,9 @@ import tarfile
 from zipfile import ZipFile
 from general import constants
 
+__author__ = 'Marie Lohbeck'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
+
 # license notice:
 #
 # This file is part of PicDat.
@@ -254,6 +257,7 @@ def extract_tgz(tgz_file):
     data_file = os.path.join(temp_path, data_file)
 
     return temp_path, info_file, data_file
+
 
 def get_all_perfstats(folder):
     """

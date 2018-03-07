@@ -2,7 +2,7 @@ import logging
 from os import sep
 
 __author__ = 'Marie Lohbeck'
-__copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
+__copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 # license notice:
 #
@@ -60,5 +60,3 @@ HTML_HEAD_TEMPLATE = 'templates' + sep + 'html_template.txt'
 # these are the paths to the dygraph files the html document needs to show its charts:
 DYGRAPHS_JS_SRC = 'templates' + sep + 'dygraph.js'
 DYGRAPHS_CSS_SRC = 'templates' + sep + 'dygraph.css'
-
-
