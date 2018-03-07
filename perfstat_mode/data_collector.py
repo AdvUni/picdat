@@ -7,7 +7,7 @@ import sys
 from perfstat_mode import sysstat_module
 from perfstat_mode import statit_module
 from perfstat_mode import per_iteration_module
-from perfstat_mode.util import localtimezone
+from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -132,7 +132,9 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     identifier_dict = {'titles': combined_titles, 'units': combined_units,
                        'x_labels': combined_x_lables, 'object_ids': combined_object_ids,
                        'barchart_booleans': combined_barchart_booleans,
-                       'timezone': str(localtimezone)}
+                       'timezone': str(util.localtimezone)}
+    
+    logging.debug('time zone: %s', util.localtimezone)
 
     return combined_tables, identifier_dict
 
