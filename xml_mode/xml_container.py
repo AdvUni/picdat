@@ -23,7 +23,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'), ('volume', 'total_ops'), ('volume',
-                                                                                                         'avg_latency'), ('volume', 'read_data'), ('lun', 'total_ops'), ('lun', 'avg_latency'), ('lun', 'read_data')]
+                                                                                                         'avg_latency'), ('volume', 'read_data'), ('volume', 'write_data'), ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'), ('lun:constituentS', 'read_data')]
 
 
 class XmlContainer:
@@ -57,6 +57,9 @@ class XmlContainer:
         self.map_counter_to_base = {}
         self.map_base_to_counter = {}
 
+        self.value_buffer = {}
+        self.baseval_buffer = {}
+
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
         self.base_heap = set()
@@ -76,7 +79,7 @@ class XmlContainer:
                 if (object_type, counter) in REQUESTS:
                     self.units[object_type, counter] = element_dict['unit']
                     base = element_dict['base']
-                    if base != '':
+                    if base:
                         self.map_counter_to_base[object_type, counter] = base
                         self.map_base_to_counter[object_type, base] = counter
         except (KeyError):
@@ -103,27 +106,47 @@ class XmlContainer:
                     timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
                     instance = element_dict['instance']
                     value = element_dict['value']
-                    self.tables[(object_type, counter)].insert(timestamp, instance, value)
+
+                    if (object_type, counter, instance) in self.value_buffer:
+                        last_val = self.value_buffer[(object_type, counter, instance)]
+                        abs_val = str((float(value) - float(last_val)) / 3600)
+
+                        self.tables[(object_type, counter)].insert(timestamp, instance, abs_val)
+                    self.value_buffer[(object_type, counter, instance)] = value
 
                 if (object_type, counter) in self.map_base_to_counter:
                     timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
                     instance = element_dict['instance']
-                    base_value = element_dict['value']
+                    baseval = element_dict['value']
                     original_counter = self.map_base_to_counter[(object_type, counter)]
-                    try:
-                        old_value = self.tables[(object_type, original_counter)
-                                                ].get_item(timestamp, instance)
-                        new_value = str(float(old_value) / float(base_value))
-                        self.tables[(object_type, original_counter)].insert(
-                            timestamp, instance, new_value)
-                    except (KeyError, IndexError):
-                        logging.debug(
-                            'Found base before actual element. Add base element to base heap.')
-                        self.base_heap.add((object_type, original_counter,
-                                            instance, timestamp, base_value))
-                    except (ValueError):
-                        logging.error(
-                            'Found value which is not convertible to float. Base conversion failed.')
+
+                    if (object_type, counter, instance) in self.baseval_buffer:
+                        last_baseval = self.baseval_buffer[(object_type, counter, instance)]
+                        abs_baseval = str((float(baseval) - float(last_baseval)) / 3600)
+
+                        try:
+                            old_value = self.tables[(object_type, original_counter)
+                                                    ].get_item(timestamp, instance)
+                            try:
+                                new_value = str(float(old_value) / float(abs_baseval))
+                            except(ZeroDivisionError):
+                                logging.debug('base conversion leads to division by zero: %s/%s (%s:%s:%s) Set result to 0.',
+                                              old_value, abs_baseval, object_type, instance, original_counter)
+                                new_value = str(0)
+                            self.tables[(object_type, original_counter)].insert(
+                                timestamp, instance, new_value)
+                        except (KeyError, IndexError):
+                            logging.debug(
+                                'Found base before actual element. Add base element to base heap.')
+                            logging.debug("base_element: %s", element_dict)
+                            self.base_heap.add((object_type, original_counter,
+                                                instance, timestamp, abs_baseval))
+                        except (ValueError):
+                            logging.error(
+                                'Found value which is not convertible to float. Base conversion failed.')
+
+                    self.baseval_buffer[(object_type, counter, instance)] = baseval
+
         except (KeyError):
             logging.warning(
                 'Some tags inside an xml ROW element seems to miss. Found following content: %s Expected (at least) following tags: object, counter, timestamp, instance, value', str(element_dict))
