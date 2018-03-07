@@ -47,7 +47,9 @@ def read_info_file(container, info_file):
             elem_dict[tag] = elem.text
 
         elem.clear()
-
+    
+    logging.debug('units: ' + str(container.units))
+    logging.debug('bases: ' + str(container.map_counter_to_base))
 
 def read_data_file(container, data_file):
     """
@@ -88,7 +90,6 @@ def read_xmls(data_file, info_file, sort_columns_by_name):
 
     logging.info('Read info file...')
     read_info_file(container, info_file)
-    logging.debug('units: ' + str(container.units))
     logging.info('Read data file...')
     read_data_file(container, data_file)
 

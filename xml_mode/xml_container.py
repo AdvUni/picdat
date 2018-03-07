@@ -2,6 +2,7 @@
 Contains the class XmlContainer. This class is responsible for holding and processing all data collected from xml files.
 """
 import logging
+import datetime
 from general.table import Table
 
 __author__ = 'Marie Lohbeck'
@@ -99,13 +100,13 @@ class XmlContainer:
 
                 if (object_type, counter) in REQUESTS:
 
-                    timestamp = element_dict['timestamp']
+                    timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
                     instance = element_dict['instance']
                     value = element_dict['value']
                     self.tables[(object_type, counter)].insert(timestamp, instance, value)
 
                 if (object_type, counter) in self.map_base_to_counter:
-                    timestamp = element_dict['timestamp']
+                    timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
                     instance = element_dict['instance']
                     base_value = element_dict['value']
                     original_counter = self.map_base_to_counter[(object_type, counter)]
