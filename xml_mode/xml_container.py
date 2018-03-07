@@ -150,24 +150,6 @@ class XmlContainer:
     def get_flat_tables(self, sort_columns_by_name):
         return [(self.tables[request]).flatten('time', sort_columns_by_name) for request in REQUESTS if not self.tables[request].is_empty()]
 
-    def get_csv_filenames(self, available_requests):
-        return [object_type + '_' + aspect + '.csv' for (object_type, aspect) in available_requests]
-
-    def get_units(self, available_requests):
-        return [self.units[request] for request in available_requests]
-
-    def get_x_labels(self, available_requests):
-        return ['time' for _ in available_requests]
-
-    def get_object_ids(self, available_requests):
-        return [object_type + '_' + aspect for (object_type, aspect) in available_requests]
-
-    def get_barchart_booleans(self, available_requests):
-        return ['false' for _ in available_requests]
-
-    def get_titles(self, available_requests):
-        return [object_type + ': ' + aspect for (object_type, aspect) in available_requests]
-
     def build_identifier_dict(self):
         """
         This method provides meta information about the data found in the xml. Those are chart
@@ -178,4 +160,13 @@ class XmlContainer:
         available_requests = [
             request for request in REQUESTS if not self.tables[request].is_empty()]
 
-        return {'titles': self.get_titles(available_requests), 'units': self.get_units(available_requests), 'x_labels': self.get_x_labels(available_requests), 'object_ids': self.get_object_ids(available_requests), 'barchart_booleans': self.get_barchart_booleans(available_requests), 'csv_names': self.get_csv_filenames(available_requests)}
+        titles = [object_type + ': ' + aspect for (object_type, aspect) in available_requests]
+        units = [self.units[request] for request in available_requests]
+        x_labels = ['time' for _ in available_requests]
+        object_ids = [object_type + '_' + aspect for (object_type, aspect) in available_requests]
+        barchart_booleans = ['false' for _ in available_requests]
+        csv_names = [object_type + '_' + aspect +
+                     '.csv' for (object_type, aspect) in available_requests]
+
+        return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
+                'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
