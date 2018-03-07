@@ -140,5 +140,4 @@ class Table:
 
         header_row.insert(0, x_label)
 
-        logging.debug(value_rows)
         return [header_row] + value_rows

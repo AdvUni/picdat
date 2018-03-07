@@ -48,8 +48,6 @@ def read_info_file(container, info_file):
 
         elem.clear()
 
-    logging.debug(container.tables)
-
 
 def read_data_file(container, data_file):
     """
@@ -64,8 +62,6 @@ def read_data_file(container, data_file):
 
     for _, elem in ET.iterparse(data_file):
         tag = elem.tag.split('}', 1)[1]
-        # print ('tag : %s, content: %s' % (elem.tag.split('}', 1)[1], elem.text))
-        # elem.clear()
 
         if tag == 'ROW':
             container.add_item(elem_dict)
@@ -74,8 +70,6 @@ def read_data_file(container, data_file):
             elem_dict[tag] = elem.text
 
         elem.clear()
-
-    logging.debug(container.tables)
 
     logging.debug('remaining base elements: ' + str(container.base_heap))
     container.process_base_heap()
