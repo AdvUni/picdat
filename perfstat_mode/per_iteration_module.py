@@ -34,7 +34,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # in exactly one chart.
 PER_ITERATION_AGGREGATE_REQUESTS = [('total_transfers', '/s')]
 PER_ITERATION_PROCESSOR_REQUESTS = [('processor_busy', '%')]
-PER_ITERATION_VOLUME_REQUESTS = [('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s')]
+PER_ITERATION_VOLUME_REQUESTS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
+                                 ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'), ('write_data', 'b/s')]
 PER_ITERATION_LUN_REQUESTS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
 # This search request is special: It is not searching for one value per lun per iteration,
 # but exactly eight values for each lun, representing the different buckets. Because the PerfStat
