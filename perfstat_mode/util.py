@@ -1,5 +1,5 @@
 """
-Provides some functions other modules may use.
+Provides some functions other modules inside package perfstat_mode may use.
 """
 import logging
 import datetime

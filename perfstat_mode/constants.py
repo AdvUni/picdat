@@ -1,5 +1,5 @@
 """
-Constants
+Constants used within perfstat mode
 """
 import datetime
 
@@ -25,9 +25,6 @@ __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
 ONE_SECOND = datetime.timedelta(seconds=1)
 
 DEFAULT_TIMESTAMP = datetime.datetime(2017, 1, 1)
-
-# program uses this path for it's analysis if user's input for that is empty:
-DEFAULT_PERFSTAT_OUTPUT_FILE = 'output.data'
 
 # the standard string to name charts about the sysstat_x_1sec block:
 SYSSTAT_CHART_TITLE = 'sysstat_x_1sec'

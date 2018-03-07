@@ -1,5 +1,6 @@
 """
-From here, the tool gets started.
+This modules contains several functions called by main module picdat. Therefore, they are for
+handling user communication or directory work such as unpacking archives.
 """
 import getopt
 import logging
@@ -85,15 +86,15 @@ def validate_input_file(input_file):
     elif not os.path.isfile(input_file):
         raise FileNotFoundError
 
-    type = data_type(input_file)
+    dtype = data_type(input_file)
 
-    if type not in ['data', 'zip', 'out', 'tgz']:
+    if dtype not in ['data', 'zip', 'out', 'tgz']:
         raise TypeError
 
 
 def take_input_file():
     """
-    This function requests a PerfStat output location of the user.
+    This function requests the location of a data file from the user.
     :return: The temporary directory's path (might be None, after usage of files inside this
     directory should become deleted) and a list of all PerfStat data files extracted from user
     input.
@@ -233,7 +234,14 @@ def handle_user_input(argv):
 
 
 def extract_tgz(tgz_file):
-
+    """
+    Unpacks the 'CM-STATS-HOURLY-INFO.XML' and CM-STATS-HOURLY-DATA.XML' files from a tar file with
+    file ending .tgz to a temporary directory.
+    :param tgz_file: A tar files path.
+    :returns: The path to the temporary directory, the files got unpacked into. It should become
+    deleted with the stop of PicDat. Additionally, the paths to the 'CM-STATS-HOURLY-INFO.XML' and
+    CM-STATS-HOURLY-DATA.XML' files inside the temporary directory.
+    """
     temp_path = tempfile.mkdtemp()
     info_file = 'CM-STATS-HOURLY-INFO.XML'
     data_file = 'CM-STATS-HOURLY-DATA.XML'
@@ -247,7 +255,7 @@ def extract_tgz(tgz_file):
 
     return temp_path, info_file, data_file
 
-def get_all_output_files(folder):
+def get_all_perfstats(folder):
     """
     Pics all .data files from a folder. Also picks a file named console.log, if available.
     Therefore, it ignores all sub folders named host.
@@ -270,8 +278,8 @@ def get_all_output_files(folder):
 
 def extract_zip(zip_folder):
     """
-    This function takes a zip folder, distracts it to a temporary directory and pics all .data
-    files from it, but it ignores all files in folders named host. Also pics a file named
+    This function takes a zip folder, distracts it to a temporary directory and picks all .data
+    files from it, but it ignores all files in folders named host. Also picks a file named
     console.log, if available.
     :param zip_folder: The path to a .zip file as String.
     :return: A tuple of the temporary directory's path, a list of all .output file paths,
@@ -281,6 +289,6 @@ def extract_zip(zip_folder):
     with ZipFile(zip_folder, 'r') as zip_file:
         zip_file.extractall(temp_path)
 
-    output_files, console_file = get_all_output_files(temp_path)
+    output_files, console_file = get_all_perfstats(temp_path)
 
     return temp_path, output_files, console_file

@@ -1,7 +1,6 @@
 """
-From here, the tool gets started.
-
- Handles user communication.
+From here, the tool gets started. The module handles user communication, unpacks files if necessary
+and decides, whether it has to run in perfstat or xml mode.
 """
 import logging
 import shutil
@@ -47,10 +46,10 @@ try:
         logging.info('Running picdat in perfstat mode')
         perfstat_output_files = None
         console_file = None
-        
+
         # extract zip if necessary
         if os.path.isdir(input_file):
-            perfstat_output_files, console_file = picdat_util.get_all_output_files(input_file)
+            perfstat_output_files, console_file = picdat_util.get_all_perfstats(input_file)
         elif picdat_util.data_type(input_file) in ['data', 'out']:
             perfstat_output_files = [input_file]
         elif picdat_util.data_type(input_file) == 'zip':
@@ -60,8 +59,9 @@ try:
         if not perfstat_output_files:
             logging.info('The input you gave (%s) doesn\'t contain any .data files.', input_file)
             sys.exit(0)
-            
-        perfstat_mode.run_perfstat_mode(console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name)
+
+        perfstat_mode.run_perfstat_mode(
+            console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name)
 
     logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
 
