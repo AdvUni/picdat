@@ -68,15 +68,19 @@ class XmlContainer:
         content
         :return: None
         """
-        object_type = element_dict['object']
-        if object_type in self.object_types:
-            counter = element_dict['counter']
-            if (object_type, counter) in REQUESTS:
-                self.units[object_type, counter] = element_dict['unit']
-                base = element_dict['base']
-                if base != '':
-                    self.map_counter_to_base[object_type, counter] = base
-                    self.map_base_to_counter[object_type, base] = counter
+        try:
+            object_type = element_dict['object']
+            if object_type in self.object_types:
+                counter = element_dict['counter']
+                if (object_type, counter) in REQUESTS:
+                    self.units[object_type, counter] = element_dict['unit']
+                    base = element_dict['base']
+                    if base != '':
+                        self.map_counter_to_base[object_type, counter] = base
+                        self.map_base_to_counter[object_type, base] = counter
+        except (KeyError):
+            logging.warning(
+                'Some tags inside an xml ROW element seems to miss. Found following content: %s Expected (at least) following tags: object, counter, unit, base.', str(element_dict))
 
     def add_item(self, element_dict):
         """
@@ -87,36 +91,41 @@ class XmlContainer:
         content
         :return: None
         """
-        object_type = element_dict['object']
-        if object_type in self.object_types:
-            counter = element_dict['counter']
 
-            if (object_type, counter) in REQUESTS:
+        try:
+            object_type = element_dict['object']
+            if object_type in self.object_types:
+                counter = element_dict['counter']
 
-                timestamp = element_dict['timestamp']
-                instance = element_dict['instance']
-                value = element_dict['value']
-                self.tables[(object_type, counter)].insert(timestamp, instance, value)
+                if (object_type, counter) in REQUESTS:
 
-            if (object_type, counter) in self.map_base_to_counter:
-                timestamp = element_dict['timestamp']
-                instance = element_dict['instance']
-                base_value = element_dict['value']
-                original_counter = self.map_base_to_counter[(object_type, counter)]
-                try:
-                    old_value = self.tables[(object_type, original_counter)
-                                            ].get_item(timestamp, instance)
-                    new_value = str(float(old_value) / float(base_value))
-                    self.tables[(object_type, original_counter)].insert(
-                        timestamp, instance, new_value)
-                except (KeyError, IndexError):
-                    logging.debug(
-                        'Found base before actual element. Add base element to base heap.')
-                    self.base_heap.add((object_type, original_counter,
-                                        instance, timestamp, base_value))
-                except (ValueError):
-                    logging.error(
-                        'Found value which is not convertible to float. Base conversion failed.')
+                    timestamp = element_dict['timestamp']
+                    instance = element_dict['instance']
+                    value = element_dict['value']
+                    self.tables[(object_type, counter)].insert(timestamp, instance, value)
+
+                if (object_type, counter) in self.map_base_to_counter:
+                    timestamp = element_dict['timestamp']
+                    instance = element_dict['instance']
+                    base_value = element_dict['value']
+                    original_counter = self.map_base_to_counter[(object_type, counter)]
+                    try:
+                        old_value = self.tables[(object_type, original_counter)
+                                                ].get_item(timestamp, instance)
+                        new_value = str(float(old_value) / float(base_value))
+                        self.tables[(object_type, original_counter)].insert(
+                            timestamp, instance, new_value)
+                    except (KeyError, IndexError):
+                        logging.debug(
+                            'Found base before actual element. Add base element to base heap.')
+                        self.base_heap.add((object_type, original_counter,
+                                            instance, timestamp, base_value))
+                    except (ValueError):
+                        logging.error(
+                            'Found value which is not convertible to float. Base conversion failed.')
+        except (KeyError):
+            logging.warning(
+                'Some tags inside an xml ROW element seems to miss. Found following content: %s Expected (at least) following tags: object, counter, timestamp, instance, value', str(element_dict))
 
     def process_base_heap(self):
         """
