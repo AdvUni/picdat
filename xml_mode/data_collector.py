@@ -75,6 +75,7 @@ def read_data_file(container, data_file):
 
     logging.debug('remaining base elements: ' + str(container.base_heap))
     container.process_base_heap()
+    container.do_unit_conversions()
 
 
 def read_xmls(data_file, info_file, sort_columns_by_name):

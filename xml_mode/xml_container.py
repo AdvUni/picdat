@@ -170,6 +170,20 @@ class XmlContainer:
             except (ValueError):
                 logging.error(
                     'Found value which is not convertible to float. Base conversion failed.')
+                
+    def do_unit_conversions(self):
+        """
+        This method improves the presentation of some values through unit conversion.
+        :return: None
+        """
+        for request, unit in self.units.items():
+            if unit == 'percent':
+                self.tables[request].expand_values(100)
+                self.units[request] = '%'
+                
+            if unit == "b_per_sec":      
+                self.tables[request].expand_values(1/(10**6))
+                self.units[request] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
         return [(self.tables[request]).flatten('time', sort_columns_by_name) for request in REQUESTS if not self.tables[request].is_empty()]

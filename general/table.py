@@ -63,6 +63,17 @@ class Table:
         of those errors will occur
         """
         return self.outer_dict[row][column]
+    
+    def expand_values(self, factor):
+        """
+        Multiplies all table values with the given factor.
+        :param factor: Factor for expansion.
+        :return: None
+        """
+        for _, inner_dict in self.outer_dict.items():
+            for column, value in inner_dict.items():
+                new_val = str(float(value) * factor)
+                inner_dict[column] = new_val
 
     def is_empty(self):
         """
