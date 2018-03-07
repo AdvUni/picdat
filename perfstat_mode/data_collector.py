@@ -7,6 +7,7 @@ import sys
 from perfstat_mode import sysstat_module
 from perfstat_mode import statit_module
 from perfstat_mode import per_iteration_module
+from perfstat_mode.util import localtimezone
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -101,7 +102,9 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
 
 def combine_results(per_iteration_object, sysstat_object, statit_object, end_times):
     """
-    This function sticks the results of all three request types together.
+    This function combines the contents of all three request types. This means, it sticks
+    all tables together and packs meta data about the tables. This includes the global variable
+    localtimezone.
     :param per_iteration_object: object that holds all relevant information about
     per_iteration_requests.
     :param sysstat_object: objet that holds all relevant information about sysstat_requests.
@@ -126,8 +129,10 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     combined_object_ids = per_iteration_object.get_object_ids() + sysstat_object.get_object_ids() + \
         statit_object.get_object_ids()
 
-    identifier_dict = {'titles': combined_titles, 'units': combined_units, 'x_labels': combined_x_lables,
-                       'object_ids': combined_object_ids, 'barchart_booleans': combined_barchart_booleans}
+    identifier_dict = {'titles': combined_titles, 'units': combined_units,
+                       'x_labels': combined_x_lables, 'object_ids': combined_object_ids,
+                       'barchart_booleans': combined_barchart_booleans,
+                       'timezone': str(localtimezone)}
 
     return combined_tables, identifier_dict
 

@@ -4,7 +4,6 @@ Is responsible to write a html file containing the required charts.
 import logging
 
 from general import constants
-from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2017, Advanced UniByte GmbH'
@@ -87,7 +86,7 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
     the tables)
     :return: None
     """
-    
+
     titles = identifier_dict['titles']
     chart_ids = identifier_dict['object_ids']
     y_labels = identifier_dict['units']
@@ -102,8 +101,10 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
 
         # write caption
         html_document.write('    <h2> ' + html_title + ' </h2>' + '\n')
-        # write timezone notice
-        html_document.write('    <h2> ' + 'timezone: ' + str(util.localtimezone) + ' </h2>' + '\n')
+        # write timezone notice (only available for perfstat mode)
+        if 'timezone' in identifier_dict:
+            html_document.write('    <h2> ' + 'timezone: ' +
+                                identifier_dict['timezone'] + ' </h2>' + '\n')
 
         # write rest of body
         for chart in range(len(csv_files)):

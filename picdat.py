@@ -66,7 +66,7 @@ try:
     logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
 
 finally:
-    # delete extracted zip
+    # delete temporarily extracted files
     if temp_path is not None:
         shutil.rmtree(temp_path)
         logging.info('(Temporarily extracted files deleted)')
