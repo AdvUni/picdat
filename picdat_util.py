@@ -261,7 +261,7 @@ def extract_tgz(tgz_file):
 
 def get_all_perfstats(folder):
     """
-    Pics all .data files from a folder. Also picks a file named console.log, if available.
+    Picks all .data files from a folder. Also picks a file named console.log, if available.
     Therefore, it ignores all sub folders named host.
     :param folder: A folder's path as String, which should be searched.
     :return: A tuple of a list of .data/.out files and the console.log file (might be None).

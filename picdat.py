@@ -35,38 +35,53 @@ try:
     # read command line options and take additional user input
     input_file, result_dir, sort_columns_by_name = picdat_util.handle_user_input(sys.argv)
 
-    # create directory and copy the necessary templates files into it
-    csv_dir = picdat_util.prepare_directory(result_dir)
+    perfstat_output_files = None
+    console_file = None
 
-    if picdat_util.data_type(input_file) == 'tgz':
-        # run in xml mode
-        logging.info('Running picdat in xml mode')
+    info_file = None
+    data_file = None
+
+    # handle directories as input
+    if os.path.isdir(input_file):
+        perfstat_output_files, console_file = picdat_util.get_all_perfstats(input_file)
+        if not perfstat_output_files and os.path.isfile(os.path.join(input_file, 'CM-STATS-HOURLY-INFO.XML')) and os.path.isfile(os.path.join(input_file, 'CM-STATS-HOURLY-DATA.XML')):
+            info_file = os.path.join(input_file, 'CM-STATS-HOURLY-INFO.XML')
+            data_file = os.path.join(input_file, 'CM-STATS-HOURLY-DATA.XML')
+
+    # handle tar files as input
+    elif picdat_util.data_type(input_file) == 'tgz':
+        logging.info('Extract tgz...')
         temp_path, info_file, data_file = picdat_util.extract_tgz(input_file)
-        xml_mode.run_xml_mode(info_file, data_file, result_dir, csv_dir, sort_columns_by_name)
 
+    # handle zip files or single .data or .out files as input
     else:
-        # run in perfstat mode
-        logging.info('Running picdat in perfstat mode')
-        perfstat_output_files = None
-        console_file = None
-
         # extract zip if necessary
-        if os.path.isdir(input_file):
-            perfstat_output_files, console_file = picdat_util.get_all_perfstats(input_file)
-        elif picdat_util.data_type(input_file) in ['data', 'out']:
+        if picdat_util.data_type(input_file) in ['data', 'out']:
             perfstat_output_files = [input_file]
         elif picdat_util.data_type(input_file) == 'zip':
             logging.info('Extract zip...')
             temp_path, perfstat_output_files, console_file = picdat_util.extract_zip(input_file)
-        # interrupt program if there are no .data files found
-        if not perfstat_output_files:
-            logging.info('The input you gave (%s) doesn\'t contain any .data files.', input_file)
-            sys.exit(0)
 
+    # create directory and copy the necessary templates files into it
+    csv_dir = picdat_util.prepare_directory(result_dir)
+    
+    # decide whether run in perfstat or xml mode
+    if perfstat_output_files:
+        # run in perfstat mode
+        logging.info('Running picdat in perfstat mode')
         perfstat_mode.run_perfstat_mode(
             console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name)
+    elif data_file:
+        # run in xml mode
+        logging.info('Running picdat in xml mode')
+        xml_mode.run_xml_mode(info_file, data_file, result_dir, csv_dir, sort_columns_by_name)
+    else:
+        logging.info(
+            'The input you gave (%s) doesn\'t contain any files this program can handle.', input_file)
+        sys.exit(0)
 
     logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
+
 
 finally:
     # delete temporarily extracted files
