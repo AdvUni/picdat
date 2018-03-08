@@ -61,3 +61,8 @@ HTML_HEAD_TEMPLATE = 'templates' + sep + 'html_template.txt'
 # these are the paths to the dygraph files the html document needs to show its charts:
 DYGRAPHS_JS_SRC = 'templates' + sep + 'dygraph.js'
 DYGRAPHS_CSS_SRC = 'templates' + sep + 'dygraph.css'
+
+# these are the expected names of relevant files in xml mode:
+XML_INFO_FILE = 'CM-STATS-HOURLY-INFO.XML'
+XML_DATA_FILE = 'CM-STATS-HOURLY-DATA.XML'
+XML_HEADER_FILE = 'HEADERS'

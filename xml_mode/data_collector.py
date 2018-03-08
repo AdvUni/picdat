@@ -25,17 +25,17 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def read_info_file(container, info_file):
+def read_info_file(container, xml_info_file):
     """
     Reads a xml info file and collects unit and base information from it. Buffers xml 'ROW'
     elements and sends them one after another to the container for managing them.
     :param container: A XmlContainer object which holds all collected xml data 
-    :param info_file: The path to a 'CM-STATS-HOURLY-INFO.XML' file
+    :param xml_info_file: The path to a 'CM-STATS-HOURLY-INFO.XML' file
     :return: None
     """
     elem_dict = {}
 
-    for _, elem in ET.iterparse(info_file):
+    for _, elem in ET.iterparse(xml_info_file):
         tag = elem.tag.split('}', 1)[1]
         # print ('tag : %s, content: %s' % (elem.tag.split('}', 1)[1], elem.text))
         # elem.clear()
@@ -51,18 +51,18 @@ def read_info_file(container, info_file):
     logging.debug('units: ' + str(container.units))
     logging.debug('bases: ' + str(container.map_counter_to_base))
 
-def read_data_file(container, data_file):
+def read_data_file(container, xml_data_file):
     """
     Reads a xml data file and collects all useful information from it. Buffers xml 'ROW' elements and
     sends them one after another to the container for managing them. In the end, calls the
     XmlContainer.process_base_heap() method to perform remaining base conversions.
     :param container: A XmlContainer object which holds all collected xml data 
-    :param data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file
+    :param xml_data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file
     :return: None
     """
     elem_dict = {}
 
-    for _, elem in ET.iterparse(data_file):
+    for _, elem in ET.iterparse(xml_data_file):
         tag = elem.tag.split('}', 1)[1]
 
         if tag == 'ROW':
@@ -78,20 +78,20 @@ def read_data_file(container, data_file):
     container.do_unit_conversions()
 
 
-def read_xmls(data_file, info_file, sort_columns_by_name):
+def read_xmls(xml_data_file, xml_info_file, sort_columns_by_name):
     """
     This function analyzes both, the 'CM-STATS-HOURLY-DATA.XML' and the 'CM-STATS-HOURLY-INFO.XML'
     file. It holds a XmlContainer object to store collected information.
-    :param data_file: the path to a 'CM-STATS-HOURLY-DATA.XML' file
-    :param info_file: the path to a 'CM-STATS-HOURLY-INFO.XML' file
+    :param xml_data_file: the path to a 'CM-STATS-HOURLY-DATA.XML' file
+    :param xml_info_file: the path to a 'CM-STATS-HOURLY-INFO.XML' file
     :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
     an identifier dict, which contains all required meta data about charts, labels or file names.
     """
     container = XmlContainer()
 
     logging.info('Read info file...')
-    read_info_file(container, info_file)
+    read_info_file(container, xml_info_file)
     logging.info('Read data file...')
-    read_data_file(container, data_file)
+    read_data_file(container, xml_data_file)
 
     return container.get_flat_tables(sort_columns_by_name), container.build_identifier_dict()

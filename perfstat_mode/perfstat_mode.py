@@ -31,11 +31,11 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run_perfstat_mode(console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
+def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
     """
     The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
     and finally create an HTML.
-    :param console_file: path to a console.log file which contains - if available - meta data for
+    :param perfstat_console_file: path to a console.log file which contains - if available - meta data for
     perfstats
     :param perfstat_output_files: list of paths to perfstat files like output.data or data.out.
     :param result_dir: path to an existing directory. Function stores its results in here.
@@ -48,10 +48,10 @@ def run_perfstat_mode(console_file, perfstat_output_files, result_dir, csv_dir, 
     node_dict = None
 
     # if given, read cluster and node information from console.log file:
-    if console_file is not None:
+    if perfstat_console_file is not None:
         logging.info('Read console.log file for getting cluster and node names...')
         try:
-            node_dict = util.read_console_file(console_file)
+            node_dict = util.read_console_file(perfstat_console_file)
         except KeyboardInterrupt:
             raise
         except:

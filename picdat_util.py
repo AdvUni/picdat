@@ -242,21 +242,36 @@ def extract_tgz(tgz_file):
     file ending .tgz to a temporary directory.
     :param tgz_file: A tar files path.
     :returns: The path to the temporary directory, the files got unpacked into. It should become
-    deleted with the stop of PicDat. Additionally, the paths to the 'CM-STATS-HOURLY-INFO.XML' and
-    CM-STATS-HOURLY-DATA.XML' files inside the temporary directory.
+    deleted with the stop of PicDat. Additionally, the paths to the 'CM-STATS-HOURLY-INFO.XML',
+    CM-STATS-HOURLY-DATA.XML' and 'HEADER' files inside the temporary directory.
     """
     temp_path = tempfile.mkdtemp()
-    info_file = 'CM-STATS-HOURLY-INFO.XML'
-    data_file = 'CM-STATS-HOURLY-DATA.XML'
+    xml_info_file = constants.XML_INFO_FILE
+    xml_data_file = constants.XML_DATA_FILE
+    xml_header_file = constants.XML_HEADER_FILE
 
     with tarfile.open(tgz_file, 'r') as tar:
-        tar.extractall(temp_path, members=[tar.getmember(
-            info_file), tar.getmember(data_file)])
+        tarmembers = []
+        try:
+            tarmembers.append(tar.getmember(xml_info_file))
+            tarmembers.append(tar.getmember(xml_data_file))
+            xml_info_file = os.path.join(temp_path, xml_info_file)
+            xml_data_file = os.path.join(temp_path, xml_data_file)
+        except(KeyError):
+            logging.info(
+                'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You gave a tgz archive which does not contain them. Quit program.')
+            sys.exit(0)
+        try:
+            tarmembers.append(tar.getmember(xml_header_file))
+            xml_header_file = os.path.join(temp_path, xml_header_file)
+        except(KeyError):
+            logging.info(
+                'You gave a tgz archive without a HEADER file. This means, some meta data for charts are missing such as node and cluster name.')
+            xml_header_file = None
 
-    info_file = os.path.join(temp_path, info_file)
-    data_file = os.path.join(temp_path, data_file)
+        tar.extractall(temp_path, members=tarmembers)
 
-    return temp_path, info_file, data_file
+    return temp_path, xml_info_file, xml_data_file, xml_header_file
 
 
 def get_all_perfstats(folder):
@@ -267,17 +282,17 @@ def get_all_perfstats(folder):
     :return: A tuple of a list of .data/.out files and the console.log file (might be None).
     """
     output_files = []
-    console_file = None
+    perfstat_console_file = None
     for path, _, files in os.walk(folder):
         if 'host' in path:
             continue
         for filename in files:
             file = os.path.join(path, filename)
             if filename == 'console.log':
-                console_file = file
+                perfstat_console_file = file
             elif data_type(filename) == 'data' or data_type(filename) == 'out':
                 output_files.append(file)
-    return output_files, console_file
+    return output_files, perfstat_console_file
 
 
 def extract_zip(zip_folder):
@@ -293,6 +308,6 @@ def extract_zip(zip_folder):
     with ZipFile(zip_folder, 'r') as zip_file:
         zip_file.extractall(temp_path)
 
-    output_files, console_file = get_all_perfstats(temp_path)
+    output_files, perfstat_console_file = get_all_perfstats(temp_path)
 
-    return temp_path, output_files, console_file
+    return temp_path, output_files, perfstat_console_file

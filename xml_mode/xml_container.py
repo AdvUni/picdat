@@ -4,6 +4,7 @@ Contains the class XmlContainer. This class is responsible for holding and proce
 import logging
 import datetime
 from general.table import Table
+from general import constants
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -170,7 +171,7 @@ class XmlContainer:
             except (ValueError):
                 logging.error(
                     'Found value which is not convertible to float. Base conversion failed.')
-                
+
     def do_unit_conversions(self):
         """
         This method improves the presentation of some values through unit conversion.
@@ -180,9 +181,9 @@ class XmlContainer:
             if unit == 'percent':
                 self.tables[request].expand_values(100)
                 self.units[request] = '%'
-                
-            if unit == "b_per_sec":      
-                self.tables[request].expand_values(1/(10**6))
+
+            if unit == "b_per_sec":
+                self.tables[request].expand_values(1 / (10**6))
                 self.units[request] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
@@ -204,7 +205,7 @@ class XmlContainer:
         object_ids = [object_type + '_' + aspect for (object_type, aspect) in available_requests]
         barchart_booleans = ['false' for _ in available_requests]
         csv_names = [object_type + '_' + aspect +
-                     '.csv' for (object_type, aspect) in available_requests]
+                     constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}

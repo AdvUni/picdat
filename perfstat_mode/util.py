@@ -267,14 +267,14 @@ def get_csv_filenames(object_ids, output_identifier):
     return name_list
 
 
-def read_console_file(console_file):
+def read_console_file(perfstat_console_file):
     """
     Reads some information from a console.log file as it is attached to PerfStat output.data files.
-    :param console_file: A console.log file from a PerfStat output bundle.
+    :param perfstat_console_file: A console.log file from a PerfStat output bundle.
     :return: A Dict, mapping the PerfStats node addresses to tuples of their
     cluster and node names.
     """
-    with open(console_file, 'r') as log:
+    with open(perfstat_console_file, 'r') as log:
 
         line = ''
         while not line.startswith('Vserver'):
