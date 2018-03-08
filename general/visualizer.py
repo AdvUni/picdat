@@ -101,7 +101,7 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
 
         # write caption
         html_document.write('    <h2> ' + html_title + ' </h2>' + '\n')
-        # write timezone notice (only available for perfstat mode)
+        # write timezone notice
         if 'timezone' in identifier_dict:
             html_document.write('    <h2> ' + 'timezone: ' +
                                 identifier_dict['timezone'] + ' </h2>' + '\n')

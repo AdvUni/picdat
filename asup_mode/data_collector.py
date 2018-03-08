@@ -43,7 +43,8 @@ def read_header_file(header_file):
                 if 'X-Netapp-asup-cluster-name:' in line:
                     cluster = line.replace('X-Netapp-asup-cluster-name:', '').strip()
 
-                # TODO: extract timezone
+                if 'X-Netapp-asup-generated-on:' in line:
+                    timezone = line.replace('X-Netapp-asup-generated-on:', '').strip().split()[-2]
 
     return node, cluster, timezone
 
@@ -60,8 +61,6 @@ def read_info_file(container, asup_info_file):
 
     for _, elem in ET.iterparse(asup_info_file):
         tag = elem.tag.split('}', 1)[1]
-        # print ('tag : %s, content: %s' % (elem.tag.split('}', 1)[1], elem.text))
-        # elem.clear()
 
         if tag == 'ROW':
             container.add_info(elem_dict)
