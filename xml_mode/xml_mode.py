@@ -25,6 +25,11 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 
 def read_header_file(header_file):
+    """
+    Gets meta data from HEADER file.
+    :param header_file: Path to a HEADER file as string. May be None.
+    :return: node name, cluster name, and time zone as strings. Values might be None.
+    """
     node = None
     cluster = None
     timezone = None
