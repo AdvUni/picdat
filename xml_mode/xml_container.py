@@ -86,6 +86,10 @@ class XmlContainer:
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
         self.base_heap = set()
+        
+        # To get a nice title for the last system chart, the program reads the node name from one
+        # of the xml elements with object = system:constituent
+        self.node_name = None
 
     def add_info(self, element_dict):
         """
@@ -191,6 +195,10 @@ class XmlContainer:
 
                         self.tables[SYSTEM_OBJECT_TYPE].insert(timestamp, counter, abs_val)
                     self.value_buffer[(object_type, counter)] = value
+                    
+                    # once, save the node name
+                    if not self.node_name:
+                        self.node_name = element_dict['instance']
 
         except (KeyError):
             logging.warning(
@@ -229,6 +237,10 @@ class XmlContainer:
             if unit == "b_per_sec":
                 self.tables[request].expand_values(1 / (10**6))
                 self.units[request] = "Mb/s"
+                
+            if unit == 'kb_per_sec':
+                self.tables[request].expand_values(1 / (10**3))
+                self.units[request] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
         flat_tables = [self.tables[request].flatten(
@@ -260,12 +272,12 @@ class XmlContainer:
 
         # get identifiers for system:constituent chart
         if not self.tables[SYSTEM_OBJECT_TYPE].is_empty():
-            titles.append(SYSTEM_OBJECT_TYPE)
+            titles.append(self.node_name)
             units.append(self.units[SYSTEM_OBJECT_TYPE])
             x_labels.append('time')
-            object_ids.append(SYSTEM_OBJECT_TYPE.replace(':', '_'))
+            object_ids.append(self.node_name)
             barchart_booleans.append('false')
-            csv_names.append(SYSTEM_OBJECT_TYPE.replace(':', '_') + constants.CSV_FILE_ENDING)
+            csv_names.append(self.node_name + constants.CSV_FILE_ENDING)
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
