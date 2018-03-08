@@ -99,7 +99,6 @@ def read_data_file(container, data_file):
 
     logging.debug('remaining base elements: ' + str(container.base_heap))
     container.process_base_heap()
-    container.do_unit_conversions()
 
 
 def read_xmls(asup_data_files, asup_info_file, sort_columns_by_name):
@@ -120,5 +119,7 @@ def read_xmls(asup_data_files, asup_info_file, sort_columns_by_name):
     for data_file in asup_data_files:
         logging.debug('read file %s', data_file)
         read_data_file(container, data_file)
+        
+    container.do_unit_conversions()
 
     return container.get_flat_tables(sort_columns_by_name), container.build_identifier_dict()
