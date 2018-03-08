@@ -5,7 +5,7 @@ object which stores all collected data.
 
 import logging
 import xml.etree.ElementTree as ET
-from xml_mode.xml_container import XmlContainer
+from asup_mode.xml_container import XmlContainer
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -24,18 +24,41 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+def read_header_file(header_file):
+    """
+    Gets meta data from HEADER file.
+    :param header_file: Path to a HEADER file as string. May be None.
+    :return: node name, cluster name, and time zone as strings. Values might be None.
+    """
+    node = None
+    cluster = None
+    timezone = None
 
-def read_info_file(container, xml_info_file):
+    if header_file:
+
+        with open(header_file, 'r') as file:
+            for line in file:
+                if 'X-Netapp-asup-hostname:' in line:
+                    node = line.replace('X-Netapp-asup-hostname:', '').strip()
+                if 'X-Netapp-asup-cluster-name:' in line:
+                    cluster = line.replace('X-Netapp-asup-cluster-name:', '').strip()
+
+                # TODO: extract timezone
+
+    return node, cluster, timezone
+
+
+def read_info_file(container, asup_info_file):
     """
     Reads a xml info file and collects unit and base information from it. Buffers xml 'ROW'
     elements and sends them one after another to the container for managing them.
     :param container: A XmlContainer object which holds all collected xml data 
-    :param xml_info_file: The path to a 'CM-STATS-HOURLY-INFO.XML' file
+    :param asup_info_file: The path to a 'CM-STATS-HOURLY-INFO.XML' file
     :return: None
     """
     elem_dict = {}
 
-    for _, elem in ET.iterparse(xml_info_file):
+    for _, elem in ET.iterparse(asup_info_file):
         tag = elem.tag.split('}', 1)[1]
         # print ('tag : %s, content: %s' % (elem.tag.split('}', 1)[1], elem.text))
         # elem.clear()
@@ -47,22 +70,23 @@ def read_info_file(container, xml_info_file):
             elem_dict[tag] = elem.text
 
         elem.clear()
-    
+
     logging.debug('units: ' + str(container.units))
     logging.debug('bases: ' + str(container.map_counter_to_base))
 
-def read_data_file(container, xml_data_file):
+
+def read_data_file(container, asup_data_file):
     """
     Reads a xml data file and collects all useful information from it. Buffers
     xml 'ROW' elements and sends them one after another to the container for
     managing them. In the end, calls the XmlContainer.process_base_heap() method
     to perform remaining base conversions. 
     :param container: A XmlContainer object which holds all collected xml data 
-    :param xml_data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file :return: None
+    :param asup_data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file :return: None
     """
     elem_dict = {}
 
-    for _, elem in ET.iterparse(xml_data_file):
+    for _, elem in ET.iterparse(asup_data_file):
         tag = elem.tag.split('}', 1)[1]
 
         if tag == 'ROW':
@@ -78,20 +102,20 @@ def read_data_file(container, xml_data_file):
     container.do_unit_conversions()
 
 
-def read_xmls(xml_data_file, xml_info_file, sort_columns_by_name):
+def read_xmls(asup_data_file, asup_info_file, sort_columns_by_name):
     """
     This function analyzes both, the 'CM-STATS-HOURLY-DATA.XML' and the 'CM-STATS-HOURLY-INFO.XML'
     file. It holds a XmlContainer object to store collected information.
-    :param xml_data_file: the path to a 'CM-STATS-HOURLY-DATA.XML' file
-    :param xml_info_file: the path to a 'CM-STATS-HOURLY-INFO.XML' file
+    :param asup_data_file: the path to a 'CM-STATS-HOURLY-DATA.XML' file
+    :param asup_info_file: the path to a 'CM-STATS-HOURLY-INFO.XML' file
     :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
     an identifier dict, which contains all required meta data about charts, labels or file names.
     """
     container = XmlContainer()
 
     logging.info('Read info file...')
-    read_info_file(container, xml_info_file)
+    read_info_file(container, asup_info_file)
     logging.info('Read data file...')
-    read_data_file(container, xml_data_file)
+    read_data_file(container, asup_data_file)
 
     return container.get_flat_tables(sort_columns_by_name), container.build_identifier_dict()

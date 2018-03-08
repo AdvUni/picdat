@@ -1,9 +1,9 @@
 """
-This module contains the main routine for the xml mode
+This module contains the main routine for the asup mode
 """
 import logging
 import os
-from xml_mode import data_collector
+from asup_mode import data_collector
 from general import table_writer, constants
 from general import visualizer
 
@@ -24,39 +24,15 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def read_header_file(header_file):
-    """
-    Gets meta data from HEADER file.
-    :param header_file: Path to a HEADER file as string. May be None.
-    :return: node name, cluster name, and time zone as strings. Values might be None.
-    """
-    node = None
-    cluster = None
-    timezone = None
-
-    if header_file:
-
-        with open(header_file, 'r') as file:
-            for line in file:
-                if 'X-Netapp-asup-hostname:' in line:
-                    node = line.replace('X-Netapp-asup-hostname:', '').strip()
-                if 'X-Netapp-asup-cluster-name:' in line:
-                    cluster = line.replace('X-Netapp-asup-cluster-name:', '').strip()
-
-                # TODO: extract timezone
-
-    return node, cluster, timezone
-
-
-def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_dir, 
+def run_xml_mode(asup_info_file, asup_data_file, asup_header_file, result_dir, csv_dir,
                  sort_columns_by_name):
     """
     The xml mode's main routine. Calls all functions to read xml data, write CSVs
     and finally creates an HTML.
-    :param xml_info_file: path to a 'CM-STATS-HOURLY-INFO.XML' file which contains unit and base
+    :param asup_info_file: path to a 'CM-STATS-HOURLY-INFO.XML' file which contains unit and base
     information for the data file.
-    :param xml_data_file: path to a 'CM-STATS-HOURLY-DATA.XML' file.
-    :param xml_header_file: path to a 'HEADER' file.
+    :param asup_data_file: path to a 'CM-STATS-HOURLY-DATA.XML' file.
+    :param asup_header_file: path to a 'HEADER' file.
     :param result_dir: path to an existing directory. Function stores its results in here.
     :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables
     in here.
@@ -67,7 +43,7 @@ def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_
 
     # collect data from file
     tables, identifier_dict = data_collector.read_xmls(
-        xml_data_file, xml_info_file, sort_columns_by_name)
+        asup_data_file, asup_info_file, sort_columns_by_name)
     logging.debug('all identifiers: %s', identifier_dict)
 
     csv_filenames = identifier_dict.pop('csv_names')
@@ -81,14 +57,14 @@ def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_
 
     # extract meta data from HEADER file:
     logging.info('Read header file...')
-    node, cluster, timezone = read_header_file(xml_header_file)
+    node, cluster, timezone = data_collector.read_header_file(asup_header_file)
     logging.debug('cluster: %s, node: %s', cluster, node)
     if timezone:
         identifier_dict['timezone'] = timezone
     if cluster and node:
         html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
     else:
-        html_title = os.path.abspath(os.path.dirname(xml_info_file))
+        html_title = os.path.abspath(os.path.dirname(asup_info_file))
 
     # write html file
     html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)

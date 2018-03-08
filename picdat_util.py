@@ -170,7 +170,7 @@ def handle_user_input(argv):
     # get all options from argv and turn them into a dict
     try:
         opts, _ = getopt.getopt(argv[1:], 'hsld:i:o:', ['help', 'sortbynames', 'logfile', 'debug=',
-                                                        'inputfile=', 'outputdir='])
+                                                        'input=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
@@ -199,7 +199,7 @@ def handle_user_input(argv):
     # extract inputfile from options if possible
     if '-i' in opts:
         input_file = opts['-i']
-    elif '--inputfile' in opts:
+    elif '--input' in opts:
         input_file = opts['--inputfile']
     else:
         input_file = take_input_file()
@@ -246,34 +246,34 @@ def extract_tgz(tgz_file):
     CM-STATS-HOURLY-DATA.XML' and 'HEADER' files inside the temporary directory.
     """
     temp_path = tempfile.mkdtemp()
-    xml_info_file = constants.XML_INFO_FILE
-    xml_data_file = constants.XML_DATA_FILE
-    xml_header_file = constants.XML_HEADER_FILE
+    asup_info_file = constants.ASUP_INFO_FILE
+    asup_data_file = constants.ASUP_DATA_FILE
+    asup_header_file = constants.ASUP_HEADER_FILE
 
     with tarfile.open(tgz_file, 'r') as tar:
         tarmembers = []
         try:
-            tarmembers.append(tar.getmember(xml_info_file))
-            tarmembers.append(tar.getmember(xml_data_file))
-            xml_info_file = os.path.join(temp_path, xml_info_file)
-            xml_data_file = os.path.join(temp_path, xml_data_file)
+            tarmembers.append(tar.getmember(asup_info_file))
+            tarmembers.append(tar.getmember(asup_data_file))
+            asup_info_file = os.path.join(temp_path, asup_info_file)
+            asup_data_file = os.path.join(temp_path, asup_data_file)
         except(KeyError):
             logging.info(
                 'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
                 'gave a tgz archive which does not contain them. Quit program.')
             sys.exit(0)
         try:
-            tarmembers.append(tar.getmember(xml_header_file))
-            xml_header_file = os.path.join(temp_path, xml_header_file)
+            tarmembers.append(tar.getmember(asup_header_file))
+            asup_header_file = os.path.join(temp_path, asup_header_file)
         except(KeyError):
             logging.info(
                 'You gave a tgz archive without a HEADER file. This means, some meta data for '
                 'charts are missing such as node and cluster name.')
-            xml_header_file = None
+            asup_header_file = None
 
         tar.extractall(temp_path, members=tarmembers)
 
-    return temp_path, xml_info_file, xml_data_file, xml_header_file
+    return temp_path, asup_info_file, asup_data_file, asup_header_file
 
 
 def get_all_perfstats(folder):
