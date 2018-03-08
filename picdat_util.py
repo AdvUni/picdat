@@ -236,16 +236,17 @@ def handle_user_input(argv):
     return input_file, output_dir, sort_columns_by_name
 
 
-def extract_tgz(tgz_file):
+def extract_tgz(dir_path, tgz_file, data_name_extension=None):
     """
     Unpacks the 'CM-STATS-HOURLY-INFO.XML' and CM-STATS-HOURLY-DATA.XML' files from a tar file with
-    file ending .tgz to a temporary directory.
+    file ending .tgz to a directory.
+    :param dir_path: The directory's path, the files should become unpacked to.
     :param tgz_file: A tar files path.
-    :returns: The path to the temporary directory, the files got unpacked into. It should become
-    deleted with the stop of PicDat. Additionally, the paths to the 'CM-STATS-HOURLY-INFO.XML',
-    CM-STATS-HOURLY-DATA.XML' and 'HEADER' files inside the temporary directory.
+    :param data_name_extension: As PicDat might want to unpack several data files into the same
+    directory without overwriting each other, a unique name extension as string can be passed.
+    :returns: The paths to the 'CM-STATS-HOURLY-INFO.XML', CM-STATS-HOURLY-DATA.XML' and 'HEADER'
+    files inside the temporary directory dir_path.
     """
-    temp_path = tempfile.mkdtemp()
     asup_info_file = constants.ASUP_INFO_FILE
     asup_data_file = constants.ASUP_DATA_FILE
     asup_header_file = constants.ASUP_HEADER_FILE
@@ -255,8 +256,8 @@ def extract_tgz(tgz_file):
         try:
             tarmembers.append(tar.getmember(asup_info_file))
             tarmembers.append(tar.getmember(asup_data_file))
-            asup_info_file = os.path.join(temp_path, asup_info_file)
-            asup_data_file = os.path.join(temp_path, asup_data_file)
+            asup_info_file = os.path.join(dir_path, asup_info_file)
+            asup_data_file = os.path.join(dir_path, asup_data_file)
         except(KeyError):
             logging.info(
                 'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
@@ -264,16 +265,20 @@ def extract_tgz(tgz_file):
             sys.exit(0)
         try:
             tarmembers.append(tar.getmember(asup_header_file))
-            asup_header_file = os.path.join(temp_path, asup_header_file)
+            asup_header_file = os.path.join(dir_path, asup_header_file)
         except(KeyError):
             logging.info(
                 'You gave a tgz archive without a HEADER file. This means, some meta data for '
                 'charts are missing such as node and cluster name.')
             asup_header_file = None
 
-        tar.extractall(temp_path, members=tarmembers)
+        tar.extractall(dir_path, members=tarmembers)
+    
+    if data_name_extension:
+        os.rename(asup_data_file, asup_data_file + data_name_extension)
+        asup_data_file = asup_data_file + data_name_extension
 
-    return temp_path, asup_info_file, asup_data_file, asup_header_file
+    return asup_info_file, asup_data_file, asup_header_file
 
 
 def get_all_perfstats(folder):

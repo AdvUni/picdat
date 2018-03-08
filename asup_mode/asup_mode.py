@@ -24,14 +24,14 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run_xml_mode(asup_info_file, asup_data_file, asup_header_file, result_dir, csv_dir,
+def run_asup_mode(asup_info_file, asup_data_files, asup_header_file, result_dir, csv_dir,
                  sort_columns_by_name):
     """
     The xml mode's main routine. Calls all functions to read xml data, write CSVs
     and finally creates an HTML.
     :param asup_info_file: path to a 'CM-STATS-HOURLY-INFO.XML' file which contains unit and base
     information for the data file.
-    :param asup_data_file: path to a 'CM-STATS-HOURLY-DATA.XML' file.
+    :param asup_data_files: list of paths to 'CM-STATS-HOURLY-DATA.XML' files.
     :param asup_header_file: path to a 'HEADER' file.
     :param result_dir: path to an existing directory. Function stores its results in here.
     :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables
@@ -43,7 +43,7 @@ def run_xml_mode(asup_info_file, asup_data_file, asup_header_file, result_dir, c
 
     # collect data from file
     tables, identifier_dict = data_collector.read_xmls(
-        asup_data_file, asup_info_file, sort_columns_by_name)
+        asup_data_files, asup_info_file, sort_columns_by_name)
     logging.debug('all identifiers: %s', identifier_dict)
 
     csv_filenames = identifier_dict.pop('csv_names')

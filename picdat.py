@@ -6,6 +6,7 @@ import logging
 import shutil
 import os
 import sys
+import tempfile
 
 sys.path.append('..')
 
@@ -40,28 +41,50 @@ try:
     perfstat_console_file = None
 
     asup_info_file = None
-    asup_data_file = None
+    asup_data_files = None
     asup_header_file = None
 
     # handle directories as input
     if os.path.isdir(input_file):
         perfstat_output_files, perfstat_console_file = picdat_util.get_all_perfstats(input_file)
-        if (not perfstat_output_files
-            and os.path.isfile(os.path.join(input_file, constants.ASUP_INFO_FILE))
-                and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
-            asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
-            asup_data_file = os.path.join(input_file, constants.ASUP_DATA_FILE)
-            if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
-                asup_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
-            else:
-                logging.info('You gave a directory without a HEADER file. This means, some meta '
-                             'data for charts are missing such as node and cluster name.')
+
+        if not perfstat_output_files:
+            # check whether dir contains tgz files and extract them
+            tar_files = [os.path.join(input_file, file) for file in os.listdir(
+                os.path.abspath(input_file)) if picdat_util.data_type(file) == 'tgz']
+            if tar_files:
+                temp_path = tempfile.mkdtemp()
+                counter = 0
+                asup_data_files = []
+                # collect all DATA files from tgz archive. As we only need one INFO and
+                # HEADER file, it's ok to overwrite them each iteration
+                for tar in tar_files:
+                    asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
+                        temp_path, tar, str(counter))
+                    asup_data_files.append(asup_data_file)
+                    counter = counter + 1
+                
+                    logging.debug('data file found: %s', asup_data_file)
+
+            elif (os.path.isfile(os.path.join(input_file, constants.ASUP_INFO_FILE))
+                  and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
+
+                asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
+                asup_data_files = os.path.join(input_file, constants.ASUP_DATA_FILE)
+
+                if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
+                    asup_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
+                else:
+                    logging.info('You gave a directory without a HEADER file. This means, some meta '
+                                 'data for charts are missing such as node and cluster name.')
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':
         logging.info('Extract tgz...')
-        temp_path, asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
-            input_file)
+        temp_path = tempfile.mkdtemp()
+        asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
+            temp_path, input_file)
+        asup_data_files = [asup_data_file]
 
     # handle zip files or single .data or .out files as input
     else:
@@ -82,11 +105,11 @@ try:
         logging.info('Running picdat in perfstat mode')
         perfstat_mode.run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir,
                                         csv_dir, sort_columns_by_name)
-    elif asup_data_file:
+    elif asup_data_files:
         # run in xml mode
         logging.info('Running picdat in xml mode')
-        asup_mode.run_xml_mode(asup_info_file, asup_data_file, asup_header_file,
-                              result_dir, csv_dir, sort_columns_by_name)
+        asup_mode.run_asup_mode(asup_info_file, asup_data_files, asup_header_file,
+                               result_dir, csv_dir, sort_columns_by_name)
     else:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)
