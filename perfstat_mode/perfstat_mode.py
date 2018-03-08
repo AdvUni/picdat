@@ -35,8 +35,8 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
     """
     The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
     and finally create an HTML.
-    :param perfstat_console_file: path to a console.log file which contains - if available - meta data for
-    perfstats
+    :param perfstat_console_file: path to a console.log file which contains - if available - meta
+    data for perfstats
     :param perfstat_output_files: list of paths to perfstat files like output.data or data.out.
     :param result_dir: path to an existing directory. Function stores its results in here.
     :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables

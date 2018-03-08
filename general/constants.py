@@ -23,17 +23,17 @@ HELP = '''
 PicDat is a tool for visualizing performace data.
 usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
     --help, -h: prints this message
-    --sortbyname, -s: Sorts the legends of most charts alphabetically. Per default, 
+    --sortbyname, -s: Sorts the legends of most charts alphabetically. Per default,
                       legend entries are sorted by relevance, means the graph with the
                       highest values in sum is displayed at the top of the legend.
-    --inputfile "input", -i "input": input is the path to some perfstat output. Should be a 
+    --inputfile "input", -i "input": input is the path to some perfstat output. Should be a
                                      folder, .zip file, .data file, .out file, or .tgz file.
-    --outputdir "output", -o "output": output is the directory's path, where this program puts its 
-                                       results. If there is no directory existing yet under this 
-                                       path, one would be created. If there already are some 
+    --outputdir "output", -o "output": output is the directory's path, where this program puts its
+                                       results. If there is no directory existing yet under this
+                                       path, one would be created. If there already are some
                                        PicDat results, they might be overwritten.
-    --debug "level", -d "level": level should be inside debug, info, warning, error, critical. It 
-                                 describes the filtering level of command line output during 
+    --debug "level", -d "level": level should be inside debug, info, warning, error, critical. It
+                                 describes the filtering level of command line output during
                                  running this program (default is "info").
     --logfile, -l: Redirects logging information into a file called picdat.log.
 '''

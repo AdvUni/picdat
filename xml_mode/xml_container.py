@@ -1,5 +1,6 @@
 """
-Contains the class XmlContainer. This class is responsible for holding and processing all data collected from xml files.
+Contains the class XmlContainer. This class is responsible for holding and
+processing all data collected from xml files.
 """
 import logging
 import datetime
@@ -28,16 +29,19 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # counter, but also in object (Contrary to 'SYSTEM_REQUESTS').
 # The values found about one of the keys are meant to be visualized in one chart. So, each chart's
 # table is about one counter and its columns will represent different instances.
-OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'), ('volume', 'total_ops'), ('volume',
-                                                                                                                'avg_latency'), ('volume', 'read_data'), ('volume', 'write_data'), ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data')]
+OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
+                   ('volume', 'total_ops'), ('volume', 'avg_latency'), ('volume', 'read_data'),
+                   ('volume', 'write_data'), ('lun:constituent', 'total_ops'),
+                   ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data')]
 
 # The following list contains search keys for gaining chart data. Its elements are the names of
 # counters. The object tag belonging to the xml elements satisfying the keys is always
 # 'system:constituent'. Therefore, object is not explicitly specified in the requests.
 # The values found about all of these keys are meant to be visualized in one chart together. So,
 # the columns of the chart's table will represent counters, means one column for each request.
-SYSTEM_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net_data_sent', 'ssd_data_read',
-                   'ssd_data_written', 'fcp_data_recv', 'fcp_data_sent', 'tape_data_read', 'tape_data_written']
+SYSTEM_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net_data_sent',
+                   'ssd_data_read', 'ssd_data_written', 'fcp_data_recv', 'fcp_data_sent',
+                   'tape_data_read', 'tape_data_written']
 # constant holding 'system:constituant' as this is the object type belonging to the SYSTEM_REQUESTS
 SYSTEM_OBJECT_TYPE = 'system:constituent'
 
@@ -86,7 +90,7 @@ class XmlContainer:
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
         self.base_heap = set()
-        
+
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the xml elements with object = system:constituent
         self.node_name = None
@@ -114,7 +118,9 @@ class XmlContainer:
 
         except (KeyError):
             logging.warning(
-                'Some tags inside an xml ROW element in INFO file seems to miss. Found following content: %s Expected (at least) following tags: object, counter, unit, base.', str(element_dict))
+                'Some tags inside an xml ROW element in INFO file seems to miss. Found following '
+                'content: %s Expected (at least) following tags: object, counter, unit, base.',
+                str(element_dict))
 
     def add_item(self, element_dict):
         """
@@ -164,8 +170,10 @@ class XmlContainer:
                             try:
                                 new_value = str(float(old_value) / float(abs_baseval))
                             except(ZeroDivisionError):
-                                logging.debug('base conversion leads to division by zero: %s/%s (%s:%s:%s) Set result to 0.',
-                                              old_value, abs_baseval, object_type, instance, original_counter)
+                                logging.debug(
+                                    'base conversion leads to division by zero: %s/%s '
+                                    '(%s:%s:%s) Set result to 0.', old_value, abs_baseval,
+                                    object_type, instance, original_counter)
                                 new_value = str(0)
                             self.tables[(object_type, original_counter)].insert(
                                 timestamp, instance, new_value)
@@ -176,8 +184,8 @@ class XmlContainer:
                             self.base_heap.add((object_type, original_counter,
                                                 instance, timestamp, abs_baseval))
                         except (ValueError):
-                            logging.error(
-                                'Found value which is not convertible to float. Base conversion failed.')
+                            logging.error('Found value which is not convertible to float. Base '
+                                          'conversion failed.')
 
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
 
@@ -195,14 +203,16 @@ class XmlContainer:
 
                         self.tables[SYSTEM_OBJECT_TYPE].insert(timestamp, counter, abs_val)
                     self.value_buffer[(object_type, counter)] = value
-                    
+
                     # once, save the node name
                     if not self.node_name:
                         self.node_name = element_dict['instance']
 
         except (KeyError):
             logging.warning(
-                'Some tags inside an xml ROW element in DATA file seems to miss. Found following content: %s Expected (at least) following tags: object, counter, timestamp, instance, value', str(element_dict))
+                'Some tags inside an xml ROW element in DATA file seems to miss. Found following '
+                'content: %s Expected (at least) following tags: object, counter, timestamp, '
+                'instance, value', str(element_dict))
 
     def process_base_heap(self):
         """
@@ -218,8 +228,10 @@ class XmlContainer:
                 new_value = str(float(old_value) / float(base_value))
                 self.tables[(object_type, counter)].insert(timestamp, instance, new_value)
             except (KeyError, IndexError):
-                logging.warning('Found base value but no matching actual value. This means, Value for %s - %s, instance %s with time stamp %s is missing in data!',
-                                object_type, counter, instance, timestamp)
+                logging.warning(
+                    'Found base value but no matching actual value. This means, Value for '
+                    '%s - %s, instance %s with time stamp %s is missing in data!',
+                    object_type, counter, instance, timestamp)
             except (ValueError):
                 logging.error(
                     'Found value which is not convertible to float. Base conversion failed.')
@@ -237,14 +249,15 @@ class XmlContainer:
             if unit == "b_per_sec":
                 self.tables[request].expand_values(1 / (10**6))
                 self.units[request] = "Mb/s"
-                
+
             if unit == 'kb_per_sec':
                 self.tables[request].expand_values(1 / (10**3))
                 self.units[request] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
-        flat_tables = [self.tables[request].flatten(
-            'time', sort_columns_by_name) for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
+        flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
+                       for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
+
         if not self.tables[SYSTEM_OBJECT_TYPE].is_empty():
             flat_tables.append(self.tables[SYSTEM_OBJECT_TYPE].flatten('time', True))
         return flat_tables

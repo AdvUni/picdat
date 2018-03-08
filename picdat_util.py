@@ -259,14 +259,16 @@ def extract_tgz(tgz_file):
             xml_data_file = os.path.join(temp_path, xml_data_file)
         except(KeyError):
             logging.info(
-                'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You gave a tgz archive which does not contain them. Quit program.')
+                'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
+                'gave a tgz archive which does not contain them. Quit program.')
             sys.exit(0)
         try:
             tarmembers.append(tar.getmember(xml_header_file))
             xml_header_file = os.path.join(temp_path, xml_header_file)
         except(KeyError):
             logging.info(
-                'You gave a tgz archive without a HEADER file. This means, some meta data for charts are missing such as node and cluster name.')
+                'You gave a tgz archive without a HEADER file. This means, some meta data for '
+                'charts are missing such as node and cluster name.')
             xml_header_file = None
 
         tar.extractall(temp_path, members=tarmembers)

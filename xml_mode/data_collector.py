@@ -53,12 +53,12 @@ def read_info_file(container, xml_info_file):
 
 def read_data_file(container, xml_data_file):
     """
-    Reads a xml data file and collects all useful information from it. Buffers xml 'ROW' elements and
-    sends them one after another to the container for managing them. In the end, calls the
-    XmlContainer.process_base_heap() method to perform remaining base conversions.
+    Reads a xml data file and collects all useful information from it. Buffers
+    xml 'ROW' elements and sends them one after another to the container for
+    managing them. In the end, calls the XmlContainer.process_base_heap() method
+    to perform remaining base conversions. 
     :param container: A XmlContainer object which holds all collected xml data 
-    :param xml_data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file
-    :return: None
+    :param xml_data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file :return: None
     """
     elem_dict = {}
 

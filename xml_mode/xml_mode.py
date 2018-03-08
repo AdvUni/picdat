@@ -48,7 +48,8 @@ def read_header_file(header_file):
     return node, cluster, timezone
 
 
-def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_dir, sort_columns_by_name):
+def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_dir, 
+                 sort_columns_by_name):
     """
     The xml mode's main routine. Calls all functions to read xml data, write CSVs
     and finally creates an HTML.
