@@ -42,7 +42,7 @@ def read_header_file(header_file):
                     node = line.replace('X-Netapp-asup-hostname:', '').strip()
                 if 'X-Netapp-asup-cluster-name:' in line:
                     cluster = line.replace('X-Netapp-asup-cluster-name:', '').strip()
-                    
+
                 # TODO: extract timezone
 
     return node, cluster, timezone
@@ -51,7 +51,7 @@ def read_header_file(header_file):
 def run_xml_mode(xml_info_file, xml_data_file, xml_header_file, result_dir, csv_dir, sort_columns_by_name):
     """
     The xml mode's main routine. Calls all functions to read xml data, write CSVs
-    and finally create an HTML.
+    and finally creates an HTML.
     :param xml_info_file: path to a 'CM-STATS-HOURLY-INFO.XML' file which contains unit and base
     information for the data file.
     :param xml_data_file: path to a 'CM-STATS-HOURLY-DATA.XML' file.
