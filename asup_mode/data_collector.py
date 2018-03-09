@@ -84,6 +84,8 @@ def read_data_file(container, data_file):
     :param data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file 
     :return: None
     """
+    logging.debug('data file: %s', data_file)
+    
     elem_dict = {}
 
     for _, elem in ET.iterparse(data_file):

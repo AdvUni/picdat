@@ -70,7 +70,7 @@ try:
                   and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
 
                 asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
-                asup_data_files = os.path.join(input_file, constants.ASUP_DATA_FILE)
+                asup_data_files = [os.path.join(input_file, constants.ASUP_DATA_FILE)]
 
                 if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
                     asup_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
@@ -102,12 +102,12 @@ try:
     # decide whether run in perfstat or xml mode
     if perfstat_output_files:
         # run in perfstat mode
-        logging.info('Running picdat in perfstat mode')
+        logging.info('Running PicDat in PerfStat mode')
         perfstat_mode.run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir,
                                         csv_dir, sort_columns_by_name)
     elif asup_data_files:
         # run in xml mode
-        logging.info('Running picdat in xml mode')
+        logging.info('Running PicDat in ASUP mode')
         asup_mode.run_asup_mode(asup_info_file, asup_data_files, asup_header_file,
                                result_dir, csv_dir, sort_columns_by_name)
     else:

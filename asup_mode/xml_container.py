@@ -32,7 +32,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
                    ('volume', 'total_ops'), ('volume', 'avg_latency'), ('volume', 'read_data'),
                    ('volume', 'write_data'), ('lun:constituent', 'total_ops'),
-                   ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data')]
+                   ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data'),
+                   ('disk:constituent', 'disk_busy')]
 
 # The following list contains search keys for gaining chart data. Its elements are the names of
 # counters. The object tag belonging to the xml elements satisfying the keys is always
