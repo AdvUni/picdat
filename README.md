@@ -12,6 +12,14 @@ Similary, PicDat can handle ASUP xml performance data.
 
 To generate graphs we use the tool dygraphs in a second step.
 
+
+General usage:
+
+````
+picdat [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"] [--logfile]
+````
+
+
 Example output:
 
 ````
