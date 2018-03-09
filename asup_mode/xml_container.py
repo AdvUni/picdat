@@ -67,11 +67,13 @@ class XmlContainer:
         # tables hold all collected chart data from xml data file for both request types.
         self.tables = {request: Table() for request in OBJECT_REQUESTS + [SYSTEM_OBJECT_TYPE]}
 
-        # As it seems that the counters storing the values written in the data file never get
-        # cleared, it is always necessary to build the difference between two consecutive values
-        # and dividing it through 3600 to get a useful, absolute value. For enabling this, the
-        # following dict always buffers the last value:
+        # As it seems that the counters storing the values written in the data
+        # file never get cleared, it is always necessary to calculate: (this_val
+        # - last_val)/(this_timestamp - last_timestamp) to get a useful,
+        # absolute value. For enabling this, the following dicts buffer the last
+        # value and the last timestamp:
         self.value_buffer = {}
+        self.unixtime_buffer = {}
 
         # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_REQUESTS to the respective
         # unit. Units are provided by the xml info file.
@@ -84,8 +86,9 @@ class XmlContainer:
         # those dicts do only work for the OBJECT_REQUESTS
         self.map_counter_to_base = {}
         self.map_base_to_counter = {}
-        # Does the same thing for bases as value_buffer for values:
+        # Does the same thing for bases as value_buffer and unixtime_buffer for values:
         self.baseval_buffer = {}
+        self.base_unixtime_buffer = {}
 
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
@@ -141,32 +144,37 @@ class XmlContainer:
 
                 # process values
                 if (object_type, counter) in OBJECT_REQUESTS:
-                    timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
+                    unix_time = int(element_dict['timestamp'])
                     instance = element_dict['instance']
-                    value = element_dict['value']
+                    value = float(element_dict['value'])
 
                     if (object_type, counter, instance) in self.value_buffer:
                         # build absolute value through comparison of two consecutive values
                         last_val = self.value_buffer[(object_type, counter, instance)]
-                        abs_val = str((float(value) - float(last_val)) / 3600)
+                        last_unixtime = self.unixtime_buffer[(object_type, counter, instance)]
+                        abs_val = str((value - last_val) / (unix_time - last_unixtime))
+                        date_time = datetime.datetime.fromtimestamp(unix_time)
 
-                        self.tables[(object_type, counter)].insert(timestamp, instance, abs_val)
+                        self.tables[(object_type, counter)].insert(date_time, instance, abs_val)
                     self.value_buffer[(object_type, counter, instance)] = value
+                    self.unixtime_buffer[(object_type, counter, instance)] = unix_time
 
                 # process bases
                 if (object_type, counter) in self.map_base_to_counter:
-                    timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
+                    unix_time = int(element_dict['timestamp'])
                     instance = element_dict['instance']
-                    baseval = element_dict['value']
+                    baseval = float(element_dict['value'])
                     original_counter = self.map_base_to_counter[(object_type, counter)]
 
                     if (object_type, counter, instance) in self.baseval_buffer:
                         last_baseval = self.baseval_buffer[(object_type, counter, instance)]
-                        abs_baseval = str((float(baseval) - float(last_baseval)) / 3600)
+                        last_unixtime = self.base_unixtime_buffer[(object_type, counter, instance)]
+                        abs_baseval = str((baseval - last_baseval) / (unix_time - last_unixtime))
+                        date_time = datetime.datetime.fromtimestamp(unix_time)
 
                         try:
                             old_value = self.tables[(object_type, original_counter)
-                                                    ].get_item(timestamp, instance)
+                                                    ].get_item(date_time, instance)
                             try:
                                 new_value = str(float(old_value) / float(abs_baseval))
                             except(ZeroDivisionError):
@@ -176,33 +184,37 @@ class XmlContainer:
                                     object_type, instance, original_counter)
                                 new_value = str(0)
                             self.tables[(object_type, original_counter)].insert(
-                                timestamp, instance, new_value)
+                                date_time, instance, new_value)
                         except (KeyError, IndexError):
                             logging.debug(
                                 'Found base before actual element. Add base element to base heap.')
                             logging.debug("base_element: %s", element_dict)
                             self.base_heap.add((object_type, original_counter,
-                                                instance, timestamp, abs_baseval))
+                                                instance, date_time, abs_baseval))
                         except (ValueError):
                             logging.error('Found value which is not convertible to float. Base '
                                           'conversion failed.')
 
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
+                    self.base_unixtime_buffer[(object_type, counter, instance)] = unix_time
 
             # process SYSTEM_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
                 counter = element_dict['counter']
                 if counter in SYSTEM_REQUESTS:
-                    timestamp = datetime.datetime.fromtimestamp(int(element_dict['timestamp']))
-                    value = element_dict['value']
+                    unix_time = int(element_dict['timestamp'])
+                    value = float(element_dict['value'])
 
                     if (object_type, counter) in self.value_buffer:
                         # build absolute value through comparison of two consecutive values
                         last_val = self.value_buffer[(object_type, counter)]
-                        abs_val = str((float(value) - float(last_val)) / 3600)
+                        last_unixtime = self.unixtime_buffer[(object_type, counter)]
+                        abs_val = str((value - last_val) / (unix_time - last_unixtime))
+                        date_time = datetime.datetime.fromtimestamp(unix_time)
 
-                        self.tables[SYSTEM_OBJECT_TYPE].insert(timestamp, counter, abs_val)
+                        self.tables[SYSTEM_OBJECT_TYPE].insert(date_time, counter, abs_val)
                     self.value_buffer[(object_type, counter)] = value
+                    self.unixtime_buffer[(object_type, counter)] = unix_time
 
                     # once, save the node name
                     if not self.node_name:
