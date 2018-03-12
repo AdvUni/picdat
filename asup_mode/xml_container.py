@@ -290,7 +290,7 @@ class XmlContainer:
         titles = [object_type + ': ' + aspect for (object_type, aspect) in available_requests]
         units = [self.units[request] for request in available_requests]
         x_labels = ['time' for _ in available_requests]
-        object_ids = [object_type.replace(':', '_') + '_' +
+        object_ids = [object_type.replace(':', '_').replace('-', '_') + '_' +
                       aspect for (object_type, aspect) in available_requests]
         barchart_booleans = ['false' for _ in available_requests]
         csv_names = [object_type.replace(':', '_') + '_' + aspect +
@@ -301,9 +301,9 @@ class XmlContainer:
             titles.append(self.node_name)
             units.append(self.units[SYSTEM_OBJECT_TYPE])
             x_labels.append('time')
-            object_ids.append(self.node_name)
+            object_ids.append(self.node_name.replace(':', '_').replace('-', '_'))
             barchart_booleans.append('false')
-            csv_names.append(self.node_name + constants.CSV_FILE_ENDING)
+            csv_names.append(self.node_name.replace(':', '_').replace('-', '_') + constants.CSV_FILE_ENDING)
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
