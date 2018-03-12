@@ -169,7 +169,7 @@ def handle_user_input(argv):
 
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv[1:], 'hsld:i:o:', ['help', 'sortbynames', 'logfile', 'debug=',
+        opts, _ = getopt.getopt(argv[1:], 'hslwd:i:o:', ['help', 'sortbynames', 'logfile', 'webserver', 'debug=',
                                                         'input=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
@@ -232,8 +232,13 @@ def handle_user_input(argv):
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
+    
+    if '-w' in opts or '--webserver' in opts:
+        webserver = True
+    else: 
+        webserver = False
 
-    return input_file, output_dir, sort_columns_by_name
+    return input_file, output_dir, sort_columns_by_name, webserver
 
 
 def extract_tgz(dir_path, tgz_file, data_name_extension=None):

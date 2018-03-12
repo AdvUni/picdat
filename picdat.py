@@ -7,6 +7,7 @@ import shutil
 import os
 import sys
 import tempfile
+import http.server
 
 sys.path.append('..')
 
@@ -35,7 +36,7 @@ try:
     temp_path = None
 
     # read command line options and take additional user input
-    input_file, result_dir, sort_columns_by_name = picdat_util.handle_user_input(sys.argv)
+    input_file, result_dir, sort_columns_by_name, webserver = picdat_util.handle_user_input(sys.argv)
 
     perfstat_output_files = None
     perfstat_console_file = None
@@ -114,8 +115,17 @@ try:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)
         sys.exit(0)
-
-    logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
+        
+    if webserver:
+        logging.info('Starting local web server... ')
+        logging.info('Open \'localhost:8000\' in browser for viewing charts.')
+        logging.info('Hit ctrl+C to terminate web server (might be necessary several times)')
+        
+        os.chdir(os.path.abspath(result_dir))
+        server = http.server.HTTPServer(('', 8000), http.server.SimpleHTTPRequestHandler)
+        server.serve_forever()
+    else:
+        logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
 
 
 finally:

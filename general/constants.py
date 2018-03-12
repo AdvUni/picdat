@@ -54,7 +54,11 @@ usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [
                                  describes the filtering level of command line output during
                                  running this program. Default is "info".
                                  
-    --logfile, -l: Redirects logging information into a file called picdat.log.
+    --logfile, -l: redirects logging information into a file called picdat.log.
+    
+    --webserver, -w: at the end of execution, starts a local web server in output directory to
+                     serve dygraphs JavaScript from it. This is a workaround for security settings
+                     of browsers like Google Chrome and Internet Explorer.
 '''
 
 
