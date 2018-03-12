@@ -156,6 +156,10 @@ class XmlContainer:
                         abs_val = str((value - last_val) / (unix_time - last_unixtime))
                         date_time = datetime.datetime.fromtimestamp(unix_time)
 
+                        logging.debug('object type %s: (recent_val - last_val)/(recent_time - '
+                                      'last_time) = (%s - %s)/(%s - %s) = %s', object_type,
+                                      value, last_val, unix_time, last_unixtime, abs_val)
+
                         self.tables[(object_type, counter)].insert(date_time, instance, abs_val)
                     self.value_buffer[(object_type, counter, instance)] = value
                     self.unixtime_buffer[(object_type, counter, instance)] = unix_time
@@ -240,6 +244,9 @@ class XmlContainer:
                 old_value = self.tables[(object_type, counter)].get_item(timestamp, instance)
                 new_value = str(float(old_value) / float(base_value))
                 self.tables[(object_type, counter)].insert(timestamp, instance, new_value)
+                logging.debug('base conversion. object: %s, counter: %s, instance: %s. value / '
+                              'base = %s / %s = %s', object_type, counter, instance, old_value,
+                              base_value, new_value)
             except (KeyError, IndexError):
                 logging.warning(
                     'Found base value but no matching actual value. This means, Value for '
@@ -303,7 +310,8 @@ class XmlContainer:
             x_labels.append('time')
             object_ids.append(self.node_name.replace(':', '_').replace('-', '_'))
             barchart_booleans.append('false')
-            csv_names.append(self.node_name.replace(':', '_').replace('-', '_') + constants.CSV_FILE_ENDING)
+            csv_names.append(self.node_name.replace(':', '_').replace(
+                '-', '_') + constants.CSV_FILE_ENDING)
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
