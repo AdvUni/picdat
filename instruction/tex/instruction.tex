@@ -37,39 +37,22 @@ PicDat selects some counters of such files which are typically sufficient for th
 \end{frame}
 
 \begin{frame}
+\frametitle{Table of contents}
+
+\tableofcontents
+\end{frame}
+
+\section{Running PicDat}
+\begin{frame}
 \frametitle{Running PicDat}
 You can run PicDat without any parameters. After you startet it, it'll ask you for some performance input. Additionally, PicDat will ask you to enter a directory for its results. Be aware, that content might become overwritten if this directory is not empty. After this, PicDat will start working. 
 \bigskip
 
 Alternatively, you can pass input and output specifications as command line parameters. Therefore, use the options \textcolor{darkblue}{\texttt{-\,-inputfile}} and \textcolor{darkblue}{\texttt{-\,-outputdir}} or \textcolor{darkblue}{\texttt{-i}} and \textcolor{darkblue}{\texttt{-o}} respectively.
 \smallskip
-
-Another available command line option is the \textcolor{darkblue}{\texttt{-\,-debug}} or \textcolor{darkblue}{\texttt{-d flag}}. It specifies the filtering level for command line output. Pass it together with a string out of those: \texttt{debug, info, warning, error, critical}
-Default is \texttt{info}.
-\smallskip
-
-If you wand to redirect the command line output into a log file for further analysis, use the flag \textcolor{darkblue}{\texttt{-\,-logfile}} or \textcolor{darkblue}{\texttt{-l}}. This will create a picdat.log file inside your output directory.
-\smallskip
-
-By default, PicDat sorts the most data series by relevance. This means, the graph with the highest sum of values will be displayed at the top of a chart's legend. If you rather wants them to be sorted alphanumeric, use the flag \textcolor{darkblue}{\texttt{-\,-sortbyname}} or \textcolor{darkblue}{\texttt{-s}}.
-\bigskip
-
-To get an overview about all command line option, try option \textcolor{darkblue}{\texttt{-\,-help}} or  \textcolor{darkblue}{\texttt{-h}}.
 \end{frame}
 
-\begin{frame}
-\frametitle{Input format}
-As mentioned, PicDat can handle two different types of performance data.
-\bigskip
-
-If you want to visualize \textcolor{darkblue}{\textbf{PerfStat data}}, you have following options: Either you can pass single PerfStat data files (they have to end with \textbf{.data} or \textbf{.out}) or you can pass a \textbf{directory}, containing such files. Furthermore, you can pass a \textbf{.zip} file containing PerfStat output. If you transmit a single file, be aware, that some meta data which are usually packed together with PerfStats, will not be readable. If you transmit several PerfStats (within a directory or zip), PicDat will generate \textbf{one HTML} with charts \textbf{for each PerfStat}. 
-\bigskip
-
-\textcolor{darkblue}{\textbf{ASUP}} data are usually packed in tar files with file extension \textbf{.tgz}. You can pass them as input in a whole. It is also possible to transmit the unpacked tars, i.e. a \textbf{directory}. There is nothing as a single file transmission available, because PicDat needs at least two files, a CM-STATS-HOURLY-INFO.XML and a CM-STATS-HOURLY-DATA.XML file for its analysis. 
-
-Working with ASUPs, it might be useful to visualize data for several consecutive ASUP files together. To do so, just pack \textbf{several ASUP .tgz archives into one directory} and pass the directory to PicDat. Therefore, the alphabetical order of the archive names should go with the chronological order. PicDat will stick the results for the different data files together. This means, different from visualizing PerfStats, only \textbf{one HTML for all data} will be generated. So don't mess around and pack ASUP files into one folder, which don't belong together! Don't mix nodes.
-\end{frame}
-
+\section{Run example}
 \begin{frame}[fragile]
 \frametitle{Run example}
 This is how a run could look like on your command line:
@@ -110,6 +93,42 @@ picdat [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--d
 \end{lstlisting}
 \end{frame}
 
+\section{Command line options}
+\begin{frame}
+\frametitle{Command line options}
+Additional to \textcolor{darkblue}{\texttt{-\,-inputfile}} and \textcolor{darkblue}{\texttt{-\,-outputdir}}, there are following command line options available:
+\bigskip
+
+The \textcolor{darkblue}{\texttt{-\,-debug}} or \textcolor{darkblue}{\texttt{-d}} option specifies the filtering level for command line output. Pass it together with a string out of those: \texttt{debug, info, warning, error, critical}. Default is \texttt{info}.
+\bigskip
+
+If you wand to redirect the command line output into a log file for further analysis, use the flag \textcolor{darkblue}{\texttt{-\,-logfile}} or \textcolor{darkblue}{\texttt{-l}}. This will create a picdat.log file inside your output directory.
+\bigskip
+
+By default, PicDat sorts the most data series by relevance. This means, the graph with the highest sum of values will be displayed at the top of a chart's legend. If you rather wants them to be sorted alphanumeric, use the flag \textcolor{darkblue}{\texttt{-\,-sortbyname}} or \textcolor{darkblue}{\texttt{-s}}.
+\bigskip
+
+As the security settings from some browsers like Google Chrome or Edge prevent the execution of external JavaScript code, PicDat charts stay empty when you try to open them with those browsers from your file system. As workaround, PicDat provides the flag \textcolor{darkblue}{\texttt{-\,-webserver}} or \textcolor{darkblue}{\texttt{-w}}. This will start a simple local HTTP server at the end of PicDat's execution. With this, you should be able to view the charts from \textit{http://localhost:8000}. You will need to terminate the server after you're done.
+\bigskip
+
+To get an overview about all command line option, try option \textcolor{darkblue}{\texttt{-\,-help}} or \textcolor{darkblue}{\texttt{-h}}.
+\end{frame}
+
+\section{Input format}
+\begin{frame}
+\frametitle{Input format}
+As mentioned, PicDat can handle two different types of performance data.
+\bigskip
+
+If you want to visualize \textcolor{darkblue}{\textbf{PerfStat data}}, you have following options: Either you can pass single PerfStat data files (they have to end with \textbf{.data} or \textbf{.out}) or you can pass a \textbf{directory}, containing such files. Furthermore, you can pass a \textbf{.zip} file containing PerfStat output. If you transmit a single file, be aware, that some meta data which are usually packed together with PerfStats, will not be readable. If you transmit several PerfStats (within a directory or zip), PicDat will generate \textbf{one HTML} with charts \textbf{for each PerfStat}. 
+\bigskip
+
+\textcolor{darkblue}{\textbf{ASUP}} data are usually packed in tar files with file extension \textbf{.tgz}. You can pass them as input in a whole. It is also possible to transmit the unpacked tars, i.e. a \textbf{directory}. There is nothing as a single file transmission available, because PicDat needs at least two files, a CM-STATS-HOURLY-INFO.XML and a CM-STATS-HOURLY-DATA.XML file for its analysis. 
+
+Working with ASUPs, it might be useful to visualize data for several consecutive ASUP files together. To do so, just pack \textbf{several ASUP .tgz archives into one directory} and pass the directory to PicDat. Therefore, the alphabetical order of the archive names should go with the chronological order. PicDat will stick the results for the different data files together. This means, different from visualizing PerfStats, only \textbf{one HTML for all data} will be generated. So don't mess around and pack ASUP files into one folder, which don't belong together! Don't mix nodes.
+\end{frame}
+
+\section{Interactive charts -- legend}
 \begin{frame}
 \frametitle{Interactive charts -- legend}
 The Job of PicDat is to pick and visualize some of the various information given with the input. The charts.html files contains several labeled charts offering some interaction. 
@@ -130,6 +149,7 @@ Mouse-over them to display the values in the legend. You'll notice as well, that
 If there are so many graphs in one chart that the legend can't display them all without a scroll bar, the legend will change to display only one value at once as soon as your mouse enters the chart.
 \end{frame}
 
+\section{Interactive charts -- zoom}
 \begin{frame}
 \frametitle{Interactive charts -- zoom} 
 \begin{figure}
@@ -139,6 +159,7 @@ If there are so many graphs in one chart that the legend can't display them all 
 To zoom inside the charts, just click and drag them in x or y direction. Once zoomed in, you can also change the displayed range by holding shift an click and drag again. To go back into original view, just double-click the chart.
 \end{frame}
 
+\section{Interactive charts -- select and deselect}
 \begin{frame}
 \frametitle{Interactive charts -- select and deselect} 
 \begin{figure}
@@ -149,6 +170,7 @@ You might wish to take some graph lines out of view. Therefore, click one of the
 Note, that disabled graphs disappear from the legend whereas your cursor is on the chart. Entries, belonging to graphs with a gap at the place your cursor recently is, will disappear as well. So don't be confused if the legend will bounce a bit as you move your mouse.
 \end{frame}
 
+\section{Interactive charts -- rolling average}
 \begin{frame}
 \frametitle{Interactive charts -- rolling average} 
 \begin{figure}
@@ -158,10 +180,16 @@ Note, that disabled graphs disappear from the legend whereas your cursor is on t
 If your values are very close and unsteady, you might get a better overview using a rolling average. Therefore, type a natural number into the small textfield appearing at the lower left corner of most charts. After hitting 'enter', the data will get averaged over this number of measuring points.
 \end{frame}
 
+\section{Can't see any graphs?}
 \begin{frame}
 \frametitle{Can't see any graphs?}
-If you are running the charts.html from your file system, the Browsers Chrome and Internet Explorer/Edge are blocking external files for security reasons. So, the dygraph.js can't be loaded. To avoid this, use Firefox instead, use a local web server or try to change security settings.
-If this is not the problem, make sure that dygraphs is available at all. A folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file.
+If PicDat seems to ran correctly, but all charts inside the charts.html are empty, see whether one of the following applies:
+\bigskip
+
+If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See 'Command line options'). Alternatively, use Firefox instead or try to change security settings.
+\bigskip
+
+If this is not the problem, make sure that dygraphs is available at all. A folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file. Of course, a folder called 'tables' which contains all chart data within csv tables must be available too.
 \end{frame}
 
 \end{document}
