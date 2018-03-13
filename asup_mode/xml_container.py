@@ -175,30 +175,16 @@ class XmlContainer:
                         last_baseval = self.baseval_buffer[(object_type, counter, instance)]
                         last_unixtime = self.base_unixtime_buffer[(object_type, counter, instance)]
                         abs_baseval = str((baseval - last_baseval) / (unix_time - last_unixtime))
-                        date_time = datetime.datetime.fromtimestamp(unix_time)
+                        datetimestamp = datetime.datetime.fromtimestamp(unix_time)
 
                         try:
-                            old_value = self.tables[(object_type, original_counter)
-                                                    ].get_item(date_time, instance)
-                            try:
-                                new_value = str(float(old_value) / float(abs_baseval))
-                            except(ZeroDivisionError):
-                                logging.debug(
-                                    'base conversion leads to division by zero: %s/%s '
-                                    '(%s:%s:%s) Set result to 0.', old_value, abs_baseval,
-                                    object_type, instance, original_counter)
-                                new_value = str(0)
-                            self.tables[(object_type, original_counter)].insert(
-                                date_time, instance, new_value)
+                            self.do_base_conversion((object_type,original_counter), instance, datetimestamp, abs_baseval)
                         except (KeyError, IndexError):
                             logging.debug(
                                 'Found base before actual element. Add base element to base heap.')
                             logging.debug("base_element: %s", element_dict)
                             self.base_heap.add((object_type, original_counter,
-                                                instance, date_time, abs_baseval))
-                        except (ValueError):
-                            logging.error('Found value which is not convertible to float. Base '
-                                          'conversion failed.')
+                                                instance, datetimestamp, abs_baseval))
 
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
                     self.base_unixtime_buffer[(object_type, counter, instance)] = unix_time
@@ -231,6 +217,37 @@ class XmlContainer:
                 'content: %s Expected (at least) following tags: object, counter, timestamp, '
                 'instance, value', str(element_dict))
 
+    def do_base_conversion(self, request, instance, datetimestamp, base_val):
+        """
+        Does base conversion for a value stored in self.tables.
+        :param request: key of dictionary self.tables to allocate table for a specific request
+        :param instance: The object's instance name to which the value belongs which also is the
+        name of the value's table column.
+        :param datetimestamp: The time which belongs to the value in datetime format. It's also the
+        name of the value's table row.
+        :param base_val: The value's base value.
+        :return: None
+        :raises KeyError: Will occur if the value is not stored in self.tables, means if
+        self.tables[request] does not contain a value for row datetimestamp and column instance.
+        """
+        try:
+            old_val = self.tables[request].get_item(datetimestamp, instance)
+            try:
+                new_val = str(float(old_val) / float(base_val))
+            except(ZeroDivisionError):
+                logging.debug(
+                    'base conversion leads to division by zero: %s/%s (%s,%s) Set result to 0.',
+                    old_val, base_val, request, instance)
+                new_val = str(0)
+            self.tables[request].insert(datetimestamp, instance, new_val)
+            logging.debug('base conversion. request: %s, instance: %s. value / base = %s / %s = %s',
+                          request, instance, old_val, base_val, new_val)
+        except(ValueError):
+            logging.error(
+                'Found value which is not convertible to float. Base conversion failed.')
+        except(KeyError, IndexError):
+            raise KeyError
+
     def process_base_heap(self):
         """
         In case some base elements appear in xml before the elements, they are the base to, they
@@ -239,26 +256,19 @@ class XmlContainer:
         :return: None
         """
         for base_element in self.base_heap:
-            object_type, counter, instance, timestamp, base_value = base_element
+            object_type, counter, instance, datetimestamp, base_val = base_element
             try:
-                old_value = self.tables[(object_type, counter)].get_item(timestamp, instance)
-                new_value = str(float(old_value) / float(base_value))
-                self.tables[(object_type, counter)].insert(timestamp, instance, new_value)
-                logging.debug('base conversion. object: %s, counter: %s, instance: %s. value / '
-                              'base = %s / %s = %s', object_type, counter, instance, old_value,
-                              base_value, new_value)
-            except (KeyError, IndexError):
+                self.do_base_conversion((object_type,counter), instance, datetimestamp, base_val)
+            except (KeyError):
                 logging.warning(
                     'Found base value but no matching actual value. This means, Value for '
                     '%s - %s, instance %s with time stamp %s is missing in data!',
-                    object_type, counter, instance, timestamp)
-            except (ValueError):
-                logging.error(
-                    'Found value which is not convertible to float. Base conversion failed.')
+                    object_type, counter, instance, datetimestamp)
 
     def do_unit_conversions(self):
         """
-        This method improves the presentation of some values through unit conversion.
+        This method improves the presentation of some values through unit conversion. Don't call it
+        before all data files are read!
         :return: None
         """
         for request, unit in self.units.items():
