@@ -4,7 +4,8 @@ This module contains the main routine for the asup mode
 import logging
 import os
 from asup_mode import data_collector
-from general import table_writer, constants
+from general import constants
+from general import table_writer
 from general import visualizer
 
 __author__ = 'Marie Lohbeck'

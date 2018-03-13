@@ -3,9 +3,9 @@ Contains the class XmlContainer. This class is responsible for holding and
 processing all data collected from xml files.
 """
 import logging
-import datetime
 from general.table import Table
 from general import constants
+from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -145,67 +145,65 @@ class XmlContainer:
 
                 # process values
                 if (object_type, counter) in OBJECT_REQUESTS:
-                    unix_time = int(element_dict['timestamp'])
+                    unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     value = float(element_dict['value'])
 
                     if (object_type, counter, instance) in self.value_buffer:
+
                         # build absolute value through comparison of two consecutive values
-                        last_val = self.value_buffer[(object_type, counter, instance)]
-                        last_unixtime = self.unixtime_buffer[(object_type, counter, instance)]
-                        abs_val = str((value - last_val) / (unix_time - last_unixtime))
-                        date_time = datetime.datetime.fromtimestamp(unix_time)
+                        abs_val, datetimestamp = util.get_abs_val(
+                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
+                            (object_type, counter, instance))
+                        self.tables[(object_type, counter)].insert(datetimestamp, instance, abs_val)
 
-                        logging.debug('object type %s: (recent_val - last_val)/(recent_time - '
-                                      'last_time) = (%s - %s)/(%s - %s) = %s', object_type,
-                                      value, last_val, unix_time, last_unixtime, abs_val)
-
-                        self.tables[(object_type, counter)].insert(date_time, instance, abs_val)
                     self.value_buffer[(object_type, counter, instance)] = value
-                    self.unixtime_buffer[(object_type, counter, instance)] = unix_time
+                    self.unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
 
                 # process bases
                 if (object_type, counter) in self.map_base_to_counter:
-                    unix_time = int(element_dict['timestamp'])
+                    unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     baseval = float(element_dict['value'])
                     original_counter = self.map_base_to_counter[(object_type, counter)]
 
                     if (object_type, counter, instance) in self.baseval_buffer:
-                        last_baseval = self.baseval_buffer[(object_type, counter, instance)]
-                        last_unixtime = self.base_unixtime_buffer[(object_type, counter, instance)]
-                        abs_baseval = str((baseval - last_baseval) / (unix_time - last_unixtime))
-                        datetimestamp = datetime.datetime.fromtimestamp(unix_time)
+
+                        # build absolute value through comparison of two consecutive values
+                        abs_baseval, datetimestamp = util.get_abs_val(
+                            baseval, unixtimestamp, self.baseval_buffer, self.base_unixtime_buffer,
+                            (object_type, counter, instance))
 
                         try:
-                            self.do_base_conversion((object_type,original_counter), instance, datetimestamp, abs_baseval)
+                            self.do_base_conversion(
+                                (object_type, original_counter), instance, datetimestamp, abs_baseval)
                         except (KeyError, IndexError):
                             logging.debug(
-                                'Found base before actual element. Add base element to base heap.')
-                            logging.debug("base_element: %s", element_dict)
+                                'Found base before actual element. Add base element to base heap. '
+                                'Base_element: %s', element_dict)
                             self.base_heap.add((object_type, original_counter,
                                                 instance, datetimestamp, abs_baseval))
 
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
-                    self.base_unixtime_buffer[(object_type, counter, instance)] = unix_time
+                    self.base_unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
 
             # process SYSTEM_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
                 counter = element_dict['counter']
                 if counter in SYSTEM_REQUESTS:
-                    unix_time = int(element_dict['timestamp'])
+                    unixtimestamp = int(element_dict['timestamp'])
                     value = float(element_dict['value'])
 
                     if (object_type, counter) in self.value_buffer:
-                        # build absolute value through comparison of two consecutive values
-                        last_val = self.value_buffer[(object_type, counter)]
-                        last_unixtime = self.unixtime_buffer[(object_type, counter)]
-                        abs_val = str((value - last_val) / (unix_time - last_unixtime))
-                        date_time = datetime.datetime.fromtimestamp(unix_time)
 
-                        self.tables[SYSTEM_OBJECT_TYPE].insert(date_time, counter, abs_val)
+                        # build absolute value through comparison of two consecutive values
+                        abs_val, datetimestamp = util.get_abs_val(
+                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
+                            (object_type, counter))
+                        self.tables[SYSTEM_OBJECT_TYPE].insert(datetimestamp, counter, abs_val)
+
                     self.value_buffer[(object_type, counter)] = value
-                    self.unixtime_buffer[(object_type, counter)] = unix_time
+                    self.unixtime_buffer[(object_type, counter)] = unixtimestamp
 
                     # once, save the node name
                     if not self.node_name:
@@ -258,7 +256,7 @@ class XmlContainer:
         for base_element in self.base_heap:
             object_type, counter, instance, datetimestamp, base_val = base_element
             try:
-                self.do_base_conversion((object_type,counter), instance, datetimestamp, base_val)
+                self.do_base_conversion((object_type, counter), instance, datetimestamp, base_val)
             except (KeyError):
                 logging.warning(
                     'Found base value but no matching actual value. This means, Value for '
