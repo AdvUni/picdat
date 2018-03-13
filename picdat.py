@@ -59,7 +59,8 @@ try:
                 asup_data_files = []
                 # collect all DATA files from tgz archive. As we only need one INFO and
                 # HEADER file, it's ok to overwrite them each iteration
-                for tar in tar_files:
+                for tar in sorted(tar_files):
+                    logging.debug(tar)
                     asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
                         temp_path, tar, str(counter))
                     asup_data_files.append(asup_data_file)
