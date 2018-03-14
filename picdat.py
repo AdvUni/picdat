@@ -47,6 +47,7 @@ try:
 
     # handle directories as input
     if os.path.isdir(input_file):
+        # try to select perfstat files from input dir
         perfstat_output_files, perfstat_console_file = picdat_util.get_all_perfstats(input_file)
 
         if not perfstat_output_files:
@@ -67,18 +68,19 @@ try:
                     counter = counter + 1
                 
                     logging.debug('data file found: %s', asup_data_file)
-
+                    
+            # try to select asup xml files from input dir if no perfstats and no tgz
             elif (os.path.isfile(os.path.join(input_file, constants.ASUP_INFO_FILE))
                   and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
-
+                
                 asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
                 asup_data_files = [os.path.join(input_file, constants.ASUP_DATA_FILE)]
 
                 if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
                     asup_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
                 else:
-                    logging.info('You gave a directory without a HEADER file. This means, some meta '
-                                 'data for charts are missing such as node and cluster name.')
+                    logging.info('You gave a directory without a HEADER file. This means, some '
+                                 'meta data for charts are missing such as node and cluster name.')
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':
@@ -101,7 +103,7 @@ try:
     # create directory and copy the necessary templates files into it
     csv_dir = picdat_util.prepare_directory(result_dir)
 
-    # decide whether run in perfstat or xml mode
+    # run
     if perfstat_output_files:
         # run in perfstat mode
         logging.info('Running PicDat in PerfStat mode')
@@ -117,6 +119,7 @@ try:
                      input_file)
         sys.exit(0)
         
+    # start web server if initiated with command line option
     if webserver:
         logging.info('Starting local web server... ')
         logging.info('Open \'localhost:8000\' in browser for viewing charts.')
