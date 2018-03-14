@@ -358,7 +358,7 @@ class XmlContainer:
 
         # get identifiers for last chart belonging to SYSTEM_BW_REQUESTS
         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
-            titles.append(self.node_name)
+            titles.append(self.node_name + ': band width')
             units.append(self.units[(SYSTEM_OBJECT_TYPE, BW)])
             x_labels.append('time')
             object_ids.append(self.node_name.replace(':', '_').replace('-', '_') + '_' + BW)
@@ -368,7 +368,7 @@ class XmlContainer:
 
         # get identifiers for last chart belonging to SYSTEM_IOPS_REQUESTS
         if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
-            titles.append(self.node_name)
+            titles.append(self.node_name + ': IOPS')
             units.append(self.units[(SYSTEM_OBJECT_TYPE, IOPS)])
             x_labels.append('time')
             object_ids.append(self.node_name.replace(':', '_').replace('-', '_') + '_' + IOPS)
