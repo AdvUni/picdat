@@ -35,6 +35,8 @@ OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_bu
                    ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data'),
                    ('disk:constituent', 'disk_busy')]
 
+LUN_HISTO_REQUEST = ('lun:constituent', 'read_align_histo')
+
 # The following list contains search keys for gaining chart data. Its elements are the names of
 # counters. The counters are all about band with and are assumed to have the same unit. This is why
 # the lists name contains 'BW'. The object tag belonging to the xml elements satisfying the keys is
@@ -49,8 +51,8 @@ SYSTEM_BW_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net
 BW = 'bw'
 
 # The following list contains search keys for gaining chart data. Its elements are the names of
-# counters. The counters are all about iops operations and are assumed to have the same unit
-# (i. e. None). This is why the lists name contains 'IOPS'. The object tag belonging to the xml
+# counters. The counters are all about iops operations and are assumed to have the same unit.
+# This is why the lists name contains 'IOPS'. The object tag belonging to the xml
 # elements satisfying the keys is always 'system:constituent'. Therefore, object is not explicitly
 # specified in the requests. The values found about all of these keys are meant to be visualized in
 # one chart together. So, the columns of the chart's table will represent counters, means one
@@ -84,8 +86,8 @@ class XmlContainer:
 
         # A dict of Table object, stored to a key from OBJECT_REQUESTS or SYSTEM_BW_REQUESTS. Those
         # tables hold all collected chart data from xml data file for both request types.
-        self.tables = {request: Table() for request in OBJECT_REQUESTS +
-                       [(SYSTEM_OBJECT_TYPE, BW), (SYSTEM_OBJECT_TYPE, IOPS)]}
+        self.tables = {request: Table() for request in OBJECT_REQUESTS + [LUN_HISTO_REQUEST,
+                                                                          (SYSTEM_OBJECT_TYPE, BW), (SYSTEM_OBJECT_TYPE, IOPS)]}
 
         # As it seems that the counters storing the values written in the data
         # file never get cleared, it is always necessary to calculate: (this_val
@@ -135,6 +137,9 @@ class XmlContainer:
                 if base:
                     self.map_counter_to_base[object_type, counter] = base
                     self.map_base_to_counter[object_type, base] = counter
+
+            elif (object_type, counter) == LUN_HISTO_REQUEST:
+                self.units[object_type, counter] = element_dict['unit']
 
             elif object_type == SYSTEM_OBJECT_TYPE:
                 if counter in SYSTEM_BW_REQUESTS:
@@ -208,6 +213,39 @@ class XmlContainer:
 
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
                     self.base_unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
+
+                # process lun histo
+                if (object_type, counter) == LUN_HISTO_REQUEST:
+                    unixtimestamp = int(element_dict['timestamp'])
+                    instance = element_dict['instance']
+                    valuelist = (element_dict['value']).split(',')
+                    print(valuelist)
+                    print('time: ' + str(unixtimestamp))
+                    print('instance: ' + instance)
+                    print()
+                    for bucket in range(len(valuelist)):
+                        value = float(valuelist[bucket])
+                        print('bucket: ' + str(bucket))
+                        print('instance: ' + instance)
+                        print('value: ' + str(value))
+                         
+                         
+                        try:
+                            print('valbuf: ' + str(self.value_buffer[(object_type, counter, instance, bucket)]))
+                            print('timebuf: '+ str(self.unixtime_buffer[(object_type, counter, instance, bucket)]))
+                        except(KeyError):
+                            print('first time')
+                        print()
+ 
+                        if (object_type, counter, instance, bucket) in self.value_buffer:
+ 
+                            abs_val, _ = util.get_abs_val(value, unixtimestamp, self.value_buffer,
+                                                          self.unixtime_buffer,
+                                                          (object_type, counter, instance, bucket))
+                            self.tables[LUN_HISTO_REQUEST].insert(bucket, instance, value)
+ 
+                        self.value_buffer[(object_type, counter, instance, bucket)] = value
+                        self.unixtime_buffer[(object_type, counter, instance, bucket)] = unixtimestamp
 
             # process SYSTEM_BW_REQUESTS and SYSTEM_IOPS_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
@@ -329,6 +367,9 @@ class XmlContainer:
         flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
                        for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
 
+        if not self.tables[LUN_HISTO_REQUEST].is_empty():
+            flat_tables.append(self.tables[LUN_HISTO_REQUEST].flatten('bucket', True))
+
         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
             flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, BW)].flatten('time', True))
         if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
@@ -353,10 +394,21 @@ class XmlContainer:
         object_ids = [object_type.replace(':', '_').replace('-', '_') + '_' +
                       aspect for (object_type, aspect) in available_requests]
         barchart_booleans = ['false' for _ in available_requests]
-        csv_names = [object_type.replace(':', '_') + '_' + aspect +
+        csv_names = [object_type.replace(':', '_').replace('-', '_') + '_' + aspect +
                      constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
 
-        # get identifiers for last chart belonging to SYSTEM_BW_REQUESTS
+        # get identifiers for chart belonging to LUN_HIST_REQUEST
+        if not self.tables[LUN_HISTO_REQUEST].is_empty():
+            titles.append(LUN_HISTO_REQUEST[0] + ': ' + LUN_HISTO_REQUEST[1])
+            units.append(self.units[LUN_HISTO_REQUEST])
+            x_labels.append('bucket')
+            object_ids.append(LUN_HISTO_REQUEST[0].replace(
+                ':', '_').replace('-', '_') + '_' + LUN_HISTO_REQUEST[1])
+            barchart_booleans.append('true')
+            csv_names.append(LUN_HISTO_REQUEST[0].replace(':', '_').replace(
+                '-', '_') + '_' + LUN_HISTO_REQUEST[1] + constants.CSV_FILE_ENDING)
+
+        # get identifiers for chart belonging to SYSTEM_BW_REQUESTS
         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
             titles.append(self.node_name + ': band width')
             units.append(self.units[(SYSTEM_OBJECT_TYPE, BW)])
@@ -366,7 +418,7 @@ class XmlContainer:
             csv_names.append(self.node_name.replace(':', '_').replace(
                 '-', '_') + '_' + BW + constants.CSV_FILE_ENDING)
 
-        # get identifiers for last chart belonging to SYSTEM_IOPS_REQUESTS
+        # get identifiers for chart belonging to SYSTEM_IOPS_REQUESTS
         if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
             titles.append(self.node_name + ': IOPS')
             units.append(self.units[(SYSTEM_OBJECT_TYPE, IOPS)])
