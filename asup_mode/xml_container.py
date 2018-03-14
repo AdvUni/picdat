@@ -26,7 +26,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 # The following list contains search keys for gaining chart data. Its elements are tuples of
 # objects and counters. The name 'object' is because different requests can not only differ in
-# counter, but also in object (Contrary to 'SYSTEM_REQUESTS').
+# counter, but also in object (Contrary to 'SYSTEM_BW_REQUESTS').
 # The values found about one of the keys are meant to be visualized in one chart. So, each chart's
 # table is about one counter and its columns will represent different instances.
 OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
@@ -36,14 +36,32 @@ OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_bu
                    ('disk:constituent', 'disk_busy')]
 
 # The following list contains search keys for gaining chart data. Its elements are the names of
-# counters. The object tag belonging to the xml elements satisfying the keys is always
-# 'system:constituent'. Therefore, object is not explicitly specified in the requests.
+# counters. The counters are all about band with and are assumed to have the same unit. This is why
+# the lists name contains 'BW'. The object tag belonging to the xml elements satisfying the keys is
+# always 'system:constituent'. Therefore, object is not explicitly specified in the requests.
 # The values found about all of these keys are meant to be visualized in one chart together. So,
 # the columns of the chart's table will represent counters, means one column for each request.
-SYSTEM_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net_data_sent',
-                   'ssd_data_read', 'ssd_data_written', 'fcp_data_recv', 'fcp_data_sent',
-                   'tape_data_read', 'tape_data_written']
-# constant holding 'system:constituant' as this is the object type belonging to the SYSTEM_REQUESTS
+SYSTEM_BW_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net_data_sent',
+                      'ssd_data_read', 'ssd_data_written', 'fcp_data_recv', 'fcp_data_sent',
+                      'tape_data_read', 'tape_data_written']
+# constant holding 'bw' to be part of a dict key for distinction between SYSTEM_BW_REQUESTS and
+# SYSTEM_IOPS_REQUESTS results.
+BW = 'bw'
+
+# The following list contains search keys for gaining chart data. Its elements are the names of
+# counters. The counters are all about iops operations and are assumed to have the same unit
+# (i. e. None). This is why the lists name contains 'IOPS'. The object tag belonging to the xml
+# elements satisfying the keys is always 'system:constituent'. Therefore, object is not explicitly
+# specified in the requests. The values found about all of these keys are meant to be visualized in
+# one chart together. So, the columns of the chart's table will represent counters, means one
+# column for each request.
+SYSTEM_IOPS_REQUESTS = ['nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops']
+# constant holding 'iops' to be part of a dict key for distinction between SYSTEM_BW_REQUESTS and
+# SYSTEM_IOPS_REQUESTS results.
+IOPS = 'iops'
+
+# constant holding 'system:constituant' as this is the object type
+# belonging to the SYSTEM_BW_REQUESTS
 SYSTEM_OBJECT_TYPE = 'system:constituent'
 
 
@@ -64,9 +82,10 @@ class XmlContainer:
         # comparisons because some object types occur several times in OBJECT_REQUESTS.
         self.object_types = {request[0] for request in OBJECT_REQUESTS}
 
-        # A dict of Table object, stored to a key from OBJECT_REQUESTS or SYSTEM_REQUESTS. Those
+        # A dict of Table object, stored to a key from OBJECT_REQUESTS or SYSTEM_BW_REQUESTS. Those
         # tables hold all collected chart data from xml data file for both request types.
-        self.tables = {request: Table() for request in OBJECT_REQUESTS + [SYSTEM_OBJECT_TYPE]}
+        self.tables = {request: Table() for request in OBJECT_REQUESTS +
+                       [(SYSTEM_OBJECT_TYPE, BW), (SYSTEM_OBJECT_TYPE, IOPS)]}
 
         # As it seems that the counters storing the values written in the data
         # file never get cleared, it is always necessary to calculate: (this_val
@@ -76,7 +95,7 @@ class XmlContainer:
         self.value_buffer = {}
         self.unixtime_buffer = {}
 
-        # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_REQUESTS to the respective
+        # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_BW_REQUESTS to the respective
         # unit. Units are provided by the xml info file.
         self.units = {}
 
@@ -117,8 +136,11 @@ class XmlContainer:
                     self.map_counter_to_base[object_type, counter] = base
                     self.map_base_to_counter[object_type, base] = counter
 
-            elif object_type == SYSTEM_OBJECT_TYPE and counter in SYSTEM_REQUESTS:
-                self.units[SYSTEM_OBJECT_TYPE] = element_dict['unit']
+            elif object_type == SYSTEM_OBJECT_TYPE:
+                if counter in SYSTEM_BW_REQUESTS:
+                    self.units[(SYSTEM_OBJECT_TYPE, BW)] = element_dict['unit']
+                elif counter in SYSTEM_IOPS_REQUESTS:
+                    self.units[(SYSTEM_OBJECT_TYPE, IOPS)] = element_dict['unit']
 
         except (KeyError):
             logging.warning(
@@ -187,10 +209,10 @@ class XmlContainer:
                     self.baseval_buffer[(object_type, counter, instance)] = baseval
                     self.base_unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
 
-            # process SYSTEM_REQUESTS
+            # process SYSTEM_BW_REQUESTS and SYSTEM_IOPS_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
                 counter = element_dict['counter']
-                if counter in SYSTEM_REQUESTS:
+                if counter in SYSTEM_BW_REQUESTS:
                     unixtimestamp = int(element_dict['timestamp'])
                     value = float(element_dict['value'])
 
@@ -200,7 +222,28 @@ class XmlContainer:
                         abs_val, datetimestamp = util.get_abs_val(
                             value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
                             (object_type, counter))
-                        self.tables[SYSTEM_OBJECT_TYPE].insert(datetimestamp, counter, abs_val)
+                        self.tables[(SYSTEM_OBJECT_TYPE, BW)].insert(
+                            datetimestamp, counter, abs_val)
+
+                    self.value_buffer[(object_type, counter)] = value
+                    self.unixtime_buffer[(object_type, counter)] = unixtimestamp
+
+                    # once, save the node name
+                    if not self.node_name:
+                        self.node_name = element_dict['instance']
+
+                elif counter in SYSTEM_IOPS_REQUESTS:
+                    unixtimestamp = int(element_dict['timestamp'])
+                    value = float(element_dict['value'])
+
+                    if (object_type, counter) in self.value_buffer:
+
+                        # build absolute value through comparison of two consecutive values
+                        abs_val, datetimestamp = util.get_abs_val(
+                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
+                            (object_type, counter))
+                        self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].insert(
+                            datetimestamp, counter, abs_val)
 
                     self.value_buffer[(object_type, counter)] = value
                     self.unixtime_buffer[(object_type, counter)] = unixtimestamp
@@ -286,8 +329,10 @@ class XmlContainer:
         flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
                        for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
 
-        if not self.tables[SYSTEM_OBJECT_TYPE].is_empty():
-            flat_tables.append(self.tables[SYSTEM_OBJECT_TYPE].flatten('time', True))
+        if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
+            flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, BW)].flatten('time', True))
+        if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
+            flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].flatten('time', True))
         return flat_tables
 
     def build_identifier_dict(self):
@@ -311,15 +356,25 @@ class XmlContainer:
         csv_names = [object_type.replace(':', '_') + '_' + aspect +
                      constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
 
-        # get identifiers for last chart belonging to SYSTEM_REQUESTS
-        if not self.tables[SYSTEM_OBJECT_TYPE].is_empty():
+        # get identifiers for last chart belonging to SYSTEM_BW_REQUESTS
+        if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
             titles.append(self.node_name)
-            units.append(self.units[SYSTEM_OBJECT_TYPE])
+            units.append(self.units[(SYSTEM_OBJECT_TYPE, BW)])
             x_labels.append('time')
-            object_ids.append(self.node_name.replace(':', '_').replace('-', '_'))
+            object_ids.append(self.node_name.replace(':', '_').replace('-', '_') + '_' + BW)
             barchart_booleans.append('false')
             csv_names.append(self.node_name.replace(':', '_').replace(
-                '-', '_') + constants.CSV_FILE_ENDING)
+                '-', '_') + '_' + BW + constants.CSV_FILE_ENDING)
+
+        # get identifiers for last chart belonging to SYSTEM_IOPS_REQUESTS
+        if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
+            titles.append(self.node_name)
+            units.append(self.units[(SYSTEM_OBJECT_TYPE, IOPS)])
+            x_labels.append('time')
+            object_ids.append(self.node_name.replace(':', '_').replace('-', '_') + '_' + IOPS)
+            barchart_booleans.append('false')
+            csv_names.append(self.node_name.replace(':', '_').replace(
+                '-', '_') + '_' + IOPS + constants.CSV_FILE_ENDING)
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
