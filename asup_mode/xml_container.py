@@ -250,7 +250,7 @@ class XmlContainer:
         """
         In case some base elements appear in xml before the elements, they are the base to, they
         will be thrown onto a heap to process them later. This method processes the heap content.
-        It should be called after the data file is written.
+        Don't call it before all data files are read!
         :return: None
         """
         for base_element in self.base_heap:
@@ -311,7 +311,7 @@ class XmlContainer:
         csv_names = [object_type.replace(':', '_') + '_' + aspect +
                      constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
 
-        # get identifiers for system:constituent chart
+        # get identifiers for last chart belonging to SYSTEM_REQUESTS
         if not self.tables[SYSTEM_OBJECT_TYPE].is_empty():
             titles.append(self.node_name)
             units.append(self.units[SYSTEM_OBJECT_TYPE])

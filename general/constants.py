@@ -30,8 +30,9 @@ will have an own .html as result.
 For visualizing ASUP files, give a .tgz archive, as you can download it from NetApp or give a folder,
 containing at least 'CM-STATS-HOURLY-INFO.XML' and 'CM-STATS-HOURLY-DATA.XML'. If you want to
 visualize several ASUPs in a row, give a directory as input, which contains several .tgz archives.
-Different from PerfStat input, PicDat will stick ASUP results all together, so don't mess around with
-data from different nodes or anything, when doing so!
+The alphabetical order of the archives names should be equivalent to the chronological order of the
+content. Different from PerfStat input, PicDat will stick ASUP results all together, so don't mess
+around with data from different nodes or anything, when doing so!
 
 usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
 
