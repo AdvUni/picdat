@@ -36,8 +36,19 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, time_buffer, buffer_key):
     """
     last_val = val_buffer[buffer_key]
     last_unixtime = time_buffer[buffer_key]
-    abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
+    abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))    
     datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
+    
+    if unixtimestamp < last_unixtime:
+        last_datetimestamp = datetime.datetime.fromtimestamp(last_unixtime)
+        logging.warning('PicDat read two values in wrong chronological order (Timestamps %s and '
+                        ' %s). This is probably because PicDat sorts its input files '
+                        'alphabetically. This will cause problems if the alphabetical order of '
+                        'filenames is not equivalent to the chronological order of the content. '
+                        'So, you probably gave several .tgz files as input, which names do not '
+                        'contain a time stamp or anything, which secures the order. Be aware that '
+                        'there will be falsifications in charts at the margins of data from '
+                        'different files!', last_datetimestamp, datetimestamp)
 
     logging.debug('(recent_val - last_val)/(recent_time - last_time) = (%s - %s)/(%s - %s) = '
                   '%s (%s)', this_val, last_val, unixtimestamp, last_unixtime, abs_val, buffer_key)
