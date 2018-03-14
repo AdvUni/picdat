@@ -219,33 +219,19 @@ class XmlContainer:
                     unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     valuelist = (element_dict['value']).split(',')
-                    print(valuelist)
-                    print('time: ' + str(unixtimestamp))
-                    print('instance: ' + instance)
-                    print()
                     for bucket in range(len(valuelist)):
                         value = float(valuelist[bucket])
-                        print('bucket: ' + str(bucket))
-                        print('instance: ' + instance)
-                        print('value: ' + str(value))
-                         
-                         
-                        try:
-                            print('valbuf: ' + str(self.value_buffer[(object_type, counter, instance, bucket)]))
-                            print('timebuf: '+ str(self.unixtime_buffer[(object_type, counter, instance, bucket)]))
-                        except(KeyError):
-                            print('first time')
-                        print()
- 
+
                         if (object_type, counter, instance, bucket) in self.value_buffer:
- 
+
                             abs_val, _ = util.get_abs_val(value, unixtimestamp, self.value_buffer,
                                                           self.unixtime_buffer,
                                                           (object_type, counter, instance, bucket))
                             self.tables[LUN_HISTO_REQUEST].insert(bucket, instance, value)
- 
+
                         self.value_buffer[(object_type, counter, instance, bucket)] = value
-                        self.unixtime_buffer[(object_type, counter, instance, bucket)] = unixtimestamp
+                        self.unixtime_buffer[(object_type, counter, instance,
+                                              bucket)] = unixtimestamp
 
             # process SYSTEM_BW_REQUESTS and SYSTEM_IOPS_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
