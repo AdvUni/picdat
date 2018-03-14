@@ -11,7 +11,7 @@
 \usepackage{color}
 
 \definecolor{grey}{rgb}{0.8, 0.8, 0.8}
-\definecolor{darkblue}{rgb}{0.0, 0.18, 0.39}
+\definecolor{darkblue}{rgb}{0.15, 0.38, 0.61}
 \setbeamercolor{frametitle}{fg=darkblue}
 
 \lstset{frame=tb,
@@ -94,7 +94,7 @@ picdat [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--d
 \end{frame}
 
 \section{Command line options}
-\begin{frame}
+\begin{frame}[label=options]
 \frametitle{Command line options}
 Additional to \textcolor{darkblue}{\texttt{-\,-inputfile}} and \textcolor{darkblue}{\texttt{-\,-outputdir}}, there are following command line options available:
 \bigskip
@@ -186,7 +186,7 @@ If your values are very close and unsteady, you might get a better overview usin
 If PicDat seems to ran correctly, but all charts inside the charts.html are empty, see whether one of the following applies:
 \bigskip
 
-If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See 'Command line options'). Alternatively, use Firefox instead or try to change security settings.
+If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See \hyperref[options]{'Command line options'}). Alternatively, use Firefox instead or try to change security settings.
 \bigskip
 
 If this is not the problem, make sure that dygraphs is available at all. A folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file. Of course, a folder called 'tables' which contains all chart data within csv tables must be available too.
