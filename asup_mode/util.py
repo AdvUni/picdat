@@ -36,9 +36,9 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, time_buffer, buffer_key):
     """
     last_val = val_buffer[buffer_key]
     last_unixtime = time_buffer[buffer_key]
-    abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))    
+    abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
     datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
-    
+
     if unixtimestamp < last_unixtime:
         last_datetimestamp = datetime.datetime.fromtimestamp(last_unixtime)
         logging.warning('PicDat read two values in wrong chronological order (Timestamps %s and '
