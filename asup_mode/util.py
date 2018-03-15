@@ -21,7 +21,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def get_abs_val(this_val, unixtimestamp, val_buffer, time_buffer, buffer_key):
+def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
     """
     As it seems that the counters storing the values written in the xml data file
     never get cleared, it is always necessary to calculate: (this_val -
@@ -30,12 +30,11 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, time_buffer, buffer_key):
     :param this_val: the recent 'total' value
     :param unixtimestamp: the recent time stamp in unixtime format
     :param val_buffer: The buffer dict which stores the last 'total' value belonging to this_val
-    :param time_buffer: The buffer dict which stores the last timestamp
     :param buffer_key: The request key which allocates the right places inside the buffers. It
     refers to the table and instance, the values belong to.
     """
-    last_val = val_buffer[buffer_key]
-    last_unixtime = time_buffer[buffer_key]
+    last_unixtime = val_buffer[buffer_key][0]
+    last_val = val_buffer[buffer_key][1]
     abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
     datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
 

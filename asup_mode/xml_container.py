@@ -95,7 +95,6 @@ class XmlContainer:
         # absolute value. For enabling this, the following dicts buffer the last
         # value and the last timestamp:
         self.value_buffer = {}
-        self.unixtime_buffer = {}
 
         # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_BW_REQUESTS to the respective
         # unit. Units are provided by the xml info file.
@@ -108,9 +107,8 @@ class XmlContainer:
         # those dicts do only work for the OBJECT_REQUESTS
         self.map_counter_to_base = {}
         self.map_base_to_counter = {}
-        # Does the same thing for bases as value_buffer and unixtime_buffer for values:
+        # Does the same thing for bases as value_buffer for values:
         self.baseval_buffer = {}
-        self.base_unixtime_buffer = {}
 
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
@@ -180,12 +178,10 @@ class XmlContainer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
-                            (object_type, counter, instance))
+                            value, unixtimestamp, self.value_buffer, (object_type, counter, instance))
                         self.tables[(object_type, counter)].insert(datetimestamp, instance, abs_val)
 
-                    self.value_buffer[(object_type, counter, instance)] = value
-                    self.unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
+                    self.value_buffer[(object_type, counter, instance)] = (unixtimestamp, value)
 
                 # process bases
                 if (object_type, counter) in self.map_base_to_counter:
@@ -198,7 +194,7 @@ class XmlContainer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_baseval, datetimestamp = util.get_abs_val(
-                            baseval, unixtimestamp, self.baseval_buffer, self.base_unixtime_buffer,
+                            baseval, unixtimestamp, self.baseval_buffer,
                             (object_type, counter, instance))
 
                         try:
@@ -211,8 +207,7 @@ class XmlContainer:
                             self.base_heap.add((object_type, original_counter,
                                                 instance, datetimestamp, abs_baseval))
 
-                    self.baseval_buffer[(object_type, counter, instance)] = baseval
-                    self.base_unixtime_buffer[(object_type, counter, instance)] = unixtimestamp
+                    self.baseval_buffer[(object_type, counter, instance)] = (unixtimestamp, baseval)
 
                 # process lun histo
                 if (object_type, counter) == LUN_HISTO_REQUEST:
@@ -225,13 +220,11 @@ class XmlContainer:
                         if (object_type, counter, instance, bucket) in self.value_buffer:
 
                             abs_val, _ = util.get_abs_val(value, unixtimestamp, self.value_buffer,
-                                                          self.unixtime_buffer,
                                                           (object_type, counter, instance, bucket))
                             self.tables[LUN_HISTO_REQUEST].insert(bucket, instance, value)
 
-                        self.value_buffer[(object_type, counter, instance, bucket)] = value
-                        self.unixtime_buffer[(object_type, counter, instance,
-                                              bucket)] = unixtimestamp
+                        self.value_buffer[(object_type, counter, instance, bucket)
+                                          ] = (unixtimestamp, value)
 
             # process SYSTEM_BW_REQUESTS and SYSTEM_IOPS_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
@@ -244,13 +237,12 @@ class XmlContainer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
+                            value, unixtimestamp, self.value_buffer,
                             (object_type, counter))
                         self.tables[(SYSTEM_OBJECT_TYPE, BW)].insert(
                             datetimestamp, counter, abs_val)
 
-                    self.value_buffer[(object_type, counter)] = value
-                    self.unixtime_buffer[(object_type, counter)] = unixtimestamp
+                    self.value_buffer[(object_type, counter)] = (unixtimestamp, value)
 
                     # once, save the node name
                     if not self.node_name:
@@ -264,13 +256,12 @@ class XmlContainer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer, self.unixtime_buffer,
+                            value, unixtimestamp, self.value_buffer,
                             (object_type, counter))
                         self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].insert(
                             datetimestamp, counter, abs_val)
 
-                    self.value_buffer[(object_type, counter)] = value
-                    self.unixtime_buffer[(object_type, counter)] = unixtimestamp
+                    self.value_buffer[(object_type, counter)] = (unixtimestamp, value)
 
                     # once, save the node name
                     if not self.node_name:
