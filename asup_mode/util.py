@@ -35,7 +35,12 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
     """
     last_unixtime = val_buffer[buffer_key][0]
     last_val = val_buffer[buffer_key][1]
-    abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
+    
+    if isinstance(this_val, list):
+        abs_val = [str((float(this_val[i]) - float(last_val[i])) / (unixtimestamp - last_unixtime)) for i in range(len(this_val))]       
+    else:  
+        abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
+        
     datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
 
     if unixtimestamp < last_unixtime:

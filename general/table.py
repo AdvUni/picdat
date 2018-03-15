@@ -63,7 +63,7 @@ class Table:
         of those errors will occur
         """
         return self.outer_dict[row][column]
-    
+
     def expand_values(self, factor):
         """
         Multiplies all table values with the given factor.

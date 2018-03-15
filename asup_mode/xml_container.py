@@ -6,6 +6,7 @@ import logging
 from general.table import Table
 from general import constants
 from asup_mode import util
+from astroid.helpers import object_type
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -35,7 +36,12 @@ OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_bu
                    ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data'),
                    ('disk:constituent', 'disk_busy')]
 
-LUN_HISTO_REQUEST = ('lun:constituent', 'read_align_histo')
+# The following list contains search keys for gaining chart data. Its elements are tuples of
+# objects and counters. The counters are specifying histogram data.
+# The values found about one of the keys are meant to be visualized in one chart. So, each chart's
+# table is about one counter and its columns will represent different instances. The chart's x axis
+# is not time but defines bucket numbers.
+HISTO_REQUESTS = [('lun:constituent', 'read_align_histo')]
 
 # The following list contains search keys for gaining chart data. Its elements are the names of
 # counters. The counters are all about band with and are assumed to have the same unit. This is why
@@ -86,33 +92,42 @@ class XmlContainer:
 
         # A dict of Table object, stored to a key from OBJECT_REQUESTS or SYSTEM_BW_REQUESTS. Those
         # tables hold all collected chart data from xml data file for both request types.
-        self.tables = {request: Table() for request in OBJECT_REQUESTS + [LUN_HISTO_REQUEST,
-                                                                          (SYSTEM_OBJECT_TYPE, BW), (SYSTEM_OBJECT_TYPE, IOPS)]}
-
-        # As it seems that the counters storing the values written in the data
-        # file never get cleared, it is always necessary to calculate: (this_val
-        # - last_val)/(this_timestamp - last_timestamp) to get a useful,
-        # absolute value. For enabling this, the following dicts buffer the last
-        # value and the last timestamp:
-        self.value_buffer = {}
+        self.tables = {request: Table() for request in OBJECT_REQUESTS + HISTO_REQUESTS +
+                       [(SYSTEM_OBJECT_TYPE, BW), (SYSTEM_OBJECT_TYPE, IOPS)]}
 
         # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_BW_REQUESTS to the respective
         # unit. Units are provided by the xml info file.
         self.units = {}
 
-        # The following two dicts are for storing the information from xml base tags. There are two
-        # of them to have easy access in both directions. There content is identical, just keys and
-        # values are interchanged.
+        # Histograms are charts with an x label different from 'time'. Which x values can occur is
+        # precisely specified in the info file within the tag 'label1'.
+        self.histo_labels = {}
+
+        # As it seems that the counters storing the values written in the data
+        # file never get cleared, it is always necessary to calculate: (this_val
+        # - last_val)/(this_timestamp - last_timestamp) to get a useful,
+        # absolute value. For enabling this, the following dict buffers the last timestamp and the
+        # last value:
+        self.buffer = {}
+
+        # The following dict is for storing the information from xml base tags in the info file.
+        # Its keys are tuples specifying object and the counter name of a base, its values are
+        # the respective counters, to which the base belongs to.
         # Note: It is assumed, that values belonging to SYSTEM_REQUEST do not have any bases. So,
         # those dicts do only work for the OBJECT_REQUESTS
-        self.map_counter_to_base = {}
-        self.map_base_to_counter = {}
-        # Does the same thing for bases as value_buffer for values:
-        self.baseval_buffer = {}
+        self.base_dict = {}
+        # Same thing as base_dict, but it stores the bases for HISTO_REQUESTS instead.
+        self.histo_base_dict = {}
+
+        # Does the same thing for bases as buffer for non-base values:
+        self.base_buffer = {}
 
         # In case some base elements appear in xml before the elements, they are the base to, they
         # will be thrown into this set to process them later.
         self.base_heap = set()
+
+        # Same thing as base_heap, but it stores the bases for HISTO_REQUESTS instead.
+        self.histo_base_heap = set()
 
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the xml elements with object = system:constituent
@@ -129,15 +144,19 @@ class XmlContainer:
         try:
             object_type = element_dict['object']
             counter = element_dict['counter']
+
             if (object_type, counter) in OBJECT_REQUESTS:
                 self.units[object_type, counter] = element_dict['unit']
                 base = element_dict['base']
                 if base:
-                    self.map_counter_to_base[object_type, counter] = base
-                    self.map_base_to_counter[object_type, base] = counter
+                    self.base_dict[object_type, base] = counter
 
-            elif (object_type, counter) == LUN_HISTO_REQUEST:
+            elif (object_type, counter) in HISTO_REQUESTS:
                 self.units[object_type, counter] = element_dict['unit']
+                self.histo_labels[object_type, counter] = element_dict['label1'].split(',')
+                base = element_dict['base']
+                if base:
+                    self.histo_base_dict[object_type, base] = counter
 
             elif object_type == SYSTEM_OBJECT_TYPE:
                 if counter in SYSTEM_BW_REQUESTS:
@@ -174,27 +193,49 @@ class XmlContainer:
                     instance = element_dict['instance']
                     value = float(element_dict['value'])
 
-                    if (object_type, counter, instance) in self.value_buffer:
+                    if (object_type, counter, instance) in self.buffer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer, (object_type, counter, instance))
+                            value, unixtimestamp, self.buffer, (object_type, counter, instance))
                         self.tables[(object_type, counter)].insert(datetimestamp, instance, abs_val)
 
-                    self.value_buffer[(object_type, counter, instance)] = (unixtimestamp, value)
+                    self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
+
+                # process lun histo
+                if (object_type, counter) in HISTO_REQUESTS:
+                    unixtimestamp = int(element_dict['timestamp'])
+                    instance = element_dict['instance']
+                    valuelist = (element_dict['value']).split(',')
+
+                    if (object_type, counter, instance) in self.buffer:
+                        if self.buffer[object_type, counter, instance]:
+                            abs_val_list, _ = util.get_abs_val(
+                                valuelist, unixtimestamp, self.buffer, (object_type, counter, instance))
+
+                            buckets = self.histo_labels[object_type, counter]
+                            for bucket in range(len(buckets)):
+                                self.tables[object_type, counter].insert(
+                                    bucket, instance, abs_val_list[bucket])
+                                logging.debug(buckets[bucket], instance, abs_val_list[bucket])
+
+                            self.buffer[object_type, counter, instance] = None
+                    else:
+                        self.buffer[(object_type, counter, instance)
+                                    ] = (unixtimestamp, valuelist)
 
                 # process bases
-                if (object_type, counter) in self.map_base_to_counter:
+                if (object_type, counter) in self.base_dict:
                     unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     baseval = float(element_dict['value'])
-                    original_counter = self.map_base_to_counter[(object_type, counter)]
+                    original_counter = self.base_dict[(object_type, counter)]
 
-                    if (object_type, counter, instance) in self.baseval_buffer:
+                    if (object_type, counter, instance) in self.base_buffer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_baseval, datetimestamp = util.get_abs_val(
-                            baseval, unixtimestamp, self.baseval_buffer,
+                            baseval, unixtimestamp, self.base_buffer,
                             (object_type, counter, instance))
 
                         try:
@@ -207,24 +248,36 @@ class XmlContainer:
                             self.base_heap.add((object_type, original_counter,
                                                 instance, datetimestamp, abs_baseval))
 
-                    self.baseval_buffer[(object_type, counter, instance)] = (unixtimestamp, baseval)
+                    self.base_buffer[(object_type, counter, instance)] = (unixtimestamp, baseval)
 
-                # process lun histo
-                if (object_type, counter) == LUN_HISTO_REQUEST:
+                if (object_type, counter) in self.histo_base_dict:
                     unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
-                    valuelist = (element_dict['value']).split(',')
-                    for bucket in range(len(valuelist)):
-                        value = float(valuelist[bucket])
+                    baseval = float(element_dict['value'])
+                    original_counter = self.histo_base_dict[(object_type, counter)]
 
-                        if (object_type, counter, instance, bucket) in self.value_buffer:
+                    if (object_type, counter, instance) in self.base_buffer:
+                        if self.base_buffer[object_type, counter, instance]:
 
-                            abs_val, _ = util.get_abs_val(value, unixtimestamp, self.value_buffer,
-                                                          (object_type, counter, instance, bucket))
-                            self.tables[LUN_HISTO_REQUEST].insert(bucket, instance, value)
+                            # build absolute value through comparison of two consecutive values
+                            abs_baseval, _ = util.get_abs_val(
+                                baseval, unixtimestamp, self.base_buffer,
+                                (object_type, counter, instance))
 
-                        self.value_buffer[(object_type, counter, instance, bucket)
-                                          ] = (unixtimestamp, value)
+                            for bucket in range(len(self.histo_labels[object_type, original_counter])):
+                                try:
+                                    self.do_base_conversion(
+                                        (object_type, original_counter), instance, bucket, float(abs_baseval))
+                                except (KeyError, IndexError):
+                                    logging.debug(
+                                        'Found base before actual element. Add base element to base heap. '
+                                        'Base_element: %s', element_dict)
+                                    self.histo_base_heap.add(
+                                        (object_type, original_counter, instance, bucket, abs_baseval))
+                            self.base_buffer[object_type, counter, instance] = None
+                    else:
+                        self.base_buffer[object_type, counter,
+                                         instance] = (unixtimestamp, baseval)
 
             # process SYSTEM_BW_REQUESTS and SYSTEM_IOPS_REQUESTS
             elif object_type == SYSTEM_OBJECT_TYPE:
@@ -233,16 +286,16 @@ class XmlContainer:
                     unixtimestamp = int(element_dict['timestamp'])
                     value = float(element_dict['value'])
 
-                    if (object_type, counter) in self.value_buffer:
+                    if (object_type, counter) in self.buffer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer,
+                            value, unixtimestamp, self.buffer,
                             (object_type, counter))
                         self.tables[(SYSTEM_OBJECT_TYPE, BW)].insert(
                             datetimestamp, counter, abs_val)
 
-                    self.value_buffer[(object_type, counter)] = (unixtimestamp, value)
+                    self.buffer[(object_type, counter)] = (unixtimestamp, value)
 
                     # once, save the node name
                     if not self.node_name:
@@ -252,16 +305,16 @@ class XmlContainer:
                     unixtimestamp = int(element_dict['timestamp'])
                     value = float(element_dict['value'])
 
-                    if (object_type, counter) in self.value_buffer:
+                    if (object_type, counter) in self.buffer:
 
                         # build absolute value through comparison of two consecutive values
                         abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.value_buffer,
+                            value, unixtimestamp, self.buffer,
                             (object_type, counter))
                         self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].insert(
                             datetimestamp, counter, abs_val)
 
-                    self.value_buffer[(object_type, counter)] = (unixtimestamp, value)
+                    self.buffer[(object_type, counter)] = (unixtimestamp, value)
 
                     # once, save the node name
                     if not self.node_name:
@@ -273,21 +326,21 @@ class XmlContainer:
                 'content: %s Expected (at least) following tags: object, counter, timestamp, '
                 'instance, value', str(element_dict))
 
-    def do_base_conversion(self, request, instance, datetimestamp, base_val):
+    def do_base_conversion(self, request, instance, rowname, base_val):
         """
         Does base conversion for a value stored in self.tables.
         :param request: key of dictionary self.tables to allocate table for a specific request
         :param instance: The object's instance name to which the value belongs which also is the
         name of the value's table column.
-        :param datetimestamp: The time which belongs to the value in datetime format. It's also the
-        name of the value's table row.
+        :param rowname: The table row, to which the value should be inserted. It is a datetime
+        object for most values or a bucket number, as the value belongs to a histogram.
         :param base_val: The value's base value.
         :return: None
         :raises KeyError: Will occur if the value is not stored in self.tables, means if
-        self.tables[request] does not contain a value for row datetimestamp and column instance.
+        self.tables[request] does not contain a value for given row and column.
         """
         try:
-            old_val = self.tables[request].get_item(datetimestamp, instance)
+            old_val = self.tables[request].get_item(rowname, instance)
             try:
                 new_val = str(float(old_val) / float(base_val))
             except(ZeroDivisionError):
@@ -295,7 +348,7 @@ class XmlContainer:
                     'base conversion leads to division by zero: %s/%s (%s,%s) Set result to 0.',
                     old_val, base_val, request, instance)
                 new_val = str(0)
-            self.tables[request].insert(datetimestamp, instance, new_val)
+            self.tables[request].insert(rowname, instance, new_val)
             logging.debug('base conversion. request: %s, instance: %s. value / base = %s / %s = %s',
                           request, instance, old_val, base_val, new_val)
         except(ValueError):
@@ -321,6 +374,16 @@ class XmlContainer:
                     '%s - %s, instance %s with time stamp %s is missing in data!',
                     object_type, counter, instance, datetimestamp)
 
+        for base_element in self.histo_base_heap:
+            object_type, counter, instance, bucket, base_val = base_element
+            try:
+                self.do_base_conversion((object_type, counter), instance, bucket, base_val)
+            except (KeyError):
+                logging.warning(
+                    'Found base value but no matching actual value. This means, Value for '
+                    '%s - %s, instance %s with time stamp %s is missing in data!',
+                    object_type, counter, instance, bucket)
+
     def do_unit_conversions(self):
         """
         This method improves the presentation of some values through unit conversion. Don't call it
@@ -344,8 +407,9 @@ class XmlContainer:
         flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
                        for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
 
-        if not self.tables[LUN_HISTO_REQUEST].is_empty():
-            flat_tables.append(self.tables[LUN_HISTO_REQUEST].flatten('bucket', True))
+        if not self.tables[('lun:constituent', 'read_align_histo')].is_empty():
+            flat_tables.append(
+                self.tables[('lun:constituent', 'read_align_histo')].flatten('bucket', True))
 
         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
             flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, BW)].flatten('time', True))
@@ -375,15 +439,15 @@ class XmlContainer:
                      constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
 
         # get identifiers for chart belonging to LUN_HIST_REQUEST
-        if not self.tables[LUN_HISTO_REQUEST].is_empty():
-            titles.append(LUN_HISTO_REQUEST[0] + ': ' + LUN_HISTO_REQUEST[1])
-            units.append(self.units[LUN_HISTO_REQUEST])
+        if not self.tables[('lun:constituent', 'read_align_histo')].is_empty():
+            titles.append('lun:constituent' + ': ' + 'read_align_histo')
+            units.append(self.units['lun:constituent', 'read_align_histo'])
             x_labels.append('bucket')
-            object_ids.append(LUN_HISTO_REQUEST[0].replace(
-                ':', '_').replace('-', '_') + '_' + LUN_HISTO_REQUEST[1])
+            object_ids.append('lun:constituent'.replace(
+                ':', '_').replace('-', '_') + '_' + 'read_align_histo')
             barchart_booleans.append('true')
-            csv_names.append(LUN_HISTO_REQUEST[0].replace(':', '_').replace(
-                '-', '_') + '_' + LUN_HISTO_REQUEST[1] + constants.CSV_FILE_ENDING)
+            csv_names.append('lun:constituent'.replace(':', '_').replace(
+                '-', '_') + '_' + 'read_align_histo' + constants.CSV_FILE_ENDING)
 
         # get identifiers for chart belonging to SYSTEM_BW_REQUESTS
         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():

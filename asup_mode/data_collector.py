@@ -71,7 +71,7 @@ def read_info_file(container, asup_info_file):
         elem.clear()
 
     logging.debug('units: ' + str(container.units))
-    logging.debug('bases: ' + str(container.map_counter_to_base))
+    logging.debug('bases: ' + str(container.base_dict))
 
 
 def read_data_file(container, data_file):
