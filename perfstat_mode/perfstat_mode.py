@@ -4,9 +4,6 @@ This module contains the main routine for the perfstat mode
 import logging
 import os
 import traceback
-import sys
-
-sys.path.append('..')
 
 from perfstat_mode import util
 from perfstat_mode import data_collector
