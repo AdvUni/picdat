@@ -65,12 +65,12 @@ INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
 # The x axis of the charts will be 'time'. These two characteristics makes the keys different from
 # the keys in the other lists, so this is why the list is called like this.
 COUNTERS_OVER_TIME_KEYS = [
-    ('bw', 'system:constituent', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
-                                  'net_data_sent', 'ssd_data_read', 'ssd_data_written',
-                                  'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
-                                  'tape_data_written'}),
-    ('iops', 'system:constituent', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
-    ('disk', 'raid', {'partial_stripes', 'full_stripes'})
+    ('bandwidth', 'system:constituent', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
+                                         'net_data_sent', 'ssd_data_read', 'ssd_data_written',
+                                         'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
+                                         'tape_data_written'}),
+    ('IOPS', 'system:constituent', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
+    ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
 
 
@@ -192,6 +192,12 @@ class XmlContainer:
         """
         try:
             object_type = element_dict['object']
+
+            # collect node name once
+            if not self.node_name:
+                if object_type == 'system:constituent':
+                    self.node_name = element_dict['instance']
+                    print(self.node_name)
 
             # process INSTANCES_OVER_TIME_KEYS
             for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
@@ -484,14 +490,17 @@ class XmlContainer:
         available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
                      if not self.tables[key_object, key_id].is_empty()]
 
-        titles = titles + [key_object + ': ' + key_id for (key_object, key_id) in available]
+        titles = titles + [key_object.replace('system:constituent', self.node_name) +
+                           ': ' + key_id for (key_object, key_id) in available]
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
-        chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                 key_id for (key_object, key_id) in available]
+        chart_ids = chart_ids + [key_object.replace(
+            'system:constituent', self.node_name).replace(':', '_').replace('-', '_') + '_' +
+            key_id for (key_object, key_id) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
-        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                 key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
+        csv_names = csv_names + [key_object.replace(
+            'system:constituent', self.node_name).replace(':', '_').replace('-', '_') + '_' +
+            key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'chart_ids': chart_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
