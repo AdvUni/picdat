@@ -74,7 +74,7 @@ COUNTERS_OVER_TIME_KEYS = [
 class XmlContainer:
     """
     This class is responsible for holding and processing all data collected from xml files. It
-    takes elements from xml files and saves them into tables, if they match the search requests.
+    takes elements from xml files and saves them into tables, if they match the search keys.
     Furthermore, it does base conversion for values which need it and provides meta data like table
     names and axis labeling information.
     """
@@ -87,14 +87,14 @@ class XmlContainer:
         # set to hash all different object types appearing in INSTANCES_OVER_TIME_KEYS. Shall
         # reduce number of comparisons because some object types occur several times in
         # INSTANCES_OVER_TIME_KEYS.
-        self.object_types = {request[0] for request in INSTANCES_OVER_TIME_KEYS}
+        self.object_types = {key_object for (key_object, _) in INSTANCES_OVER_TIME_KEYS}
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in xml data file.
-        self.tables = {request: Table()
-                       for request in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
-        for request_id, object_type, _ in COUNTERS_OVER_TIME_KEYS:
-            self.tables[object_type, request_id] = Table()
+        self.tables = {searchkey: Table()
+                       for searchkey in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
+        for key_id, key_object, _ in COUNTERS_OVER_TIME_KEYS:
+            self.tables[key_object, key_id] = Table()
 
         # A dict for relating units to each search key from the three key lists.
         # Units are provided by the xml info file.
@@ -134,8 +134,8 @@ class XmlContainer:
 
     def add_info(self, element_dict):
         """
-        Method takes the content from one 'ROW' xml element in a dict. If the element match a
-        search request, its unit and base tag contents will be saved.
+        Method takes the content from one 'ROW' xml element in a dict. If the element matches a
+        search key, its unit and base tag contents will be saved.
         :param element_dict: A dict, mapping all xml tags inside a xml 'ROW' element to their text
         content
         :return: None
@@ -158,9 +158,9 @@ class XmlContainer:
                     self.histo_base_dict[object_type, base] = counter
 
             else:
-                for request_id, request_object, request_counters in COUNTERS_OVER_TIME_KEYS:
-                    if object_type == request_object and counter in request_counters:
-                        self.units[object_type, request_id] = element_dict['unit']
+                for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
+                    if object_type == key_object and counter in key_counters:
+                        self.units[object_type, key_id] = element_dict['unit']
 
         except (KeyError):
             logging.warning(
@@ -170,8 +170,8 @@ class XmlContainer:
 
     def add_item(self, element_dict):
         """
-        Method takes the content from one 'ROW' xml element in a dict. If the element match a
-        search request, its data will be written into table data structures. If the element is a
+        Method takes the content from one 'ROW' xml element in a dict. If the element matches a
+        search key, its data will be written into table data structures. If the element is a
         base to another element, the method tries to do the base conversion for this element.
         :param element_dict: A dict, mapping all xml tags inside a xml 'ROW' element to their text
         content
@@ -279,10 +279,10 @@ class XmlContainer:
                                          instance] = (unixtimestamp, baseval)
 
             else:
-                for request_id, request_object, request_counters in COUNTERS_OVER_TIME_KEYS:
-                    if object_type == request_object:
+                for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
+                    if object_type == key_object:
                         counter = element_dict['counter']
-                        if counter in request_counters:
+                        if counter in key_counters:
                             unixtimestamp = int(element_dict['timestamp'])
                             value = float(element_dict['value'])
 
@@ -292,7 +292,7 @@ class XmlContainer:
                                 abs_val, datetimestamp = util.get_abs_val(
                                     value, unixtimestamp, self.buffer,
                                     (object_type, counter))
-                                self.tables[object_type, request_id].insert(
+                                self.tables[object_type, key_id].insert(
                                     datetimestamp, counter, abs_val)
 
                             self.buffer[(object_type, counter)] = (unixtimestamp, value)
@@ -303,10 +303,10 @@ class XmlContainer:
                 'content: %s Expected (at least) following tags: object, counter, timestamp, '
                 'instance, value', str(element_dict))
 
-    def do_base_conversion(self, request, instance, rowname, base_val):
+    def do_base_conversion(self, tablekey, instance, rowname, base_val):
         """
         Does base conversion for a value stored in self.tables.
-        :param request: key of dictionary self.tables to allocate table for a specific request
+        :param tablekey: key of dictionary self.tables to allocate table for a specific tablekey
         :param instance: The object's instance name to which the value belongs which also is the
         name of the value's table column.
         :param rowname: The table row, to which the value should be inserted. It is a datetime
@@ -314,20 +314,20 @@ class XmlContainer:
         :param base_val: The value's base value.
         :return: None
         :raises KeyError: Will occur if the value is not stored in self.tables, means if
-        self.tables[request] does not contain a value for given row and column.
+        self.tables[tablekey] does not contain a value for given row and column.
         """
         try:
-            old_val = self.tables[request].get_item(rowname, instance)
+            old_val = self.tables[tablekey].get_item(rowname, instance)
             try:
                 new_val = str(float(old_val) / float(base_val))
             except(ZeroDivisionError):
                 logging.debug(
                     'base conversion leads to division by zero: %s/%s (%s,%s) Set result to 0.',
-                    old_val, base_val, request, instance)
+                    old_val, base_val, tablekey, instance)
                 new_val = str(0)
-            self.tables[request].insert(rowname, instance, new_val)
-            logging.debug('base conversion. request: %s, instance: %s. value / base = %s / %s = %s',
-                          request, instance, old_val, base_val, new_val)
+            self.tables[tablekey].insert(rowname, instance, new_val)
+            logging.debug('base conversion. tablekey: %s, instance: %s. value / base = %s / %s = %s',
+                          tablekey, instance, old_val, base_val, new_val)
         except(ValueError):
             logging.error(
                 'Found value which is not convertible to float. Base conversion failed.')
@@ -357,18 +357,18 @@ class XmlContainer:
         before all data files are read!
         :return: None
         """
-        for request, unit in self.units.items():
+        for unit_key, unit in self.units.items():
             if unit == 'percent':
-                self.tables[request].expand_values(100)
-                self.units[request] = '%'
+                self.tables[unit_key].expand_values(100)
+                self.units[unit_key] = '%'
 
             if unit == "b_per_sec":
-                self.tables[request].expand_values(1 / (10**6))
-                self.units[request] = "Mb/s"
+                self.tables[unit_key].expand_values(1 / (10**6))
+                self.units[unit_key] = "Mb/s"
 
             if unit == 'kb_per_sec':
-                self.tables[request].expand_values(1 / (10**3))
-                self.units[request] = "Mb/s"
+                self.tables[unit_key].expand_values(1 / (10**3))
+                self.units[unit_key] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
         """
@@ -389,9 +389,9 @@ class XmlContainer:
                                      for key in INSTANCES_OVER_BUCKET_KEYS
                                      if not self.tables[key].is_empty()]
 
-        flat_tables = flat_tables + [self.tables[object_type, request_id].flatten('time', True)
-                                     for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS
-                                     if not self.tables[object_type, request_id].is_empty()]
+        flat_tables = flat_tables + [self.tables[key_object, key_id].flatten('time', True)
+                                     for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
+                                     if not self.tables[key_object, key_id].is_empty()]
         return flat_tables
 
     def build_identifier_dict(self):
