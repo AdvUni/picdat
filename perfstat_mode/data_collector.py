@@ -126,11 +126,11 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     ) + sysstat_object.get_barchart_booleans() + statit_object.get_barchart_booleans()
     combined_titles = per_iteration_object.get_titles() + sysstat_object.get_titles() + \
         statit_object.get_titles()
-    combined_object_ids = per_iteration_object.get_chart_ids() + sysstat_object.get_chart_ids() + \
+    combined_chart_ids = per_iteration_object.get_chart_ids() + sysstat_object.get_chart_ids() + \
         statit_object.get_chart_ids()
 
     identifier_dict = {'titles': combined_titles, 'units': combined_units,
-                       'x_labels': combined_x_lables, 'object_ids': combined_object_ids,
+                       'x_labels': combined_x_lables, 'chart_ids': combined_chart_ids,
                        'barchart_booleans': combined_barchart_booleans,
                        'timezone': str(util.localtimezone)}
     
