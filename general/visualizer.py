@@ -88,7 +88,7 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
     """
 
     titles = identifier_dict['titles']
-    chart_ids = identifier_dict['object_ids']
+    chart_ids = identifier_dict['chart_ids']
     y_labels = identifier_dict['units']
     x_labels = identifier_dict['x_labels']
     barchart_booleans = identifier_dict['barchart_booleans']

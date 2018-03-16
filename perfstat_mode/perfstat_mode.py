@@ -102,7 +102,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
         html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
             constants.HTML_ENDING
 
-        csv_filenames = util.get_csv_filenames(identifier_dict['object_ids'], node_identifier)
+        csv_filenames = util.get_csv_filenames(identifier_dict['chart_ids'], node_identifier)
         csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
         csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
                          csv_filenames]

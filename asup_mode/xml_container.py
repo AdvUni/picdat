@@ -410,7 +410,7 @@ class XmlContainer:
     def build_identifier_dict(self):
         """
         This method provides meta information about the data found in the xml. Those are chart
-        titles, units, x_labels, some object_ids, booleans, whether the resulting charts should be
+        titles, units, x_labels, some chart_ids, booleans, whether the resulting charts should be
         visualized as bar charts and names for the csv tables.
         :return: all mentioned information, packed into a dict
         """
@@ -418,7 +418,7 @@ class XmlContainer:
         titles = []
         units = []
         x_labels = []
-        object_ids = []
+        chart_ids = []
         barchart_booleans = []
         csv_names = []
 
@@ -428,7 +428,7 @@ class XmlContainer:
         titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
-        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+        chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
                                    key_aspect for (key_object, key_aspect) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
@@ -440,7 +440,7 @@ class XmlContainer:
         titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['bucket' for _ in available]
-        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+        chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
                                    key_aspect for (key_object, key_aspect) in available]
         barchart_booleans = barchart_booleans + ['true' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
@@ -453,11 +453,11 @@ class XmlContainer:
         titles = titles + [key_object + ': ' + key_id for (key_object, key_id) in available]
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
-        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+        chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
                                    key_id for (key_object, key_id) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' +
                                  key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
 
-        return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
+        return {'titles': titles, 'units': units, 'x_labels': x_labels, 'chart_ids': chart_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}

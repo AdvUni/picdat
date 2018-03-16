@@ -317,5 +317,5 @@ class SysstatClass:
         return SysstatClass.get_request_strings(': ')
 
     @staticmethod
-    def get_object_ids():
+    def get_chart_ids():
         return SysstatClass.get_request_strings('_')

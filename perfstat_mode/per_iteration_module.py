@@ -357,5 +357,5 @@ class PerIterationClass:
     def get_titles(self):
         return self.get_request_strings(': ')
 
-    def get_object_ids(self):
+    def get_chart_ids(self):
         return self.get_request_strings('_')
