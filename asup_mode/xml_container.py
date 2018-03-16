@@ -36,10 +36,10 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # the keys in the other lists, so this is why the list is called like this.
 
 INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
-                            ('volume', 'total_ops'), ('volume', 'avg_latency'),
-                            ('volume', 'read_data'), ('volume', 'write_data'),
-                            ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
-                            ('lun:constituent', 'read_data'), ('disk:constituent', 'disk_busy')]
+                            ('disk:constituent', 'disk_busy'), ('volume', 'total_ops'),
+                            ('volume', 'avg_latency'), ('volume', 'read_data'),
+                            ('volume', 'write_data'), ('lun:constituent', 'total_ops'),
+                            ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data')]
 
 # The following list contains search keys about histograms.
 # Each element of the INSTANCES_OVER_BUCKET_KEYS list is a pair of an object and a counter, as they
