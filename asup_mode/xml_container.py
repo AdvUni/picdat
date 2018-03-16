@@ -91,8 +91,8 @@ class XmlContainer:
         # storing all the matching data found in xml data file.
         self.tables = {searchkey: Table()
                        for searchkey in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
-        for key_id, key_object, _ in COUNTERS_OVER_TIME_KEYS:
-            self.tables[key_object, key_id] = Table()
+        for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
+            self.tables[key_id] = Table()
 
         # A dict for relating units to each search key from the three key lists.
         # Units are provided by the xml info file.
@@ -158,7 +158,7 @@ class XmlContainer:
             else:
                 for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
                     if object_type == key_object and counter in key_counters:
-                        self.units[object_type, key_id] = element_dict['unit']
+                        self.units[key_id] = element_dict['unit']
 
         except (KeyError):
             logging.warning(
@@ -197,7 +197,7 @@ class XmlContainer:
             if not self.node_name:
                 if object_type == 'system:constituent':
                     self.node_name = element_dict['instance']
-                    print(self.node_name)
+                    logging.debug('found node name: %s', self.node_name)
 
             # process INSTANCES_OVER_TIME_KEYS
             for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
@@ -261,8 +261,8 @@ class XmlContainer:
                             # build absolute value through comparison of two consecutive values
                             abs_val, datetimestamp = util.get_abs_val(
                                 value, unixtimestamp, self.buffer, (object_type, counter))
-                            self.tables[object_type, key_id].insert(datetimestamp, counter,
-                                                                    abs_val)
+                            self.tables[key_id].insert(datetimestamp, counter,
+                                                       abs_val)
 
                         self.buffer[(object_type, counter)] = (unixtimestamp, value)
                         return
@@ -442,9 +442,9 @@ class XmlContainer:
                                      for key in INSTANCES_OVER_BUCKET_KEYS
                                      if not self.tables[key].is_empty()]
 
-        flat_tables = flat_tables + [self.tables[key_object, key_id].flatten('time', True)
-                                     for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
-                                     if not self.tables[key_object, key_id].is_empty()]
+        flat_tables = flat_tables + [self.tables[key_id].flatten('time', True)
+                                     for (key_id, _, _) in COUNTERS_OVER_TIME_KEYS
+                                     if not self.tables[key_id].is_empty()]
         return flat_tables
 
     def build_identifier_dict(self):
@@ -488,11 +488,11 @@ class XmlContainer:
 
         # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
         available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
-                     if not self.tables[key_object, key_id].is_empty()]
+                     if not self.tables[key_id].is_empty()]
 
         titles = titles + [key_object.replace('system:constituent', self.node_name) +
                            ': ' + key_id for (key_object, key_id) in available]
-        units = units + [self.units[key] for key in available]
+        units = units + [self.units[key_id] for (_, key_id) in available]
         x_labels = x_labels + ['time' for _ in available]
         chart_ids = chart_ids + [key_object.replace(
             'system:constituent', self.node_name).replace(':', '_').replace('-', '_') + '_' +
