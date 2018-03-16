@@ -403,41 +403,49 @@ class XmlContainer:
         :return: all mentioned information, packed into a dict
         """
 
+        titles = []
+        units = []
+        x_labels = []
+        object_ids = []
+        barchart_booleans = []
+        csv_names = []
+
         # get identifiers for all charts belonging to INSTANCES_OVER_TIME_KEYS
-        available_requests = [
-            request for request in INSTANCES_OVER_TIME_KEYS if not self.tables[request].is_empty()]
+        available = [key for key in INSTANCES_OVER_TIME_KEYS if not self.tables[key].is_empty()]
 
-        titles = [object_type + ': ' + aspect for (object_type, aspect) in available_requests]
-        units = [self.units[request] for request in available_requests]
-        x_labels = ['time' for _ in available_requests]
-        object_ids = [object_type.replace(':', '_').replace('-', '_') + '_' +
-                      aspect for (object_type, aspect) in available_requests]
-        barchart_booleans = ['false' for _ in available_requests]
-        csv_names = [object_type.replace(':', '_').replace('-', '_') + '_' + aspect +
-                     constants.CSV_FILE_ENDING for (object_type, aspect) in available_requests]
+        titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
+        units = units + [self.units[key] for key in available]
+        x_labels = x_labels + ['time' for _ in available]
+        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+                                   key_aspect for (key_object, key_aspect) in available]
+        barchart_booleans = barchart_booleans + ['false' for _ in available]
+        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
+                                 constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
 
-        # get identifiers for chart belonging to LUN_HIST_REQUEST
-        if not self.tables[('lun:constituent', 'read_align_histo')].is_empty():
-            titles.append('lun:constituent' + ': ' + 'read_align_histo')
-            units.append(self.units['lun:constituent', 'read_align_histo'])
-            x_labels.append('bucket')
-            object_ids.append('lun:constituent'.replace(
-                ':', '_').replace('-', '_') + '_' + 'read_align_histo')
-            barchart_booleans.append('true')
-            csv_names.append('lun:constituent'.replace(':', '_').replace(
-                '-', '_') + '_' + 'read_align_histo' + constants.CSV_FILE_ENDING)
+        # get identifiers for all charts belonging to INSTANCE_OVER_BUCKET_KEYS
+        available = [key for key in INSTANCES_OVER_BUCKET_KEYS if not self.tables[key].is_empty()]
 
-        available_requests = [(object_type, request_id)
-                              for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS]
-        titles = titles + [object_type + ': ' +
-                           request_id for (object_type, request_id) in available_requests]
-        units = units + [self.units[request] for request in available_requests]
-        x_labels = x_labels + ['time' for _ in available_requests]
-        object_ids = object_ids + [object_type.replace(':', '_').replace('-', '_') + '_' +
-                                   request_id for (object_type, request_id) in available_requests]
-        barchart_booleans = barchart_booleans + ['false' for _ in available_requests]
-        csv_names = csv_names + [object_type.replace(':', '_').replace('-', '_') + '_' +
-                                 request_id + constants.CSV_FILE_ENDING for (object_type, request_id) in available_requests]
+        titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
+        units = units + [self.units[key] for key in available]
+        x_labels = x_labels + ['bucket' for _ in available]
+        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+                                   key_aspect for (key_object, key_aspect) in available]
+        barchart_booleans = barchart_booleans + ['true' for _ in available]
+        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
+                                 constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
+
+        # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
+        available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
+                     if not self.tables[key_object, key_aspect].is_empty()]
+
+        titles = titles + [key_object + ': ' + key_id for (key_object, key_id) in available]
+        units = units + [self.units[key] for key in available]
+        x_labels = x_labels + ['time' for _ in available]
+        object_ids = object_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
+                                   key_id for (key_object, key_id) in available]
+        barchart_booleans = barchart_booleans + ['false' for _ in available]
+        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' +
+                                 key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'object_ids': object_ids,
                 'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
