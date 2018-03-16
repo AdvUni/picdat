@@ -448,7 +448,7 @@ class XmlContainer:
 
         # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
         available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
-                     if not self.tables[key_object, key_aspect].is_empty()]
+                     if not self.tables[key_object, key_id].is_empty()]
 
         titles = titles + [key_object + ': ' + key_id for (key_object, key_id) in available]
         units = units + [self.units[key] for key in available]
