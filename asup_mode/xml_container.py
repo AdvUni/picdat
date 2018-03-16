@@ -35,11 +35,13 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # The x axis of the charts will be 'time'. These two characteristics makes the keys different from
 # the keys in the other lists, so this is why the list is called like this.
 
-INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
-                            ('disk:constituent', 'disk_busy'), ('volume', 'total_ops'),
-                            ('volume', 'avg_latency'), ('volume', 'read_data'),
-                            ('volume', 'write_data'), ('lun:constituent', 'total_ops'),
-                            ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data')]
+INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
+                            ('ext_cache_obj', 'hya_reads_replaced'),
+                            ('processor', 'processor_busy'), ('disk:constituent', 'disk_busy'),
+                            ('volume', 'total_ops'), ('volume', 'avg_latency'),
+                            ('volume', 'read_data'), ('volume', 'write_data'),
+                            ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
+                            ('lun:constituent', 'read_data')]
 
 # The following list contains search keys about histograms.
 # Each element of the INSTANCES_OVER_BUCKET_KEYS list is a pair of an object and a counter, as they
@@ -54,7 +56,8 @@ INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
 # set of counters. Objects and counters are some of those written into the ASUP xml files.
 # The identifier is just for distinction between several keys of the list, because the objects are
 # not unique and the counter sets are not very handy. The identifier is used for referencing the
-# data belonging to the key at runtime as well as for naming the resulting charts.
+# data belonging to the key at runtime as well as for naming the resulting charts and must be
+# unique.
 # For the objects of those keys, it is assumed, that each xml data file knows only one instance per
 # object. So, each chart belonging to the keys is not meant to have several data series for
 # different instances, but data series for different counters instead. This is why each key
@@ -221,6 +224,7 @@ class XmlContainer:
 
                         if (object_type, counter, instance) in self.buffer:
                             if self.buffer[object_type, counter, instance]:
+                                # build absolute value through comparison of two consecutive values
                                 abs_val_list, _ = util.get_abs_val(
                                     valuelist, unixtimestamp, self.buffer,
                                     (object_type, counter, instance))
