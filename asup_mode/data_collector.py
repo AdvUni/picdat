@@ -92,7 +92,7 @@ def read_data_file(container, data_file):
         tag = elem.tag.split('}', 1)[1]
 
         if tag == 'ROW':
-            container.add_item(elem_dict)
+            container.add_data(elem_dict)
             elem_dict = {}
         else:
             elem_dict[tag] = elem.text

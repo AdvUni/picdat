@@ -84,11 +84,6 @@ class XmlContainer:
         Constructor for XmlContainer.
         """
 
-        # set to hash all different object types appearing in INSTANCES_OVER_TIME_KEYS. Shall
-        # reduce number of comparisons because some object types occur several times in
-        # INSTANCES_OVER_TIME_KEYS.
-        self.object_types = {key_object for (key_object, _) in INSTANCES_OVER_TIME_KEYS}
-
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in xml data file.
         self.tables = {searchkey: Table()
@@ -168,7 +163,7 @@ class XmlContainer:
                 'content: %s Expected (at least) following tags: object, counter, unit, base.',
                 str(element_dict))
 
-    def add_item(self, element_dict):
+    def add_data(self, element_dict):
         """
         Method takes the content from one 'ROW' xml element in a dict. If the element matches a
         search key, its data will be written into table data structures. If the element is a
@@ -178,124 +173,172 @@ class XmlContainer:
         :return: None
         """
 
+        self.find_keys(element_dict)
+        self.find_bases(element_dict)
+
+    def find_keys(self, element_dict):
+        """
+        Method takes the content from one 'ROW' xml element in a dict and search it for all keys
+        from INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS and COUNTERS_OVER_TIME_KEYS. If
+        it finds something, it does the value conversion to get the absolute value and not only
+        the recent total value of the counter, as it is written in the xml. Then it stores the
+        value to the respective table and returns.
+        :param element_dict: A dict, mapping all xml tags inside a xml 'ROW' element to their text
+        content
+        :return: None
+        """
         try:
             object_type = element_dict['object']
 
             # process INSTANCES_OVER_TIME_KEYS
-            if object_type in self.object_types:
-                counter = element_dict['counter']
+            for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
+                if object_type == key_object:
+                    counter = element_dict['counter']
+                    if counter == key_counter:
+                        unixtimestamp = int(element_dict['timestamp'])
+                        instance = element_dict['instance']
+                        value = float(element_dict['value'])
 
-                # process values
-                if (object_type, counter) in INSTANCES_OVER_TIME_KEYS:
-                    unixtimestamp = int(element_dict['timestamp'])
-                    instance = element_dict['instance']
-                    value = float(element_dict['value'])
-
-                    if (object_type, counter, instance) in self.buffer:
-
-                        # build absolute value through comparison of two consecutive values
-                        abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.buffer, (object_type, counter, instance))
-                        self.tables[(object_type, counter)].insert(datetimestamp, instance, abs_val)
-
-                    self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
-
-                # process lun histo
-                if (object_type, counter) in INSTANCES_OVER_BUCKET_KEYS:
-                    unixtimestamp = int(element_dict['timestamp'])
-                    instance = element_dict['instance']
-                    valuelist = (element_dict['value']).split(',')
-
-                    if (object_type, counter, instance) in self.buffer:
-                        if self.buffer[object_type, counter, instance]:
-                            abs_val_list, _ = util.get_abs_val(
-                                valuelist, unixtimestamp, self.buffer, (object_type, counter, instance))
-
-                            buckets = self.histo_labels[object_type, counter]
-                            for bucket in range(len(buckets)):
-                                self.tables[object_type, counter].insert(
-                                    bucket, instance, abs_val_list[bucket])
-                                logging.debug(
-                                    '%s, %s, %s', buckets[bucket], instance, abs_val_list[bucket])
-
-                            self.buffer[object_type, counter, instance] = None
-                    else:
-                        self.buffer[(object_type, counter, instance)
-                                    ] = (unixtimestamp, valuelist)
-
-                # process bases
-                if (object_type, counter) in self.base_dict:
-                    unixtimestamp = int(element_dict['timestamp'])
-                    instance = element_dict['instance']
-                    baseval = float(element_dict['value'])
-                    original_counter = self.base_dict[(object_type, counter)]
-
-                    if (object_type, counter, instance) in self.base_buffer:
-
-                        # build absolute value through comparison of two consecutive values
-                        abs_baseval, datetimestamp = util.get_abs_val(
-                            baseval, unixtimestamp, self.base_buffer,
-                            (object_type, counter, instance))
-
-                        try:
-                            self.do_base_conversion(
-                                (object_type, original_counter), instance, datetimestamp, abs_baseval)
-                        except (KeyError, IndexError):
-                            logging.debug(
-                                'Found base before actual element. Add base element to base heap. '
-                                'Base_element: %s', element_dict)
-                            self.base_heap.add((object_type, original_counter,
-                                                instance, datetimestamp, abs_baseval))
-
-                    self.base_buffer[(object_type, counter, instance)] = (unixtimestamp, baseval)
-
-                if (object_type, counter) in self.histo_base_dict:
-                    unixtimestamp = int(element_dict['timestamp'])
-                    instance = element_dict['instance']
-                    baseval = float(element_dict['value'])
-                    original_counter = self.histo_base_dict[(object_type, counter)]
-
-                    if (object_type, counter, instance) in self.base_buffer:
-                        if self.base_buffer[object_type, counter, instance]:
+                        if (object_type, counter, instance) in self.buffer:
 
                             # build absolute value through comparison of two consecutive values
-                            abs_baseval, _ = util.get_abs_val(
+                            abs_val, datetimestamp = util.get_abs_val(
+                                value, unixtimestamp, self.buffer, (object_type, counter, instance))
+                            self.tables[(object_type, counter)].insert(
+                                datetimestamp, instance, abs_val)
+
+                        self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
+                        return
+
+            # process INSTANCES_OVER_BUCKET_KEYS
+            for key_object, key_counter in INSTANCES_OVER_BUCKET_KEYS:
+                if object_type == key_object:
+                    counter = element_dict['counter']
+                    if counter == key_counter:
+                        unixtimestamp = int(element_dict['timestamp'])
+                        instance = element_dict['instance']
+                        valuelist = (element_dict['value']).split(',')
+
+                        if (object_type, counter, instance) in self.buffer:
+                            if self.buffer[object_type, counter, instance]:
+                                abs_val_list, _ = util.get_abs_val(
+                                    valuelist, unixtimestamp, self.buffer,
+                                    (object_type, counter, instance))
+
+                                buckets = self.histo_labels[object_type, counter]
+                                for bucket in range(len(buckets)):
+                                    self.tables[object_type, counter].insert(
+                                        bucket, instance, abs_val_list[bucket])
+                                    logging.debug('%s, %s, %s', buckets[bucket], instance,
+                                                  abs_val_list[bucket])
+
+                                self.buffer[object_type, counter, instance] = None
+                        else:
+                            self.buffer[(object_type, counter, instance)] = (
+                                unixtimestamp, valuelist)
+                        return
+
+            # Process COUNTERS_OVER_TIME_KEYS
+            for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
+                if object_type == key_object:
+                    counter = element_dict['counter']
+                    if counter in key_counters:
+                        unixtimestamp = int(element_dict['timestamp'])
+                        value = float(element_dict['value'])
+
+                        if (object_type, counter) in self.buffer:
+
+                            # build absolute value through comparison of two consecutive values
+                            abs_val, datetimestamp = util.get_abs_val(
+                                value, unixtimestamp, self.buffer, (object_type, counter))
+                            self.tables[object_type, key_id].insert(datetimestamp, counter,
+                                                                    abs_val)
+
+                        self.buffer[(object_type, counter)] = (unixtimestamp, value)
+                        return
+        except (KeyError):
+            logging.warning(
+                'Some tags inside an xml ROW element in DATA file seems to miss. Found following '
+                'content: %s Expected (at least) following tags: object, counter, timestamp, '
+                'instance, value', str(element_dict))
+
+    def find_bases(self, element_dict):
+        """
+        Method takes the content from one 'ROW' xml element in a dict and search it for base values
+        from self.base_dict and self.histo_base_dict. If it finds something, it does the value
+        conversion to get the absolute value and not only the recent total value of the counter, as
+        it is written in the xml. Then it tries to do the base conversion. If this fails, because
+        the base value was collected before the value the base belongs to, the method stores the
+        base to self.base_heap. It will be processed later.
+        :param element_dict: A dict, mapping all xml tags inside a xml 'ROW' element to their text
+        content
+        :return: None
+        """
+        try:
+            object_type = element_dict['object']
+
+            # process bases for INSTANCES_OVER_TIME_KEYS
+            for base_object, base_counter in self.base_dict:
+                if object_type == base_object:
+                    counter = element_dict['counter']
+                    if counter == base_counter:
+                        unixtimestamp = int(element_dict['timestamp'])
+                        instance = element_dict['instance']
+                        baseval = float(element_dict['value'])
+
+                        if (object_type, counter, instance) in self.base_buffer:
+
+                            # build absolute value through comparison of two consecutive values
+                            abs_baseval, datetimestamp = util.get_abs_val(
                                 baseval, unixtimestamp, self.base_buffer,
                                 (object_type, counter, instance))
 
-                            for bucket in range(len(self.histo_labels[object_type, original_counter])):
-                                try:
-                                    self.do_base_conversion(
-                                        (object_type, original_counter), instance, bucket, float(abs_baseval))
-                                except (KeyError, IndexError):
-                                    logging.debug(
-                                        'Found base before actual element. Add base element to base heap. '
-                                        'Base_element: %s', element_dict)
-                                    self.base_heap.add(
-                                        (object_type, original_counter, instance, bucket, abs_baseval))
-                            self.base_buffer[object_type, counter, instance] = None
-                    else:
-                        self.base_buffer[object_type, counter,
-                                         instance] = (unixtimestamp, baseval)
+                            original_counter = self.base_dict[(object_type, counter)]
+                            try:
+                                self.do_base_conversion((object_type, original_counter),
+                                                        instance, datetimestamp, abs_baseval)
+                            except (KeyError, IndexError):
+                                logging.debug(
+                                    'Found base before actual element. Add base element to base '
+                                    'heap. Base_element: %s', element_dict)
+                                self.base_heap.add((object_type, original_counter,
+                                                    instance, datetimestamp, abs_baseval))
 
-            else:
-                for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
-                    if object_type == key_object:
-                        counter = element_dict['counter']
-                        if counter in key_counters:
-                            unixtimestamp = int(element_dict['timestamp'])
-                            value = float(element_dict['value'])
+                        self.base_buffer[(object_type, counter, instance)
+                                         ] = (unixtimestamp, baseval)
 
-                            if (object_type, counter) in self.buffer:
+            # process bases for INSTANCES_OVER_BUCKET_KEYS
+            for base_object, base_counter in self.histo_base_dict:
+                if object_type == base_object:
+                    counter = element_dict['counter']
+                    if counter == base_counter:
+                        unixtimestamp = int(element_dict['timestamp'])
+                        instance = element_dict['instance']
+                        baseval = float(element_dict['value'])
+
+                        if (object_type, counter, instance) in self.base_buffer:
+                            if self.base_buffer[object_type, counter, instance]:
 
                                 # build absolute value through comparison of two consecutive values
-                                abs_val, datetimestamp = util.get_abs_val(
-                                    value, unixtimestamp, self.buffer,
-                                    (object_type, counter))
-                                self.tables[object_type, key_id].insert(
-                                    datetimestamp, counter, abs_val)
+                                abs_baseval, _ = util.get_abs_val(
+                                    baseval, unixtimestamp, self.base_buffer,
+                                    (object_type, counter, instance))
 
-                            self.buffer[(object_type, counter)] = (unixtimestamp, value)
+                                original_counter = self.histo_base_dict[(object_type, counter)]
+                                for bucket in range(len(self.histo_labels[object_type, original_counter])):
+                                    try:
+                                        self.do_base_conversion((object_type, original_counter),
+                                                                instance, bucket, float(abs_baseval))
+                                    except (KeyError, IndexError):
+                                        logging.debug(
+                                            'Found base before actual element. Add base element to base heap. '
+                                            'Base_element: %s', element_dict)
+                                        self.base_heap.add((object_type, original_counter,
+                                                            instance, bucket, abs_baseval))
+                                self.base_buffer[object_type, counter, instance] = None
+                        else:
+                            self.base_buffer[object_type, counter,
+                                             instance] = (unixtimestamp, baseval)
 
         except (KeyError):
             logging.warning(
