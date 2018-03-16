@@ -384,15 +384,27 @@ class XmlContainer:
                 self.units[request] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
-        flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
-                       for request in INSTANCES_OVER_TIME_KEYS if not self.tables[request].is_empty()]
+        """
+        Calls the flatten method for each table from self.tables, which is not empty.
+        :param sort_columns_by_name: boolean, whether table columns should be sorted
+        by names. If False, they will be sorted by value. Tables for 
+        COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
+        to be a clearer arrangement.
+        :return: all not-empty flattened tables in a list.
+        """
+        flat_tables = []
 
-        if not self.tables[('lun:constituent', 'read_align_histo')].is_empty():
-            flat_tables.append(
-                self.tables[('lun:constituent', 'read_align_histo')].flatten('bucket', True))
+        flat_tables = flat_tables + [self.tables[key].flatten('time', sort_columns_by_name)
+                                     for key in INSTANCES_OVER_TIME_KEYS
+                                     if not self.tables[key].is_empty()]
 
-        flat_tables = flat_tables + [self.tables[object_type, request_id].flatten(
-            'time', True) for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS]
+        flat_tables = flat_tables + [self.tables[key].flatten('bucket', sort_columns_by_name)
+                                     for key in INSTANCES_OVER_BUCKET_KEYS
+                                     if not self.tables[key].is_empty()]
+
+        flat_tables = flat_tables + [self.tables[object_type, request_id].flatten('time', True)
+                                     for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS
+                                     if not self.tables[object_type, request_id].is_empty()]
         return flat_tables
 
     def build_identifier_dict(self):
