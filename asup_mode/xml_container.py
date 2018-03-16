@@ -24,51 +24,44 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-# The following list contains search keys for gaining chart data. Its elements are tuples of
-# objects and counters. The name 'object' is because different requests can not only differ in
-# counter, but also in object (Contrary to 'SYSTEM_BW_REQUESTS').
-# The values found about one of the keys are meant to be visualized in one chart. So, each chart's
-# table is about one counter and its columns will represent different instances.
-OBJECT_REQUESTS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
-                   ('volume', 'total_ops'), ('volume', 'avg_latency'), ('volume', 'read_data'),
-                   ('volume', 'write_data'), ('lun:constituent', 'total_ops'),
-                   ('lun:constituent', 'avg_latency'), ('lun:constituent', 'read_data'),
-                   ('disk:constituent', 'disk_busy')]
 
-# The following list contains search keys for gaining chart data. Its elements are tuples of
-# objects and counters. The counters are specifying histogram data.
-# The values found about one of the keys are meant to be visualized in one chart. So, each chart's
-# table is about one counter and its columns will represent different instances. The chart's x axis
-# is not 'time' but defines bucket numbers.
-HISTO_REQUESTS = [('lun:constituent', 'read_align_histo')]
+# The following three lists contain search keys for gaining chart data. Each element of the lists
+# is a key to collect data for exactly one chart. As there are three different kinds of charts, the
+# keys are partitioned into the different lists.
 
-# # The following list contains search keys for gaining chart data. Its elements are the names of
-# # counters. The counters are all about band with and are assumed to have the same unit. This is why
-# # the lists name contains 'BW'. The object tag belonging to the xml elements satisfying the keys is
-# # always 'system:constituent'. Therefore, object is not explicitly specified in the requests.
-# # The values found about all of these keys are meant to be visualized in one chart together. So,
-# # the columns of the chart's table will represent counters, means one column for each request.
-# SYSTEM_BW_REQUESTS = ['hdd_data_read', 'hdd_data_written', 'net_data_recv', 'net_data_sent',
-#                       'ssd_data_read', 'ssd_data_written', 'fcp_data_recv', 'fcp_data_sent',
-#                       'tape_data_read', 'tape_data_written']
-# # constant holding 'bw' to be part of a dict key for distinction between SYSTEM_BW_REQUESTS and
-# # SYSTEM_IOPS_REQUESTS results.
-# BW = 'bw'
-#
-# # The following list contains search keys for gaining chart data. Its elements are the names of
-# # counters. The counters are all about iops operations and are assumed to have the same unit.
-# # This is why the lists name contains 'IOPS'. The object tag belonging to the xml
-# # elements satisfying the keys is always 'system:constituent'. Therefore, object is not explicitly
-# # specified in the requests. The values found about all of these keys are meant to be visualized in
-# # one chart together. So, the columns of the chart's table will represent counters, means one
-# # column for each request.
-# SYSTEM_IOPS_REQUESTS = ['nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops']
-# # constant holding 'iops' to be part of a dict key for distinction between SYSTEM_BW_REQUESTS and
-# # SYSTEM_IOPS_REQUESTS results.
-# IOPS = 'iops'
+# Each element of the INSTANCES_OVER_TIME_KEYS list is a pair of an object and a counter, as they
+# are written into the ASUP xml files. Several instances of the object will have data for the
+# counter, so the resulting chart for each of the keys will have one data series per instance.
+# The x axis of the charts will be 'time'. These two characteristics makes the keys different from
+# the keys in the other lists, so this is why the list is called like this.
 
+INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('processor', 'processor_busy'),
+                            ('volume', 'total_ops'), ('volume', 'avg_latency'),
+                            ('volume', 'read_data'), ('volume', 'write_data'),
+                            ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
+                            ('lun:constituent', 'read_data'), ('disk:constituent', 'disk_busy')]
 
-COUNTERS_OVER_TIME = [
+# The following list contains search keys about histograms.
+# Each element of the INSTANCES_OVER_BUCKET_KEYS list is a pair of an object and a counter, as they
+# are written into the ASUP xml files. Several instances of the object will have data for the
+# counter, so the resulting chart for each of the keys will have one data series per instance.
+# As it is hardly useful, to draw a histogram as time diagram, the x axis will not be 'time', but
+# 'bucket' here. These two characteristics makes the keys different from the keys in the other
+# lists, so this is why the list is called like this.
+INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
+
+# Each element of the COUNTERS_OVER_TIME_KEYS list is a triple of an identifier, an object and a
+# set of counters. Objects and counters are some of those written into the ASUP xml files.
+# The identifier is just for distinction between several keys of the list, because the objects are
+# not unique and the counter sets are not very handy. The identifier is used for referencing the
+# data belonging to the key at runtime as well as for naming the resulting charts.
+# For the objects of those keys, it is assumed, that each xml data file knows only one instance per
+# object. So, each chart belonging to the keys is not meant to have several data series for
+# different instances, but data series for different counters instead. This is why each key
+# contains a whole set of counters. The counters in one set must of course wear all the same unit!
+# The x axis of the charts will be 'time'. These two characteristics makes the keys different from
+# the keys in the other lists, so this is why the list is called like this.
+COUNTERS_OVER_TIME_KEYS = [
     ('bw', 'system:constituent', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
                                   'net_data_sent', 'ssd_data_read', 'ssd_data_written',
                                   'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
@@ -91,19 +84,20 @@ class XmlContainer:
         Constructor for XmlContainer.
         """
 
-        # set to hash all different object types appearing in OBJECT_REQUESTS. Shall reduce number of
-        # comparisons because some object types occur several times in OBJECT_REQUESTS.
-        self.object_types = {request[0] for request in OBJECT_REQUESTS}
-        #self.sonstwas_object_types = {request[1] for request in COUNTERS_OVER_TIME}
+        # set to hash all different object types appearing in INSTANCES_OVER_TIME_KEYS. Shall
+        # reduce number of comparisons because some object types occur several times in
+        # INSTANCES_OVER_TIME_KEYS.
+        self.object_types = {request[0] for request in INSTANCES_OVER_TIME_KEYS}
 
-        # A dict of Table object, stored to a key from OBJECT_REQUESTS or SYSTEM_BW_REQUESTS. Those
-        # tables hold all collected chart data from xml data file for both request types.
-        self.tables = {request: Table() for request in OBJECT_REQUESTS + HISTO_REQUESTS}
-        for request_id, object_type, _ in COUNTERS_OVER_TIME:
+        # A dict of Table objects. Each key from the three key lists has exactly one Table
+        # storing all the matching data found in xml data file.
+        self.tables = {request: Table()
+                       for request in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
+        for request_id, object_type, _ in COUNTERS_OVER_TIME_KEYS:
             self.tables[object_type, request_id] = Table()
 
-        # A dict, mapping requests from both OBJECT_REQUESTS and SYSTEM_BW_REQUESTS to the respective
-        # unit. Units are provided by the xml info file.
+        # A dict for relating units to each search key from the three key lists.
+        # Units are provided by the xml info file.
         self.units = {}
 
         # Histograms are charts with an x label different from 'time'. Which x values can occur is
@@ -120,10 +114,10 @@ class XmlContainer:
         # The following dict is for storing the information from xml base tags in the info file.
         # Its keys are tuples specifying object and the counter name of a base, its values are
         # the respective counters, to which the base belongs to.
-        # Note: It is assumed, that values belonging to SYSTEM_REQUEST do not have any bases. So,
-        # those dicts do only work for the OBJECT_REQUESTS
+        # Note: It is assumed, that values belonging to COUNTERS_OVER_TIME_KEYS do not have any
+        # bases. So, those dicts do only work for the INSTANCES_OVER_TIME_KEYS
         self.base_dict = {}
-        # Same thing as base_dict, but it stores the bases for HISTO_REQUESTS instead.
+        # Same thing as base_dict, but it stores the bases for INSTANCES_OVER_BUCKET_KEYS instead.
         self.histo_base_dict = {}
 
         # Does the same thing for bases as buffer for non-base values:
@@ -133,11 +127,12 @@ class XmlContainer:
         # will be thrown into this set to process them later.
         self.base_heap = set()
 
-        # Same thing as base_heap, but it stores the bases for HISTO_REQUESTS instead.
+        # Same thing as base_heap, but it stores the bases for INSTANCES_OVER_BUCKET_KEYS instead.
         self.histo_base_heap = set()
 
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the xml elements with object = system:constituent
+        # Note: not in use at the moment
         self.node_name = None
 
     def add_info(self, element_dict):
@@ -152,13 +147,13 @@ class XmlContainer:
             object_type = element_dict['object']
             counter = element_dict['counter']
 
-            if (object_type, counter) in OBJECT_REQUESTS:
+            if (object_type, counter) in INSTANCES_OVER_TIME_KEYS:
                 self.units[object_type, counter] = element_dict['unit']
                 base = element_dict['base']
                 if base:
                     self.base_dict[object_type, base] = counter
 
-            elif (object_type, counter) in HISTO_REQUESTS:
+            elif (object_type, counter) in INSTANCES_OVER_BUCKET_KEYS:
                 self.units[object_type, counter] = element_dict['unit']
                 self.histo_labels[object_type, counter] = element_dict['label1'].split(',')
                 base = element_dict['base']
@@ -166,7 +161,7 @@ class XmlContainer:
                     self.histo_base_dict[object_type, base] = counter
 
             else:
-                for request_id, request_object, request_counters in COUNTERS_OVER_TIME:
+                for request_id, request_object, request_counters in COUNTERS_OVER_TIME_KEYS:
                     if object_type == request_object and counter in request_counters:
                         self.units[object_type, request_id] = element_dict['unit']
 
@@ -189,12 +184,12 @@ class XmlContainer:
         try:
             object_type = element_dict['object']
 
-            # process OBJECT_REQUESTS
+            # process INSTANCES_OVER_TIME_KEYS
             if object_type in self.object_types:
                 counter = element_dict['counter']
 
                 # process values
-                if (object_type, counter) in OBJECT_REQUESTS:
+                if (object_type, counter) in INSTANCES_OVER_TIME_KEYS:
                     unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     value = float(element_dict['value'])
@@ -209,7 +204,7 @@ class XmlContainer:
                     self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
 
                 # process lun histo
-                if (object_type, counter) in HISTO_REQUESTS:
+                if (object_type, counter) in INSTANCES_OVER_BUCKET_KEYS:
                     unixtimestamp = int(element_dict['timestamp'])
                     instance = element_dict['instance']
                     valuelist = (element_dict['value']).split(',')
@@ -287,7 +282,7 @@ class XmlContainer:
                                          instance] = (unixtimestamp, baseval)
 
             else:
-                for request_id, request_object, request_counters in COUNTERS_OVER_TIME:
+                for request_id, request_object, request_counters in COUNTERS_OVER_TIME_KEYS:
                     if object_type == request_object:
                         counter = element_dict['counter']
                         if counter in request_counters:
@@ -390,19 +385,14 @@ class XmlContainer:
 
     def get_flat_tables(self, sort_columns_by_name):
         flat_tables = [self.tables[request].flatten('time', sort_columns_by_name)
-                       for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
+                       for request in INSTANCES_OVER_TIME_KEYS if not self.tables[request].is_empty()]
 
         if not self.tables[('lun:constituent', 'read_align_histo')].is_empty():
             flat_tables.append(
                 self.tables[('lun:constituent', 'read_align_histo')].flatten('bucket', True))
 
-#         if not self.tables[(SYSTEM_OBJECT_TYPE, BW)].is_empty():
-#             flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, BW)].flatten('time', True))
-#         if not self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].is_empty():
-#             flat_tables.append(self.tables[(SYSTEM_OBJECT_TYPE, IOPS)].flatten('time', True))
-
         flat_tables = flat_tables + [self.tables[object_type, request_id].flatten(
-            'time', True) for (request_id, object_type, _) in COUNTERS_OVER_TIME]
+            'time', True) for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS]
         return flat_tables
 
     def build_identifier_dict(self):
@@ -413,9 +403,9 @@ class XmlContainer:
         :return: all mentioned information, packed into a dict
         """
 
-        # get identifiers for all charts belonging to OBJECT_REQUESTS
+        # get identifiers for all charts belonging to INSTANCES_OVER_TIME_KEYS
         available_requests = [
-            request for request in OBJECT_REQUESTS if not self.tables[request].is_empty()]
+            request for request in INSTANCES_OVER_TIME_KEYS if not self.tables[request].is_empty()]
 
         titles = [object_type + ': ' + aspect for (object_type, aspect) in available_requests]
         units = [self.units[request] for request in available_requests]
@@ -438,7 +428,7 @@ class XmlContainer:
                 '-', '_') + '_' + 'read_align_histo' + constants.CSV_FILE_ENDING)
 
         available_requests = [(object_type, request_id)
-                              for (request_id, object_type, _) in COUNTERS_OVER_TIME]
+                              for (request_id, object_type, _) in COUNTERS_OVER_TIME_KEYS]
         titles = titles + [object_type + ': ' +
                            request_id for (object_type, request_id) in available_requests]
         units = units + [self.units[request] for request in available_requests]
