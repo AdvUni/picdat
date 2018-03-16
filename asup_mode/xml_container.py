@@ -127,9 +127,6 @@ class XmlContainer:
         # will be thrown into this set to process them later.
         self.base_heap = set()
 
-        # Same thing as base_heap, but it stores the bases for INSTANCES_OVER_BUCKET_KEYS instead.
-        self.histo_base_heap = set()
-
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the xml elements with object = system:constituent
         # Note: not in use at the moment
@@ -274,7 +271,7 @@ class XmlContainer:
                                     logging.debug(
                                         'Found base before actual element. Add base element to base heap. '
                                         'Base_element: %s', element_dict)
-                                    self.histo_base_heap.add(
+                                    self.base_heap.add(
                                         (object_type, original_counter, instance, bucket, abs_baseval))
                             self.base_buffer[object_type, counter, instance] = None
                     else:
@@ -345,24 +342,14 @@ class XmlContainer:
         :return: None
         """
         for base_element in self.base_heap:
-            object_type, counter, instance, datetimestamp, base_val = base_element
+            object_type, counter, instance, row, base_val = base_element
             try:
-                self.do_base_conversion((object_type, counter), instance, datetimestamp, base_val)
+                self.do_base_conversion((object_type, counter), instance, row, base_val)
             except (KeyError):
                 logging.warning(
                     'Found base value but no matching actual value. This means, Value for '
-                    '%s - %s, instance %s with time stamp %s is missing in data!',
-                    object_type, counter, instance, datetimestamp)
-
-        for base_element in self.histo_base_heap:
-            object_type, counter, instance, bucket, base_val = base_element
-            try:
-                self.do_base_conversion((object_type, counter), instance, bucket, base_val)
-            except (KeyError):
-                logging.warning(
-                    'Found base value but no matching actual value. This means, Value for '
-                    '%s - %s, instance %s with time stamp %s is missing in data!',
-                    object_type, counter, instance, bucket)
+                    '%s - %s, instance %s with time stamp/bucket %s is missing in data!',
+                    object_type, counter, instance, row)
 
     def do_unit_conversions(self):
         """
@@ -429,7 +416,7 @@ class XmlContainer:
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
         chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                   key_aspect for (key_object, key_aspect) in available]
+                                 key_aspect for (key_object, key_aspect) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
                                  constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
@@ -441,7 +428,7 @@ class XmlContainer:
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['bucket' for _ in available]
         chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                   key_aspect for (key_object, key_aspect) in available]
+                                 key_aspect for (key_object, key_aspect) in available]
         barchart_booleans = barchart_booleans + ['true' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
                                  constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
@@ -454,7 +441,7 @@ class XmlContainer:
         units = units + [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
         chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                   key_id for (key_object, key_id) in available]
+                                 key_id for (key_object, key_id) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
         csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' +
                                  key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
