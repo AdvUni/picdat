@@ -447,7 +447,7 @@ class XmlContainer:
                                      if not self.tables[key_id].is_empty()]
         return flat_tables
 
-    def build_identifier_dict(self):
+    def build_label_dict(self):
         """
         This method provides meta information about the data found in the xml. Those are chart
         titles, units, x_labels, some chart_ids, booleans, whether the resulting charts should be
@@ -461,30 +461,38 @@ class XmlContainer:
         chart_ids = []
         barchart_booleans = []
         csv_names = []
+        identifiers = []
+        is_histo = []
 
         # get identifiers for all charts belonging to INSTANCES_OVER_TIME_KEYS
         available = [key for key in INSTANCES_OVER_TIME_KEYS if not self.tables[key].is_empty()]
 
-        titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
-        units = units + [self.units[key] for key in available]
+        titles = titles + [key_object + ': ' +
+                           key_counter for (key_object, key_counter) in available]
+        units += [self.units[key] for key in available]
         x_labels = x_labels + ['time' for _ in available]
         chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                 key_aspect for (key_object, key_aspect) in available]
+                                 key_counter for (key_object, key_counter) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
-        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
-                                 constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
+        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_counter +
+                                 constants.CSV_FILE_ENDING for (key_object, key_counter) in available]
+        identifiers += available
+        is_histo += [False for _ in available]
 
         # get identifiers for all charts belonging to INSTANCE_OVER_BUCKET_KEYS
         available = [key for key in INSTANCES_OVER_BUCKET_KEYS if not self.tables[key].is_empty()]
 
-        titles = titles + [key_object + ': ' + key_aspect for (key_object, key_aspect) in available]
-        units = units + [self.units[key] for key in available]
+        titles = titles + [key_object + ': ' +
+                           key_counter for (key_object, key_counter) in available]
+        units += [self.units[key] for key in available]
         x_labels = x_labels + ['bucket' for _ in available]
         chart_ids = chart_ids + [key_object.replace(':', '_').replace('-', '_') + '_' +
-                                 key_aspect for (key_object, key_aspect) in available]
+                                 key_counter for (key_object, key_counter) in available]
         barchart_booleans = barchart_booleans + ['true' for _ in available]
-        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_aspect +
-                                 constants.CSV_FILE_ENDING for (key_object, key_aspect) in available]
+        csv_names = csv_names + [key_object.replace(':', '_').replace('-', '_') + '_' + key_counter +
+                                 constants.CSV_FILE_ENDING for (key_object, key_counter) in available]
+        identifiers += available
+        is_histo += [True for _ in available]
 
         # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
         available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
@@ -492,15 +500,16 @@ class XmlContainer:
 
         titles = titles + [key_object.replace('system:constituent', self.node_name) +
                            ': ' + key_id for (key_object, key_id) in available]
-        units = units + [self.units[key_id] for (_, key_id) in available]
+        units += [self.units[key_id] for (_, key_id) in available]
         x_labels = x_labels + ['time' for _ in available]
         chart_ids = chart_ids + [key_object.replace(
             'system:constituent', self.node_name).replace(':', '_').replace('-', '_') + '_' +
             key_id for (key_object, key_id) in available]
         barchart_booleans = barchart_booleans + ['false' for _ in available]
-        csv_names = csv_names + [key_object.replace(
-            'system:constituent', self.node_name).replace(':', '_').replace('-', '_') + '_' +
-            key_id + constants.CSV_FILE_ENDING for (key_object, key_id) in available]
+        identifiers += [(key_object.replace('system:constituent',
+                                                         self.node_name), key_counter) for (key_object, key_counter) in available]
+        is_histo += [False for _ in available]
 
         return {'titles': titles, 'units': units, 'x_labels': x_labels, 'chart_ids': chart_ids,
-                'barchart_booleans': barchart_booleans, 'csv_names': csv_names}
+                'barchart_booleans': barchart_booleans, 'csv_names': csv_names,
+                'identifiers': identifiers, 'is_histo': is_histo}

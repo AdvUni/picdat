@@ -129,14 +129,23 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     combined_chart_ids = per_iteration_object.get_chart_ids() + sysstat_object.get_chart_ids() + \
         statit_object.get_chart_ids()
 
-    identifier_dict = {'titles': combined_titles, 'units': combined_units,
-                       'x_labels': combined_x_lables, 'chart_ids': combined_chart_ids,
-                       'barchart_booleans': combined_barchart_booleans,
-                       'timezone': str(util.localtimezone)}
-    
+    p_i_identifiers, p_i_units, p_i_is_histo = per_iteration_object.get_labels()
+    sy_identifiers, sy_units, sy_is_histo = sysstat_object.get_labels()
+    st_identifiers, st_units, st_is_histo = statit_object.get_labels()
+
+    combined_identifiers = p_i_identifiers + sy_identifiers + st_identifiers
+    combined_units = p_i_units + sy_units + st_units
+    combined_is_histo = p_i_is_histo + sy_is_histo + st_is_histo
+
+    label_dict = {'titles': combined_titles, 'units': combined_units,
+                  'x_labels': combined_x_lables, 'chart_ids': combined_chart_ids,
+                  'barchart_booleans': combined_barchart_booleans,
+                  'timezone': str(util.localtimezone), 'identifiers': combined_identifiers,
+                  'is_histo': combined_is_histo}
+
     logging.debug('time zone: %s', util.localtimezone)
 
-    return combined_tables, identifier_dict
+    return combined_tables, label_dict
 
 
 def read_data_file(perfstat_data_file, sort_columns_by_name):

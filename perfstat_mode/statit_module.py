@@ -236,3 +236,13 @@ class StatitClass:
 
     def get_chart_ids(self):
         return self.get_request_strings('_')
+
+    def get_labels(self):
+        if self.table.is_empty():
+            return ([], [], [])
+        else:
+            identifiers = [('statit', 'disk_statistics')]
+            units = [STATIT_DISK_STAT_UNIT]
+            is_histo = [False]
+
+            return identifiers, units, is_histo

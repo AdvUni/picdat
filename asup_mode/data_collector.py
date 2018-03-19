@@ -124,4 +124,4 @@ def read_xmls(asup_data_files, asup_info_file, sort_columns_by_name):
     container.process_base_heap()
     container.do_unit_conversions()
 
-    return container.get_flat_tables(sort_columns_by_name), container.build_identifier_dict()
+    return container.get_flat_tables(sort_columns_by_name), container.build_label_dict()

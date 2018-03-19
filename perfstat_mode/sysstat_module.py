@@ -319,3 +319,11 @@ class SysstatClass:
     @staticmethod
     def get_chart_ids():
         return SysstatClass.get_request_strings('_')
+
+    @staticmethod
+    def get_labels():
+        identifiers = [(SYSSTAT_CHART_TITLE, unit) for unit in ['percent', 'MBs', 'IOPS']]
+        units = [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]
+        is_histo = [False, False, False]
+
+        return identifiers, units, is_histo

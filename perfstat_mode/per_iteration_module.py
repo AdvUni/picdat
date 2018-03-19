@@ -359,3 +359,49 @@ class PerIterationClass:
 
     def get_chart_ids(self):
         return self.get_request_strings('_')
+
+    def get_labels(self):
+
+        identifiers = []
+        units = []
+        is_histo = []
+
+        availability_list = util.check_tablelist_content(
+            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
+        identifiers += [('aggregate', aspect) for (aspect, _),
+                        available in zip(PER_ITERATION_AGGREGATE_REQUESTS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_AGGREGATE_REQUESTS,
+                                                       availability_list) if available]
+        is_histo += [False for available in availability_list if available]
+
+        availability_list = util.check_tablelist_content(
+            self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
+        identifiers += [('processor', aspect) for (aspect, _),
+                        available in zip(PER_ITERATION_PROCESSOR_REQUESTS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_PROCESSOR_REQUESTS,
+                                                       availability_list) if available]
+        is_histo += [False for available in availability_list if available]
+
+        availability_list = util.check_tablelist_content(
+            self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
+        identifiers += [('volume', aspect) for (aspect, _),
+                        available in zip(PER_ITERATION_VOLUME_REQUESTS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_VOLUME_REQUESTS,
+                                                       availability_list) if available]
+        is_histo += [False for available in availability_list if available]
+
+        availability_list = util.check_tablelist_content(
+            self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
+        identifiers += [('lun', aspect) for (aspect, _),
+                        available in zip(PER_ITERATION_LUN_REQUESTS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_LUN_REQUESTS,
+                                                       availability_list) if available]
+        is_histo += [False for available in availability_list if available]
+
+        available = not self.lun_alaign_table.is_empty()
+        if available:
+            identifiers.append(('lun', PER_ITERATION_LUN_ALIGN_REQUEST[0]))
+            units.append(PER_ITERATION_LUN_ALIGN_REQUEST[1])
+            is_histo.append(True)
+
+        return identifiers, units, is_histo

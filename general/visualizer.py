@@ -75,23 +75,23 @@ def create_buttons(html_document, chart_id):
     html_document.write('</p>' + '\n')
 
 
-def create_html(html_filepath, csv_files, html_title, identifier_dict):
+def create_html(html_filepath, csv_files, html_title, label_dict):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
     :param csv_files: A list of file names from csv tables which should be visualized.
     :param html_title: A file path which is used as caption for the resulting html. Should be the
     path of the PerfStat output file.
-    :param identifier_dict: A dict containing meta data such as axis labels or names for the charts
+    :param label_dict: A dict containing meta data such as axis labels or names for the charts
     the tables)
     :return: None
     """
 
-    titles = identifier_dict['titles']
-    chart_ids = identifier_dict['chart_ids']
-    y_labels = identifier_dict['units']
-    x_labels = identifier_dict['x_labels']
-    barchart_booleans = identifier_dict['barchart_booleans']
+    titles = label_dict['titles']
+    chart_ids = label_dict['chart_ids']
+    y_labels = label_dict['units']
+    x_labels = label_dict['x_labels']
+    barchart_booleans = label_dict['barchart_booleans']
 
     with open(html_filepath, 'w') as html_document:
         # write head
@@ -102,9 +102,9 @@ def create_html(html_filepath, csv_files, html_title, identifier_dict):
         # write caption
         html_document.write('    <h2> ' + html_title + ' </h2>' + '\n')
         # write timezone notice
-        if 'timezone' in identifier_dict:
+        if 'timezone' in label_dict:
             html_document.write('    <h2> ' + 'timezone: ' +
-                                identifier_dict['timezone'] + ' </h2>' + '\n')
+                                label_dict['timezone'] + ' </h2>' + '\n')
 
         # write rest of body
         for chart in range(len(csv_files)):
