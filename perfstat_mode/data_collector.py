@@ -118,17 +118,6 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
         sysstat_object.rework_sysstat_data() + \
         statit_object.rework_statit_data(end_times)
 
-    combined_units = per_iteration_object.get_units() + sysstat_object.get_units() + \
-        statit_object.get_units()
-    combined_x_lables = per_iteration_object.get_x_labels() + sysstat_object.get_x_labels() + \
-        statit_object.get_x_labels()
-    combined_barchart_booleans = per_iteration_object.get_barchart_booleans(
-    ) + sysstat_object.get_barchart_booleans() + statit_object.get_barchart_booleans()
-    combined_titles = per_iteration_object.get_titles() + sysstat_object.get_titles() + \
-        statit_object.get_titles()
-    combined_chart_ids = per_iteration_object.get_chart_ids() + sysstat_object.get_chart_ids() + \
-        statit_object.get_chart_ids()
-
     p_i_identifiers, p_i_units, p_i_is_histo = per_iteration_object.get_labels()
     sy_identifiers, sy_units, sy_is_histo = sysstat_object.get_labels()
     st_identifiers, st_units, st_is_histo = statit_object.get_labels()
@@ -137,11 +126,8 @@ def combine_results(per_iteration_object, sysstat_object, statit_object, end_tim
     combined_units = p_i_units + sy_units + st_units
     combined_is_histo = p_i_is_histo + sy_is_histo + st_is_histo
 
-    label_dict = {'titles': combined_titles, 'units': combined_units,
-                  'x_labels': combined_x_lables, 'chart_ids': combined_chart_ids,
-                  'barchart_booleans': combined_barchart_booleans,
-                  'timezone': str(util.localtimezone), 'identifiers': combined_identifiers,
-                  'is_histo': combined_is_histo}
+    label_dict = {'identifiers': combined_identifiers, 'units': combined_units,
+                  'is_histo': combined_is_histo, 'timezone': str(util.localtimezone)}
 
     logging.debug('time zone: %s', util.localtimezone)
 

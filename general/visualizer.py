@@ -87,11 +87,12 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
     :return: None
     """
 
-    titles = label_dict['titles']
-    chart_ids = label_dict['chart_ids']
+    titles = [first_str + ': ' + second_str for first_str, second_str in label_dict['identifiers']]
+    chart_ids = [first_str.replace(':', '_').replace(
+        '-', '_') + '_' + second_str for first_str, second_str in label_dict['identifiers']]
     y_labels = label_dict['units']
-    x_labels = label_dict['x_labels']
-    barchart_booleans = label_dict['barchart_booleans']
+    x_labels = ['bucket' if is_histo else 'time' for is_histo in label_dict['is_histo']]
+    barchart_booleans = ['true' if is_histo else 'false' for is_histo in label_dict['is_histo']]
 
     with open(html_filepath, 'w') as html_document:
         # write head
@@ -109,10 +110,11 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
         # write rest of body
         for chart in range(len(csv_files)):
             # call js function to create Dygraph objects
-            html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' + chart_ids[chart]
-                                + '", "' + csv_files[chart] + '", "' + titles[chart] + '", "'
-                                + x_labels[chart] + '", "' + y_labels[chart] + '", '
-                                + barchart_booleans[chart] + '); </script>')
+            html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' +
+                                chart_ids[chart] + '", "' + csv_files[chart] + '", "' +
+                                titles[chart] + '", "' + x_labels[chart] + '", "' +
+                                y_labels[chart] + '", ' + barchart_booleans[chart] +
+                                '); </script>')
 
             # create 'select all' and 'deselect all' buttons
             create_buttons(html_document, chart_ids[chart])

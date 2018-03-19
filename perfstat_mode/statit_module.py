@@ -211,32 +211,6 @@ class StatitClass:
         except StopIteration:
             pass
 
-    def get_units(self):
-        if self.table.is_empty():
-            return []
-        return [STATIT_DISK_STAT_UNIT]
-
-    def get_request_strings(self, delimiter):
-        if self.table.is_empty():
-            return []
-        return [STATIT_CHART_TITLE % delimiter]
-
-    def get_x_labels(self):
-        if self.table.is_empty():
-            return []
-        return ['time']
-
-    def get_barchart_booleans(self):
-        if self.table.is_empty():
-            return []
-        return ['false']
-
-    def get_titles(self):
-        return self.get_request_strings(': ')
-
-    def get_chart_ids(self):
-        return self.get_request_strings('_')
-
     def get_labels(self):
         if self.table.is_empty():
             return ([], [], [])

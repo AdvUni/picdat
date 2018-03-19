@@ -263,6 +263,19 @@ class PerIterationClass:
                         logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
                                      'with ID.', uuid)
                 table.outer_dict[outer_key] = replace_dict
+                
+    def get_x_labels(self):
+        """
+        Gets x labels for each per_iteration chart. Therefore, per_iteration requests without
+        results are skipped.
+        :return: A list containing all per_iteration x labels.
+        """
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
+                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
+                        PER_ITERATION_LUN_REQUESTS]
+        all_x_labels.append('bucket')
+
+        return [all_x_labels[i] for i in range(len(all_x_labels)) if self.get_availability_list()[i]]
 
     def get_availability_list(self):
         """
@@ -282,83 +295,6 @@ class PerIterationClass:
             self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
         availability_list.append(not self.lun_alaign_table.is_empty())
         return availability_list
-
-    def get_units(self):
-        """
-        Gets units for each per_iteration chart. Therefore, per_iteration requests without results
-        are skipped.
-        :return: A list containing all per_iteration chart units.
-        """
-        requests = PER_ITERATION_AGGREGATE_REQUESTS + PER_ITERATION_PROCESSOR_REQUESTS + \
-            PER_ITERATION_VOLUME_REQUESTS + PER_ITERATION_LUN_REQUESTS
-        requests.append(PER_ITERATION_LUN_ALIGN_REQUEST)
-
-        unit_list = []
-        for i in range(len(requests)):
-            if self.get_availability_list()[i]:
-                unit = requests[i][1]
-                # we want to convert b/s into MB/s, so if the unit is b/s, display it as MB/s.
-                # Pay attention, that this rename needs to be compatible with the
-                # process_object_type method, where the affected values should be reduced by the
-                # factor 10^6!
-                if unit == 'b/s':
-                    unit_list.append('MB/s')
-                else:
-                    unit_list.append(unit)
-        return unit_list
-
-    def get_request_strings(self, delimiter):
-        """
-        Gets a string for each per_iteration request. Therefore, per_iteration requests without
-        results are skipped.
-        :return: A list containing all per_iteration strings.
-        """
-        all_titles = []
-
-        all_titles += ['aggregate' + delimiter + aspect for (aspect, _) in
-                       PER_ITERATION_AGGREGATE_REQUESTS]
-        all_titles += ['processor' + delimiter + aspect for (aspect, _) in
-                       PER_ITERATION_PROCESSOR_REQUESTS]
-        all_titles += ['volume' + delimiter + aspect for (aspect, _) in
-                       PER_ITERATION_VOLUME_REQUESTS]
-        all_titles += ['lun' + delimiter + aspect for (aspect, _) in
-                       PER_ITERATION_LUN_REQUESTS]
-        all_titles.append('lun' + delimiter + PER_ITERATION_LUN_ALIGN_REQUEST[0])
-
-        return [all_titles[i] for i in range(len(all_titles)) if self.get_availability_list()[i]]
-
-    def get_x_labels(self):
-        """
-        Gets x labels for each per_iteration chart. Therefore, per_iteration requests without
-        results are skipped.
-        :return: A list containing all per_iteration x labels.
-        """
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
-                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
-                        PER_ITERATION_LUN_REQUESTS]
-        all_x_labels.append('bucket')
-
-        return [all_x_labels[i] for i in range(len(all_x_labels)) if self.get_availability_list()[i]]
-
-    def get_barchart_booleans(self):
-        """
-        Gets a boolean for each per_iteration request. The boolean says, whether the respective
-        chart should be visualized as bar chart or not. Therefore, per_iteration requests without
-        results are skipped.
-        :return: A list containing all booleans.
-        """
-        all_booleans = ['false' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
-                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
-                        PER_ITERATION_LUN_REQUESTS]
-        all_booleans.append('true')
-
-        return [all_booleans[i] for i in range(len(all_booleans)) if self.get_availability_list()[i]]
-
-    def get_titles(self):
-        return self.get_request_strings(': ')
-
-    def get_chart_ids(self):
-        return self.get_request_strings('_')
 
     def get_labels(self):
 

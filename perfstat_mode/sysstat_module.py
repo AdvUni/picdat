@@ -294,33 +294,6 @@ class SysstatClass:
             + [[self.iops_headers] + self.iops_values]
 
     @staticmethod
-    def get_units():
-        return [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]
-
-    @staticmethod
-    def get_request_strings(delimiter):
-        return [SYSSTAT_CHART_TITLE + delimiter + unit for unit in ['percent', 'MBs',
-                                                                    'IOPS']]
-
-    @staticmethod
-    def get_x_labels():
-        return ['time' for _ in
-                [SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS]]
-
-    @staticmethod
-    def get_barchart_booleans():
-        return ['false' for _ in
-                [SYSSTAT_PERCENT_REQUESTS, SYSSTAT_MBS_REQUESTS, SYSSTAT_IOPS_REQUESTS]]
-
-    @staticmethod
-    def get_titles():
-        return SysstatClass.get_request_strings(': ')
-
-    @staticmethod
-    def get_chart_ids():
-        return SysstatClass.get_request_strings('_')
-
-    @staticmethod
     def get_labels():
         identifiers = [(SYSSTAT_CHART_TITLE, unit) for unit in ['percent', 'MBs', 'IOPS']]
         units = [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]

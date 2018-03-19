@@ -251,22 +251,6 @@ def check_tablelist_content(tablelist, total_size):
     return availability_list
 
 
-def get_csv_filenames(object_ids, output_identifier):
-    """
-    Generates proper names for CSV files containing a selection of PerfStat Data.
-    :return: A list of csv file names.
-    :param request_objects: A list of all used request objects (necessary to get meta data about
-    the tables)
-    """
-    name_list = []
-
-    for object_id in object_ids:
-        name_list.append(output_identifier + object_id + constants.CSV_FILE_ENDING)
-
-    logging.debug('csv names: %s', name_list)
-    return name_list
-
-
 def read_console_file(perfstat_console_file):
     """
     Reads some information from a console.log file as it is attached to PerfStat output.data files.
