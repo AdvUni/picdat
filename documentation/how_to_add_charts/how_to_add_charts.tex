@@ -1,0 +1,87 @@
+% author: 'Marie Lohbeck'
+% copyright: 'Copyright 2018, Advanced UniByte GmbH'
+%
+% license notice:
+%
+% This file is part of PicDat.
+% PicDat is free software: you can redistribute it and/or modify it under the terms of the GNU
+% General Public (at your option) any later version.
+%
+% PicDat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+% even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along with PicDat. If not,
+% see <http://www.gnu.org/licenses/>.
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\lstset{frame=tb,
+  aboveskip=5mm,
+  belowskip=5mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\tiny\ttfamily},
+  breaklines=true,
+  breakatwhitespace=true,
+  rulecolor=\color{white}
+}
+
+\begin{document}
+\section*{How to add charts to PicDat}
+
+Adding search keys to PicDat so that they are included in the analysis and create new charts might be very easy and very hard as well. This depends on how the respective data is constructed and whether this is similar to data which is already considered. This piece of text tries to explain which options you have doing so.
+\bigskip
+
+In any case you need to go into the python source code. You will find two packages, called \verb|perfstat_mode| and \verb|asup_mode|. As PerfStat files and ASUP files are very different, search keys have to be established for each mode independently. Both modes work with container classes. The docstrings for the classes and the modules containing them give further description. Read them to understand which container is the right one for your concern.
+\bigskip
+
+The general rule is that most container modules are holding constant lists (UPPER\char`_CASE\char`_\break LETTERS) at the top which define the search keys in some way. The format is described locally in the code. If a key about the chart you wish to include can be formulated like the keys in one of those lists, you are lucky. Just append it to the respective list. If not, you have to go deeper into the code.
+
+\subsection*{For PerfStat mode}
+In \verb|perfstat_mode|, there are three different classes holding search keys. As PerfStat data is pretty unhomogenious, the approach of gaining data about the keys is fundamentally different among the three classes. You find the classes inside the modules \verb|per_iteration_container|, \verb|sysstat_container| and \verb|statit_container|.
+
+\subsubsection*{per iteration container}
+The \verb|per_iteration_container| has four key lists (and one additional single key). The lists are about the four different objects 'aggregate', 'processor', 'volume', and 'lun'. If you want an additional chart for one of those objects, just append to the respective list. If you want a chart for similar data, but for a different object, you need to create a new list. Furthermore, you need to append at least to following methods: init (declare an emtpy list for the new chart's table), \verb|process_per_iteration_keys| (call \verb|process_object_type| for your object), \verb|rework_per_iteration_data| (flat your tables if it is not empty), and \verb|get_labels| (append appropriate information to \verb|identifiers|, \verb|units| and \verb|is_histo|). Pay attention that the order in the \verb|flat_tables| list from \verb|rework_per_iteration_data| must be equivalent to the orders of the lists in \verb|get_labels|.
+
+\subsubsection*{sysstat container}
+The \verb|sysstat_container| has three key lists. The sysstat blocks in PerfStats are table-like structures; PicDat reads some of the columns. The considered columns are categorized after the units belonging to them. All considered columns having either the unit '\%' or 'MB/s' or no unit at all. Each of the three key lists in \verb|sysstat_container| is about one of these three categories. The column names are defined in the keys. Values for the same unit can be visualized in the same chart, so each key list is collecting data for exactly one chart. Some of the keys are tuples. This is because the sysstat table headers are spread over two lines and sometimes several key words are necessary to determine a column. To better understand why the keys have the format they have, just look into a PerfStat's sysstat block. If you want to evaluate more columns from a sysstat block, try if it makes sense to append to one of the existing key lists which will add a graph line to the respective chart. Otherwise, a more extensive adaption of PicDat is necessary.
+
+\subsubsection*{statit container}
+The \verb|statit_container| is responsible for collecting data for a single chart from a specific PerfStat block. This is not really flexible; the container does not even have any kind of key list. So there is no true chance to easely add a new search key to this container.
+
+\subsection*{For ASUP mode}
+Data from ASUP is much more homogenious than PerfStats, so life is somewhat easier with them. In \verb|asup_mode|, there is only one container class: The \verb|Xml|\verb|Container| inside the\break\verb|xml_container| module. This module has again several lists with search keys. Here, the different lists are each for a different kind of charts. The difference is about the charts' x-axis and whether the single graph lines in one chart are about different instances or different counters. Again, read the lists description inside the code. Additionally, the following drawing might help your imagination:
+
+\begin{lstlisting}
+          INSTANCES_OVER_TIME_KEYS                         INSTANCES_OVER_BUCKET_KEYS                        COUNTERS_OVER_TIME_KEYS
+
+    ^                                                ^                                                ^                                                         
+    |                                                |                                                |                                                         
+    |                                instance1       |                                instance1       |                                counter1                
+    |                                instance2       |                                instance2       |                                counter2                
+    |                                instance3       |                                instance3       |                                counter3                
+  v |                                   ...        v |                                   ...        v |                                   ...                   
+  a |                                              a |                                              a |                                                         
+  l |                                              l |                                              l |                                                         
+  u |                                              u |                                              u |                                                         
+  e |                                              e |                                              e |                                                         
+    |                                                |                                                |                                                         
+    |                                                |                                                |                                                         
+    |                                                |                                                |                                                         
+    |                                                |                                                |                                                         
+    ------------------------------->                 ------------------------------->                 ------------------------------->                          
+        time                                             bucket                                           time                                                  
+\end{lstlisting}
+If one of the lists fits your needs, append your key and your chart should be drawn. Otherwise, you will need to reimplement most of the methods. 
+
+\end{document}
