@@ -8,7 +8,6 @@
 </head>
 
 <body>
-<h1> PicDat: </h1>
 <button onclick="topFunction()" id="topButton">Top</button>
 <script type="text/javascript">
     

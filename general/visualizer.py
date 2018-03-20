@@ -122,7 +122,7 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
         template.close()
 
         # write caption
-        html_document.write('    <h2> ' + html_title + ' </h2>\n')
+        html_document.write('    <h1> ' + html_title + ' </h1>\n')
         # write timezone notice
         if 'timezone' in label_dict:
             html_document.write('    <h2> ' + 'timezone: ' +
