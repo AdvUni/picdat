@@ -1,5 +1,5 @@
 """
-Contains the class PerIterationClass. This class is responsible for processing a certain request
+Contains the class PerIterationContainer. This class is responsible for processing a certain request
 type. Per-iteration requests are looking for values about several aspects of different object types
 which have several instances. There are no specific blocks in the PerfStat in which those values
 appears, but for each triple of an object type, one specific instance and a certain aspect,
@@ -75,16 +75,16 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
         return last_timestamp
 
 
-class PerIterationClass:
+class PerIterationContainer:
     """
-    This object type is responsible for holding the information collected in one PerfStat file
-    about the per_iteration_requests. It's a centralization of headers and values for per_iteration
+    This class is responsible for holding the information collected in one PerfStat file
+    about the per_iteration_requests. It's a container for headers and values for per_iteration
     charts. Further, it contains some values needed to visualize the data correctly.
     """
 
     def __init__(self, sort_columns_by_name):
         """
-        Constructor for PerIterationClass.
+        Constructor for PerIterationContainer.
         :param sort_columns_by_name: Graph lines in per-iteration charts might become pretty many.
         Per default, PicDat sorts the legend entries by relevance, means the graph with the
         highest values in sum is displayed at the top of the legend. If you rather would sort

@@ -1,5 +1,5 @@
 """
-Contains the class SysstatClass. This class is responsible for processing certain request
+Contains the class SysstatContainer. This class is responsible for processing certain request
 types. The sysstat-requests are about some blocks in the PerfStat called something like
 'sysstat_x_1sec'. These blocks are expected to appear once per PerfStat iteration. The
 blocks are built like tables with a header and many rows of values. The time gap between two rows of
@@ -60,10 +60,10 @@ SYSSTAT_IOPS_UNIT = ' '
 SYSSTAT_CHART_TITLE = 'sysstat_1sec'
 
 
-class SysstatClass:
+class SysstatContainer:
     """
-    This object type is responsible for holding several information about sysstat_x_1sec blocks
-    in PerfStat output. It's a centralization of headers and values for sysstat charts. Further,
+    This class is responsible for holding several information about sysstat_x_1sec blocks
+    in PerfStat output. It's a container for headers and values for sysstat charts. Further,
     it contains all other information necessary to read headers and values from a PerfStat file.
     """
 
@@ -101,7 +101,7 @@ class SysstatClass:
     def found_sysstat_1sec_begin(self, line):
         """
         Looks, whether a String marks the beginning of a sysstat_x_1sec respectively sysstat_1sec
-        section and in case sets the object's variable inside_sysstat_block.
+        section and in case sets the container's variable inside_sysstat_block.
         :param line: A string from a PerfStat output file which should be searched
         :return: True, if the line marks the beginning of a sysstat_x_1sec or sysstat_1sec section,
         or False otherwise.
@@ -115,7 +115,7 @@ class SysstatClass:
     def collect_sysstat_timestamp(self, sysstat_timestamp_line, iteration_timestamp):
         """
         Extract a date from a PerfStat output line which contains the time, a sysstat_x_1sec block
-        begins. Saves the date to the object variable recent_timestamp.
+        begins. Saves the date to the container's variable recent_timestamp.
         :param sysstat_timestamp_line: a string like
         PERFSTAT_EPOCH: 0000000000 [Mon Jan 01 00:00:00 GMT 2000]
         :param iteration_timestamp: The the recent iteration's beginning timestamp. It would be
@@ -151,16 +151,16 @@ class SysstatClass:
 
     def increment_time(self):
         """
-        Increases the object's datetime object 'recent_timestamp' about one second.
+        Increases the container's datetime variable 'recent_timestamp' about one second.
         :return: None
         """
         self.recent_timestamp += constants.ONE_SECOND
 
     def add_empty_lines(self):
         """
-        Adds an empty data line to each value list inside this object. This is for interrupting the
-        templates graph lines in resulting charts. Therefore, this function should be called between
-        iterations.
+        Adds an empty data line to each value list inside this container. This is for interrupting
+        the templates graph lines in resulting charts. Therefore, this function should be called
+        between iterations.
         :return: None
         """
         for value_list in [self.percent_values, self.mbs_values, self.iops_values]:
@@ -173,7 +173,7 @@ class SysstatClass:
         This function collects all relevant information from a line in a sysstat_x_1sec block. In
         case, the line doesn't contain values, but a sub header, the function ignores it.
         Otherwise, the function is going to append one sublist onto each of the own value lists.
-        Therefore, it uses the object's index lists to find the right value places inside the
+        Therefore, it uses the container's index lists to find the right value places inside the
         sysstat block.
         :param value_line: A String which is a line from a sysstat_x_1sec block
         :return: True, if value_line really contained values and False, if it just was a sub header.
@@ -200,8 +200,9 @@ class SysstatClass:
     def process_sysstat_header(self, first_header_line, second_header_line):
         """
         Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
-        for the requested columns. Saves the headers matching the requests to object's header
-        lists. Also saves the column numbers belonging to those headers to object's index lists.
+        for the requested columns. Saves the headers matching the requests to the container's
+        header lists. Also saves the column numbers belonging to those headers to the
+        container's index lists.
         :param first_header_line: The first line of a sysstat_x_1sec header
         :param second_header_line: The second line of a sysstat_x_1sec header
         :return: None

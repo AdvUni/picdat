@@ -1,5 +1,5 @@
 """
-Contains the class StatitClass. This class is responsible for processing a certain request
+Contains the class StatitContainer. This class is responsible for processing a certain request
 type. The statit-requests are about some blocks in the PerfStat called something like 'statit'.
 These blocks may appear several times in a PerfStat iteration. PicDat is interested in a special
 subsection of the statit block called 'Disk Statistics'. This subsections holds a table of
@@ -33,17 +33,17 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 STATIT_DISK_STAT_UNIT = '%'
 
 
-class StatitClass:
+class StatitContainer:
     """
-    This object type is responsible for holding several information about statit blocks.
-    in PerfStat output. It's a centralization of headers and values for the disk statistic charts.
+    This class is responsible for holding several information about statit blocks in PerfStat
+    output. It's a container for headers and values for the disk statistic chart.
     Further, it contains all other information necessary to read headers and values from a
     PerfStat file.
     """
 
     def __init__(self, sort_columns_by_name):
         """
-        Constructor for StatitClass.
+        Constructor for StatitContainer.
         :param sort_columns_by_name: Graph lines in statit charts might become pretty many.
         Per default, PicDat sorts the legend entries by relevance, means the graph with the
         highest values in sum is displayed at the top of the legend. If you rather would sort
@@ -95,9 +95,10 @@ class StatitClass:
         Collects all relevant information from a line in a statit block. There are two
         possibilities: Either the relevant part of the statit block - the part under 'Disk
         statistics' - already began or it didn't. In case it did, the function collects the value
-        and the disk from the line into the object's table. It also watches for the end of this
-        block. Otherwise, it watches for the statit timestamp respectively for the 'Disk
-        statistics' part's begin.
+        and the disk from the line into the container's table. It also looks for the block's
+        ending.
+        Otherwise, it looks for the statit timestamp or for the 'Disk statistics' part's beginning
+        respectively.
         :param line: A line from a PerfStat file as String.
         :return: None.
         """

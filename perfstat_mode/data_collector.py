@@ -4,9 +4,9 @@ Is responsible for collecting all information of note from PerfStat output
 import logging
 import sys
 
-from perfstat_mode import sysstat_module
-from perfstat_mode import statit_module
-from perfstat_mode import per_iteration_module
+from perfstat_mode import sysstat_container
+from perfstat_mode import statit_container
+from perfstat_mode import per_iteration_container
 from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
@@ -55,7 +55,7 @@ def found_iteration_begin(line, start_times, last_end_time):
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
-        start_times.append(per_iteration_module.get_iteration_timestamp(line, last_end_time))
+        start_times.append(per_iteration_container.get_iteration_timestamp(line, last_end_time))
         return True
     else:
         return False
@@ -73,7 +73,7 @@ def found_iteration_end(line, end_times, last_start_time):
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
-        end_times.append(per_iteration_module.get_iteration_timestamp(line, last_start_time))
+        end_times.append(per_iteration_container.get_iteration_timestamp(line, last_start_time))
         return True
     else:
         return False
@@ -100,27 +100,29 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
                         'won\'t be considered in the resulting charts!')
 
 
-def combine_results(per_iteration_object, sysstat_object, statit_object, end_times):
+def combine_results(per_iteration_container, sysstat_container, statit_container, end_times):
     """
     This function combines the contents of all three request types. This means, it sticks
     all tables together and packs meta data about the tables. This includes the global variable
     localtimezone.
-    :param per_iteration_object: object that holds all relevant information about
-    per_iteration_requests.
-    :param sysstat_object: objet that holds all relevant information about sysstat_requests.
-    :param statit_object: object that holds all relevant inforamtion read from statit blocks.
+    :param per_iteration_container: PerIterationContainer object that holds all relevant
+    information about per_iteration_requests.
+    :param sysstat_container: SysstatContainer objet that holds all relevant information about
+    sysstat_requests.
+    :param statit_container: StatitContainer object that holds all relevant inforamtion read from
+    statit blocks.
     :param end_times: The end timestamps of all iterations; they are needed to rework the statit
     data.
     :return: All tables in one list and an identifier dict providing meta data for all tables
     """
 
-    combined_tables = per_iteration_object.rework_per_iteration_data() + \
-        sysstat_object.rework_sysstat_data() + \
-        statit_object.rework_statit_data(end_times)
+    combined_tables = per_iteration_container.rework_per_iteration_data() + \
+        sysstat_container.rework_sysstat_data() + \
+        statit_container.rework_statit_data(end_times)
 
-    p_i_identifiers, p_i_units, p_i_is_histo = per_iteration_object.get_labels()
-    sy_identifiers, sy_units, sy_is_histo = sysstat_object.get_labels()
-    st_identifiers, st_units, st_is_histo = statit_object.get_labels()
+    p_i_identifiers, p_i_units, p_i_is_histo = per_iteration_container.get_labels()
+    sy_identifiers, sy_units, sy_is_histo = sysstat_container.get_labels()
+    st_identifiers, st_units, st_is_histo = statit_container.get_labels()
 
     combined_identifiers = p_i_identifiers + sy_identifiers + st_identifiers
     combined_units = p_i_units + sy_units + st_units
@@ -163,19 +165,19 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
     end_times = []
 
     # this object collects all information the program finds outside of sysstat and statit blocks
-    per_iteration_object = per_iteration_module.PerIterationClass(sort_columns_by_name)
+    per_iteration_container = per_iteration_container.PerIterationContainer(sort_columns_by_name)
 
     # this object collects all information the program finds during processing sysstat_x_1sec blocks
-    sysstat_object = sysstat_module.SysstatClass()
+    sysstat_container = sysstat_container.SysstatContainer()
 
     # this object collects all information the program finds during processing statit blocks
-    statit_object = statit_module.StatitClass(sort_columns_by_name)
+    statit_container = statit_container.StatitContainer(sort_columns_by_name)
 
     # collecting data
 
     with open(perfstat_data_file, 'r') as data:
         for line in data:
-            if not sysstat_object.inside_sysstat_block or not sysstat_object.sysstat_header_needed:
+            if not sysstat_container.inside_sysstat_block or not sysstat_container.sysstat_header_needed:
                 line = line.strip()
 
             # first, search for the planned number of iteration in the file's header.
@@ -184,9 +186,9 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
                 number_of_iterations = search_for_number_of_iterations(line)
                 continue
 
-            if sysstat_object.inside_sysstat_block:
+            if sysstat_container.inside_sysstat_block:
                 if not line.startswith('node') and len(line.strip()) != 0:
-                    sysstat_object.process_sysstat_block(line)
+                    sysstat_container.process_sysstat_block(line)
                 continue
 
             if '=-=-=-=-=-=' in line:
@@ -202,23 +204,23 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
                     # write an empty line into the sysstat tables to cut line in resulting charts
                     # between different iterations (not after the last):
                     if iteration_end_counter != number_of_iterations:
-                        sysstat_object.add_empty_lines()
+                        sysstat_container.add_empty_lines()
 
-                elif sysstat_object.found_sysstat_1sec_begin(line):
-                    sysstat_object.collect_sysstat_timestamp(next(data), start_times[-1])
+                elif sysstat_container.found_sysstat_1sec_begin(line):
+                    sysstat_container.collect_sysstat_timestamp(next(data), start_times[-1])
 
                 continue
 
-            if statit_object.inside_statit_block:
-                statit_object.process_disc_stats(line)
+            if statit_container.inside_statit_block:
+                statit_container.process_disc_stats(line)
                 continue
 
-            if statit_object.check_statit_begin(line):
+            if statit_container.check_statit_begin(line):
                 continue
             if start_times:
-                per_iteration_object.process_per_iteration_requests(line, start_times[-1])
+                per_iteration_container.process_per_iteration_requests(line, start_times[-1])
 
-    logging.debug('processor data: ' + str(per_iteration_object.processor_tables))
+    logging.debug('processor data: ' + str(per_iteration_container.processor_tables))
 
     # postprocessing
 
@@ -229,4 +231,4 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
 
     final_iteration_validation(number_of_iterations, iteration_begin_counter, iteration_end_counter)
 
-    return combine_results(per_iteration_object, sysstat_object, statit_object, end_times)
+    return combine_results(per_iteration_container, sysstat_container, statit_container, end_times)
