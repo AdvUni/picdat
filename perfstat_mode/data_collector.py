@@ -4,9 +4,10 @@ Is responsible for collecting all information of note from PerfStat output
 import logging
 import sys
 
-from perfstat_mode import sysstat_container
-from perfstat_mode import statit_container
-from perfstat_mode import per_iteration_container
+from perfstat_mode.sysstat_container import SysstatContainer
+from perfstat_mode.statit_container import StatitContainer
+from perfstat_mode.per_iteration_container import PerIterationContainer
+from perfstat_mode import per_iteration_container as per_iteration_module
 from perfstat_mode import util
 
 __author__ = 'Marie Lohbeck'
@@ -55,7 +56,7 @@ def found_iteration_begin(line, start_times, last_end_time):
     :return: True, if the line contains an iteration begin marker, or False otherwise
     """
     if 'BEGIN Iteration' in line:
-        start_times.append(per_iteration_container.get_iteration_timestamp(line, last_end_time))
+        start_times.append(per_iteration_module.get_iteration_timestamp(line, last_end_time))
         return True
     else:
         return False
@@ -73,7 +74,7 @@ def found_iteration_end(line, end_times, last_start_time):
     :return: True, if the line contains an iteration end marker, or False otherwise
     """
     if 'END Iteration' in line:
-        end_times.append(per_iteration_container.get_iteration_timestamp(line, last_start_time))
+        end_times.append(per_iteration_module.get_iteration_timestamp(line, last_start_time))
         return True
     else:
         return False
@@ -165,13 +166,13 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
     end_times = []
 
     # this object collects all information the program finds outside of sysstat and statit blocks
-    per_iteration_container = per_iteration_container.PerIterationContainer(sort_columns_by_name)
+    per_iteration_container = PerIterationContainer(sort_columns_by_name)
 
     # this object collects all information the program finds during processing sysstat_x_1sec blocks
-    sysstat_container = sysstat_container.SysstatContainer()
+    sysstat_container = SysstatContainer()
 
     # this object collects all information the program finds during processing statit blocks
-    statit_container = statit_container.StatitContainer(sort_columns_by_name)
+    statit_container = StatitContainer(sort_columns_by_name)
 
     # collecting data
 
@@ -218,7 +219,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
             if statit_container.check_statit_begin(line):
                 continue
             if start_times:
-                per_iteration_container.process_per_iteration_requests(line, start_times[-1])
+                per_iteration_container.process_per_iteration_keys(line, start_times[-1])
 
     logging.debug('processor data: ' + str(per_iteration_container.processor_tables))
 
