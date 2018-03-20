@@ -12,7 +12,6 @@ except ImportError:
           'timezones. Be aware of possible confusion with time values in charts!')
 
 from general.table import Table
-from general import constants
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
