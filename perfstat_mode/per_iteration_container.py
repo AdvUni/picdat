@@ -35,7 +35,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
-                                 ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'), ('write_data', 'b/s')]
+                             ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'), ('write_data', 'b/s')]
 PER_ITERATION_LUN_KEYS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
 # This search key is special: It is not searching for one value per lun per iteration,
 # but exactly eight values for each lun, representing the different buckets. Because the PerfStat
@@ -220,7 +220,7 @@ class PerIterationContainer:
 
     def rework_per_iteration_data(self):
         """
-        Simplifies data structures: Flattens tables from the table lists and sticks them all
+        Simplifies data structures: Flattens tables from the table_nr lists and sticks them all
         together. Further, replaces the ID of each LUN in the headers with their paths for better
         readability.
         :return: All flattened tables in a list.
@@ -230,19 +230,32 @@ class PerIterationContainer:
 
         all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
         all_tables.append(self.lun_alaign_table)
-        available_tables = [all_tables[i]
-                            for i in range(len(all_tables)) if self.get_availability_list()[i]]
 
-        x_labels = self.get_x_labels()
-
-        logging.debug('per_iteration tables: ' + str(available_tables))
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS +
+                        PER_ITERATION_PROCESSOR_KEYS + PER_ITERATION_VOLUME_KEYS +
+                        PER_ITERATION_LUN_KEYS]
+        all_x_labels.append('bucket')
 
         flat_tables = []
-        for table in range(len(available_tables)):
+        for table_nr in range(len(all_tables)):
             flat_tables.append(
-                available_tables[table].flatten(x_labels[table], self.sort_columns_by_name))
+                all_tables[table_nr].flatten(all_x_labels[table_nr], self.sort_columns_by_name))
 
-        return flat_tables
+        # Not every PerfStat contains information about each search key. To return only the
+        # not-empty tables, generate a list containing a boolean for each per-iteration search key.
+        # The list will hold 'false' for each search key, the program didn't found information to.
+        availability_list = []
+        availability_list += util.check_tablelist_content(
+            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
+        availability_list += util.check_tablelist_content(
+            self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
+        availability_list += util.check_tablelist_content(
+            self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
+        availability_list += util.check_tablelist_content(
+            self.lun_tables, len(PER_ITERATION_LUN_KEYS))
+        availability_list.append(not self.lun_alaign_table.is_empty())
+
+        return [flat_tables[i] for i in range(len(flat_tables)) if availability_list[i]]
 
     def replace_lun_ids(self):
         """
@@ -263,38 +276,6 @@ class PerIterationContainer:
                         logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
                                      'with ID.', uuid)
                 table.outer_dict[outer_key] = replace_dict
-
-    def get_x_labels(self):
-        """
-        Gets x labels for each per-iteration chart. Therefore, charts about search keys without
-        results are skipped.
-        :return: A list containing all per_iteration x labels.
-        """
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS +
-                        PER_ITERATION_PROCESSOR_KEYS + PER_ITERATION_VOLUME_KEYS +
-                        PER_ITERATION_LUN_KEYS]
-        all_x_labels.append('bucket')
-
-        return [all_x_labels[i] for i in range(len(all_x_labels)) if self.get_availability_list()[i]]
-
-    def get_availability_list(self):
-        """
-        Not every PerfStat contains information about each search key. This method generates a
-        list containing a boolean for each per-iteration search key. The list will hold 'false' for
-        each search key, the program didn't found information to.
-        :return: A list of booleans.
-        """
-        availability_list = []
-        availability_list += util.check_tablelist_content(
-            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
-        availability_list += util.check_tablelist_content(
-            self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
-        availability_list += util.check_tablelist_content(
-            self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
-        availability_list += util.check_tablelist_content(
-            self.lun_tables, len(PER_ITERATION_LUN_KEYS))
-        availability_list.append(not self.lun_alaign_table.is_empty())
-        return availability_list
 
     def get_labels(self):
         """
