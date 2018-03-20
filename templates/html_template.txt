@@ -10,6 +10,30 @@
 <body>
 <h1> PicDat: </h1>
 <script type="text/javascript">
+    
+    // constants to set the dimensions for the chart divs. WIDTH_FACTOR is multiplied with the
+    // browser's window size; HEIGHT_PX gives the div's height in pixels.
+    // The legend div's dimensions are set in the css file.
+    const WIDTH_FACTOR = 0.6
+    const HEIGHT_PX = 600
+
+    function openTab(evt, tabName, charts) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "inline-block";
+        evt.currentTarget.className += "active";
+       
+        for (i = 0; i < charts.length; i++) {
+            charts[i].resize(WIDTH_FACTOR * window.innerWidth, HEIGHT_PX);
+        }
+    }
 
     function getAllGraphIndices(chartName) {
         var legend_dashes = document.getElementsByName(chartName);
@@ -95,7 +119,7 @@
         }
     }
 
-    function makeChart(divName, csv, chartName, xLabel, yLabel, barChart) {
+    function makeChart(divName, tabDivId, csv, chartName, xLabel, yLabel, barChart) {
         var chartDiv = document.createElement('div');
         chartDiv.className = "chart-div";
         chartDiv.id = divName;
@@ -103,8 +127,10 @@
         var legendDiv = document.createElement('div');
         legendDiv.className = "legend-div";
 
-        document.body.appendChild(chartDiv);
-        document.body.appendChild(legendDiv);
+        var tabDiv = document.getElementById(tabDivId);
+
+        tabDiv.appendChild(chartDiv);
+        tabDiv.appendChild(legendDiv);
 
         var plotter = null;
         if (barChart) {

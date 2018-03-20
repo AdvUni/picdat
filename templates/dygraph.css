@@ -134,6 +134,33 @@
 .chart-div {
     display: inline-block;
     vertical-align: top;
-    width: 60%;
-    height: 600px;
+    /* Dimensions of chart divs will be set in js in the html file
+       (See constants WIDTH_FACTOR and HEIGHT_PX) */
+}
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 17px;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+    width: 99%;
 }

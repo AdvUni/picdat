@@ -57,7 +57,7 @@ def get_legend_div_id(chart_id):
     return chart_id + '_legend'
 
 
-def create_buttons(html_document, chart_id):
+def create_select_buttons(html_document, chart_id):
     """
     Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or
     deselecting all checkboxes and with this all graph lines of one chart at once.
@@ -73,6 +73,18 @@ def create_buttons(html_document, chart_id):
                         + chart_id + ', ' + "'" + chart_id + "'" +
                         ')">deselect all</button>' + '\n')
     html_document.write('</p>' + '\n')
+
+
+def create_tab_button(html_document, tab_name, tab_charts):
+
+    tab_charts_str = str(tab_charts[0])
+    for chart in tab_charts[1:]:
+        tab_charts_str += ', '
+        tab_charts_str += str(chart)
+
+    html_document.write('    <button class="tablinks" onclick="openTab(event, ' +
+                        "'" + tab_name + "', [" + tab_charts_str + '])">' + tab_name +
+                        '</button>\n')
 
 
 def create_html(html_filepath, csv_files, html_title, label_dict):
@@ -94,6 +106,15 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
     x_labels = ['bucket' if is_histo else 'time' for is_histo in label_dict['is_histo']]
     barchart_booleans = ['true' if is_histo else 'false' for is_histo in label_dict['is_histo']]
 
+    tabs = []
+    tabs_dict = {}
+    for i in range(len(label_dict['identifiers'])):
+        first_str, _ = label_dict['identifiers'][i]
+        if first_str not in tabs:
+            tabs.append(first_str)
+            tabs_dict[first_str] = []
+        tabs_dict[first_str].append(i)
+
     with open(html_filepath, 'w') as html_document:
         # write head
         with open(constants.HTML_HEAD_TEMPLATE, 'r') as template:
@@ -101,25 +122,35 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
         template.close()
 
         # write caption
-        html_document.write('    <h2> ' + html_title + ' </h2>' + '\n')
+        html_document.write('    <h2> ' + html_title + ' </h2>\n')
         # write timezone notice
         if 'timezone' in label_dict:
             html_document.write('    <h2> ' + 'timezone: ' +
-                                label_dict['timezone'] + ' </h2>' + '\n')
+                                label_dict['timezone'] + ' </h2>\n')
+
+        # write tab buttons:
+        html_document.write('<div class="tab">\n')
+        for tab in tabs:
+            tab_charts = [chart_ids[i] for i in tabs_dict[tab]]
+            create_tab_button(html_document, tab, tab_charts)
+        html_document.write('</div>\n')
 
         # write rest of body
-        for chart in range(len(csv_files)):
-            # call js function to create Dygraph objects
-            html_document.write('<script> ' + chart_ids[chart] + ' = makeChart("' +
-                                chart_ids[chart] + '", "' + csv_files[chart] + '", "' +
-                                titles[chart] + '", "' + x_labels[chart] + '", "' +
-                                y_labels[chart] + '", ' + barchart_booleans[chart] +
-                                '); </script>')
+        for tab in tabs:
+            html_document.write('<div id="' + tab + '" class="tabcontent">\n')
+            for chart_nr in tabs_dict[tab]:
+                # call js function to create Dygraph objects
+                html_document.write('<script> ' + chart_ids[chart_nr] + ' = makeChart("' +
+                                    chart_ids[chart_nr] + '", "' + tab + '", "' + csv_files[chart_nr] + '", "' +
+                                    titles[chart_nr] + '", "' + x_labels[chart_nr] + '", "' +
+                                    y_labels[chart_nr] + '", ' + barchart_booleans[chart_nr] +
+                                    '); </script>')
 
-            # create 'select all' and 'deselect all' buttons
-            create_buttons(html_document, chart_ids[chart])
+                # create 'select all' and 'deselect all' buttons
+                create_select_buttons(html_document, chart_ids[chart_nr])
+            html_document.write('</div>\n')
 
         # end html document
-        html_document.write('</body>' + '\n' + '</html>')
+        html_document.write('</body>\n</html>')
 
     logging.info('Generated html file at %s', html_filepath)
