@@ -1,11 +1,11 @@
 """
-Contains the class SysstatContainer. This class is responsible for processing certain request
-types. The sysstat-requests are about some blocks in the PerfStat called something like
+Contains the class SysstatContainer. This class is responsible for processing certain kind
+of search keys. The sysstat keys are about some blocks in the PerfStat called something like
 'sysstat_x_1sec'. These blocks are expected to appear once per PerfStat iteration. The
 blocks are built like tables with a header and many rows of values. The time gap between two rows of
 values is exactly one second - this is why the block has its name. Different columns in PerfStat's
 sysstat table usually refer to different units. PicDat is interested in only some of the columns.
-They are specified in the sysstat-request constants. The requests are subdivided into three lists,
+They are specified in the sysstat-keys constants. The search keys are subdivided into three lists,
 each one belonging to a specific unit. PicDat is going to create exactly three csv tables and three
 charts about the sysstat blocks.
 """
@@ -34,27 +34,27 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 
 # These search keys will match many times inside sysstat_x_1sec blocks. They all belong to unit
-# %. Data collected about these requests will be shown in one chart together.
+# %. Data collected about these search keys will be shown in one chart together.
 # About the data structure: A list of tuples. Each tuple contains the name of a measurement in
 # the first place and an additional identifier, which appears in the second sysstat header line,
 # in the second place.
-SYSSTAT_PERCENT_REQUESTS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
+SYSSTAT_PERCENT_KEYS = [('CPU', ' '), ('Disk', 'util'), ('HDD', 'util'), ('SSD', 'util')]
 SYSSTAT_PERCENT_UNIT = '%'
 
 # These search keys will match many times inside sysstat_x_1sec blocks. They all belong to unit
 # kB/s, but PicDat will convert the values to MB/s for better readability. Data collected about
-# these requests will be shown in one chart together.
+# these search keys will be shown in one chart together.
 # About the data structure: A list of tuples. Each tuple contains the name of a measurement in
 # the first place. In the second place is another tuple, containing two parameters, e.g. 'read'
 # and 'write'.
-SYSSTAT_MBS_REQUESTS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
+SYSSTAT_MBS_KEYS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
                         ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 SYSSTAT_MBS_UNIT = 'MB/s'
 
 # These search keys will match many times inside sysstat_x_1sec blocks. They values for them
-# haven't any unit; they're absolute. Data collected about this requests will be shown in one
+# haven't any unit; they're absolute. Data collected about this search keys will be shown in one
 # chart together.
-SYSSTAT_IOPS_REQUESTS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
+SYSSTAT_IOPS_KEYS = ['NFS', 'CIFS', 'FCP', 'iSCSI']
 SYSSTAT_IOPS_UNIT = ' '
 
 SYSSTAT_CHART_TITLE = 'sysstat_1sec'
@@ -168,7 +168,7 @@ class SysstatContainer:
             if empty_line is not None:
                 value_list.append(empty_line)
 
-    def process_sysstat_requests(self, value_line):
+    def process_sysstat_keys(self, value_line):
         """
         This function collects all relevant information from a line in a sysstat_x_1sec block. In
         case, the line doesn't contain values, but a sub header, the function ignores it.
@@ -200,7 +200,7 @@ class SysstatContainer:
     def process_sysstat_header(self, first_header_line, second_header_line):
         """
         Searches the header of a sysstat_x_1sec block, which is usually split over two lines,
-        for the requested columns. Saves the headers matching the requests to the container's
+        for the requested columns. Saves the headers matching a search_key to the container's
         header lists. Also saves the column numbers belonging to those headers to the
         container's index lists.
         :param first_header_line: The first line of a sysstat_x_1sec header
@@ -217,34 +217,34 @@ class SysstatContainer:
         # iterate over header_line_split:
         for index in range(len(header_line_split)):
 
-            # iterate over the sysstat requests, which belong to the unit %:
-            for request in SYSSTAT_PERCENT_REQUESTS:
+            # iterate over the sysstat search keys, which belong to the unit %:
+            for search_key in SYSSTAT_PERCENT_KEYS:
                 if util.check_column_header(header_line_split[index], endpoints[index],
-                                            second_header_line, request[0], request[1]):
-                    if request[1] == ' ':
-                        self.percent_headers.append(request[0])
+                                            second_header_line, search_key[0], search_key[1]):
+                    if search_key[1] == ' ':
+                        self.percent_headers.append(search_key[0])
                     else:
                         self.percent_headers.append(
-                            str(request[0]) + '_' + str(request[1]))
+                            str(search_key[0]) + '_' + str(search_key[1]))
                     self.percent_indices.append(index)
 
-            # iterate over the sysstat requests, which belong to the unit MB/s:
-            for request in SYSSTAT_MBS_REQUESTS:
+            # iterate over the sysstat search keys, which belong to the unit MB/s:
+            for search_key in SYSSTAT_MBS_KEYS:
                 if util.check_column_header(header_line_split[index], endpoints[index],
-                                            second_header_line, request[0], request[1][0]):
-                    self.mbs_headers.append(str(request[0]) + '_' + str(request[1][0]))
+                                            second_header_line, search_key[0], search_key[1][0]):
+                    self.mbs_headers.append(str(search_key[0]) + '_' + str(search_key[1][0]))
                     self.mbs_indices.append(index)
                     # Measurements for the MB/s chart always come with two parameters, e.g. 'read'
                     # and 'write'. There is no way to read them from the header lines separately,
                     # so we find them and add their columns to header_list and index_list at once
-                    self.mbs_headers.append(str(request[0]) + '_' + str(request[1][1]))
+                    self.mbs_headers.append(str(search_key[0]) + '_' + str(search_key[1][1]))
                     self.mbs_indices.append(index + 1)
 
-            # iterate over the sysstat requests, which belong to no unit:
-            for request in SYSSTAT_IOPS_REQUESTS:
+            # iterate over the sysstat search keys, which belong to no unit:
+            for search_key in SYSSTAT_IOPS_KEYS:
                 if util.check_column_header(header_line_split[index], endpoints[index],
-                                            second_header_line, request, ' '):
-                    self.iops_headers.append(request)
+                                            second_header_line, search_key, ' '):
+                    self.iops_headers.append(search_key)
                     self.iops_indices.append(index)
 
         logging.debug('sysstat_percent_headers: ' + str(self.percent_headers))
@@ -271,7 +271,7 @@ class SysstatContainer:
                 self.process_sysstat_header(self.buffered_header, line)
                 self.buffered_header = None
         else:
-            self.process_sysstat_requests(line)
+            self.process_sysstat_keys(line)
 
     def rework_sysstat_data(self):
         """

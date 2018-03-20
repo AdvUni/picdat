@@ -1,8 +1,8 @@
 """
-Contains the class PerIterationContainer. This class is responsible for processing a certain request
-type. Per-iteration requests are looking for values about several aspects of different object types
-which have several instances. There are no specific blocks in the PerfStat in which those values
-appears, but for each triple of an object type, one specific instance and a certain aspect,
+Contains the class PerIterationContainer. This class is responsible for processing a certain kind
+of search keys. Per-iteration keys are looking for values about several aspects of different
+objects which have several instances. There are no specific blocks in the PerfStat in which those
+values appear, but for each triple of an object type, one specific instance and a certain aspect,
 there is expected exactly one value per iteration. PicDat collects these values and is going to
 create one csv table together with one dygraph chart for each aspect about each object type.
 Therefore, one chart will display several instances.
@@ -30,18 +30,18 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 # These search keys will match (at most) once in each iteration. They are represented as tuples
-# of an aspect key word and the corresponding unit. Data collected about one tuple will be shown
+# of an aspect keyword and the corresponding unit. Data collected about one tuple will be shown
 # in exactly one chart.
-PER_ITERATION_AGGREGATE_REQUESTS = [('total_transfers', '/s')]
-PER_ITERATION_PROCESSOR_REQUESTS = [('processor_busy', '%')]
-PER_ITERATION_VOLUME_REQUESTS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
+PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
+PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
+PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
                                  ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'), ('write_data', 'b/s')]
-PER_ITERATION_LUN_REQUESTS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
-# This search request is special: It is not searching for one value per lun per iteration,
+PER_ITERATION_LUN_KEYS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
+# This search key is special: It is not searching for one value per lun per iteration,
 # but exactly eight values for each lun, representing the different buckets. Because the PerfStat
 # is expected to have eight values per lun per iteration, PicDat is going to show only the last
 # collected value.
-PER_ITERATION_LUN_ALIGN_REQUEST = ('read_align_histo', '%')
+PER_ITERATION_LUN_ALIGN_KEY = ('read_align_histo', '%')
 
 
 def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
@@ -78,7 +78,7 @@ def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
 class PerIterationContainer:
     """
     This class is responsible for holding the information collected in one PerfStat file
-    about the per_iteration_requests. It's a container for headers and values for per_iteration
+    about the per-iteration search keys. It's a container for headers and values for per_iteration
     charts. Further, it contains some values needed to visualize the data correctly.
     """
 
@@ -91,7 +91,7 @@ class PerIterationContainer:
         them alphabetically, this boolean should be true.
         """
 
-        # Several lists of type 'Table', one for each of the request lists. They'll collect all
+        # Several lists of type 'Table', one for each of the search key lists. They'll collect all
         # per-iteration values from a  PerfStat output file, grouped by iteration and instance:
         self.aggregate_tables = []
         self.processor_tables = []
@@ -109,19 +109,19 @@ class PerIterationContainer:
         self.sort_columns_by_name = sort_columns_by_name
 
     @staticmethod
-    def process_object_type(iteration_timestamp, requests, tables, line_split):
+    def process_object_type(iteration_timestamp, search_keys, tables, line_split):
         """
-        Processes one of the per-iteration request types.
+        Processes one of the per-iteration key lists.
         :param iteration_timestamp: The timestamp of the PerfStat iteration, the line is from.
-        :param requests: One of the module's per-iteration request lists. Method would be search
-        for them.
-        :param tables: One of the object's table list. Should fit to the requests. If method
+        :param search_keys: One of the module's per-iteration key lists. Method would be search
+        for the keys.
+        :param tables: One of the object's table list. Should fit to the search_keys. If method
         found a value, it will write it into this table.
         :param line_split: The words from a PerfStat line as list.
         :return: None.
         """
-        request_index = 0
-        for (aspect, unit) in requests:
+        key_index = 0
+        for (aspect, unit) in search_keys:
             if line_split[2] == aspect:
                 instance = line_split[1]
                 value = line_split[3][:-len(unit)]
@@ -133,19 +133,19 @@ class PerIterationContainer:
                 if unit == 'b/s':
                     value = str(round(int(value) / 1000000))
 
-                util.tablelist_insertion(tables, request_index, iteration_timestamp, instance,
+                util.tablelist_insertion(tables, key_index, iteration_timestamp, instance,
                                          value)
                 logging.debug('Found value about %s, %s: %s - %s%s', line_split[0], aspect,
                               instance, value, unit)
                 return
-            request_index += 1
+            key_index += 1
 
-    def process_per_iteration_requests(self, line, iteration_timestamp):
+    def process_per_iteration_keys(self, line, iteration_timestamp):
         """
-        Searches a String for all per_iteration_requests from main. In case it finds something,
-        it writes the results into the correct place in table_values. During the first iteration it
-        collects the instance names of all requested object types as well and writes them into
-        table_headers.
+        Searches a String for all per_iteration search keys as they are defined at the module's
+        top. In case it finds something, it writes the results into the correct place in
+        table_values. During the first iteration it collects the instance names of all requested
+        object types as well and writes them into table_headers.
         :param line: A string from a PerfStat output file which should be searched
         :param iteration_timestamp: The timestamp of the PerfStat iteration, the line is from.
         :return: None
@@ -162,22 +162,22 @@ class PerIterationContainer:
         object_type = line_split[0]
 
         if object_type == 'aggregate':
-            self.process_object_type(iteration_timestamp, PER_ITERATION_AGGREGATE_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_AGGREGATE_KEYS,
                                      self.aggregate_tables, line_split)
             return
         if object_type == 'processor':
-            self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_KEYS,
                                      self.processor_tables, line_split)
             return
         if object_type == 'volume':
-            self.process_object_type(iteration_timestamp, PER_ITERATION_VOLUME_REQUESTS,
+            self.process_object_type(iteration_timestamp, PER_ITERATION_VOLUME_KEYS,
                                      self.volume_tables, line_split)
             return
         if object_type == 'lun':
             # lun: ... :read_align_histo.x values shouldn't be visualized related on
             # timestamps, but on the value x in range 0-8. So, they need to be handled
             # specially:
-            align_aspect, align_unit = PER_ITERATION_LUN_ALIGN_REQUEST
+            align_aspect, align_unit = PER_ITERATION_LUN_ALIGN_KEY
             if align_aspect in line_split[2]:
                 instance = line_split[1]
                 number = int(line_split[2][-1])
@@ -187,7 +187,7 @@ class PerIterationContainer:
                 logging.debug('Found value about %s, %s(%i): %s - %s%s', object_type,
                               align_aspect, number, instance, value, align_unit)
             else:
-                self.process_object_type(iteration_timestamp, PER_ITERATION_LUN_REQUESTS,
+                self.process_object_type(iteration_timestamp, PER_ITERATION_LUN_KEYS,
                                          self.lun_tables, line_split)
             return
 
@@ -266,33 +266,33 @@ class PerIterationContainer:
 
     def get_x_labels(self):
         """
-        Gets x labels for each per_iteration chart. Therefore, per_iteration requests without
+        Gets x labels for each per-iteration chart. Therefore, charts about search keys without
         results are skipped.
         :return: A list containing all per_iteration x labels.
         """
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_REQUESTS +
-                        PER_ITERATION_PROCESSOR_REQUESTS + PER_ITERATION_VOLUME_REQUESTS +
-                        PER_ITERATION_LUN_REQUESTS]
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS +
+                        PER_ITERATION_PROCESSOR_KEYS + PER_ITERATION_VOLUME_KEYS +
+                        PER_ITERATION_LUN_KEYS]
         all_x_labels.append('bucket')
 
         return [all_x_labels[i] for i in range(len(all_x_labels)) if self.get_availability_list()[i]]
 
     def get_availability_list(self):
         """
-        Not every PerfStat contains information to each search request. This method generates a
-        list containing a boolean for each search request. The list will hold 'false' for each
-        search request, the program didn't found information to.
+        Not every PerfStat contains information about each search key. This method generates a
+        list containing a boolean for each per-iteration search key. The list will hold 'false' for
+        each search key, the program didn't found information to.
         :return: A list of booleans.
         """
         availability_list = []
         availability_list += util.check_tablelist_content(
-            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
+            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
         availability_list += util.check_tablelist_content(
-            self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
+            self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         availability_list += util.check_tablelist_content(
-            self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
+            self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
         availability_list += util.check_tablelist_content(
-            self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
+            self.lun_tables, len(PER_ITERATION_LUN_KEYS))
         availability_list.append(not self.lun_alaign_table.is_empty())
         return availability_list
 
@@ -312,41 +312,41 @@ class PerIterationContainer:
         is_histo = []
 
         availability_list = util.check_tablelist_content(
-            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_REQUESTS))
+            self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
         identifiers += [('aggregate', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_AGGREGATE_REQUESTS, availability_list) if available]
-        units += [unit for (_, unit), available in zip(PER_ITERATION_AGGREGATE_REQUESTS,
+                        available in zip(PER_ITERATION_AGGREGATE_KEYS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_AGGREGATE_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
         availability_list = util.check_tablelist_content(
-            self.processor_tables, len(PER_ITERATION_PROCESSOR_REQUESTS))
+            self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         identifiers += [('processor', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_PROCESSOR_REQUESTS, availability_list) if available]
-        units += [unit for (_, unit), available in zip(PER_ITERATION_PROCESSOR_REQUESTS,
+                        available in zip(PER_ITERATION_PROCESSOR_KEYS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_PROCESSOR_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
         availability_list = util.check_tablelist_content(
-            self.volume_tables, len(PER_ITERATION_VOLUME_REQUESTS))
+            self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
         identifiers += [('volume', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_VOLUME_REQUESTS, availability_list) if available]
-        units += [unit for (_, unit), available in zip(PER_ITERATION_VOLUME_REQUESTS,
+                        available in zip(PER_ITERATION_VOLUME_KEYS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_VOLUME_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
         availability_list = util.check_tablelist_content(
-            self.lun_tables, len(PER_ITERATION_LUN_REQUESTS))
+            self.lun_tables, len(PER_ITERATION_LUN_KEYS))
         identifiers += [('lun', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_LUN_REQUESTS, availability_list) if available]
-        units += [unit for (_, unit), available in zip(PER_ITERATION_LUN_REQUESTS,
+                        available in zip(PER_ITERATION_LUN_KEYS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_LUN_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
         available = not self.lun_alaign_table.is_empty()
         if available:
-            identifiers.append(('lun', PER_ITERATION_LUN_ALIGN_REQUEST[0]))
-            units.append(PER_ITERATION_LUN_ALIGN_REQUEST[1])
+            identifiers.append(('lun', PER_ITERATION_LUN_ALIGN_KEY[0]))
+            units.append(PER_ITERATION_LUN_ALIGN_KEY[1])
             is_histo.append(True)
 
         return identifiers, units, is_histo

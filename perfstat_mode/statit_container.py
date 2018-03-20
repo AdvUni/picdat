@@ -1,6 +1,6 @@
 """
-Contains the class StatitContainer. This class is responsible for processing a certain request
-type. The statit-requests are about some blocks in the PerfStat called something like 'statit'.
+Contains the class StatitContainer. This class is responsible for processing a certain kind
+of blocks in the PerfStat called something like 'statit'.
 These blocks may appear several times in a PerfStat iteration. PicDat is interested in a special
 subsection of the statit block called 'Disk Statistics'. This subsections holds a table of
 information about all disks of the device the PerfStat is about. PicDat only looks for the first
