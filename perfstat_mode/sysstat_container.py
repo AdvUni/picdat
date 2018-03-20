@@ -48,7 +48,7 @@ SYSSTAT_PERCENT_UNIT = '%'
 # the first place. In the second place is another tuple, containing two parameters, e.g. 'read'
 # and 'write'.
 SYSSTAT_MBS_KEYS = [('Net', ('in', 'out')), ('FCP', ('in', 'out')), ('Disk', ('read', 'write')),
-                        ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
+                    ('HDD', ('read', 'write')), ('SSD', ('read', 'write'))]
 SYSSTAT_MBS_UNIT = 'MB/s'
 
 # These search keys will match many times inside sysstat_x_1sec blocks. They values for them
