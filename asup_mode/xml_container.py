@@ -4,7 +4,6 @@ processing all data collected from xml files.
 """
 import logging
 from general.table import Table
-from general import constants
 from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
