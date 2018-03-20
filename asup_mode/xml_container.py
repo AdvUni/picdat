@@ -449,9 +449,11 @@ class XmlContainer:
 
     def build_label_dict(self):
         """
-        This method provides meta information about the data found in the xml. Those are chart
-        titles, units, x_labels, some chart_ids, booleans, whether the resulting charts should be
-        visualized as bar charts and names for the csv tables.
+        This method provides meta information about the data found in the xml. Those are the chart
+        identifiers (tuple of two strings, unique for each chart, used for chart titles, file names
+        etc), units, and a boolean for each chart, which says, whether the chart is a histogram
+        (histograms are visualized differently; their x-axis is not 'time' but 'bucket' and they
+        are plotted as bar charts).
         :return: all mentioned information, packed into a dict
         """
 

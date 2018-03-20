@@ -31,7 +31,6 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 STATIT_DISK_STAT_UNIT = '%'
-STATIT_CHART_TITLE = 'statit%sdisk_statistics'
 
 
 class StatitClass:
@@ -176,7 +175,9 @@ class StatitClass:
         :param iteration_timestamps: A list of datetime objects, marking the ends of all
         iterations in one PerfStat file. They are needed to insert the empty lines at the right
         places.
-        :return: The flattened table in a list.
+        :return: The flattened table in a list. The list format is for compatibility with the
+        classes in per_iteration_module and sysstat_module; of course the list contains only one
+        element as there is only one data table about the perfstat's statit block.
         """
         if self.table.is_empty():
             return []
@@ -212,6 +213,17 @@ class StatitClass:
             pass
 
     def get_labels(self):
+        """
+        This method provides meta information for the data found about the statit chart.
+        Those are the chart identifiers (tuple of two strings, unique for each chart, used for
+        chart titles, file names etc), unit, and a boolean for the chart, which says, whether
+        the chart is a histogram (histograms are visualized differently; the statit chart is not a
+        histogram so this is False here).
+        :return: a triple of the lists identifiers, units and is_histo, containing the mentioned
+        information. The list format is for compatibility with the classes in per_iteration_module
+        and sysstat_module; of course the lists contain only one element each as there is only one
+        chart about the perfstat's statit block.
+        """
         if self.table.is_empty():
             return ([], [], [])
         else:

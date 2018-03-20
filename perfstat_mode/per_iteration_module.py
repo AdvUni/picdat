@@ -263,7 +263,7 @@ class PerIterationClass:
                         logging.info('Could not find path for LUN ID \'%s\'! LUN will be displayed '
                                      'with ID.', uuid)
                 table.outer_dict[outer_key] = replace_dict
-                
+
     def get_x_labels(self):
         """
         Gets x labels for each per_iteration chart. Therefore, per_iteration requests without
@@ -297,6 +297,15 @@ class PerIterationClass:
         return availability_list
 
     def get_labels(self):
+        """
+        This method provides meta information for the data found about per-iteration charts.
+        Those are the chart identifiers (tuple of two strings, unique for each chart, used for
+        chart titles, file names etc), units, and a boolean for each chart, which says, whether
+        the chart is a histogram (histograms are visualized differently; their x-axis is not 'time'
+        but 'bucket' and they are plotted as bar charts).
+        :return: a triple of the lists identifiers, units and is_histo, containing the mentioned
+        information
+        """
 
         identifiers = []
         units = []

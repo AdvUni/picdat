@@ -295,6 +295,15 @@ class SysstatClass:
 
     @staticmethod
     def get_labels():
+        """
+        This method provides meta information for the data found about sysstat charts.
+        Those are the chart identifiers (tuple of two strings, unique for each chart, used for
+        chart titles, file names etc), units, and a boolean for each chart, which says, whether
+        the chart is a histogram (histograms are visualized differently, but sysstat results are
+        not meant to be histograms in general, so this is always False for this class).
+        :return: a triple of the lists identifiers, units and is_histo, containing the mentioned
+        information
+        """
         identifiers = [(SYSSTAT_CHART_TITLE, unit) for unit in ['percent', 'MBs', 'IOPS']]
         units = [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]
         is_histo = [False, False, False]
