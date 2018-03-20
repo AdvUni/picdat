@@ -9,6 +9,7 @@
 
 <body>
 <h1> PicDat: </h1>
+<button onclick="topFunction()" id="topButton">Top</button>
 <script type="text/javascript">
     
     // constants to set the dimensions for the chart divs. WIDTH_FACTOR is multiplied with the
@@ -16,6 +17,8 @@
     // The legend div's dimensions are set in the css file.
     const WIDTH_FACTOR = 0.6
     const HEIGHT_PX = 600
+    
+    window.onscroll = function() {scrollFunction()};
 
     function openTab(evt, tabName, charts) {
         var i, tabcontent, tablinks;
@@ -33,6 +36,19 @@
         for (i = 0; i < charts.length; i++) {
             charts[i].resize(WIDTH_FACTOR * window.innerWidth, HEIGHT_PX);
         }
+    }
+    
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("topButton").style.display = "block";
+        } else {
+            document.getElementById("topButton").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
     }
 
     function getAllGraphIndices(chartName) {
