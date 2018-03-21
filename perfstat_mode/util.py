@@ -193,27 +193,6 @@ def check_column_header(word_upper_line, endpoint_upper_word, lower_line, reques
         return False
 
 
-def tablelist_insertion(tablelist, list_index, iteration, instance, item):
-    """
-    Inserts a table item into a specific table in a list of tables. If the list index is bigger
-    than the number of table elements in the list, table elements will be created.
-    :param tablelist: A list of tables. The function will insert the item in one of those.
-    :param list_index: The table's index in tablelist, you want to insert your item in.
-    :param iteration: The number of iteration, your item belongs to - is needed to arrange
-    elements inside one table.
-    :param instance: The name as string of the instance, your item (which should be a value for
-    this instance) belongs to - is needed to arrange elements inside one table.
-    :param item: The table value you want to insert. It's related to a specific time and object
-    instance, therefore it is the basis for a single measuring point in final charts.
-    """
-    if len(tablelist) <= list_index:
-        missing_entries = list_index + 1 - len(tablelist)
-        for _ in range(missing_entries):
-            tablelist.append(Table())
-
-    tablelist[list_index].insert(iteration, instance, item)
-
-
 def check_tablelist_content(tablelist, total_size):
     """
     This function checks, whether a table list contains content at each expected position. It

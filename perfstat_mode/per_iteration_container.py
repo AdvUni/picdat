@@ -137,8 +137,7 @@ class PerIterationContainer:
                 if unit == 'b/s':
                     value = str(round(int(value) / 1000000))
 
-                util.tablelist_insertion(tables, key_index, iteration_timestamp, instance,
-                                         value)
+                tables[key_index].insert(iteration_timestamp, instance, value)
                 logging.debug('Found value about %s, %s: %s - %s%s', line_split[0], aspect,
                               instance, value, unit)
                 return
