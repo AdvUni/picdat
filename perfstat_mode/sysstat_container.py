@@ -139,7 +139,7 @@ class SysstatContainer:
                     '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
                     'instead. This timestamp is: \'%s\' Note that this may lead to '
                     'falsifications in charts!', sysstat_timestamp_line, iteration_timestamp)
-            self.recent_timestamp = iteration_timestamp
+                self.recent_timestamp = iteration_timestamp
 
         except (KeyError, ValueError):
             logging.warning(
