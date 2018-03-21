@@ -133,7 +133,7 @@ class SysstatContainer:
                 # extract time stamp from 7-mode perfstat:
                 self.recent_timestamp = util.build_date(
                     sysstat_timestamp_line.replace('Begin: ', ''))
-            except (IndexError):
+            except (KeyError, IndexError, ValueError):
                 logging.warning(
                     'PerfStat bug in sysstat block. Could not read any timestamp from line: '
                     '\'%s\' PicDat is using the timestamp from the iteration\'s beginning '
