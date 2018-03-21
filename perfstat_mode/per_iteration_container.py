@@ -33,9 +33,12 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # of an aspect keyword and the corresponding unit. Data collected about one tuple will be shown
 # in exactly one chart.
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
+PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
+                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
-                             ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'), ('write_data', 'b/s')]
+                             ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'),
+                             ('write_data', 'b/s')]
 PER_ITERATION_LUN_KEYS = [('total_ops', '/s'), ('avg_latency', 'ms'), ('read_data', 'b/s')]
 # This search key is special: It is not searching for one value per lun per iteration,
 # but exactly eight values for each lun, representing the different buckets. Because the PerfStat
@@ -46,7 +49,7 @@ PER_ITERATION_LUN_ALIGN_KEY = ('read_align_histo', '%')
 
 def get_iteration_timestamp(iteration_timestamp_line, last_timestamp):
     """
-    Extract a date from a PerfStat output line which marks an iteration's beginning or ending
+    Extracts a date from a PerfStat output line which marks an iteration's beginning or ending
     :param iteration_timestamp_line: a string like
     =-=-=-=-=-= BEGIN Iteration 1  =-=-=-=-=-= Mon Jan 01 00:00:00 GMT 2000
     :param last_timestamp: The last iteration timestamp, the program has collected. It would be
@@ -93,10 +96,11 @@ class PerIterationContainer:
 
         # Several lists of type 'Table', one for each of the search key lists. They'll collect all
         # per-iteration values from a  PerfStat output file, grouped by iteration and instance:
-        self.aggregate_tables = []
-        self.processor_tables = []
-        self.volume_tables = []
-        self.lun_tables = []
+        self.aggregate_tables = [Table() for _ in PER_ITERATION_AGGREGATE_KEYS]
+        self.hya_tables = [Table() for _ in PER_ITERATION_HYA_KEYS]
+        self.processor_tables = [Table() for _ in PER_ITERATION_PROCESSOR_KEYS]
+        self.volume_tables = [Table() for _ in PER_ITERATION_VOLUME_KEYS]
+        self.lun_tables = [Table() for _ in PER_ITERATION_LUN_KEYS]
         self.lun_alaign_table = Table()
 
         # A dictionary translating the LUNs IDs into their paths:
@@ -165,6 +169,10 @@ class PerIterationContainer:
             self.process_object_type(iteration_timestamp, PER_ITERATION_AGGREGATE_KEYS,
                                      self.aggregate_tables, line_split)
             return
+        if object_type == 'wafl_hya_per_vvol':
+            self.process_object_type(iteration_timestamp, PER_ITERATION_HYA_KEYS,
+                                     self.hya_tables, line_split)
+            return
         if object_type == 'processor':
             self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_KEYS,
                                      self.processor_tables, line_split)
@@ -228,10 +236,11 @@ class PerIterationContainer:
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
 
-        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
+        all_tables = self.aggregate_tables + self.hya_tables + \
+            self.processor_tables + self.volume_tables + self.lun_tables
         all_tables.append(self.lun_alaign_table)
 
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS +
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS + PER_ITERATION_HYA_KEYS +
                         PER_ITERATION_PROCESSOR_KEYS + PER_ITERATION_VOLUME_KEYS +
                         PER_ITERATION_LUN_KEYS]
         all_x_labels.append('bucket')
@@ -248,12 +257,18 @@ class PerIterationContainer:
         availability_list += util.check_tablelist_content(
             self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
         availability_list += util.check_tablelist_content(
+            self.hya_tables, len(PER_ITERATION_HYA_KEYS))
+        availability_list += util.check_tablelist_content(
             self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         availability_list += util.check_tablelist_content(
             self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
         availability_list += util.check_tablelist_content(
             self.lun_tables, len(PER_ITERATION_LUN_KEYS))
         availability_list.append(not self.lun_alaign_table.is_empty())
+
+        print(availability_list)
+        print(len(flat_tables))
+        print(len(availability_list))
 
         return [flat_tables[i] for i in range(len(flat_tables)) if availability_list[i]]
 
@@ -292,6 +307,7 @@ class PerIterationContainer:
         units = []
         is_histo = []
 
+        # for aggregate tables
         availability_list = util.check_tablelist_content(
             self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
         identifiers += [('aggregate', aspect) for (aspect, _),
@@ -300,6 +316,16 @@ class PerIterationContainer:
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
+        # for hya tables
+        availability_list = util.check_tablelist_content(
+            self.hya_tables, len(PER_ITERATION_HYA_KEYS))
+        identifiers += [('hya', aspect) for (aspect, _),
+                        available in zip(PER_ITERATION_HYA_KEYS, availability_list) if available]
+        units += [unit for (_, unit), available in zip(PER_ITERATION_HYA_KEYS,
+                                                       availability_list) if available]
+        is_histo += [False for available in availability_list if available]
+
+        # for processor tables
         availability_list = util.check_tablelist_content(
             self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         identifiers += [('processor', aspect) for (aspect, _),
@@ -308,6 +334,7 @@ class PerIterationContainer:
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
+        # for volume tables
         availability_list = util.check_tablelist_content(
             self.volume_tables, len(PER_ITERATION_VOLUME_KEYS))
         identifiers += [('volume', aspect) for (aspect, _),
@@ -316,6 +343,7 @@ class PerIterationContainer:
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
+        # for lun tables
         availability_list = util.check_tablelist_content(
             self.lun_tables, len(PER_ITERATION_LUN_KEYS))
         identifiers += [('lun', aspect) for (aspect, _),
@@ -324,6 +352,7 @@ class PerIterationContainer:
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
 
+        # for lun histogram table
         available = not self.lun_alaign_table.is_empty()
         if available:
             identifiers.append(('lun', PER_ITERATION_LUN_ALIGN_KEY[0]))
