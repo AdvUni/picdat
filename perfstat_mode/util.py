@@ -193,24 +193,6 @@ def check_column_header(word_upper_line, endpoint_upper_word, lower_line, reques
         return False
 
 
-def inner_set_insertion(outer_list, index, item):
-    """
-    Inserts an item into a list of Sets. Inserts the item in the Set at the place of
-    index. Is index bigger than the number of existing Sets, new Sets inside the
-    list will be created.
-    :param outer_list: The list of Sets you want to insert an item in.
-    :param index: The Set's number, in which the item should be inserted in.
-    :param item: The item you want insert.
-    :return: None
-    """
-    if len(outer_list) <= index:
-        missing_entries = index + 1 - len(outer_list)
-        for _ in range(missing_entries):
-            outer_list.append(set())
-
-    outer_list[index].add(item)
-
-
 def tablelist_insertion(tablelist, list_index, iteration, instance, item):
     """
     Inserts a table item into a specific table in a list of tables. If the list index is bigger
