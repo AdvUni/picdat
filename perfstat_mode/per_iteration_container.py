@@ -266,9 +266,7 @@ class PerIterationContainer:
             self.lun_tables, len(PER_ITERATION_LUN_KEYS))
         availability_list.append(not self.lun_alaign_table.is_empty())
 
-        print(availability_list)
-        print(len(flat_tables))
-        print(len(availability_list))
+        logging.debug('availability list: %s', availability_list)
 
         return [flat_tables[i] for i in range(len(flat_tables)) if availability_list[i]]
 
