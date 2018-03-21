@@ -99,7 +99,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
         html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
             constants.HTML_ENDING
 
-        csv_filenames = [node_identifier + '_' + first_str + '_' + second_str + constants.CSV_FILE_ENDING
+        csv_filenames = [node_identifier + first_str + '_' + second_str + constants.CSV_FILE_ENDING
                          for first_str, second_str in label_dict['identifiers']]
         csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
         csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
