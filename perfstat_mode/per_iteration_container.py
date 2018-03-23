@@ -33,8 +33,9 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # of an aspect keyword and the corresponding unit. Data collected about one tuple will be shown
 # in exactly one chart.
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
-PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
-                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
+#PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
+#                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
+PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] # values appears sometimes without unit
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
                              ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'),
@@ -168,7 +169,8 @@ class PerIterationContainer:
             self.process_object_type(iteration_timestamp, PER_ITERATION_AGGREGATE_KEYS,
                                      self.aggregate_tables, line_split)
             return
-        if object_type == 'wafl_hya_per_vvol':
+        #if object_type == 'wafl_hya_per_vvol':
+        if object_type == 'wafl_hya':
             self.process_object_type(iteration_timestamp, PER_ITERATION_HYA_KEYS,
                                      self.hya_tables, line_split)
             return
