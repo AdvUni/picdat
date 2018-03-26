@@ -36,7 +36,8 @@ try:
     temp_path = None
 
     # read command line options and take additional user input
-    input_file, result_dir, sort_columns_by_name, webserver = picdat_util.handle_user_input(sys.argv)
+    input_file, result_dir, sort_columns_by_name, webserver = picdat_util.handle_user_input(
+        sys.argv)
 
     perfstat_output_files = None
     perfstat_console_file = None
@@ -44,6 +45,8 @@ try:
     asup_info_file = None
     asup_data_files = None
     asup_header_file = None
+
+    hdf5_file = None
 
     # handle directories as input
     if os.path.isdir(input_file):
@@ -66,13 +69,13 @@ try:
                         temp_path, tar, str(counter))
                     asup_data_files.append(asup_data_file)
                     counter = counter + 1
-                
+
                     logging.debug('data file found: %s', asup_data_file)
-                    
+
             # try to select asup xml files from input dir if no perfstats and no tgz
             elif (os.path.isfile(os.path.join(input_file, constants.ASUP_INFO_FILE))
                   and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
-                
+
                 asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
                 asup_data_files = [os.path.join(input_file, constants.ASUP_DATA_FILE)]
 
@@ -99,6 +102,8 @@ try:
             logging.info('Extract zip...')
             temp_path, perfstat_output_files, perfstat_console_file = picdat_util.extract_zip(
                 input_file)
+        elif picdat_util.data_type(input_file) == 'h5':
+            hdf5_file = input_file
 
     # create directory and copy the necessary templates files into it
     csv_dir = picdat_util.prepare_directory(result_dir)
@@ -112,19 +117,21 @@ try:
     elif asup_data_files:
         # run in xml mode
         logging.info('Running PicDat in ASUP mode')
-        asup_mode.run_asup_mode(asup_info_file, asup_data_files, asup_header_file,
-                               result_dir, csv_dir, sort_columns_by_name)
+        asup_mode.run_asup_mode_xml(asup_info_file, asup_data_files, asup_header_file,
+                                result_dir, csv_dir, sort_columns_by_name)
+    elif hdf5_file:
+        asup_mode.run_asup_mode_hdf5(hdf5_file, result_dir, csv_dir, sort_columns_by_name)
     else:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)
         sys.exit(0)
-        
+
     # start web server if initiated with command line option
     if webserver:
         logging.info('Starting local web server... ')
         logging.info('Open \'localhost:8000\' in browser for viewing charts.')
         logging.info('Hit ctrl+C to terminate web server (might be necessary several times)')
-        
+
         os.chdir(os.path.abspath(result_dir))
         server = http.server.HTTPServer(('', 8000), http.server.SimpleHTTPRequestHandler)
         server.serve_forever()

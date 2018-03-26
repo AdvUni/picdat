@@ -91,7 +91,7 @@ def validate_input_file(input_file):
 
     dtype = data_type(input_file)
 
-    if dtype not in ['data', 'zip', 'out', 'tgz']:
+    if dtype not in ['data', 'zip', 'out', 'tgz', 'h5']:
         raise TypeError
 
 
