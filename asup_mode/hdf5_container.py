@@ -37,7 +37,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
                             ('ext_cache_obj', 'hya_reads_replaced'),
-                            ('processor', 'processor_busy'), ('disk:constituent', 'disk_busy'),
+                            ('processor', 'processor_busy'), ('disk', 'disk_busy'),
                             ('volume', 'total_ops'), ('volume', 'avg_latency'),
                             ('volume', 'read_data'), ('volume', 'write_data'),
                             ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
@@ -65,11 +65,11 @@ INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
 # The x axis of the charts will be 'time'. These two characteristics makes the keys different from
 # the keys in the other lists, so this is why the list is called like this.
 COUNTERS_OVER_TIME_KEYS = [
-    ('bandwidth', 'system:constituent', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
+    ('bandwidth', 'system', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
                                          'net_data_sent', 'ssd_data_read', 'ssd_data_written',
                                          'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
                                          'tape_data_written'}),
-    ('IOPS', 'system:constituent', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
+    ('IOPS', 'system', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
 
