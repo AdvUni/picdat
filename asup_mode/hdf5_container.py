@@ -134,8 +134,6 @@ class Hdf5Container:
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = 'nix'
-
-        self.node_name = 'insertNodeNameHere'
         
     def process_buffer(self, buffer, table_key):
         for counter, value_tuple in buffer.items():
@@ -174,6 +172,7 @@ class Hdf5Container:
                 buffer = defaultdict(set)
                 for key_counter in key_counters:
                     for row in hdf5_table.where('counter_name == key_counter'):
+                        
                         unixtimestamp = int(row['timestamp'])
                         unixtimestamp = math.trunc(unixtimestamp / 1000)
                         value = float(row['value_int'])
@@ -181,6 +180,12 @@ class Hdf5Container:
 
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                       object_type, key_counter, unixtimestamp, value)
+                        
+                        # collect node name once
+                        if not self.node_name:
+                            if object_type == 'system':
+                                self.node_name = str(row['instance_name']).strip('b\'')
+                                logging.debug('found node name: %s', self.node_name)
                         
                 self.process_buffer(buffer, key_id)
 
@@ -259,7 +264,7 @@ class Hdf5Container:
         available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
                      if not self.tables[key_id].is_empty()]
 
-        identifiers += [(key_object.replace('system:constituent', self.node_name),
+        identifiers += [(key_object.replace('system', self.node_name),
                          key_counter) for (key_object, key_counter) in available]
         units += [self.units[key_id] for (_, key_id) in available]
         is_histo += [False for _ in available]
