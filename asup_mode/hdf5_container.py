@@ -4,8 +4,9 @@ processing all data collected from hdf5 files.
 """
 import logging
 import math
+import datetime
+from collections import defaultdict
 from general.table import Table
-from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -135,6 +136,18 @@ class Hdf5Container:
             self.units[key_id] = 'nix'
 
         self.node_name = 'insertNodeNameHere'
+        
+    def process_buffer(self, buffer, table_key):
+        for counter, value_tuple in buffer.items():
+            last_unixtimestamp = None
+            last_value = None
+            for unixtimestamp, value in sorted(value_tuple):
+                if last_unixtimestamp:
+                    abs_value = str((value - last_value) / (unixtimestamp - last_unixtimestamp))
+                    datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
+                    self.tables[table_key].insert(datetimestamp, counter, abs_value)
+                last_unixtimestamp = unixtimestamp
+                last_value = value
 
     def search_hdf5(self, hdf5_table):
         object_type = hdf5_table.name
@@ -142,45 +155,34 @@ class Hdf5Container:
         # process INSTANCES_OVER_TIME_KEYS
         for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
             if object_type == key_object:
+                buffer = defaultdict(set)
                 for row in hdf5_table.where('counter_name == key_counter'):
                     unixtimestamp = int(row['timestamp'])
                     unixtimestamp = math.trunc(unixtimestamp / 1000)
                     instance = str(row['instance_name']).strip('b\'').replace(',', ';')
                     value = float(row['value_int'])
+                    buffer[instance].add((unixtimestamp, value))
 
                     logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
                                   object_type, key_counter, unixtimestamp, instance, value)
 
-                    if (object_type, key_counter, instance) in self.buffer:
-
-                        # build absolute value through comparison of two consecutive values
-                        abs_val, datetimestamp = util.get_abs_val(
-                            value, unixtimestamp, self.buffer, (object_type, key_counter, instance))
-                        self.tables[(object_type, key_counter)].insert(
-                            datetimestamp, instance, abs_val)
-
-                    self.buffer[(object_type, key_counter, instance)] = (unixtimestamp, value)
+                self.process_buffer(buffer, (object_type, key_counter))
 
         # Process COUNTERS_OVER_TIME_KEYS
         for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
             if object_type == key_object:
+                buffer = defaultdict(set)
                 for key_counter in key_counters:
                     for row in hdf5_table.where('counter_name == key_counter'):
                         unixtimestamp = int(row['timestamp'])
                         unixtimestamp = math.trunc(unixtimestamp / 1000)
                         value = float(row['value_int'])
+                        buffer[key_counter].add((unixtimestamp, value))
 
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                       object_type, key_counter, unixtimestamp, value)
-
-                        if (object_type, key_counter) in self.buffer:
-
-                            # build absolute value through comparison of two consecutive values
-                            abs_val, datetimestamp = util.get_abs_val(
-                                value, unixtimestamp, self.buffer, (object_type, key_counter))
-                            self.tables[key_id].insert(datetimestamp, key_counter, abs_val)
-
-                        self.buffer[(object_type, key_counter)] = (unixtimestamp, value)
+                        
+                self.process_buffer(buffer, key_id)
 
     def do_unit_conversions(self):
         """
