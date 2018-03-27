@@ -40,8 +40,7 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
                             ('processor', 'processor_busy'), ('disk', 'disk_busy'),
                             ('volume', 'total_ops'), ('volume', 'avg_latency'),
                             ('volume', 'read_data'), ('volume', 'write_data'),
-                            ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
-                            ('lun:constituent', 'read_data')]
+                            ('lun', 'total_ops'), ('lun', 'avg_latency'), ('lun', 'read_data')]
 
 # The following list contains search keys about histograms.
 # Each element of the INSTANCES_OVER_BUCKET_KEYS list is a pair of an object and a counter, as they
@@ -66,9 +65,9 @@ INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
 # the keys in the other lists, so this is why the list is called like this.
 COUNTERS_OVER_TIME_KEYS = [
     ('bandwidth', 'system', {'hdd_data_read', 'hdd_data_written', 'net_data_recv',
-                                         'net_data_sent', 'ssd_data_read', 'ssd_data_written',
-                                         'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
-                                         'tape_data_written'}),
+                             'net_data_sent', 'ssd_data_read', 'ssd_data_written',
+                             'fcp_data_recv', 'fcp_data_sent', 'tape_data_read',
+                             'tape_data_written'}),
     ('IOPS', 'system', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
@@ -150,7 +149,8 @@ class Hdf5Container:
                                    ).strip('b\'').replace(',', ';')
                     value = float(row['value_int'])
 
-                    logging.debug('time: %s, instance: %s, value: %s', unixtimestamp, instance, value)
+                    logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
+                                  object_type, key_counter, unixtimestamp, instance, value)
 
                     if (object_type, key_counter, instance) in self.buffer:
 
@@ -172,7 +172,8 @@ class Hdf5Container:
                         unixtimestamp = math.trunc(unixtimestamp / 1000)
                         value = float(row['value_int'])
 
-                        logging.debug('time: %s, value: %s', unixtimestamp, value)
+                        logging.debug('object: %s, counter: %s, time: %s, value: %s',
+                                  object_type, key_counter, unixtimestamp, value)
 
                         if (object_type, key_counter) in self.buffer:
 
