@@ -42,6 +42,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
     name or by value. 
     :return: None
     """
+    logging.debug("Perfstat output files: %s", perfstat_output_files)
     node_dict = None
 
     # if given, read cluster and node information from console.log file:
@@ -52,7 +53,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
         except KeyboardInterrupt:
             raise
         except:
-            logging.info('console.log file from zip couldn\'t be read for some reason: %s',
+            logging.info('Can\'t read console.log file for some reason: %s',
                          traceback.format_exc())
             node_dict = None
     else:

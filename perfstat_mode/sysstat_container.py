@@ -262,7 +262,12 @@ class SysstatContainer:
         # '--' marks, that a sysstat_x_1sec block ends.
         if line.startswith('--'):
             self.inside_sysstat_block = False
-            self.buffered_header = False
+            self.buffered_header = None
+        elif(line.startswith('Command got killed')):
+            self.inside_sysstat_block = False
+            self.buffered_header = None
+            logging.info('sysstat data is not available! Instead of data, found following line '
+                         'under sysstat header: "%s" Charts might be empty.', line.strip())
         elif self.sysstat_header_needed:
             if self.buffered_header is None:
                 if len(line.strip()) != 0:
