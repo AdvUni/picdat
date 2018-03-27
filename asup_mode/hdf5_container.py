@@ -102,13 +102,6 @@ class Hdf5Container:
         # precisely specified in the info file within the tag 'label1'.
         self.histo_labels = {}
 
-        # As it seems that the counters storing the values written in the data
-        # file never get cleared, it is always necessary to calculate: (this_val
-        # - last_val)/(this_timestamp - last_timestamp) to get a useful,
-        # absolute value. For enabling this, the following dict buffers the last timestamp and the
-        # last value:
-        self.buffer = {}
-
         # The following dict is for storing the information from hdf5 base tags in the info file.
         # Its keys are tuples specifying object and the counter name of a base, its values are
         # the respective counters, to which the base belongs to.
@@ -117,9 +110,6 @@ class Hdf5Container:
         self.base_dict = {}
         # Same thing as base_dict, but it stores the bases for INSTANCES_OVER_BUCKET_KEYS instead.
         self.histo_base_dict = {}
-
-        # Does the same thing for bases as buffer for non-base values:
-        self.base_buffer = {}
 
         # In case some base elements appear in hdf5 before the elements, they are the base to, they
         # will be thrown into this set to process them later.
@@ -134,7 +124,7 @@ class Hdf5Container:
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = 'nix'
-        
+
     def process_buffer(self, buffer, table_key):
         for counter, value_tuple in buffer.items():
             last_unixtimestamp = None
@@ -172,7 +162,7 @@ class Hdf5Container:
                 buffer = defaultdict(set)
                 for key_counter in key_counters:
                     for row in hdf5_table.where('counter_name == key_counter'):
-                        
+
                         unixtimestamp = int(row['timestamp'])
                         unixtimestamp = math.trunc(unixtimestamp / 1000)
                         value = float(row['value_int'])
@@ -180,13 +170,13 @@ class Hdf5Container:
 
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                       object_type, key_counter, unixtimestamp, value)
-                        
+
                         # collect node name once
                         if not self.node_name:
                             if object_type == 'system':
                                 self.node_name = str(row['instance_name']).strip('b\'')
                                 logging.debug('found node name: %s', self.node_name)
-                        
+
                 self.process_buffer(buffer, key_id)
 
     def do_unit_conversions(self):
