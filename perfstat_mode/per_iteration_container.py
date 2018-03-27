@@ -35,7 +35,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
 #PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
 #                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
-PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] # values appears sometimes without unit
+#PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] # values appears sometimes without unit
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
                              ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'),
@@ -98,7 +98,7 @@ class PerIterationContainer:
         # Several lists of type 'Table', one for each of the search key lists. They'll collect all
         # per-iteration values from a  PerfStat output file, grouped by iteration and instance:
         self.aggregate_tables = [Table() for _ in PER_ITERATION_AGGREGATE_KEYS]
-        self.hya_tables = [Table() for _ in PER_ITERATION_HYA_KEYS]
+        #self.hya_tables = [Table() for _ in PER_ITERATION_HYA_KEYS]
         self.processor_tables = [Table() for _ in PER_ITERATION_PROCESSOR_KEYS]
         self.volume_tables = [Table() for _ in PER_ITERATION_VOLUME_KEYS]
         self.lun_tables = [Table() for _ in PER_ITERATION_LUN_KEYS]
@@ -170,9 +170,9 @@ class PerIterationContainer:
                                      self.aggregate_tables, line_split)
             return
         #if object_type == 'wafl_hya_per_vvol':
-        if object_type == 'wafl_hya':
-            self.process_object_type(iteration_timestamp, PER_ITERATION_HYA_KEYS,
-                                     self.hya_tables, line_split)
+        #if object_type == 'wafl_hya':
+        #    self.process_object_type(iteration_timestamp, PER_ITERATION_HYA_KEYS,
+        #                             self.hya_tables, line_split)
             return
         if object_type == 'processor':
             self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_KEYS,
@@ -237,11 +237,11 @@ class PerIterationContainer:
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
 
-        all_tables = self.aggregate_tables + self.hya_tables + \
-            self.processor_tables + self.volume_tables + self.lun_tables
+        #all_tables = self.aggregate_tables + self.hya_tables + self.processor_tables + self.volume_tables + self.lun_tables
+        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
         all_tables.append(self.lun_alaign_table)
 
-        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS + PER_ITERATION_HYA_KEYS +
+        all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS + #PER_ITERATION_HYA_KEYS +
                         PER_ITERATION_PROCESSOR_KEYS + PER_ITERATION_VOLUME_KEYS +
                         PER_ITERATION_LUN_KEYS]
         all_x_labels.append('bucket')
@@ -257,8 +257,8 @@ class PerIterationContainer:
         availability_list = []
         availability_list += util.check_tablelist_content(
             self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
-        availability_list += util.check_tablelist_content(
-            self.hya_tables, len(PER_ITERATION_HYA_KEYS))
+        #availability_list += util.check_tablelist_content(
+        #    self.hya_tables, len(PER_ITERATION_HYA_KEYS))
         availability_list += util.check_tablelist_content(
             self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         availability_list += util.check_tablelist_content(
@@ -316,13 +316,13 @@ class PerIterationContainer:
         is_histo += [False for available in availability_list if available]
 
         # for hya tables
-        availability_list = util.check_tablelist_content(
-            self.hya_tables, len(PER_ITERATION_HYA_KEYS))
-        identifiers += [('hya', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_HYA_KEYS, availability_list) if available]
-        units += [unit for (_, unit), available in zip(PER_ITERATION_HYA_KEYS,
-                                                       availability_list) if available]
-        is_histo += [False for available in availability_list if available]
+        #availability_list = util.check_tablelist_content(
+        #    self.hya_tables, len(PER_ITERATION_HYA_KEYS))
+        #identifiers += [('hya', aspect) for (aspect, _),
+        #                available in zip(PER_ITERATION_HYA_KEYS, availability_list) if available]
+        #units += [unit for (_, unit), available in zip(PER_ITERATION_HYA_KEYS,
+        #                                               availability_list) if available]
+        #is_histo += [False for available in availability_list if available]
 
         # for processor tables
         availability_list = util.check_tablelist_content(
