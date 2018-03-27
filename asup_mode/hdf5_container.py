@@ -145,8 +145,7 @@ class Hdf5Container:
                 for row in hdf5_table.where('counter_name == key_counter'):
                     unixtimestamp = int(row['timestamp'])
                     unixtimestamp = math.trunc(unixtimestamp / 1000)
-                    instance = str(row['instance_name']
-                                   ).strip('b\'').replace(',', ';')
+                    instance = str(row['instance_name']).strip('b\'').replace(',', ';')
                     value = float(row['value_int'])
 
                     logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
@@ -160,8 +159,7 @@ class Hdf5Container:
                         self.tables[(object_type, key_counter)].insert(
                             datetimestamp, instance, abs_val)
 
-                    self.buffer[(object_type, key_counter, instance)] = (
-                        unixtimestamp, value)
+                    self.buffer[(object_type, key_counter, instance)] = (unixtimestamp, value)
 
         # Process COUNTERS_OVER_TIME_KEYS
         for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
@@ -173,7 +171,7 @@ class Hdf5Container:
                         value = float(row['value_int'])
 
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
-                                  object_type, key_counter, unixtimestamp, value)
+                                      object_type, key_counter, unixtimestamp, value)
 
                         if (object_type, key_counter) in self.buffer:
 
