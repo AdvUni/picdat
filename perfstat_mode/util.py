@@ -220,12 +220,17 @@ def read_console_file(perfstat_console_file):
 
         line = ''
         while not line.startswith('Vserver'):
-            line = next(log)
+            try:
+                line = next(log)
+            except(StopIteration):
+                logging.info('Can\'t read console.log file. It does not contain the '
+                             'expected information.')
+                return
 
         next(log)
         inside_block = True
         cluster = None
-        identifier_dict = {}
+        node_dict = {}
 
         while inside_block:
             line = next(log)
@@ -239,11 +244,11 @@ def read_console_file(perfstat_console_file):
                 adress = line_split[2].split('/')[0]
                 node = line_split[3]
 
-                identifier_dict[adress] = (cluster, node)
+                node_dict[adress] = (cluster, node)
 
-        logging.debug('dict with cluster and node: ' + str(identifier_dict))
+        logging.debug('dict with cluster and node: ' + str(node_dict))
 
-        return identifier_dict
+        return node_dict
 
 
 def get_html_title(identifier_dict, perfstat_adress):
