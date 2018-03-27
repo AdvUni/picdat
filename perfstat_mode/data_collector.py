@@ -176,7 +176,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
 
     # collecting data
 
-    with open(perfstat_data_file, 'r') as data:
+    with open(perfstat_data_file, 'r', encoding='ascii', errors='surrogateescape') as data:
         for line in data:
             if not sysstat_container.inside_sysstat_block or not sysstat_container.sysstat_header_needed:
                 line = line.strip()
