@@ -4,7 +4,13 @@ object which stores all collected data.
 """
 
 import logging
-import tables as pytable
+try:
+    import tables as pytable
+except ImportError:
+    pyables = None
+    print('Warning: Module tables (PyTable) is not installed. PicDat won\'t be able to read '
+          'hdf5 files. If you try to run PicDat in asup hdf5 mode, it will crash. With PerfStats '
+          'or asup xml files, everything is fine.')
 from asup_mode.hdf5_container import Hdf5Container
 
 __author__ = 'Marie Lohbeck'
