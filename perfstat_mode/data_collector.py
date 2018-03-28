@@ -91,7 +91,7 @@ def final_iteration_validation(expected_iteration_number, iteration_beginnings, 
     handled
     """
     if expected_iteration_number == iteration_beginnings == iteration_endings:
-        logging.info('Planned number of iterations was executed correctly.')
+        logging.debug('Planned number of iterations was executed correctly.')
     elif expected_iteration_number != iteration_beginnings:
         logging.warning('Warning: PerfStat output is incomplete; some iterations weren\'t '
                         'executed. If there is an iteration which wasn\'t finished correctly, '
