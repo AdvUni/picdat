@@ -1,6 +1,6 @@
 """
 Contains the class Hdf5Container. This class is responsible for holding and
-processing all data collected from hdf5 files.
+processing all data collected from a hdf5 file.
 """
 import logging
 import math
@@ -50,7 +50,7 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
 # As it is hardly useful, to draw a histogram as time diagram, the x axis will not be 'time', but
 # 'bucket' here. These two characteristics makes the keys different from the keys in the other
 # lists, so this is why the list is called like this.
-INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]
+INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]  # not in use
 
 # Each element of the COUNTERS_OVER_TIME_KEYS list is a triple of an identifier, an object and a
 # set of counters. Objects and counters are some of those written into the ASUP hdf5 files.
@@ -77,9 +77,9 @@ COUNTERS_OVER_TIME_KEYS = [
 class Hdf5Container:
     """
     This class is responsible for holding and processing all data collected from hdf5 files. It
-    takes elements from hdf5 files and saves them into tables, if they match the search keys.
-    Furthermore, it does base conversion for values which need it and provides meta data like table
-    names and axis labeling information.
+    takes hdf5 tables and saves their contents into table objects of type general.Tables, if they
+    match the search keys.
+    Furthermore, it provides meta data like table names and axis labeling information.
     """
 
     def __init__(self):
@@ -126,18 +126,39 @@ class Hdf5Container:
             self.units[key_id] = 'nix'
 
     def process_buffer(self, buffer, table_key):
-        for counter, value_tuple in buffer.items():
+        """
+        To secure the chronological order among the rows from one hdf5 table, all relevant data
+        is collected into a buffer. When all data is collected, the buffer gets sorted before
+        converting the values and storing them to self.tables. This method does this actions for
+        a given buffer.
+        :param buffer: A dict, storing all relevant data from one hdf5 table. Its keys are the
+        columns of the general.Table() objects from self.tables, the values belong to (Can either
+        be instance names or counter names, respective to the KEYS, the buffer belong to). The
+        values of the buffer dict are lists of tuples of a unixtimestamp and the value. So, the
+        structure is like this: buffer = {column_name: [(row_name, value), (row_name, value)...}
+        """
+        for buffer_key, buffer_tuple in buffer.items():
             last_unixtimestamp = None
             last_value = None
-            for unixtimestamp, value in sorted(value_tuple):
+            for unixtimestamp, value in sorted(buffer_tuple):
                 if last_unixtimestamp:
                     abs_value = str((value - last_value) / (unixtimestamp - last_unixtimestamp))
                     datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
-                    self.tables[table_key].insert(datetimestamp, counter, abs_value)
+                    self.tables[table_key].insert(datetimestamp, buffer_key, abs_value)
                 last_unixtimestamp = unixtimestamp
                 last_value = value
 
     def search_hdf5(self, hdf5_table):
+        """
+        Method takes a hdf5 table and checks, whether it refers to an object type from
+        INSTANCES_OVER_TIME_KEYS or COUNTERS_OVER_TIME_KEYS. If so, it selects all rows from it,
+        which belong to a counter specified in a key. From this rows, it collects the necessary
+        information and converts the value to get the absolute value and not only the recent total
+        value of the counter, as it is written in the hdf5 file. Finally it stores the value to the
+        respective table in self.tables.
+        :param hdf5 table: a pytable's Table object
+        :return: None
+        """
         object_type = hdf5_table.name
 
         # process INSTANCES_OVER_TIME_KEYS

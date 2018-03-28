@@ -82,7 +82,7 @@ def validate_input_file(input_file):
     :return: None
     :raises fileNotFoundError: raises an exception, if input_file is neither a directory nor a file.
     :raises typeError: raises an exception, if input_file is a file of the wrong data type
-    (neither .data nor .zip nor .out nor .tgz).
+    (neither .data nor .zip nor .out nor .tgz nor .h5).
     """
     if os.path.isdir(input_file):
         return
@@ -103,8 +103,8 @@ def take_input_file():
     input.
     """
     while True:
-        input_file = input('Please enter a path to some PerfStat output (folder or zipfolder '
-                           'or .data or .out file or .tgz archive):' + os.linesep)
+        input_file = input('Please enter a path to some performance output (folder or zipfolder '
+                           'or .data or .out or .h5 file or .tgz archive):' + os.linesep)
 
         try:
             validate_input_file(input_file)
@@ -252,16 +252,16 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
     :returns: The paths to the 'CM-STATS-HOURLY-INFO.XML', CM-STATS-HOURLY-DATA.XML' and 'HEADER'
     files inside the temporary directory dir_path.
     """
-    asup_info_file = constants.ASUP_INFO_FILE
+    asup_xml_info_file = constants.ASUP_INFO_FILE
     asup_data_file = constants.ASUP_DATA_FILE
-    asup_header_file = constants.ASUP_HEADER_FILE
+    asup_xml_header_file = constants.ASUP_HEADER_FILE
 
     with tarfile.open(tgz_file, 'r') as tar:
         tarmembers = []
         try:
-            tarmembers.append(tar.getmember(asup_info_file))
+            tarmembers.append(tar.getmember(asup_xml_info_file))
             tarmembers.append(tar.getmember(asup_data_file))
-            asup_info_file = os.path.join(dir_path, asup_info_file)
+            asup_xml_info_file = os.path.join(dir_path, asup_xml_info_file)
             asup_data_file = os.path.join(dir_path, asup_data_file)
         except(KeyError):
             logging.info(
@@ -269,13 +269,13 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
                 'gave a tgz archive which does not contain them. Quit program.')
             sys.exit(0)
         try:
-            tarmembers.append(tar.getmember(asup_header_file))
-            asup_header_file = os.path.join(dir_path, asup_header_file)
+            tarmembers.append(tar.getmember(asup_xml_header_file))
+            asup_xml_header_file = os.path.join(dir_path, asup_xml_header_file)
         except(KeyError):
             logging.info(
                 'You gave a tgz archive without a HEADER file. This means, some meta data for '
                 'charts are missing such as node and cluster name.')
-            asup_header_file = None
+            asup_xml_header_file = None
 
         tar.extractall(dir_path, members=tarmembers)
     
@@ -283,7 +283,7 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
         os.rename(asup_data_file, asup_data_file + data_name_extension)
         asup_data_file = asup_data_file + data_name_extension
 
-    return asup_info_file, asup_data_file, asup_header_file
+    return asup_xml_info_file, asup_data_file, asup_xml_header_file
 
 
 def get_all_perfstats(folder):

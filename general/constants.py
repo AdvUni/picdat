@@ -27,12 +27,14 @@ containing unpacked PerfStat files. Within a .zip or a folder, it is possible to
 files at once, for example PerfStats for several nodes inside the same cluster. Each PerfStat file
 will have an own .html as result. 
 
-For visualizing ASUP files, give a .tgz archive, as you can download it from NetApp or give a folder,
-containing at least 'CM-STATS-HOURLY-INFO.XML' and 'CM-STATS-HOURLY-DATA.XML'. If you want to
-visualize several ASUPs in a row, give a directory as input, which contains several .tgz archives.
+For visualizing ASUP xml files, give a .tgz archive, as you can download it from NetApp or give a
+folder, containing at least 'CM-STATS-HOURLY-INFO.XML' and 'CM-STATS-HOURLY-DATA.XML'. If you want
+to visualize several ASUPs in a row, give a directory as input, which contains several .tgz archives.
 The alphabetical order of the archives names should be equivalent to the chronological order of the
 content. Different from PerfStat input, PicDat will stick ASUP results all together, so don't mess
 around with data from different nodes or anything, when doing so!
+
+For visualizing ASUP hdf5 files, give a .h5 file as input.
 
 usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
 
@@ -43,7 +45,7 @@ usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [
                       highest values in sum is displayed at the top of the legend.
                       
     --input "input", -i "input": input is the path to some performance data. Should be a folder,
-                                 .zip file, .data file, .out file, or .tgz file. 
+                                 .zip file, .data file, .out file, .tgz, or .h5 file. 
                                  (for more details look above)
                                  
     --outputdir "output", -o "output": output is the directory's path, where this program puts its

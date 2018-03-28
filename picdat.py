@@ -1,6 +1,6 @@
 """
 From here, the tool gets started. The module handles user communication, unpacks files if necessary
-and decides, whether it has to run in perfstat or asup mode.
+and decides, whether it has to run in perfstat or asup-xml or asup-hdf5 mode.
 """
 import logging
 import shutil
@@ -39,14 +39,15 @@ try:
     input_file, result_dir, sort_columns_by_name, webserver = picdat_util.handle_user_input(
         sys.argv)
 
+    # initialize all accepted kinds of input files
     perfstat_output_files = None
     perfstat_console_file = None
 
-    asup_info_file = None
-    asup_data_files = None
-    asup_header_file = None
+    asup_xml_info_file = None
+    asup_xml_data_files = None
+    asup_xml_header_file = None
 
-    hdf5_file = None
+    asup_hdf5_file = None
 
     # handle directories as input
     if os.path.isdir(input_file):
@@ -60,14 +61,14 @@ try:
             if tar_files:
                 temp_path = tempfile.mkdtemp()
                 counter = 0
-                asup_data_files = []
+                asup_xml_data_files = []
                 # collect all DATA files from tgz archive. As we only need one INFO and
                 # HEADER file, it's ok to overwrite them each iteration
                 for tar in sorted(tar_files):
                     logging.debug(tar)
-                    asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
+                    asup_xml_info_file, asup_data_file, asup_xml_header_file = picdat_util.extract_tgz(
                         temp_path, tar, str(counter))
-                    asup_data_files.append(asup_data_file)
+                    asup_xml_data_files.append(asup_data_file)
                     counter = counter + 1
 
                     logging.debug('data file found: %s', asup_data_file)
@@ -76,11 +77,11 @@ try:
             elif (os.path.isfile(os.path.join(input_file, constants.ASUP_INFO_FILE))
                   and os.path.isfile(os.path.join(input_file, constants.ASUP_DATA_FILE))):
 
-                asup_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
-                asup_data_files = [os.path.join(input_file, constants.ASUP_DATA_FILE)]
+                asup_xml_info_file = os.path.join(input_file, constants.ASUP_INFO_FILE)
+                asup_xml_data_files = [os.path.join(input_file, constants.ASUP_DATA_FILE)]
 
                 if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
-                    asup_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
+                    asup_xml_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
                 else:
                     logging.info('You gave a directory without a HEADER file. This means, some '
                                  'meta data for charts are missing such as node and cluster name.')
@@ -89,11 +90,11 @@ try:
     elif picdat_util.data_type(input_file) == 'tgz':
         logging.info('Extract tgz...')
         temp_path = tempfile.mkdtemp()
-        asup_info_file, asup_data_file, asup_header_file = picdat_util.extract_tgz(
+        asup_xml_info_file, asup_data_file, asup_xml_header_file = picdat_util.extract_tgz(
             temp_path, input_file)
-        asup_data_files = [asup_data_file]
+        asup_xml_data_files = [asup_data_file]
 
-    # handle zip files or single .data or .out files as input
+    # handle zip files or single .data or .out or .h5 files as input
     else:
         # extract zip if necessary
         if picdat_util.data_type(input_file) in ['data', 'out']:
@@ -103,7 +104,7 @@ try:
             temp_path, perfstat_output_files, perfstat_console_file = picdat_util.extract_zip(
                 input_file)
         elif picdat_util.data_type(input_file) == 'h5':
-            hdf5_file = input_file
+            asup_hdf5_file = input_file
 
     # create directory and copy the necessary templates files into it
     csv_dir = picdat_util.prepare_directory(result_dir)
@@ -114,13 +115,15 @@ try:
         logging.info('Running PicDat in PerfStat mode')
         perfstat_mode.run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir,
                                         csv_dir, sort_columns_by_name)
-    elif asup_data_files:
-        # run in xml mode
-        logging.info('Running PicDat in ASUP mode')
-        asup_mode.run_asup_mode_xml(asup_info_file, asup_data_files, asup_header_file,
-                                result_dir, csv_dir, sort_columns_by_name)
-    elif hdf5_file:
-        asup_mode.run_asup_mode_hdf5(hdf5_file, result_dir, csv_dir, sort_columns_by_name)
+    elif asup_xml_data_files:
+        # run in asup xml mode
+        logging.info('Running PicDat in ASUP-xml mode')
+        asup_mode.run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_file,
+                                    result_dir, csv_dir, sort_columns_by_name)
+    elif asup_hdf5_file:
+        # run in asup hdf5 mode
+        logging.info('Running PicDat in ASUP-hdf5 mode')
+        asup_mode.run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name)
     else:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)
