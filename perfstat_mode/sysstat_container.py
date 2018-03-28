@@ -79,17 +79,17 @@ class SysstatContainer:
         # the recent time:
         self.recent_timestamp = None
 
-        # lists to hold the headers for the both sysstat-charts:
+        # lists to hold the headers for the three sysstat-charts:
         self.percent_headers = []
         self.mbs_headers = []
         self.iops_headers = []
 
-        # lists to hold the column indices being interesting for the both sysstat-charts:
+        # lists to hold the column indices being interesting for the three sysstat-charts:
         self.percent_indices = []
         self.mbs_indices = []
         self.iops_indices = []
 
-        # lists to hold the values for the both sysstat-charts:
+        # lists to hold the values for the three sysstat-charts:
         self.percent_values = []
         self.mbs_values = []
         self.iops_values = []
@@ -294,13 +294,21 @@ class SysstatContainer:
         self.percent_headers.insert(0, 'time')
         self.mbs_headers.insert(0, 'time')
         self.iops_headers.insert(0, 'time')
+        
+        
+        tables = []
+        
+        # check for all tables whether they are empty before returning them
+        if self.percent_values:
+            tables += [[self.percent_headers] + self.percent_values]
+        if self.mbs_values:
+            tables += [[self.mbs_headers] + self.mbs_values]
+        if self.iops_values:
+            tables += [[self.iops_headers] + self.iops_values]
+            
+        return tables
 
-        return [[self.percent_headers] + self.percent_values] \
-            + [[self.mbs_headers] + self.mbs_values] \
-            + [[self.iops_headers] + self.iops_values]
-
-    @staticmethod
-    def get_labels():
+    def get_labels(self):
         """
         This method provides meta information for the data found about sysstat charts.
         Those are the chart identifiers (tuple of two strings, unique for each chart, used for
@@ -310,8 +318,22 @@ class SysstatContainer:
         :return: a triple of the lists identifiers, units and is_histo, containing the mentioned
         information
         """
-        identifiers = [(SYSSTAT_CHART_TITLE, unit) for unit in ['percent', 'MBs', 'IOPS']]
-        units = [SYSSTAT_PERCENT_UNIT, SYSSTAT_MBS_UNIT, SYSSTAT_IOPS_UNIT]
-        is_histo = [False, False, False]
-
+        identifiers = []
+        units = []
+        is_histo = []
+        
+        # check for all tables whether they are empty before returning their labels
+        if self.percent_values:
+            identifiers.append((SYSSTAT_CHART_TITLE, 'percent'))
+            units.append(SYSSTAT_PERCENT_UNIT)
+            is_histo.append(False)
+        if self.mbs_values:
+            identifiers.append((SYSSTAT_CHART_TITLE, 'MBs'))
+            units.append(SYSSTAT_MBS_UNIT)
+            is_histo.append(False)
+        if self.iops_values:
+            identifiers.append((SYSSTAT_CHART_TITLE, 'IOPS'))
+            units.append(SYSSTAT_IOPS_UNIT)
+            is_histo.append(False)
+            
         return identifiers, units, is_histo
