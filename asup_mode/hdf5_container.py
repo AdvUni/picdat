@@ -50,7 +50,7 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
 # As it is hardly useful, to draw a histogram as time diagram, the x axis will not be 'time', but
 # 'bucket' here. These two characteristics makes the keys different from the keys in the other
 # lists, so this is why the list is called like this.
-INSTANCES_OVER_BUCKET_KEYS = [('lun:constituent', 'read_align_histo')]  # not in use
+INSTANCES_OVER_BUCKET_KEYS = [('lun', 'read_align_histo')]
 
 # Each element of the COUNTERS_OVER_TIME_KEYS list is a triple of an identifier, an object and a
 # set of counters. Objects and counters are some of those written into the ASUP hdf5 files.
@@ -177,6 +177,29 @@ class Hdf5Container:
 
                 self.process_buffer(buffer, (object_type, key_counter))
 
+        # process INSTANCE_OVER_BUCKET_KEYS
+        for key_object, key_counter in INSTANCES_OVER_BUCKET_KEYS:
+            if object_type == key_object:
+                histo_buffer = {}
+                for row in hdf5_table.where('counter_name == key_counter'):
+                    unixtimestamp = int(row['timestamp'])
+                    unixtimestamp = math.trunc(unixtimestamp / 1000)
+                    instance = str(row['instance_name']).strip('b\'').replace(',', ';')
+                    value = float(row['value_int'])
+                    bucket = str(row['x_label']).strip('b\'')
+
+                    if (bucket, instance) in histo_buffer:
+                        if histo_buffer[bucket, instance]:
+                            last_unixtimestamp, last_value = histo_buffer[bucket, instance]
+                            abs_value = str((value - last_value) /
+                                            (unixtimestamp - last_unixtimestamp))
+                            self.tables[object_type, key_counter].insert(
+                                bucket, instance, str(abs_value))
+                            histo_buffer[bucket, instance] = None
+                            
+                    else:
+                        histo_buffer[bucket, instance] = unixtimestamp, value
+
         # Process COUNTERS_OVER_TIME_KEYS
         for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
             if object_type == key_object:
@@ -200,7 +223,7 @@ class Hdf5Container:
 
                 self.process_buffer(buffer, key_id)
 
-    def do_unit_conversions(self):
+    def do_unit_conversions(self):  # not used
         """
         This method improves the presentation of some values through unit conversion. Don't call it
         before all data files are read!
