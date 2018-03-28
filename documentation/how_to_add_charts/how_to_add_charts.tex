@@ -15,7 +15,7 @@
 % see <http://www.gnu.org/licenses/>.
 
 \documentclass[a4paper,11pt]{article}
-\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage[a4paper, total={6.5in, 9in}]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -57,10 +57,12 @@ The \verb|per_iteration_container| has four key lists (and one additional single
 The \verb|sysstat_container| has three key lists. The sysstat blocks in PerfStats are table-like structures; PicDat reads some of the columns. The considered columns are categorized after the units belonging to them. All considered columns having either the unit '\%' or 'MB/s' or no unit at all. Each of the three key lists in \verb|sysstat_container| is about one of these three categories. The column names are defined in the keys. Values for the same unit can be visualized in the same chart, so each key list is collecting data for exactly one chart. Some of the keys are tuples. This is because the sysstat table headers are spread over two lines and sometimes several key words are necessary to determine a column. To better understand why the keys have the format they have, just look into a PerfStat's sysstat block. If you want to evaluate more columns from a sysstat block, try if it makes sense to append to one of the existing key lists which will add a graph line to the respective chart. Otherwise, a more extensive adaption of PicDat is necessary.
 
 \subsubsection*{statit container}
-The \verb|statit_container| is responsible for collecting data for a single chart from a specific PerfStat block. This is not really flexible; the container does not even have any kind of key list. So there is no true chance to easely add a new search key to this container.
+The \verb|statit_container| is responsible for collecting data for a single chart from a specific PerfStat block. This is not really flexible; the container does not even have any kind of key list. So there is no true chance to easily add a new search key to this container.
 
 \subsection*{For ASUP mode}
-Data from ASUP is much more homogenious than PerfStats, so life is somewhat easier with them. In \verb|asup_mode|, there is only one container class: The \verb|Xml|\verb|Container| inside the\break\verb|xml_container| module. This module has again several lists with search keys. Here, the different lists are each for a different kind of charts. The difference is about the charts' x-axis and whether the single graph lines in one chart are about different instances or different counters. Again, read the lists description inside the code. Additionally, the following drawing might help your imagination:
+Data from ASUP is much more homogenious than PerfStats, so life is somewhat easier with them. As the package \verb|asup_mode| provides support for two different kinds of input data -- XML and HDF5 -- there are two container classes. Their names are, unsurprisingly, \verb|XmlContainer| inside the \verb|xml_container| module and \verb|Hdf5Container| inside \verb|hdf5_container|. Both modules have again several lists with search keys. Fortunately, the key lists' structures in both modules are exactly the same. Only the content differs a bit. So, the following applies to both container modules.
+
+The key lists \verb|INSTANCES_OVER_TIME_KEYS|, \verb|INSTANCES_OVER_BUCKET_KEYS|, and \verb|COUNTERS_|\break\verb|OVER_TIME_KEYS| are each for a different kind of charts. The difference is about the charts' x-axis and whether the single graph lines in one chart are about different instances or different counters. Again, read the list descriptions inside the code. Additionally, the following drawing might help your imagination:
 
 \begin{lstlisting}
           INSTANCES_OVER_TIME_KEYS                         INSTANCES_OVER_BUCKET_KEYS                        COUNTERS_OVER_TIME_KEYS
