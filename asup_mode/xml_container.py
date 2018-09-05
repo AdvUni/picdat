@@ -9,7 +9,6 @@ from asup_mode import util
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
-
 # license notice:
 #
 # This file is part of PicDat.
@@ -22,7 +21,6 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
-
 
 # The following three lists contain search keys for gaining chart data. Each element of the lists
 # is a key to collect data for exactly one chart. As there are three different kinds of charts, the
@@ -203,19 +201,29 @@ class XmlContainer:
                 if object_type == key_object:
                     counter = element_dict['counter']
                     if counter == key_counter:
+                        logging.debug("%s %s", 'Found INSTANCES_OVER_BUCKET_KEY in: ', element_dict)
                         unixtimestamp = int(element_dict['timestamp'])
                         instance = element_dict['instance']
                         value = float(element_dict['value'])
-
-                        if (object_type, counter, instance) in self.buffer:
-
-                            # build absolute value through comparison of two consecutive values
-                            abs_val, datetimestamp = util.get_abs_val(
-                                value, unixtimestamp, self.buffer, (object_type, counter, instance))
-                            self.tables[(object_type, counter)].insert(
-                                datetimestamp, instance, abs_val)
-
-                        self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
+                        try:
+                            if (object_type, counter, instance) in self.buffer:
+                                
+                                # build absolute value through comparison of two consecutive values
+                                abs_val, datetimestamp = util.get_abs_val(
+                                    value, unixtimestamp, self.buffer,
+                                    (object_type, counter, instance))
+                                self.tables[(object_type, counter)].insert(
+                                    datetimestamp, instance, abs_val)
+    
+                            self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
+                        except(ZeroDivisionError):
+                            # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                            logging.warning(
+                                'Found an entry for an INSTANCES_OVER_TIME_KEY, which has '
+                                'exactly the same time stamp as another entry belonging to '
+                                'the same data series. Entry will be ignored. (timestamp: %s, '
+                                'object: %s, counter: %s, instance: %s, value: %s) ',
+                                unixtimestamp, object_type, counter, instance, value)
                         return
 
             # process INSTANCES_OVER_BUCKET_KEYS
@@ -223,25 +231,35 @@ class XmlContainer:
                 if object_type == key_object:
                     counter = element_dict['counter']
                     if counter == key_counter:
+                        logging.debug("%s %s", 'Found INSTANCES_OVER_BUCKET_KEY in: ', element_dict)
                         unixtimestamp = int(element_dict['timestamp'])
                         instance = element_dict['instance']
                         valuelist = (element_dict['value']).split(',')
 
                         if (object_type, counter, instance) in self.buffer:
                             if self.buffer[object_type, counter, instance]:
-                                # build absolute value through comparison of two consecutive values
-                                abs_val_list, _ = util.get_abs_val(
-                                    valuelist, unixtimestamp, self.buffer,
-                                    (object_type, counter, instance))
-
-                                buckets = self.histo_labels[object_type, counter]
-                                for bucket in range(len(buckets)):
-                                    self.tables[object_type, counter].insert(
-                                        bucket, instance, abs_val_list[bucket])
-                                    logging.debug('%s, %s, %s', buckets[bucket], instance,
-                                                  abs_val_list[bucket])
-
-                                self.buffer[object_type, counter, instance] = None
+                                try:
+                                    # build absolute value through comparison of two consecutive values
+                                    abs_val_list, _ = util.get_abs_val(
+                                        valuelist, unixtimestamp, self.buffer,
+                                        (object_type, counter, instance))
+    
+                                    buckets = self.histo_labels[object_type, counter]
+                                    for bucket in range(len(buckets)):
+                                        self.tables[object_type, counter].insert(
+                                            bucket, instance, abs_val_list[bucket])
+                                        logging.debug('%s, %s, %s', buckets[bucket], instance,
+                                                      abs_val_list[bucket])
+    
+                                    self.buffer[object_type, counter, instance] = None
+                                except(ZeroDivisionError):
+                                    # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                                    logging.warning(
+                                        'Found an entry for an INSTANCES_OVER_BUCKET_KEY, which has '
+                                        'exactly the same time stamp as another entry belonging to '
+                                        'the same data series. Entry will be ignored. (timestamp: %s, '
+                                        'counter: %s, instance: %s, values: %s) ',
+                                        unixtimestamp, counter, instance, valuelist)
                         else:
                             self.buffer[(object_type, counter, instance)] = (
                                 unixtimestamp, valuelist)
@@ -252,18 +270,27 @@ class XmlContainer:
                 if object_type == key_object:
                     counter = element_dict['counter']
                     if counter in key_counters:
+        
+                        logging.debug("%s %s", 'found COUNTERS_OVER_TIME_KEY in: ', element_dict)
                         unixtimestamp = int(element_dict['timestamp'])
                         value = float(element_dict['value'])
-
-                        if (object_type, counter) in self.buffer:
-
-                            # build absolute value through comparison of two consecutive values
-                            abs_val, datetimestamp = util.get_abs_val(
-                                value, unixtimestamp, self.buffer, (object_type, counter))
-                            self.tables[key_id].insert(datetimestamp, counter,
-                                                       abs_val)
-
-                        self.buffer[(object_type, counter)] = (unixtimestamp, value)
+                        try:
+                            if (object_type, counter) in self.buffer:
+    
+                                # build absolute value through comparison of two consecutive values
+                                abs_val, datetimestamp = util.get_abs_val(
+                                    value, unixtimestamp, self.buffer, (object_type, counter))
+                                self.tables[key_id].insert(datetimestamp, counter, abs_val)
+                                    
+                            self.buffer[(object_type, counter)] = (unixtimestamp, value)
+                        except(ZeroDivisionError):
+                            # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                            logging.warning(
+                                'Found an entry for a COUNTERS_OVER_TIME_KEY, which has '
+                                'exactly the same time stamp as another entry belonging to '
+                                'the same data series. Entry will be ignored. (timestamp: %s, '
+                                'counter: %s, instance: %s, value: %s) ',
+                                unixtimestamp, counter, instance, value)
                         return
         except (KeyError):
             logging.warning(
@@ -295,26 +322,35 @@ class XmlContainer:
                         instance = element_dict['instance']
                         baseval = float(element_dict['value'])
 
-                        if (object_type, counter, instance) in self.base_buffer:
-
-                            # build absolute value through comparison of two consecutive values
-                            abs_baseval, datetimestamp = util.get_abs_val(
-                                baseval, unixtimestamp, self.base_buffer,
-                                (object_type, counter, instance))
-
-                            original_counter = self.base_dict[(object_type, counter)]
-                            try:
-                                self.do_base_conversion((object_type, original_counter),
-                                                        instance, datetimestamp, abs_baseval)
-                            except (KeyError, IndexError):
-                                logging.debug(
-                                    'Found base before actual element. Add base element to base '
-                                    'heap. Base_element: %s', element_dict)
-                                self.base_heap.add((object_type, original_counter,
-                                                    instance, datetimestamp, abs_baseval))
-
-                        self.base_buffer[(object_type, counter, instance)
-                                         ] = (unixtimestamp, baseval)
+                        try: 
+                            if (object_type, counter, instance) in self.base_buffer:
+    
+                                # build absolute value through comparison of two consecutive values
+                                abs_baseval, datetimestamp = util.get_abs_val(
+                                    baseval, unixtimestamp, self.base_buffer,
+                                    (object_type, counter, instance))
+    
+                                original_counter = self.base_dict[(object_type, counter)]
+                                try:
+                                    self.do_base_conversion((object_type, original_counter),
+                                                            instance, datetimestamp, abs_baseval)
+                                except (KeyError, IndexError):
+                                    logging.debug(
+                                        'Found base before actual element. Add base element to base '
+                                        'heap. Base_element: %s', element_dict)
+                                    self.base_heap.add((object_type, original_counter,
+                                                        instance, datetimestamp, abs_baseval))
+    
+                            self.base_buffer[(object_type, counter, instance)
+                                             ] = (unixtimestamp, baseval)
+                        except(ZeroDivisionError):
+                            # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                            logging.warning(
+                                'Found an entry for a base, which has '
+                                'exactly the same time stamp as another entry belonging to '
+                                'the same base. Entry will be ignored. (timestamp: %s, '
+                                'object: %s, counter: %s, instance: %s, value: %s) ',
+                                unixtimestamp, object_type, counter, instance, baseval)
 
             # process bases for INSTANCES_OVER_BUCKET_KEYS
             for base_object, base_counter in self.histo_base_dict:
@@ -327,24 +363,33 @@ class XmlContainer:
 
                         if (object_type, counter, instance) in self.base_buffer:
                             if self.base_buffer[object_type, counter, instance]:
+                                try:
+                                    # build absolute value through comparison of two consecutive values
+                                    abs_baseval, _ = util.get_abs_val(
+                                        baseval, unixtimestamp, self.base_buffer,
+                                        (object_type, counter, instance))
+    
+                                    original_counter = self.histo_base_dict[(object_type, counter)]
+                                    for bucket in range(len(self.histo_labels[object_type, original_counter])):
+                                        try:
+                                            self.do_base_conversion((object_type, original_counter),
+                                                                    instance, bucket, float(abs_baseval))
+                                        except (KeyError, IndexError):
+                                            logging.debug(
+                                                'Found base before actual element. Add base element to base heap. '
+                                                'Base_element: %s', element_dict)
+                                            self.base_heap.add((object_type, original_counter,
+                                                                instance, bucket, abs_baseval))
+                                    self.base_buffer[object_type, counter, instance] = None
+                                except(ZeroDivisionError):
+                                    # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                                    logging.warning(
+                                        'Found an entry for a base, which has exactly the same '
+                                        'time stamp as another entry belonging to '
+                                        'the same base. Entry will be ignored. (timestamp: '
+                                        '%s, object: %s, counter: %s, instance: %s, value: %s) ',
+                                        unixtimestamp, object_type, counter, instance, baseval)
 
-                                # build absolute value through comparison of two consecutive values
-                                abs_baseval, _ = util.get_abs_val(
-                                    baseval, unixtimestamp, self.base_buffer,
-                                    (object_type, counter, instance))
-
-                                original_counter = self.histo_base_dict[(object_type, counter)]
-                                for bucket in range(len(self.histo_labels[object_type, original_counter])):
-                                    try:
-                                        self.do_base_conversion((object_type, original_counter),
-                                                                instance, bucket, float(abs_baseval))
-                                    except (KeyError, IndexError):
-                                        logging.debug(
-                                            'Found base before actual element. Add base element to base heap. '
-                                            'Base_element: %s', element_dict)
-                                        self.base_heap.add((object_type, original_counter,
-                                                            instance, bucket, abs_baseval))
-                                self.base_buffer[object_type, counter, instance] = None
                         else:
                             self.base_buffer[object_type, counter,
                                              instance] = (unixtimestamp, baseval)
@@ -415,11 +460,11 @@ class XmlContainer:
                 self.units[unit_key] = '%'
 
             if unit == "b_per_sec":
-                self.tables[unit_key].expand_values(1 / (10**6))
+                self.tables[unit_key].expand_values(1 / (10 ** 6))
                 self.units[unit_key] = "Mb/s"
 
             if unit == 'kb_per_sec':
-                self.tables[unit_key].expand_values(1 / (10**3))
+                self.tables[unit_key].expand_values(1 / (10 ** 3))
                 self.units[unit_key] = "Mb/s"
 
     def get_flat_tables(self, sort_columns_by_name):
