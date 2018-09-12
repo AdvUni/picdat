@@ -4,7 +4,7 @@ processing both xml and hdf5 files, there are two different main routines.
 """
 import logging
 import os
-from asup_mode import xml_data_collector
+from asup_mode import xml_data_collector, json_data_collector
 from general import constants
 from general import table_writer
 from general import visualizer
@@ -79,9 +79,26 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
 
 
 def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name):
-    pass
+    tables, label_dict, (cluster, node) = json_data_collector.read_json(asup_json_files, sort_columns_by_name)
+    logging.debug('all labels: %s', label_dict)
+    
+    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' + 
+                     second_str + constants.CSV_FILE_ENDING for first_str, second_str
+                     in label_dict['identifiers']]
+    csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
+    csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
+                     csv_filenames]
+    
+    # write data into csv tables
+    logging.info('Create csv tables...')
+    table_writer.create_csv(csv_abs_filepaths, tables)
 
-
+    # write html file
+    html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
+    html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
+    logging.info('Create html file...')
+    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)    
+    
 def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name):
     """
     The asup mode's main routine for processing hdf5 files. Calls all functions to read hdf5 data, 

@@ -33,6 +33,7 @@ def create_csv(csv_filepaths, tables):
         with open(csv_filepaths[table_index], 'w') as table_file:
 
             for row in table:
+                logging.debug(row)
 
                 row_line = ''
 

@@ -28,7 +28,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 def read_json(asup_json_files, sort_columns_by_name):
-    container = JsonContainer
+    container = JsonContainer()
     logging.info('Read data file(s)...')
     
     # initialise variables to write cluster and node names to
@@ -36,6 +36,7 @@ def read_json(asup_json_files, sort_columns_by_name):
     
     for file in asup_json_files:
         with open (file, 'r') as json_file:
+            logging.info("Read file %s", file)
             iterjson = ijson.items(json_file, 'item')
             
             # get cluster and node name from the first element of each file
@@ -50,5 +51,7 @@ def read_json(asup_json_files, sort_columns_by_name):
             container.add_data(first_item)
             for item in iterjson:
                 container.add_data(item)
+                
+    return container.get_flat_tables(sort_columns_by_name), container.build_lable_dict(), cluster_and_node
                 
         

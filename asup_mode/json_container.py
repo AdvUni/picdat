@@ -1,6 +1,6 @@
 import logging
-import math
 import datetime
+import math
 from general.table import Table
 
 __author__ = 'Marie Lohbeck'
@@ -90,10 +90,10 @@ class JsonContainer:
         # Note: not in use at the moment
         self.node_name = None
 
-        self.units = {searchkey: 'nix' for searchkey in INSTANCES_OVER_TIME_KEYS + 
+        self.units = {searchkey: None for searchkey in INSTANCES_OVER_TIME_KEYS +
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
-            self.units[key_id] = 'nix'
+            self.units[key_id] = None
     
     def add_data(self, json_item):
         
@@ -103,14 +103,16 @@ class JsonContainer:
         for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
             if object_type == key_object:
                 if json_item['counter_name'] == key_counter:
-                    timestamp = datetime.datetime.fromtimestamp(json_item['timestamp'])
+                    timestamp = datetime.datetime.fromtimestamp(math.trunc(json_item['timestamp'] / 1000))
                     instance = json_item['instance_name']
-                    value = json_item['counter_value']
-                    print(value)
+                    value = str(json_item['counter_value'])
                     logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
                                   key_object, key_counter, timestamp, instance, value)
                     
                     self.tables[key_object, key_counter].insert(timestamp, instance, value)
+                    
+                    if not self.units[key_object, key_counter]:
+                        self.units[key_object, key_counter] = json_item['counter_unit']
                     break
                 
         # process INSTANCE_OVER_BUCKET_KEYS
@@ -119,11 +121,14 @@ class JsonContainer:
                 if json_item['counter_name'] == key_counter:
                     bucket = json_item['x_label']
                     instance = json_item['instance_name']
-                    value = json_item['counter_value']
+                    value = str(json_item['counter_value'])
                     logging.debug('object: %s, counter: %s, bucket: %s, instance: %s, value: %s',
                                   key_object, key_counter, bucket, instance, value)
                     
                     self.tables[key_object, key_counter].insert(bucket, instance, value)
+                    
+                    if not self.units[key_object, key_counter]:
+                        self.units[key_object, key_counter] = json_item['counter_unit']
                     break
 
         # Process COUNTERS_OVER_TIME_KEYS
@@ -132,9 +137,8 @@ class JsonContainer:
                 counter = json_item['counter_name']
                 for key_counter in key_counters:
                     if counter == key_counter:
-                        timestamp = datetime.datetime.fromtimestamp(json_item['timestamp'])
-                        value = json_item['counter_value']
-                        print(value)
+                        timestamp = datetime.datetime.fromtimestamp(math.trunc(json_item['timestamp'] / 1000))
+                        value = str(json_item['counter_value'])
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                       key_object, key_counter, timestamp, value)
                         
@@ -145,4 +149,70 @@ class JsonContainer:
                             if object_type == 'system':
                                 self.node_name = json_item['instance_name']
                                 logging.debug('found node name: %s', self.node_name)
-                        break
+                        
+                        if not self.units[key_id]:
+                            self.units[key_id] = json_item['counter_unit']
+                        break   
+    
+    def get_flat_tables(self, sort_columns_by_name):
+        """
+        Calls the flatten method for each table from self.tables, which is not empty.
+        :param sort_columns_by_name: boolean, whether table columns should be sorted
+        by names. If False, they will be sorted by value. Tables for 
+        COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
+        to be a clearer arrangement.
+        :return: all not-empty flattened tables in a list.
+        """
+        flat_tables = []
+
+        flat_tables = flat_tables + [self.tables[key].flatten('time', sort_columns_by_name)
+                                     for key in INSTANCES_OVER_TIME_KEYS
+                                     if not self.tables[key].is_empty()]
+
+        flat_tables = flat_tables + [self.tables[key].flatten('bucket', sort_columns_by_name)
+                                     for key in INSTANCES_OVER_BUCKET_KEYS
+                                     if not self.tables[key].is_empty()]
+
+        flat_tables = flat_tables + [self.tables[key_id].flatten('time', True)
+                                     for (key_id, _, _) in COUNTERS_OVER_TIME_KEYS
+                                     if not self.tables[key_id].is_empty()]
+        return flat_tables
+    
+    def build_lable_dict(self):
+        """
+        This method provides meta information about the data found in the hdf5. Those are the chart
+        identifiers (tuple of two strings, unique for each chart, used for chart titles, file names
+        etc), units, and a boolean for each chart, which says, whether the chart is a histogram
+        (histograms are visualized differently; their x-axis is not 'time' but 'bucket' and they
+        are plotted as bar charts).
+        :return: all mentioned information, packed into a dict
+        """
+
+        identifiers = []
+        units = []
+        is_histo = []
+
+        # get identifiers for all charts belonging to INSTANCES_OVER_TIME_KEYS
+        available = [key for key in INSTANCES_OVER_TIME_KEYS if not self.tables[key].is_empty()]
+
+        identifiers += available
+        units += [self.units[key] for key in available]
+        is_histo += [False for _ in available]
+
+        # get identifiers for all charts belonging to INSTANCE_OVER_BUCKET_KEYS
+        available = [key for key in INSTANCES_OVER_BUCKET_KEYS if not self.tables[key].is_empty()]
+
+        identifiers += available
+        units += [self.units[key] for key in available]
+        is_histo += [True for _ in available]
+
+        # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
+        available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
+                     if not self.tables[key_id].is_empty()]
+
+        identifiers += [(key_object.replace('system', self.node_name),
+                         key_counter) for (key_object, key_counter) in available]
+        units += [self.units[key_id] for (_, key_id) in available]
+        is_histo += [False for _ in available]
+
+        return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo}
