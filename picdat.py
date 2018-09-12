@@ -46,6 +46,8 @@ try:
     asup_xml_info_file = None
     asup_xml_data_files = None
     asup_xml_header_file = None
+    
+    asup_json_files = None
 
     asup_hdf5_file = None
 
@@ -85,6 +87,10 @@ try:
                 else:
                     logging.info('You gave a directory without a HEADER file. This means, some '
                                  'meta data for charts are missing such as node and cluster name.')
+            
+            # check whether data is json data        
+            elif all(picdat_util.data_type(file) == 'json' for file in os.listdir(os.path.abspath(input_file))):
+                asup_json_files = [os.path.join(input_file, file) for file in os.listdir(os.path.abspath(input_file))]
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':
@@ -105,6 +111,8 @@ try:
                 input_file)
         elif picdat_util.data_type(input_file) == 'h5':
             asup_hdf5_file = input_file
+        elif picdat_util.data_type(input_file) == 'json':
+            asup_json_files = [input_file]
 
     # create directory and copy the necessary templates files into it
     csv_dir = picdat_util.prepare_directory(result_dir)
@@ -124,6 +132,10 @@ try:
         # run in asup hdf5 mode
         logging.info('Running PicDat in ASUP-hdf5 mode')
         asup_mode.run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name)
+    elif asup_json_files:
+        # run in asup json mode
+        logging.info('Running PicDat in ASUP-json mode')
+        asup_mode.run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name)
     else:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)
@@ -140,7 +152,6 @@ try:
         server.serve_forever()
     else:
         logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
-
 
 finally:
     # delete temporarily extracted files

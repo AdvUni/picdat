@@ -50,7 +50,7 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
         asup_xml_data_files, asup_xml_info_file, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
-    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
+    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' + 
                      second_str + constants.CSV_FILE_ENDING for first_str, second_str
                      in label_dict['identifiers']]
     csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
@@ -78,6 +78,10 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
     visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)
 
 
+def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name):
+    pass
+
+
 def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name):
     """
     The asup mode's main routine for processing hdf5 files. Calls all functions to read hdf5 data, 
@@ -93,7 +97,7 @@ def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name
     tables, label_dict = hdf5_data_collector.read_hdf5(asup_hdf5_file, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
-    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
+    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' + 
                      second_str + constants.CSV_FILE_ENDING for first_str, second_str
                      in label_dict['identifiers']]
     csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
