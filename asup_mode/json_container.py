@@ -153,6 +153,25 @@ class JsonContainer:
                         if not self.units[key_id]:
                             self.units[key_id] = json_item['counter_unit']
                         break   
+                    
+    def do_unit_conversions(self):
+        """
+        This method improves the presentation of some values through unit conversion. Don't call it
+        before all data files are read!
+        :return: None
+        """
+        for unit_key, unit in self.units.items():
+            if unit == "B/s":
+                self.tables[unit_key].expand_values(1 / (10 ** 6))
+                self.units[unit_key] = "Mb/s"
+
+            if unit == 'KB/s':
+                self.tables[unit_key].expand_values(1 / (10 ** 3))
+                self.units[unit_key] = "Mb/s"
+                
+            if unit == "microseconds":
+                self.tables[unit_key].expand_values(1 / (10 ** 3))
+                self.units[unit_key] = "milliseconds"
     
     def get_flat_tables(self, sort_columns_by_name):
         """
