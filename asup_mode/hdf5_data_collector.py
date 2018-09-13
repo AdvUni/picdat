@@ -7,7 +7,7 @@ import logging
 try:
     import tables as pytable
 except ImportError:
-    pyables = None
+    pytable = None
     print('Warning: Module tables (PyTable) is not installed. PicDat won\'t be able to read '
           'hdf5 files. If you try to run PicDat in asup hdf5 mode, it will crash. With PerfStats '
           'or asup xml files, everything is fine.')
