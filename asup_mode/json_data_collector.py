@@ -51,7 +51,9 @@ def read_json(asup_json_files, sort_columns_by_name):
             container.add_data(first_item)
             for item in iterjson:
                 container.add_data(item)
-                
+    
+    container.do_unit_conversions()
+    
     return container.get_flat_tables(sort_columns_by_name), container.build_lable_dict(), cluster_and_node
                 
         
