@@ -114,64 +114,71 @@ class JsonContainer:
         :param json_item: A dict representing a json object.
         :return: None
         """
-        object_type = json_item['object_name']
 
-        # process INSTANCES_OVER_TIME_KEYS
-        for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
-            if object_type == key_object:
-                if json_item['counter_name'] == key_counter:
-                    timestamp = datetime.datetime.fromtimestamp(
-                        math.trunc(json_item['timestamp'] / 1000))
-                    instance = json_item['instance_name']
-                    value = str(json_item['counter_value'])
-                    logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
-                                  key_object, key_counter, timestamp, instance, value)
+        try:
 
-                    self.tables[key_object, key_counter].insert(timestamp, instance, value)
+            object_type = json_item['object_name']
 
-                    if not self.units[key_object, key_counter]:
-                        self.units[key_object, key_counter] = json_item['counter_unit']
-                    break
-
-        # process INSTANCE_OVER_BUCKET_KEYS
-        for key_object, key_counter in INSTANCES_OVER_BUCKET_KEYS:
-            if object_type == key_object:
-                if json_item['counter_name'] == key_counter:
-                    bucket = json_item['x_label']
-                    instance = json_item['instance_name']
-                    value = str(json_item['counter_value'])
-                    logging.debug('object: %s, counter: %s, bucket: %s, instance: %s, value: %s',
-                                  key_object, key_counter, bucket, instance, value)
-
-                    self.tables[key_object, key_counter].insert(bucket, instance, value)
-
-                    if not self.units[key_object, key_counter]:
-                        self.units[key_object, key_counter] = json_item['counter_unit']
-                    break
-
-        # Process COUNTERS_OVER_TIME_KEYS
-        for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
-            if object_type == key_object:
-                counter = json_item['counter_name']
-                for key_counter in key_counters:
-                    if counter == key_counter:
+            # process INSTANCES_OVER_TIME_KEYS
+            for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
+                if object_type == key_object:
+                    if json_item['counter_name'] == key_counter:
                         timestamp = datetime.datetime.fromtimestamp(
                             math.trunc(json_item['timestamp'] / 1000))
+                        instance = json_item['instance_name']
                         value = str(json_item['counter_value'])
-                        logging.debug('object: %s, counter: %s, time: %s, value: %s',
-                                      key_object, key_counter, timestamp, value)
+                        logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
+                                      key_object, key_counter, timestamp, instance, value)
 
-                        self.tables[key_id].insert(timestamp, counter, value)
+                        self.tables[key_object, key_counter].insert(timestamp, instance, value)
 
-                        # collect node name once
-                        if not self.node_name:
-                            if object_type == 'system':
-                                self.node_name = json_item['instance_name']
-                                logging.debug('found node name: %s', self.node_name)
-
-                        if not self.units[key_id]:
-                            self.units[key_id] = json_item['counter_unit']
+                        if not self.units[key_object, key_counter]:
+                            self.units[key_object, key_counter] = json_item['counter_unit']
                         break
+
+            # process INSTANCE_OVER_BUCKET_KEYS
+            for key_object, key_counter in INSTANCES_OVER_BUCKET_KEYS:
+                if object_type == key_object:
+                    if json_item['counter_name'] == key_counter:
+                        bucket = json_item['x_label']
+                        instance = json_item['instance_name']
+                        value = str(json_item['counter_value'])
+                        logging.debug(
+                            'object: %s, counter: %s, bucket: %s, instance: %s, value: %s',
+                            key_object, key_counter, bucket, instance, value)
+
+                        self.tables[key_object, key_counter].insert(bucket, instance, value)
+
+                        if not self.units[key_object, key_counter]:
+                            self.units[key_object, key_counter] = json_item['counter_unit']
+                        break
+
+            # Process COUNTERS_OVER_TIME_KEYS
+            for key_id, key_object, key_counters in COUNTERS_OVER_TIME_KEYS:
+                if object_type == key_object:
+                    counter = json_item['counter_name']
+                    for key_counter in key_counters:
+                        if counter == key_counter:
+                            timestamp = datetime.datetime.fromtimestamp(
+                                math.trunc(json_item['timestamp'] / 1000))
+                            value = str(json_item['counter_value'])
+                            logging.debug('object: %s, counter: %s, time: %s, value: %s',
+                                          key_object, key_counter, timestamp, value)
+
+                            self.tables[key_id].insert(timestamp, counter, value)
+
+                            # collect node name once
+                            if not self.node_name:
+                                if object_type == 'system':
+                                    self.node_name = json_item['instance_name']
+                                    logging.debug('found node name: %s', self.node_name)
+
+                            if not self.units[key_id]:
+                                self.units[key_id] = json_item['counter_unit']
+                            break
+        except KeyError:
+            logging.warning('Found JSON object which doesn\'t hold expected contents. Object will '
+                            'be ignored. It looks like: %s', json_item)
 
     def do_unit_conversions(self):
         """

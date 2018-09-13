@@ -61,19 +61,30 @@ def read_json(asup_json_files, sort_columns_by_name):
             # get cluster and node name from the first element of each file
             try:
                 first_item = next(iterjson)
-                if not cluster_and_node:
-                    cluster_and_node = first_item['cluster_name'], first_item['node_name']
-                else:
-                    if cluster_and_node != (first_item['cluster_name'], first_item['node_name']):
-                        logging.error('inhomogeneous data: Different files in your input belong to '
-                        'different clusters/nodes. PicDat output will probably not make much sense.')
-    
+                try:
+                    if not cluster_and_node:
+                        cluster_and_node = first_item['cluster_name'], first_item['node_name']
+                    else:
+                        if cluster_and_node != (
+                            first_item['cluster_name'], first_item['node_name']):
+                            logging.error(
+                                'inhomogeneous data: Different files in your input belong to '
+                                'different clusters/nodes. PicDat output will probably not make '
+                                'much sense.')
+                except KeyError:
+                    logging.warning('Tried to read cluster and node name from first object of '
+                                    'file: %s, but it seems malformed. So, can\'t check those '
+                                    'information. JSON object is: %s', file, first_item)
+                    if not cluster_and_node:
+                        cluster_and_node = '???', '???'
+
                 # read data (first item and all others)
                 container.add_data(first_item)
                 for item in iterjson:
                     container.add_data(item)
             except StopIteration:
-                logging.error('File %s does not contain any valid json content. It will be ignored.', file)
+                logging.error(
+                    'File %s does not contain any valid json content. It will be ignored.', file)
 
     container.do_unit_conversions()
 
