@@ -35,8 +35,11 @@ def read_hdf5(asup_hdf5_file, sort_columns_by_name):
     This function reads a performance file in hdf5 format. It holds a Hdf5Container object to store
     all collected information.
     :param asup_hdf5_files: path to an .h5 file which contains performance data.
+    :param sort_columns_by_name: A boolean, which determines whether the results should be sorted
+    by name or by value instead. This will effect some of the returned tables (for some tables,
+    sort by value doesn't make sense).
     :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
-    an identifier dict, which contains all required meta data about charts, labels or file names.
+    an label dict, which contains all required meta data about charts, labels or file names.
     """
     container = Hdf5Container()
     logging.info('Read data file(s)...')

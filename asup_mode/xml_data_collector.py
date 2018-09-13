@@ -109,8 +109,11 @@ def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
     :param asup_xml_data_files: list of paths to 'CM-STATS-HOURLY-DATA.XML' files (with unique name
     extensions)
     :param asup_xml_info_file: the path to a 'CM-STATS-HOURLY-INFO.XML' file
+    :param sort_columns_by_name: A boolean, which determines whether the results should be sorted
+    by name or by value instead. This will effect some of the returned tables (for some tables,
+    sort by value doesn't make sense).
     :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
-    an identifier dict, which contains all required meta data about charts, labels or file names.
+    an label dict, which contains all required meta data about charts, labels or file names.
     """
     container = XmlContainer()
 

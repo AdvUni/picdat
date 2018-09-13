@@ -24,11 +24,10 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # keys are partitioned into the different lists.
 
 # Each element of the INSTANCES_OVER_TIME_KEYS list is a pair of an object and a counter, as they
-# are written into the ASUP hdf5 files. Several instances of the object will have data for the
-# counter, so the resulting chart for each of the keys will have one data series per instance.
-# The x axis of the charts will be 'time'. These two characteristics makes the keys different from
-# the keys in the other lists, so this is why the list is called like this.
-
+# are written into ASUP json objects provided by trafero. Several instances of the object will
+# have data for the counter, so the resulting chart for each of the keys will have one data series
+# per instance. The x axis of the charts will be 'time'. These two characteristics makes the keys
+# different from the keys in the other lists, so this is why the list is called like this.
 INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
                             ('ext_cache_obj', 'hya_reads_replaced'),
                             ('processor', 'processor_busy'), ('disk', 'disk_busy'),
@@ -38,20 +37,21 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
 
 # The following list contains search keys about histograms.
 # Each element of the INSTANCES_OVER_BUCKET_KEYS list is a pair of an object and a counter, as they
-# are written into the ASUP hdf5 files. Several instances of the object will have data for the
-# counter, so the resulting chart for each of the keys will have one data series per instance.
-# As it is hardly useful, to draw a histogram as time diagram, the x axis will not be 'time', but
-# 'bucket' here. These two characteristics makes the keys different from the keys in the other
-# lists, so this is why the list is called like this.
+# are written into json objects provided by trafero. Several instances of the object will have data
+# for the counter, so the resulting chart for each of the keys will have one data series per
+# instance. As it is hardly useful, to draw a histogram as time diagram, the x axis will not be
+# 'time', but 'bucket' here. These two characteristics makes the keys different from the keys in
+# the other lists, so this is why the list is called like this.
 INSTANCES_OVER_BUCKET_KEYS = [('lun', 'read_align_histo')]
 
 # Each element of the COUNTERS_OVER_TIME_KEYS list is a triple of an identifier, an object and a
-# set of counters. Objects and counters are some of those written into the ASUP hdf5 files.
+# set of counters. Objects and counters are some of those written into json objects provided by
+# trafero.
 # The identifier is just for distinction between several keys of the list, because the objects are
-# not unique and the counter sets are not very handy. The identifier is used for referencing the
-# data belonging to the key at runtime as well as for naming the resulting charts and must be
-# unique.
-# For the objects of those keys, it is assumed, that each hdf5 data file knows only one instance per
+# not unique and the counter sets are not very handy. So the identifier could be just any word.
+# The identifier is used for referencing the data belonging to the key at runtime as well as for
+# naming the resulting charts and must be unique.
+# For the objects of those keys, it is assumed, that each JSON file knows only one instance per
 # object. So, each chart belonging to the keys is not meant to have several data series for
 # different instances, but data series for different counters instead. This is why each key
 # contains a whole set of counters. The counters in one set must of course wear all the same unit!
@@ -96,7 +96,14 @@ class JsonContainer:
             self.units[key_id] = None
     
     def add_data(self, json_item):
-        
+        """
+        Method takes a dict, which contains the contents of a json object. Each of those dicts
+        should contain one value together with all information what the value is about.
+        If the dict matches a search key, its data will be written into table data structures.
+        Method collects also units for the provided values.
+        :param json_item: A dict representing a json object.
+        :return: None
+        """        
         object_type = json_item['object_name']
         
         # process INSTANCES_OVER_TIME_KEYS
@@ -199,7 +206,7 @@ class JsonContainer:
     
     def build_lable_dict(self):
         """
-        This method provides meta information about the data found in the hdf5. Those are the chart
+        This method provides meta information about the data found in the jsons. Those are the chart
         identifiers (tuple of two strings, unique for each chart, used for chart titles, file names
         etc), units, and a boolean for each chart, which says, whether the chart is a histogram
         (histograms are visualized differently; their x-axis is not 'time' but 'bucket' and they

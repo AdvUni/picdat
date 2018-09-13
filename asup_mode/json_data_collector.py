@@ -1,3 +1,8 @@
+"""
+This module is for reading performance data from json files, as trafero can extract them from
+ASUPs. It holds an JsonContainer object which stores all collected data.
+"""
+
 import logging
 
 try:
@@ -28,6 +33,20 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 def read_json(asup_json_files, sort_columns_by_name):
+    """
+    Reads json files and collects all data from it. Opens all files from list
+    asup_json_files one after another and parses them with the ijson library. Ijson translates
+    the json objects into python dicts. From the first of those dicts, function extracts cluster
+    and node name. Every dict will be passed to the JsonContainer where it will be processed. In 
+    the end, function calles the container's unit conversion method.
+    :param asup_json_files: List of filenames from files containing ASUP data in JSON format.
+    :param sort_columns_by_name: A boolean, which determines whether the results should be sorted
+    by name or by value instead. This will effect some of the returned tables (for some tables,
+    sort by value doesn't make sense).
+    :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
+    a label dict, which contains all required meta data about charts, labels or file names. At
+    third, it returns a tuple of two strings which are cluster name and node name.
+    """
     container = JsonContainer()
     logging.info('Read data file(s)...')
     
