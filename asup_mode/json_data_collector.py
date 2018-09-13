@@ -59,18 +59,21 @@ def read_json(asup_json_files, sort_columns_by_name):
             iterjson = ijson.items(json_file, 'item')
 
             # get cluster and node name from the first element of each file
-            first_item = next(iterjson)
-            if not cluster_and_node:
-                cluster_and_node = first_item['cluster_name'], first_item['node_name']
-            else:
-                if cluster_and_node != (first_item['cluster_name'], first_item['node_name']):
-                    logging.error('inhomogeneous data: Different files in your input belong to '
-                    'different clusters/nodes. PicDat output will probably not make much sense.')
-
-            # read data (first item and all others)
-            container.add_data(first_item)
-            for item in iterjson:
-                container.add_data(item)
+            try:
+                first_item = next(iterjson)
+                if not cluster_and_node:
+                    cluster_and_node = first_item['cluster_name'], first_item['node_name']
+                else:
+                    if cluster_and_node != (first_item['cluster_name'], first_item['node_name']):
+                        logging.error('inhomogeneous data: Different files in your input belong to '
+                        'different clusters/nodes. PicDat output will probably not make much sense.')
+    
+                # read data (first item and all others)
+                container.add_data(first_item)
+                for item in iterjson:
+                    container.add_data(item)
+            except StopIteration:
+                logging.error('File %s does not contain any valid json content. It will be ignored.', file)
 
     container.do_unit_conversions()
 
