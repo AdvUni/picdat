@@ -40,8 +40,8 @@ def search_for_number_of_iterations(line):
         number_string = (line.split()[2])
         # get rid of a quotation mark and parse to int
         return int(number_string[1:-1])
-    else:
-        return 0
+
+    return 0
 
 
 def found_iteration_begin(line, start_times, last_end_time):
@@ -58,8 +58,8 @@ def found_iteration_begin(line, start_times, last_end_time):
     if 'BEGIN Iteration' in line:
         start_times.append(per_iteration_module.get_iteration_timestamp(line, last_end_time))
         return True
-    else:
-        return False
+
+    return False
 
 
 def found_iteration_end(line, end_times, last_start_time):
@@ -76,8 +76,8 @@ def found_iteration_end(line, end_times, last_start_time):
     if 'END Iteration' in line:
         end_times.append(per_iteration_module.get_iteration_timestamp(line, last_start_time))
         return True
-    else:
-        return False
+
+    return False
 
 
 def final_iteration_validation(expected_iteration_number, iteration_beginnings, iteration_endings):
@@ -178,7 +178,8 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
 
     with open(perfstat_data_file, 'r', encoding='ascii', errors='surrogateescape') as data:
         for line in data:
-            if not sysstat_container.inside_sysstat_block or not sysstat_container.sysstat_header_needed:
+            if not sysstat_container.inside_sysstat_block \
+            or not sysstat_container.sysstat_header_needed:
                 line = line.strip()
 
             # first, search for the planned number of iteration in the file's header.
@@ -221,7 +222,7 @@ def read_data_file(perfstat_data_file, sort_columns_by_name):
             if start_times:
                 per_iteration_container.process_per_iteration_keys(line, start_times[-1])
 
-    logging.debug('processor data: ' + str(per_iteration_container.processor_tables))
+    logging.debug('processor data: %s', str(per_iteration_container.processor_tables))
 
     # postprocessing
 

@@ -37,7 +37,7 @@ def read_json(asup_json_files, sort_columns_by_name):
     Reads json files and collects all data from it. Opens all files from list
     asup_json_files one after another and parses them with the ijson library. Ijson translates
     the json objects into python dicts. From the first of those dicts, function extracts cluster
-    and node name. Every dict will be passed to the JsonContainer where it will be processed. In 
+    and node name. Every dict will be passed to the JsonContainer where it will be processed. In
     the end, function calles the container's unit conversion method.
     :param asup_json_files: List of filenames from files containing ASUP data in JSON format.
     :param sort_columns_by_name: A boolean, which determines whether the results should be sorted
@@ -49,30 +49,30 @@ def read_json(asup_json_files, sort_columns_by_name):
     """
     container = JsonContainer()
     logging.info('Read data file(s)...')
-    
+
     # initialise variables to write cluster and node names to
     cluster_and_node = None
-    
+
     for file in asup_json_files:
         with open (file, 'r') as json_file:
             logging.info("Read file %s", file)
             iterjson = ijson.items(json_file, 'item')
-            
+
             # get cluster and node name from the first element of each file
             first_item = next(iterjson)
             if not cluster_and_node:
                 cluster_and_node = first_item['cluster_name'], first_item['node_name']
             else:
                 if cluster_and_node != (first_item['cluster_name'], first_item['node_name']):
-                    logging.error("inhomogeneous data: Different files in your input belong to different clusters/nodes. PicDat output will probably not make much sense.")
-            
+                    logging.error('inhomogeneous data: Different files in your input belong to '
+                    'different clusters/nodes. PicDat output will probably not make much sense.')
+
             # read data (first item and all others)
             container.add_data(first_item)
             for item in iterjson:
                 container.add_data(item)
-    
+
     container.do_unit_conversions()
-    
-    return container.get_flat_tables(sort_columns_by_name), container.build_lable_dict(), cluster_and_node
-                
-        
+
+    return container.get_flat_tables(sort_columns_by_name), container.build_lable_dict(), \
+        cluster_and_node

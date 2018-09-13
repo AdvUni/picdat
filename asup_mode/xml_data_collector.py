@@ -53,7 +53,7 @@ def read_info_file(container, asup_xml_info_file):
     """
     Reads a xml info file and collects unit and base information from it. Buffers xml 'ROW'
     elements and sends them one after another to the container for managing them.
-    :param container: A XmlContainer object which holds all collected xml data 
+    :param container: A XmlContainer object which holds all collected xml data
     :param asup_xml_info_file: The path to a 'CM-STATS-HOURLY-INFO.XML' file
     :return: None
     """
@@ -70,8 +70,8 @@ def read_info_file(container, asup_xml_info_file):
 
         elem.clear()
 
-    logging.debug('units: ' + str(container.units))
-    logging.debug('bases: ' + str(container.base_dict))
+    logging.debug('units: %s', str(container.units))
+    logging.debug('bases: %s', str(container.base_dict))
 
 
 def read_data_file(container, data_file):
@@ -79,13 +79,13 @@ def read_data_file(container, data_file):
     Reads a xml data file and collects all useful information from it. Buffers
     xml 'ROW' elements and sends them one after another to the container for
     managing them. In the end, calls the XmlContainer.process_base_heap() method
-    to perform remaining base conversions. 
-    :param container: A XmlContainer object which holds all collected xml data 
-    :param data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file 
+    to perform remaining base conversions.
+    :param container: A XmlContainer object which holds all collected xml data
+    :param data_file: The path to a 'CM-STATS-HOURLY-DATA.XML' file
     :return: None
     """
     logging.debug('data file: %s', data_file)
-    
+
     elem_dict = {}
 
     for _, elem in ET.iterparse(data_file):
@@ -99,7 +99,7 @@ def read_data_file(container, data_file):
 
         elem.clear()
 
-    logging.debug('remaining base elements: ' + str(container.base_heap))
+    logging.debug('remaining base elements: %s', str(container.base_heap))
 
 
 def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
@@ -123,7 +123,7 @@ def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
     for data_file in asup_xml_data_files:
         logging.debug('read file %s', data_file)
         read_data_file(container, data_file)
-        
+
     container.process_base_heap()
     container.do_unit_conversions()
 

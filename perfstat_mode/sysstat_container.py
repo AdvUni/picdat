@@ -109,8 +109,8 @@ class SysstatContainer:
         if 'sysstat_x_1sec' in line or '-= sysstat_1sec' in line:
             self.inside_sysstat_block = True
             return True
-        else:
-            return False
+
+        return False
 
     def collect_sysstat_timestamp(self, sysstat_timestamp_line, iteration_timestamp):
         """
@@ -128,7 +128,7 @@ class SysstatContainer:
             self.recent_timestamp = util.build_date(
                 sysstat_timestamp_line.split('[')[1].replace(']', ''))
 
-        except (IndexError):
+        except IndexError:
             try:
                 # extract time stamp from 7-mode perfstat:
                 self.recent_timestamp = util.build_date(
@@ -263,7 +263,7 @@ class SysstatContainer:
         if line.startswith('--'):
             self.inside_sysstat_block = False
             self.buffered_header = None
-        elif(line.startswith('Command got killed')):
+        elif line.startswith('Command got killed'):
             self.inside_sysstat_block = False
             self.buffered_header = None
             logging.info('sysstat data is not available! Instead of data, found following line '

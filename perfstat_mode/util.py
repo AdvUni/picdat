@@ -187,8 +187,8 @@ def check_column_header(word_upper_line, endpoint_upper_word, lower_line, reques
         start = end - len(request_lower_string)
 
         return request_lower_string == lower_line[start:end]
-    else:
-        return False
+
+    return False
 
 
 def check_tablelist_content(tablelist, total_size):
@@ -222,10 +222,10 @@ def read_console_file(perfstat_console_file):
         while not line.startswith('Vserver'):
             try:
                 line = next(log)
-            except(StopIteration):
+            except StopIteration:
                 logging.info('Can\'t read console.log file. It does not contain the '
                              'expected information.')
-                return
+                return None
 
         next(log)
         inside_block = True
@@ -246,7 +246,7 @@ def read_console_file(perfstat_console_file):
 
                 node_dict[adress] = (cluster, node)
 
-        logging.debug('dict with cluster and node: ' + str(node_dict))
+        logging.debug('dict with cluster and node: %s', str(node_dict))
 
         return node_dict
 
@@ -276,3 +276,4 @@ def empty_line(value_list):
     if len(value_list) != 0 and value_list[0] is not None:
         columns = len(value_list[0])
         return [' ' for _ in range(columns + 1)]
+    return None

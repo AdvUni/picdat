@@ -46,7 +46,7 @@ try:
     asup_xml_info_file = None
     asup_xml_data_files = None
     asup_xml_header_file = None
-    
+
     asup_json_files = None
 
     asup_hdf5_file = None
@@ -68,8 +68,8 @@ try:
                 # HEADER file, it's ok to overwrite them each iteration
                 for tar in sorted(tar_files):
                     logging.debug(tar)
-                    asup_xml_info_file, asup_data_file, asup_xml_header_file = picdat_util.extract_tgz(
-                        temp_path, tar, str(counter))
+                    asup_xml_info_file, asup_data_file, asup_xml_header_file = \
+                    picdat_util.extract_tgz(temp_path, tar, str(counter))
                     asup_xml_data_files.append(asup_data_file)
                     counter = counter + 1
 
@@ -87,10 +87,12 @@ try:
                 else:
                     logging.info('You gave a directory without a HEADER file. This means, some '
                                  'meta data for charts are missing such as node and cluster name.')
-            
-            # check whether data is json data        
-            elif all(picdat_util.data_type(file) == 'json' for file in os.listdir(os.path.abspath(input_file))):
-                asup_json_files = [os.path.join(input_file, file) for file in os.listdir(os.path.abspath(input_file))]
+
+            # check whether data is json data
+            elif all(picdat_util.data_type(file) == 'json'
+                     for file in os.listdir(os.path.abspath(input_file))):
+                asup_json_files = [os.path.join(input_file, file)
+                                   for file in os.listdir(os.path.abspath(input_file))]
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':

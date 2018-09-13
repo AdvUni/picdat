@@ -28,7 +28,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
+def run_perfstat_mode(
+        perfstat_console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
     """
     The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
     and finally create an HTML.
@@ -39,7 +40,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
     :param csv_dir: path to an existing directory inside result_dir. Function stores its csv tables
     in here.
     :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
-    name or by value. 
+    name or by value.
     :return: None
     """
     logging.debug("Perfstat output files: %s", perfstat_output_files)
@@ -60,7 +61,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
         logging.info('Did not find a console.log file to extract perfstat\'s cluster and node '
                      'name.')
 
-    logging.debug('node dict: ' + str(node_dict))
+    logging.debug('node dict: %s', str(node_dict))
 
     for perfstat_node in perfstat_output_files:
 
@@ -74,7 +75,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
             try:
                 node_identifier = node_dict[perfstat_address][1]
                 html_title = util.get_html_title(node_dict, perfstat_address)
-                logging.debug('html title (from identifier dict): ' + str(html_title))
+                logging.debug('html title (from identifier dict): %s', str(html_title))
             except KeyError:
                 logging.info(
                     'Did not find a node name for address \'%s\' in \'console.log\'. Will '
@@ -82,7 +83,7 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
                 html_title = perfstat_node
                 node_identifier = perfstat_address
 
-            logging.info('Handle PerfStat from node "' + node_identifier + '":')
+            logging.info('Handle PerfStat from node "%s":', node_identifier)
         node_identifier += '_'
 
         if len(perfstat_output_files) == 1:

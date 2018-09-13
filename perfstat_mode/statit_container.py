@@ -87,8 +87,8 @@ class StatitContainer:
             self.statit_counter += 1
             self.inside_statit_block = True
             return True
-        else:
-            return False
+
+        return False
 
     def process_disc_stats(self, line):
         """
@@ -227,9 +227,9 @@ class StatitContainer:
         """
         if self.table.is_empty():
             return ([], [], [])
-        else:
-            identifiers = [('statit', 'disk_statistics')]
-            units = [STATIT_DISK_STAT_UNIT]
-            is_histo = [False]
 
-            return identifiers, units, is_histo
+        identifiers = [('statit', 'disk_statistics')]
+        units = [STATIT_DISK_STAT_UNIT]
+        is_histo = [False]
+
+        return identifiers, units, is_histo

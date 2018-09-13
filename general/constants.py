@@ -1,3 +1,7 @@
+"""
+Constants for different modules.
+"""
+
 import logging
 from os import sep
 

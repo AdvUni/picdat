@@ -157,7 +157,7 @@ class XmlContainer:
                     if object_type == key_object and counter in key_counters:
                         self.units[key_id] = element_dict['unit']
 
-        except (KeyError):
+        except KeyError:
             logging.warning(
                 'Some tags inside an xml ROW element in INFO file seems to miss. Found following '
                 'content: %s Expected (at least) following tags: object, counter, unit, base.',
@@ -207,16 +207,16 @@ class XmlContainer:
                         value = float(element_dict['value'])
                         try:
                             if (object_type, counter, instance) in self.buffer:
-                                
+
                                 # build absolute value through comparison of two consecutive values
                                 abs_val, datetimestamp = util.get_abs_val(
                                     value, unixtimestamp, self.buffer,
                                     (object_type, counter, instance))
                                 self.tables[(object_type, counter)].insert(
                                     datetimestamp, instance, abs_val)
-    
+
                             self.buffer[(object_type, counter, instance)] = (unixtimestamp, value)
-                        except(ZeroDivisionError):
+                        except ZeroDivisionError:
                             # ZeroDivisionError occurs, if two consecutive timestamps are equal
                             logging.warning(
                                 'Found an entry for an INSTANCES_OVER_TIME_KEY, which has '
@@ -239,26 +239,29 @@ class XmlContainer:
                         if (object_type, counter, instance) in self.buffer:
                             if self.buffer[object_type, counter, instance]:
                                 try:
-                                    # build absolute value through comparison of two consecutive values
+                                    # build absolute value through comparison of two consecutive
+                                    # values
                                     abs_val_list, _ = util.get_abs_val(
                                         valuelist, unixtimestamp, self.buffer,
                                         (object_type, counter, instance))
-    
+
                                     buckets = self.histo_labels[object_type, counter]
                                     for bucket in range(len(buckets)):
                                         self.tables[object_type, counter].insert(
                                             bucket, instance, abs_val_list[bucket])
                                         logging.debug('%s, %s, %s', buckets[bucket], instance,
                                                       abs_val_list[bucket])
-    
+
                                     self.buffer[object_type, counter, instance] = None
-                                except(ZeroDivisionError):
-                                    # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                                except ZeroDivisionError :
+                                    # ZeroDivisionError occurs, if two consecutive timestamps are
+                                    # equal
                                     logging.warning(
-                                        'Found an entry for an INSTANCES_OVER_BUCKET_KEY, which has '
-                                        'exactly the same time stamp as another entry belonging to '
-                                        'the same data series. Entry will be ignored. (timestamp: %s, '
-                                        'counter: %s, instance: %s, values: %s) ',
+                                        'Found an entry for an INSTANCES_OVER_BUCKET_KEY, which '
+                                        'has exactly the same time stamp as another entry '
+                                        'belonging to the same data series. Entry will be '
+                                        'ignored. '
+                                        '(timestamp: %s, counter: %s, instance: %s, values: %s) ',
                                         unixtimestamp, counter, instance, valuelist)
                         else:
                             self.buffer[(object_type, counter, instance)] = (
@@ -270,20 +273,20 @@ class XmlContainer:
                 if object_type == key_object:
                     counter = element_dict['counter']
                     if counter in key_counters:
-        
+
                         logging.debug("%s %s", 'found COUNTERS_OVER_TIME_KEY in: ', element_dict)
                         unixtimestamp = int(element_dict['timestamp'])
                         value = float(element_dict['value'])
                         try:
                             if (object_type, counter) in self.buffer:
-    
+
                                 # build absolute value through comparison of two consecutive values
                                 abs_val, datetimestamp = util.get_abs_val(
                                     value, unixtimestamp, self.buffer, (object_type, counter))
                                 self.tables[key_id].insert(datetimestamp, counter, abs_val)
-                                    
+
                             self.buffer[(object_type, counter)] = (unixtimestamp, value)
-                        except(ZeroDivisionError):
+                        except ZeroDivisionError:
                             # ZeroDivisionError occurs, if two consecutive timestamps are equal
                             logging.warning(
                                 'Found an entry for a COUNTERS_OVER_TIME_KEY, which has '
@@ -292,7 +295,7 @@ class XmlContainer:
                                 'counter: %s, instance: %s, value: %s) ',
                                 unixtimestamp, counter, instance, value)
                         return
-        except (KeyError):
+        except KeyError:
             logging.warning(
                 'Some tags inside an xml ROW element in DATA file seems to miss. Found following '
                 'content: %s Expected (at least) following tags: object, counter, timestamp, '
@@ -322,28 +325,28 @@ class XmlContainer:
                         instance = element_dict['instance']
                         baseval = float(element_dict['value'])
 
-                        try: 
+                        try:
                             if (object_type, counter, instance) in self.base_buffer:
-    
+
                                 # build absolute value through comparison of two consecutive values
                                 abs_baseval, datetimestamp = util.get_abs_val(
                                     baseval, unixtimestamp, self.base_buffer,
                                     (object_type, counter, instance))
-    
+
                                 original_counter = self.base_dict[(object_type, counter)]
                                 try:
                                     self.do_base_conversion((object_type, original_counter),
                                                             instance, datetimestamp, abs_baseval)
                                 except (KeyError, IndexError):
                                     logging.debug(
-                                        'Found base before actual element. Add base element to base '
-                                        'heap. Base_element: %s', element_dict)
+                                        'Found base before actual element. Add base element to '
+                                        'base heap. Base_element: %s', element_dict)
                                     self.base_heap.add((object_type, original_counter,
                                                         instance, datetimestamp, abs_baseval))
-    
+
                             self.base_buffer[(object_type, counter, instance)
                                              ] = (unixtimestamp, baseval)
-                        except(ZeroDivisionError):
+                        except ZeroDivisionError :
                             # ZeroDivisionError occurs, if two consecutive timestamps are equal
                             logging.warning(
                                 'Found an entry for a base, which has '
@@ -364,25 +367,30 @@ class XmlContainer:
                         if (object_type, counter, instance) in self.base_buffer:
                             if self.base_buffer[object_type, counter, instance]:
                                 try:
-                                    # build absolute value through comparison of two consecutive values
+                                    # build absolute value through comparison of two consecutive
+                                    # values
                                     abs_baseval, _ = util.get_abs_val(
                                         baseval, unixtimestamp, self.base_buffer,
                                         (object_type, counter, instance))
-    
+
                                     original_counter = self.histo_base_dict[(object_type, counter)]
-                                    for bucket in range(len(self.histo_labels[object_type, original_counter])):
+                                    for bucket in range(len(
+                                        self.histo_labels[object_type, original_counter])):
                                         try:
-                                            self.do_base_conversion((object_type, original_counter),
-                                                                    instance, bucket, float(abs_baseval))
+                                            self.do_base_conversion(
+                                                (object_type, original_counter),
+                                                instance, bucket, float(abs_baseval))
                                         except (KeyError, IndexError):
                                             logging.debug(
-                                                'Found base before actual element. Add base element to base heap. '
-                                                'Base_element: %s', element_dict)
+                                                'Found base before actual element. Add base '
+                                                'element to base heap. Base_element: %s',
+                                                element_dict)
                                             self.base_heap.add((object_type, original_counter,
                                                                 instance, bucket, abs_baseval))
                                     self.base_buffer[object_type, counter, instance] = None
-                                except(ZeroDivisionError):
-                                    # ZeroDivisionError occurs, if two consecutive timestamps are equal
+                                except ZeroDivisionError:
+                                    # ZeroDivisionError occurs, if two consecutive timestamps are
+                                    # equal
                                     logging.warning(
                                         'Found an entry for a base, which has exactly the same '
                                         'time stamp as another entry belonging to '
@@ -394,7 +402,7 @@ class XmlContainer:
                             self.base_buffer[object_type, counter,
                                              instance] = (unixtimestamp, baseval)
 
-        except (KeyError):
+        except KeyError:
             logging.warning(
                 'Some tags inside an xml ROW element in DATA file seems to miss. Found following '
                 'content: %s Expected (at least) following tags: object, counter, timestamp, '
@@ -417,15 +425,15 @@ class XmlContainer:
             old_val = self.tables[tablekey].get_item(rowname, instance)
             try:
                 new_val = str(float(old_val) / float(base_val))
-            except(ZeroDivisionError):
+            except ZeroDivisionError:
                 logging.debug(
                     'base conversion leads to division by zero: %s/%s (%s,%s) Set result to 0.',
                     old_val, base_val, tablekey, instance)
                 new_val = str(0)
             self.tables[tablekey].insert(rowname, instance, new_val)
-            logging.debug('base conversion. tablekey: %s, instance: %s. value / base = %s / %s = %s',
-                          tablekey, instance, old_val, base_val, new_val)
-        except(ValueError):
+            logging.debug('base conversion. tablekey: %s, instance: %s. value / base = '
+                          '%s / %s = %s', tablekey, instance, old_val, base_val, new_val)
+        except ValueError:
             logging.error(
                 'Found value which is not convertible to float. Base conversion failed.')
         except(KeyError, IndexError):
@@ -442,7 +450,7 @@ class XmlContainer:
             object_type, counter, instance, row, base_val = base_element
             try:
                 self.do_base_conversion((object_type, counter), instance, row, base_val)
-            except (KeyError):
+            except KeyError:
                 logging.warning(
                     'Found base value but no matching actual value. This means, Value for '
                     '%s - %s, instance %s with time stamp/bucket %s is missing in data!',
@@ -471,7 +479,7 @@ class XmlContainer:
         """
         Calls the flatten method for each table from self.tables, which is not empty.
         :param sort_columns_by_name: boolean, whether table columns should be sorted
-        by names. If False, they will be sorted by value. Tables for 
+        by names. If False, they will be sorted by value. Tables for
         COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
         to be a clearer arrangement.
         :return: all not-empty flattened tables in a list.

@@ -1,3 +1,7 @@
+"""
+Contains the class JsonContainer. This class is responsible for holding and
+processing all data collected from json files.
+"""
 import logging
 import datetime
 import math
@@ -68,6 +72,12 @@ COUNTERS_OVER_TIME_KEYS = [
 
 
 class JsonContainer:
+    """
+    This class is responsible for holding and processing all data collected from json files. It
+    takes json objects as dicts and saves their information into tables, if they match the search
+    keys.
+    Furthermore, it provides meta data like table names and axis labeling information.
+    """
 
     def __init__(self):
         """
@@ -94,7 +104,7 @@ class JsonContainer:
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = None
-    
+
     def add_data(self, json_item):
         """
         Method takes a dict, which contains the contents of a json object. Each of those dicts
@@ -103,25 +113,26 @@ class JsonContainer:
         Method collects also units for the provided values.
         :param json_item: A dict representing a json object.
         :return: None
-        """        
+        """
         object_type = json_item['object_name']
-        
+
         # process INSTANCES_OVER_TIME_KEYS
         for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
             if object_type == key_object:
                 if json_item['counter_name'] == key_counter:
-                    timestamp = datetime.datetime.fromtimestamp(math.trunc(json_item['timestamp'] / 1000))
+                    timestamp = datetime.datetime.fromtimestamp(
+                        math.trunc(json_item['timestamp'] / 1000))
                     instance = json_item['instance_name']
                     value = str(json_item['counter_value'])
                     logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
                                   key_object, key_counter, timestamp, instance, value)
-                    
+
                     self.tables[key_object, key_counter].insert(timestamp, instance, value)
-                    
+
                     if not self.units[key_object, key_counter]:
                         self.units[key_object, key_counter] = json_item['counter_unit']
                     break
-                
+
         # process INSTANCE_OVER_BUCKET_KEYS
         for key_object, key_counter in INSTANCES_OVER_BUCKET_KEYS:
             if object_type == key_object:
@@ -131,9 +142,9 @@ class JsonContainer:
                     value = str(json_item['counter_value'])
                     logging.debug('object: %s, counter: %s, bucket: %s, instance: %s, value: %s',
                                   key_object, key_counter, bucket, instance, value)
-                    
+
                     self.tables[key_object, key_counter].insert(bucket, instance, value)
-                    
+
                     if not self.units[key_object, key_counter]:
                         self.units[key_object, key_counter] = json_item['counter_unit']
                     break
@@ -144,23 +155,24 @@ class JsonContainer:
                 counter = json_item['counter_name']
                 for key_counter in key_counters:
                     if counter == key_counter:
-                        timestamp = datetime.datetime.fromtimestamp(math.trunc(json_item['timestamp'] / 1000))
+                        timestamp = datetime.datetime.fromtimestamp(
+                            math.trunc(json_item['timestamp'] / 1000))
                         value = str(json_item['counter_value'])
                         logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                       key_object, key_counter, timestamp, value)
-                        
+
                         self.tables[key_id].insert(timestamp, counter, value)
-                        
+
                         # collect node name once
                         if not self.node_name:
                             if object_type == 'system':
                                 self.node_name = json_item['instance_name']
                                 logging.debug('found node name: %s', self.node_name)
-                        
+
                         if not self.units[key_id]:
                             self.units[key_id] = json_item['counter_unit']
-                        break   
-                    
+                        break
+
     def do_unit_conversions(self):
         """
         This method improves the presentation of some values through unit conversion. Don't call it
@@ -175,16 +187,16 @@ class JsonContainer:
             if unit == 'KB/s':
                 self.tables[unit_key].expand_values(1 / (10 ** 3))
                 self.units[unit_key] = "Mb/s"
-                
+
             if unit == "microseconds":
                 self.tables[unit_key].expand_values(1 / (10 ** 3))
                 self.units[unit_key] = "milliseconds"
-    
+
     def get_flat_tables(self, sort_columns_by_name):
         """
         Calls the flatten method for each table from self.tables, which is not empty.
         :param sort_columns_by_name: boolean, whether table columns should be sorted
-        by names. If False, they will be sorted by value. Tables for 
+        by names. If False, they will be sorted by value. Tables for
         COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
         to be a clearer arrangement.
         :return: all not-empty flattened tables in a list.
@@ -203,7 +215,7 @@ class JsonContainer:
                                      for (key_id, _, _) in COUNTERS_OVER_TIME_KEYS
                                      if not self.tables[key_id].is_empty()]
         return flat_tables
-    
+
     def build_lable_dict(self):
         """
         This method provides meta information about the data found in the jsons. Those are the chart

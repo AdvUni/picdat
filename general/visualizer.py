@@ -8,7 +8,6 @@ from general import constants
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
-
 # license notice:
 #
 # This file is part of PicDat.
@@ -67,16 +66,15 @@ def create_select_buttons(html_document, chart_id):
     """
     html_document.write('<p>' + '\n')
     html_document.write('    <button type="button" onclick="selectAll(this, '
-                        + chart_id + ', ' + "'" + chart_id + "'" +
+                        +chart_id + ', ' + "'" + chart_id + "'" +
                         ')">select all</button>' + '\n')
     html_document.write('    <button type="button" onclick="deselectAll(this, '
-                        + chart_id + ', ' + "'" + chart_id + "'" +
+                        +chart_id + ', ' + "'" + chart_id + "'" +
                         ')">deselect all</button>' + '\n')
     html_document.write('</p>' + '\n')
 
 
 def create_tab_button(html_document, tab_name, tab_charts):
-
     tab_charts_str = str(tab_charts[0])
     for chart in tab_charts[1:]:
         tab_charts_str += ', '
@@ -141,8 +139,9 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
             for chart_nr in tabs_dict[tab]:
                 # call js function to create Dygraph objects
                 html_document.write('<script> ' + chart_ids[chart_nr] + ' = makeChart("' +
-                                    chart_ids[chart_nr] + '", "' + tab + '", "' + csv_files[chart_nr] + '", "' +
-                                    titles[chart_nr] + '", "' + x_labels[chart_nr] + '", "' +
+                                    chart_ids[chart_nr] + '", "' + tab + '", "' +
+                                    csv_files[chart_nr] + '", "' + titles[chart_nr] +
+                                    '", "' + x_labels[chart_nr] + '", "' +
                                     y_labels[chart_nr] + '", ' + barchart_booleans[chart_nr] +
                                     '); </script>')
 

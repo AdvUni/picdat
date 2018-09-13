@@ -196,7 +196,7 @@ class Hdf5Container:
                             self.tables[object_type, key_counter].insert(
                                 bucket, instance, str(abs_value))
                             histo_buffer[bucket, instance] = None
-                            
+
                     else:
                         histo_buffer[bucket, instance] = unixtimestamp, value
 
@@ -246,7 +246,7 @@ class Hdf5Container:
         """
         Calls the flatten method for each table from self.tables, which is not empty.
         :param sort_columns_by_name: boolean, whether table columns should be sorted
-        by names. If False, they will be sorted by value. Tables for 
+        by names. If False, they will be sorted by value. Tables for
         COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
         to be a clearer arrangement.
         :return: all not-empty flattened tables in a list.

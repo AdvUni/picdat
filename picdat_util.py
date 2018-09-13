@@ -112,7 +112,8 @@ def take_input_file():
         except FileNotFoundError:
             print('This file does not exist. Try again.')
         except TypeError:
-            print('Unexpected data type: File must be of type .data, .out, .zip, or .tgz. Try again.')
+            print('Unexpected data type: File must be of type .data, .out, .zip, or .tgz. '
+                  'Try again.')
 
 
 def take_directory():
@@ -169,8 +170,8 @@ def handle_user_input(argv):
 
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv[1:], 'hslwd:i:o:', ['help', 'sortbynames', 'logfile', 'webserver', 'debug=',
-                                                        'input=', 'outputdir='])
+        opts, _ = getopt.getopt(argv[1:], 'hslwd:i:o:',
+            ['help', 'sortbynames', 'logfile', 'webserver', 'debug=', 'input=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
@@ -232,10 +233,10 @@ def handle_user_input(argv):
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
-    
+
     if '-w' in opts or '--webserver' in opts:
         webserver = True
-    else: 
+    else:
         webserver = False
 
     return input_file, output_dir, sort_columns_by_name, webserver
@@ -263,7 +264,7 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
             tarmembers.append(tar.getmember(asup_data_file))
             asup_xml_info_file = os.path.join(dir_path, asup_xml_info_file)
             asup_data_file = os.path.join(dir_path, asup_data_file)
-        except(KeyError):
+        except KeyError:
             logging.info(
                 'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
                 'gave a tgz archive which does not contain them. Quit program.')
@@ -271,14 +272,14 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
         try:
             tarmembers.append(tar.getmember(asup_xml_header_file))
             asup_xml_header_file = os.path.join(dir_path, asup_xml_header_file)
-        except(KeyError):
+        except KeyError:
             logging.info(
                 'You gave a tgz archive without a HEADER file. This means, some meta data for '
                 'charts are missing such as node and cluster name.')
             asup_xml_header_file = None
 
         tar.extractall(dir_path, members=tarmembers)
-    
+
     if data_name_extension:
         os.rename(asup_data_file, asup_data_file + data_name_extension)
         asup_data_file = asup_data_file + data_name_extension

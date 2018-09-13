@@ -35,7 +35,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
 #PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
 #                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
-#PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] # values appears sometimes without unit
+#PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] 
+# values appears sometimes without unit
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),
                              ('total_ops', '/s'), ('avg_latency', 'us'), ('read_data', 'b/s'),
@@ -173,7 +174,7 @@ class PerIterationContainer:
         #if object_type == 'wafl_hya':
         #    self.process_object_type(iteration_timestamp, PER_ITERATION_HYA_KEYS,
         #                             self.hya_tables, line_split)
-            return
+        #    return
         if object_type == 'processor':
             self.process_object_type(iteration_timestamp, PER_ITERATION_PROCESSOR_KEYS,
                                      self.processor_tables, line_split)
@@ -237,8 +238,11 @@ class PerIterationContainer:
         # replace lun's IDs in headers through their path names
         self.replace_lun_ids()
 
-        #all_tables = self.aggregate_tables + self.hya_tables + self.processor_tables + self.volume_tables + self.lun_tables
-        all_tables = self.aggregate_tables + self.processor_tables + self.volume_tables + self.lun_tables
+        #all_tables = self.aggregate_tables + self.hya_tables + self.processor_tables
+        #+ self.volume_tables + self.lun_tables
+        all_tables = self.aggregate_tables + self.processor_tables \
+        + self.volume_tables + self.lun_tables
+
         all_tables.append(self.lun_alaign_table)
 
         all_x_labels = ['time' for _ in PER_ITERATION_AGGREGATE_KEYS + #PER_ITERATION_HYA_KEYS +
@@ -310,7 +314,8 @@ class PerIterationContainer:
         availability_list = util.check_tablelist_content(
             self.aggregate_tables, len(PER_ITERATION_AGGREGATE_KEYS))
         identifiers += [('aggregate', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_AGGREGATE_KEYS, availability_list) if available]
+                        available in zip(PER_ITERATION_AGGREGATE_KEYS, availability_list)
+                        if available]
         units += [unit for (_, unit), available in zip(PER_ITERATION_AGGREGATE_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]
@@ -328,7 +333,8 @@ class PerIterationContainer:
         availability_list = util.check_tablelist_content(
             self.processor_tables, len(PER_ITERATION_PROCESSOR_KEYS))
         identifiers += [('processor', aspect) for (aspect, _),
-                        available in zip(PER_ITERATION_PROCESSOR_KEYS, availability_list) if available]
+                        available in zip(PER_ITERATION_PROCESSOR_KEYS, availability_list)
+                        if available]
         units += [unit for (_, unit), available in zip(PER_ITERATION_PROCESSOR_KEYS,
                                                        availability_list) if available]
         is_histo += [False for available in availability_list if available]

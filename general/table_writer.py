@@ -42,7 +42,7 @@ def create_csv(csv_filepaths, tables):
                     row_line += entry.replace(',',' -')
                     row_line += ', '
                 row_line += row[-1].replace(',',' -')
-                
+
                 logging.debug('row line: %s', row_line)
 
                 # write out line
