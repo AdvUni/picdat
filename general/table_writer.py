@@ -33,15 +33,17 @@ def create_csv(csv_filepaths, tables):
         with open(csv_filepaths[table_index], 'w') as table_file:
 
             for row in table:
-                logging.debug(row)
+                logging.debug('row list: %s', row)
 
                 row_line = ''
 
                 # write a value from each column into one line
                 for entry in row[:-1]:
-                    row_line += entry
+                    row_line += entry.replace(',',' -')
                     row_line += ', '
-                row_line += row[-1]
+                row_line += row[-1].replace(',',' -')
+                
+                logging.debug('row line: %s', row_line)
 
                 # write out line
                 table_file.write(row_line + '\n')
