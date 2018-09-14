@@ -85,15 +85,11 @@ class JsonContainer:
         """
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
-        # storing all the matching data found in hdf5 data file.
+        # storing all the matching data found in json data file.
         self.tables = {searchkey: Table()
                        for searchkey in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.tables[key_id] = Table()
-
-        # To get a nice title for the last system chart, the program reads the node name from one
-        # of the json objects. This node name will substitute the word 'system' in chart labels.
-        self.node_name = None
 
         # A dict for relating units to each search key from the three key lists. None values will
         # be replaced while reading the data
@@ -102,6 +98,10 @@ class JsonContainer:
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = None
+
+        # To get a nice title for the last system chart, the program reads the node name from one
+        # of the json objects. This node name will substitute the word 'system' in chart labels.
+        self.node_name = None
 
     def add_data(self, json_item):
         """
