@@ -82,7 +82,7 @@ def validate_input_file(input_file):
     :return: None
     :raises fileNotFoundError: raises an exception, if input_file is neither a directory nor a file.
     :raises typeError: raises an exception, if input_file is a file of the wrong data type
-    (neither .data nor .zip nor .out nor .tgz nor .h5).
+    (neither .data nor .zip nor .out nor .tgz nor .h5 nor .json).
     """
     if os.path.isdir(input_file):
         return
@@ -91,7 +91,7 @@ def validate_input_file(input_file):
 
     dtype = data_type(input_file)
 
-    if dtype not in ['data', 'zip', 'out', 'tgz', 'h5']:
+    if dtype not in ['data', 'zip', 'out', 'tgz', 'h5', 'json']:
         raise TypeError
 
 
@@ -104,7 +104,7 @@ def take_input_file():
     """
     while True:
         input_file = input('Please enter a path to some performance output (folder or zipfolder '
-                           'or .data or .out or .h5 file or .tgz archive):' + os.linesep)
+                           'or .data or .out or .json file or .tgz archive):' + os.linesep)
 
         try:
             validate_input_file(input_file)
@@ -112,7 +112,7 @@ def take_input_file():
         except FileNotFoundError:
             print('This file does not exist. Try again.')
         except TypeError:
-            print('Unexpected data type: File must be of type .data, .out, .zip, or .tgz. '
+            print('Unexpected data type: File must be of type .data, .out, .zip, .json or .tgz. '
                   'Try again.')
 
 
