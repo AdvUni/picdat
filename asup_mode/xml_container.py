@@ -123,10 +123,9 @@ class XmlContainer:
         self.base_heap = set()
 
         # To get a nice title for the last system chart, the program reads the node name from one
-        # of the xml elements with object = system:constituent
-        # Note: not in use at the moment
+        # of the xml elements with object = system:constituent.
+        # This node name will substitute the word 'system:constituent' in chart labels.
         self.node_name = None
-        self.system_string = 'system:constituent'
 
     def add_info(self, element_dict):
         """

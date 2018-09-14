@@ -116,10 +116,8 @@ class Hdf5Container:
         self.base_heap = set()
 
         # To get a nice title for the last system chart, the program reads the node name from one
-        # of the hdf5 elements with object = system:constituent
-        # Note: not in use at the moment
+        # of the hdf5 elements. This node name will substitute the word 'system' in chart labels.
         self.node_name = None
-        self.system_string = 'system'
 
         self.units = {searchkey: 'nix' for searchkey in INSTANCES_OVER_TIME_KEYS +
                       INSTANCES_OVER_BUCKET_KEYS}

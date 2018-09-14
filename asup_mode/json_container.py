@@ -92,10 +92,8 @@ class JsonContainer:
             self.tables[key_id] = Table()
 
         # To get a nice title for the last system chart, the program reads the node name from one
-        # of the hdf5 elements with object = system:constituent
-        # Note: not in use at the moment
+        # of the json objects. This node name will substitute the word 'system' in chart labels.
         self.node_name = None
-        self.system_string = 'system'
 
         # A dict for relating units to each search key from the three key lists. None values will
         # be replaced while reading the data

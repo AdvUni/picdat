@@ -64,6 +64,9 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
 def get_flat_tables(asup_container, sort_columns_by_name):
     """
     Calls the flatten method for each table from asup_container.tables, which is not empty.
+    :param asup_container: xml_container, json_container, or hdf5_container object. Those container
+    object does have a similar structure, so their tables can be flattened in the same way by this
+    function.
     :param sort_columns_by_name: boolean, whether table columns should be sorted
     by names. If False, they will be sorted by value. Tables for
     COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
@@ -140,7 +143,8 @@ def build_label_dict(asup_container):
     available = [(key_object, key_id) for (key_id, key_object, _) in counters_over_time_keys
                  if not asup_container.tables[key_id].is_empty()]
 
-    identifiers += [(key_object.replace(asup_container.system_string, asup_container.node_name),
+    identifiers += [(key_object.replace('system:constituent', asup_container.node_name
+                                        ).replace('system', asup_container.node_name),
                      key_id) for (key_object, key_id) in available]
     units += [asup_container.units[key_id] for (_, key_id) in available]
     is_histo += [False for _ in available]
