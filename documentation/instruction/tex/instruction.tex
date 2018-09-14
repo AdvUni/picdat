@@ -146,9 +146,14 @@ If you want to visualize \textcolor{darkblue}{\textbf{PerfStat data}}, you have 
 \textcolor{darkblue}{\textbf{ASUP XML}} data is usually packed in tar files with file extension \textbf{.tgz}. You can pass them as input in a whole. It is also possible to transmit the unpacked tars, i.e. a \textbf{directory}. There is nothing as a single file transmission available, because PicDat needs at least two files, a CM-STATS-HOURLY-INFO.XML and a CM-STATS-HOURLY-DATA.XML file for its analysis. 
 
 Working with ASUPs, it might be useful to visualize data for several consecutive ASUP files together. To do so, just pack \textbf{several ASUP .tgz archives into one directory} and pass the directory to PicDat. Therefore, the alphabetical order of the archive names should go with the chronological order. PicDat will stick the results for the different data files together. This means, different from visualizing PerfStats, only \textbf{one HTML for all data} will be generated. So don't mess around and pack ASUP files into one folder, which don't belong together! Don't mix nodes.
+\end{frame}
+
+\begin{frame}
+\frametitle{Input format -- ASUP mode}
+After os version ontap 9.1, ASUPs don't provide permormance data in XML format anymore. Instead, there are files with a ccma file extension. Luckily, you can transform them into JSON. Therefore, PicDat provides another mode: \textcolor{darkblue}{\textbf{ASUP JSON}}. To use this mode, give PicDat either a single \textbf{.json} file as input or a \textbf{directory with JSON files inside}. If you give several JSONs, make sure they all belong to the same cluster and node! Besides this, it doesn't matter a lot how the information is splitted over the several files. As each JSON object contains all necessary information about a value, PicDat will read one after another without caring about their order.
 \bigskip
 
-As newest feature, PicDat supports \textcolor{darkblue}{\textbf{ASUP HDF5}} performance files as you get them when converting ccma files from ASUP. HDF5 files wear the file extension \textbf{.h5}. PicDat takes single h5 files as input; something like directory or archive transmission is not possible yet. PicDat will create \textbf{one HTML} per input file. 
+Before switching to JSON, PicDat tried to deal with performance data which was converted from ccma to HDF5. As the HDF5 files don't contain essential information, there is no use for the \textcolor{darkblue}{\textbf{ASUP HDF5}} mode anymore. It is fully replaced by the JSON mode. But, technically, it still works, so it is mentioned here. To use it, give PicDat a single \textbf{.h5} file as input; something like directory or archive transmission is not possible. PicDat will create \textbf{one HTML} per input file. 
 \end{frame}
 
 \section{Interactive charts}
