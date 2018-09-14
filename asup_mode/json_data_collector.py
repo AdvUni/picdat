@@ -87,7 +87,13 @@ def read_json(asup_json_files, sort_columns_by_name):
                 logging.error(
                     'File %s does not contain any valid json content. It will be ignored.', file)
 
+    # print information if charts are empty:
+    for table_name, table in container.tables.items():
+        if table.is_empty():
+            logging.info('Search key had no hit: Table about %s is empty. Are you sure that your '
+                         'json includes all available data about this search key?', table_name)
+
     container.do_unit_conversions()
 
-    return util.get_flat_tables(container, sort_columns_by_name), util.build_label_dict(container), \
-        cluster_and_node
+    return util.get_flat_tables(container, sort_columns_by_name), \
+        util.build_label_dict(container), cluster_and_node

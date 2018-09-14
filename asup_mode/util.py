@@ -61,6 +61,7 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
 
     return abs_val, datetimestamp
 
+
 def get_flat_tables(asup_container, sort_columns_by_name):
     """
     Calls the flatten method for each table from asup_container.tables, which is not empty.
