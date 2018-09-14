@@ -21,41 +21,6 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
-
-def graph_id(graph_title):
-    """
-    Generates a proper id for a graph to write in the html file.
-    :param graph_title: The graph's title as string, you want to have an id for.
-    :return: The id string.
-    """
-    return graph_title + '_graph'
-
-
-def option_line(label, content, argument_is_string):
-    """
-    Generates a string to write it into an HTML file. It is used to specify an option inside the
-    templates object.
-    :param label: The option's label.
-    :param content: The option's content.
-    :param argument_is_string: Boolean, whether content should be written with quotation marks,
-    because it is meant as String, or not, because it is meant as a javaScript function.
-    :return: The line you can write into an HTML file.
-    """
-    if argument_is_string:
-        return '            ' + label + ': "' + content + '",' + '\n'
-    else:
-        return '            ' + label + ': ' + content + ',' + '\n'
-
-
-def get_legend_div_id(chart_id):
-    """
-    Generates a simple id for a chart legend's div element through adding a string to the chart id.
-    :param chart_id: ID of the chart which legend should be carried by the div the ID is for.
-    :return: simple ID as String
-    """
-    return chart_id + '_legend'
-
-
 def create_select_buttons(html_document, chart_id):
     """
     Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or
