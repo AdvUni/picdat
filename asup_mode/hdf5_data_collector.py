@@ -51,4 +51,4 @@ def read_hdf5(asup_hdf5_file, sort_columns_by_name):
 
     # container.do_unit_conversions()
 
-    return container.get_flat_tables(sort_columns_by_name), util.build_label_dict(container)
+    return util.get_flat_tables(container, sort_columns_by_name), util.build_label_dict(container)

@@ -6,7 +6,6 @@ import logging
 import datetime
 import math
 from general.table import Table
-from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -199,28 +198,3 @@ class JsonContainer:
             if unit == "microseconds":
                 self.tables[unit_key].expand_values(1 / (10 ** 3))
                 self.units[unit_key] = "milliseconds"
-
-    def get_flat_tables(self, sort_columns_by_name):
-        """
-        Calls the flatten method for each table from self.tables, which is not empty.
-        :param sort_columns_by_name: boolean, whether table columns should be sorted
-        by names. If False, they will be sorted by value. Tables for
-        COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
-        to be a clearer arrangement.
-        :return: all not-empty flattened tables in a list.
-        """
-        flat_tables = []
-
-        flat_tables = flat_tables + [self.tables[key].flatten('time', sort_columns_by_name)
-                                     for key in INSTANCES_OVER_TIME_KEYS
-                                     if not self.tables[key].is_empty()]
-
-        flat_tables = flat_tables + [self.tables[key].flatten('bucket', sort_columns_by_name)
-                                     for key in INSTANCES_OVER_BUCKET_KEYS
-                                     if not self.tables[key].is_empty()]
-
-        flat_tables = flat_tables + [self.tables[key_id].flatten('time', True)
-                                     for (key_id, _, _) in COUNTERS_OVER_TIME_KEYS
-                                     if not self.tables[key_id].is_empty()]
-        return flat_tables
-

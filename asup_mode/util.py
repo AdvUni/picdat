@@ -61,6 +61,39 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
 
     return abs_val, datetimestamp
 
+def get_flat_tables(asup_container, sort_columns_by_name):
+    """
+    Calls the flatten method for each table from asup_container.tables, which is not empty.
+    :param sort_columns_by_name: boolean, whether table columns should be sorted
+    by names. If False, they will be sorted by value. Tables for
+    COUNTERS_OVER_TIME_KEYS will always be sorted by names, because this is considered
+    to be a clearer arrangement.
+    :return: all not-empty flattened tables in a list.
+    """
+
+    # get the three key list INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS, and
+    # COUNTERS_OVER_TIME_KEYS. Each asup container's module has this key lists, but they may vary a
+    # bit, so it is important to access the keys over the given container object.
+    instances_over_time_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_TIME_KEYS
+    instances_over_bucket_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_BUCKET_KEYS
+    counters_over_time_keys = sys.modules[asup_container.__module__].COUNTERS_OVER_TIME_KEYS
+
+    # initialise table list
+    flat_tables = []
+
+    flat_tables = flat_tables + [asup_container.tables[key].flatten('time', sort_columns_by_name)
+                                 for key in instances_over_time_keys
+                                 if not asup_container.tables[key].is_empty()]
+
+    flat_tables = flat_tables + [asup_container.tables[key].flatten('bucket', sort_columns_by_name)
+                                 for key in instances_over_bucket_keys
+                                 if not asup_container.tables[key].is_empty()]
+
+    flat_tables = flat_tables + [asup_container.tables[key_id].flatten('time', True)
+                                 for (key_id, _, _) in counters_over_time_keys
+                                 if not asup_container.tables[key_id].is_empty()]
+    return flat_tables
+
 
 def build_label_dict(asup_container):
     """
@@ -74,7 +107,7 @@ def build_label_dict(asup_container):
     function.
     :return: all mentioned information, packed into a dict
     """
-    
+
     # get the three key list INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS, and
     # COUNTERS_OVER_TIME_KEYS. Each asup container's module has this key lists, but they may vary a
     # bit, so it is important to access the keys over the given container object.
