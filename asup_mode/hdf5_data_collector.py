@@ -12,6 +12,7 @@ except ImportError:
           'hdf5 files. If you try to run PicDat in asup hdf5 mode, it will crash. With PerfStats '
           'or asup xml files, everything is fine.')
 from asup_mode.hdf5_container import Hdf5Container
+from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -50,4 +51,4 @@ def read_hdf5(asup_hdf5_file, sort_columns_by_name):
 
     # container.do_unit_conversions()
 
-    return container.get_flat_tables(sort_columns_by_name), container.build_label_dict()
+    return container.get_flat_tables(sort_columns_by_name), util.build_label_dict(container)

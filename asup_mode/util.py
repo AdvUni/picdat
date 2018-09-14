@@ -3,6 +3,7 @@ This modules contains functions needed for the asup mode.
 """
 import datetime
 import logging
+import sys
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -59,3 +60,56 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
                   '%s (%s)', this_val, last_val, unixtimestamp, last_unixtime, abs_val, buffer_key)
 
     return abs_val, datetimestamp
+
+
+def build_label_dict(asup_container):
+    """
+    This method provides meta information about the data found in the ASUPs. Those are the charts
+    identifiers (tuple of two strings, unique for each chart, used for chart titles, file names
+    etc), units, and one boolean for each chart, which says, whether the chart is a histogram
+    (histograms are visualized differently; their x-axis is not 'time' but 'bucket' and they
+    are plotted as bar charts).
+    :param asup_container: xml_container, json_container, or hdf5_container object. Those container
+    object does have a similar structure, so their labels can be gathered in the same way by this
+    function.
+    :return: all mentioned information, packed into a dict
+    """
+    
+    # get the three key list INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS, and
+    # COUNTERS_OVER_TIME_KEYS. Each asup container's module has this key lists, but they may vary a
+    # bit, so it is important to access the keys over the given container object.
+    instances_over_time_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_TIME_KEYS
+    instances_over_bucket_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_BUCKET_KEYS
+    counters_over_time_keys = sys.modules[asup_container.__module__].COUNTERS_OVER_TIME_KEYS
+
+    # initialise label lists
+    identifiers = []
+    units = []
+    is_histo = []
+
+    # get labels for all charts belonging to INSTANCES_OVER_TIME_KEYS
+    available = [
+        key for key in instances_over_time_keys if not asup_container.tables[key].is_empty()]
+
+    identifiers += available
+    units += [asup_container.units[key] for key in available]
+    is_histo += [False for _ in available]
+
+    # get labels for all charts belonging to INSTANCE_OVER_BUCKET_KEYS
+    available = [
+        key for key in instances_over_bucket_keys if not asup_container.tables[key].is_empty()]
+
+    identifiers += available
+    units += [asup_container.units[key] for key in available]
+    is_histo += [True for _ in available]
+
+    # get labels for all charts belonging to COUNTERS_OVER_TIME_KEYS
+    available = [(key_object, key_id) for (key_id, key_object, _) in counters_over_time_keys
+                 if not asup_container.tables[key_id].is_empty()]
+
+    identifiers += [(key_object.replace(asup_container.system_string, asup_container.node_name),
+                     key_id) for (key_object, key_id) in available]
+    units += [asup_container.units[key_id] for (_, key_id) in available]
+    is_histo += [False for _ in available]
+
+    return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo}

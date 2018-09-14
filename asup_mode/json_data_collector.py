@@ -14,6 +14,7 @@ except ImportError:
           'or asup xml files, everything is fine.')
 
 from asup_mode.json_container import JsonContainer
+from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -88,5 +89,5 @@ def read_json(asup_json_files, sort_columns_by_name):
 
     container.do_unit_conversions()
 
-    return container.get_flat_tables(sort_columns_by_name), container.build_lable_dict(), \
+    return container.get_flat_tables(sort_columns_by_name), util.build_label_dict(container), \
         cluster_and_node

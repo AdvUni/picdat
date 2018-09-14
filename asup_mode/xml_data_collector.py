@@ -6,6 +6,7 @@ object which stores all collected data.
 import logging
 import xml.etree.ElementTree as ET
 from asup_mode.xml_container import XmlContainer
+from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -127,4 +128,4 @@ def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
     container.process_base_heap()
     container.do_unit_conversions()
 
-    return container.get_flat_tables(sort_columns_by_name), container.build_label_dict()
+    return container.get_flat_tables(sort_columns_by_name), util.build_label_dict(container)

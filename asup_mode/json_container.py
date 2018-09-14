@@ -6,6 +6,7 @@ import logging
 import datetime
 import math
 from general.table import Table
+from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -91,15 +92,15 @@ class JsonContainer:
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.tables[key_id] = Table()
 
-        # A dict for relating units to each search key from the three key lists.
-        # Units are provided by the hdf5 info file.
-        self.units = {}
-
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the hdf5 elements with object = system:constituent
         # Note: not in use at the moment
         self.node_name = None
+        self.system_string = 'system'
 
+        # A dict for relating units to each search key from the three key lists. None values will
+        # be replaced while reading the data
+        self.units = {}
         self.units = {searchkey: None for searchkey in INSTANCES_OVER_TIME_KEYS +
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
@@ -223,41 +224,3 @@ class JsonContainer:
                                      if not self.tables[key_id].is_empty()]
         return flat_tables
 
-    def build_lable_dict(self):
-        """
-        This method provides meta information about the data found in the jsons. Those are the chart
-        identifiers (tuple of two strings, unique for each chart, used for chart titles, file names
-        etc), units, and a boolean for each chart, which says, whether the chart is a histogram
-        (histograms are visualized differently; their x-axis is not 'time' but 'bucket' and they
-        are plotted as bar charts).
-        :return: all mentioned information, packed into a dict
-        """
-
-        identifiers = []
-        units = []
-        is_histo = []
-
-        # get identifiers for all charts belonging to INSTANCES_OVER_TIME_KEYS
-        available = [key for key in INSTANCES_OVER_TIME_KEYS if not self.tables[key].is_empty()]
-
-        identifiers += available
-        units += [self.units[key] for key in available]
-        is_histo += [False for _ in available]
-
-        # get identifiers for all charts belonging to INSTANCE_OVER_BUCKET_KEYS
-        available = [key for key in INSTANCES_OVER_BUCKET_KEYS if not self.tables[key].is_empty()]
-
-        identifiers += available
-        units += [self.units[key] for key in available]
-        is_histo += [True for _ in available]
-
-        # get identifiers for all charts belonging to COUNTERS_OVER_TIME_KEYS
-        available = [(key_object, key_id) for (key_id, key_object, _) in COUNTERS_OVER_TIME_KEYS
-                     if not self.tables[key_id].is_empty()]
-
-        identifiers += [(key_object.replace('system', self.node_name),
-                         key_counter) for (key_object, key_counter) in available]
-        units += [self.units[key_id] for (_, key_id) in available]
-        is_histo += [False for _ in available]
-
-        return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo}
