@@ -24,21 +24,24 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # String to print together with the program name if user uses command line option --help or -h or
 # any not recognized options:
 HELP = '''
-PicDat is a tool for visualizing performance data. It can handle PerfStat files as well as ASUP files.
+PicDat is a tool for visualising performance data. It can handle PerfStat files as well as ASUP files.
 
-For visualizing PerfStats, give a single .data or .out file or a .zip file as input, or a folder,
+For visualising PerfStats, give a single .data or .out file or a .zip file as input, or a folder,
 containing unpacked PerfStat files. Within a .zip or a folder, it is possible to pass several PerfSat
 files at once, for example PerfStats for several nodes inside the same cluster. Each PerfStat file
 will have an own .html as result. 
 
-For visualizing ASUP xml files, give a .tgz archive, as you can download it from NetApp or give a
+For visualising ASUP xml files, give a .tgz archive, as you can download it from NetApp or give a
 folder, containing at least 'CM-STATS-HOURLY-INFO.XML' and 'CM-STATS-HOURLY-DATA.XML'. If you want
-to visualize several ASUPs in a row, give a directory as input, which contains several .tgz archives.
-The alphabetical order of the archives names should be equivalent to the chronological order of the
-content. Different from PerfStat input, PicDat will stick ASUP results all together, so don't mess
-around with data from different nodes or anything, when doing so!
+to visualise several xml ASUPs in a row, give a directory as input, which contains several .tgz
+archives. The alphabetical order of the archives names should be equivalent to the chronological
+order of the content. Different from PerfStat input, PicDat will stick ASUP results all together,
+so don't mess around with data from different nodes or anything, when doing so!
 
-For visualizing ASUP hdf5 files, give a .h5 file as input.
+Performance data in ASUPs for later ontap versions is not in xml format anymore. To visualise them,
+you will have to preprocess them with trafero, which returns json files. Give PicDat either a
+single json file or a directory with several json files. If you give a directory, each json file
+must belong to the same cluster and node.
 
 usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"]
 
