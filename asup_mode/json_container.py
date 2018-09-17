@@ -93,7 +93,6 @@ class JsonContainer:
 
         # A dict for relating units to each search key from the three key lists. None values will
         # be replaced while reading the data
-        self.units = {}
         self.units = {searchkey: None for searchkey in INSTANCES_OVER_TIME_KEYS +
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
