@@ -4,13 +4,12 @@ object which stores all collected data.
 """
 
 import logging
+import sys
 try:
     import tables as pytable
 except ImportError:
     pytable = None
-    print('Warning: Module tables (PyTable) is not installed. PicDat won\'t be able to read '
-          'hdf5 files. If you try to run PicDat in asup hdf5 mode, it will crash. With PerfStats '
-          'or asup xml files, everything is fine.')
+    # As hdf5 mode should actually not be used, import warning is risen at runtime, not yet here.
 from asup_mode.hdf5_container import Hdf5Container
 from asup_mode import util
 
@@ -45,10 +44,18 @@ def read_hdf5(asup_hdf5_file, sort_columns_by_name):
     container = Hdf5Container()
     logging.info('Read data file(s)...')
 
-    with pytable.open_file(asup_hdf5_file, 'r') as hdf5:
-        for hdf5_table in hdf5.walk_nodes('/', 'Table'):
-            container.search_hdf5(hdf5_table)
+    try:
+        with pytable.open_file(asup_hdf5_file, 'r') as hdf5:
+            for hdf5_table in hdf5.walk_nodes('/', 'Table'):
+                container.search_hdf5(hdf5_table)
 
-    # container.do_unit_conversions()
+        # container.do_unit_conversions()
+
+    except AttributeError:
+        logging.error('Module tables (PyTable) is not installed. PicDat is not able to read hdf5 '
+                      'files. ASUP-hdf5 mode is not available. Note, that ASUP-hdf5 mode is fully '
+                      'replaced by ASUP-json mode. You should better try json files as input. If '
+                      'you want to use h5 files anyway, you need to install pytables first.')
+        sys.exit(1)
 
     return util.get_flat_tables(container, sort_columns_by_name), util.build_label_dict(container)
