@@ -1,3 +1,9 @@
+"""
+This is a script for operating a Trafero container to convert ccma files in ASUPs into readable
+json. Place a config.yml file like the example_config.yml in the same location as the script and
+run it with an ASUP tgz file you want to convert. It will return write several json files to an
+output directory you specified.
+"""
 import logging
 import os
 import sys
@@ -39,6 +45,12 @@ def get_log_level(log_level_string):
 
 
 def handle_user_input(argv):
+    """
+    Processes command line options. If no input file or output directory is given, ask the user at
+    runtime. If a log file is desired, logging content is redirected into conversion.log.
+    :param argv: Command line parameters.
+    :return: absolute paths to input and output
+    """
     # get all options from argv and turn them into a dict
     try:
         opts, _ = getopt.getopt(argv[1:], 'hld:i:o:',
@@ -121,6 +133,10 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 
 
 def read_config():
+    """
+    Reads config.yml file.
+    :return: path to Trafero collector, Trafero's address, dict of objects and counters.
+    """
     try:
         with open('config.yml', 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
@@ -139,15 +155,27 @@ def read_config():
         sys.exit(1)
 
 
-def copy_tgz_to_trafero(abs_asup_path, input_file):
-    os.makedirs(abs_asup_path)
+def unpack_to_collector(abs_asup_path, input_file):
+    """
+    Unpacks the ASUP inside the Trafero's collector.
+    :param abs_asup_path: absolute path to an empty directory inside Trafero collector, where ASUP
+    should be extracted to.
+    :param input_file: path to ASUP tgz file.
+    :return: None.
+    """
     with tarfile.open(input_file, 'r') as tar:
         tar.extractall(abs_asup_path)
 
 
-def get_list_string(l):
+def get_list_string(some_list):
+    """
+    Creates a string like '["a","b","c"]. The only difference from list's own str method is to use
+    double quotes " instead of single quotes '. Necessary for Trafero understanding the requests.
+    :param some_list: list
+    :return: string with some_list's content.
+    """
     list_string = '['
-    for element in l:
+    for element in some_list:
         list_string += '"' + str(element) + '"'
         list_string += ','
     list_string = list_string[:-1]
@@ -156,6 +184,15 @@ def get_list_string(l):
 
 
 def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_address):
+    """
+    Sends a ingest request to Trafero over http (POST).
+    :param header: dict containing the headers for Trafero requests.
+    :param objects_counters_dict: dict, mapping counters like 'total_ops', 'read_data', ... to
+    objects like 'aggregate', 'processor',...
+    :param asup_path: relative path to directory, in which the ASUP is extracted to. Relative means
+    here, relative to the Trafero collector dir which is the /ccma directory from Trafero's sight.
+    :param trafero_address: Adress of Trafero container.
+    """
     objects_str = get_list_string((list(objects_counters_dict.keys())))
     data = '{"ccma_dir_path":"","ingest_type":"asup","asup_dir_path":"%s","object_filter":%s,' \
     '"display_all_zeros":false}' % (asup_path, objects_str)
@@ -175,6 +212,17 @@ def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_addres
 
 
 def retrieve_values(header, objects_counters_dict, cluster, node, trafero_address, output_dir):
+    """
+    Sends several retrieve-values requests to Trafero over http (GET).
+    Sends one request per object in config.yml.
+    :param header: dict containing the headers for Trafero requests.
+    :param objects_counters_dict: dict, mapping counters like 'total_ops', 'read_data', ... to
+    objects like 'aggregate', 'processor',...
+    :param cluster: The cluster name of the ASUP where function should retrieve values from.
+    :param node: The node name of the ASUP where function should retrieve values from.
+    :param trafero_address: Adress of Trafero container.
+    :param output_dir: Path to directory where to write json files with values.
+    """
     url = '%s/api/retrieve/values/' % trafero_address
     logging.debug('url retrieve values request: %s', url)
 
@@ -193,28 +241,60 @@ def retrieve_values(header, objects_counters_dict, cluster, node, trafero_addres
         with requests.get(url, headers=header, data=data, stream=True) as response:
             with open(value_file, 'wb') as values:
                 for chunk in response.iter_content(chunk_size=1024):
-                    logging.debug('chunk: %s', chunk)
+                    logging.debug('chunk (obj: %s): %s', obj, chunk)
                     values.write(chunk)
 
 
-def delete_from_trafero(header, cluster, node, trafero_address, abs_asup_path):
+def delete_from_trafero(header, cluster, node, trafero_address):
+    """
+    Sends a delete request to Trafero over http (DELETE).
+    :param header: dict containing the headers for Trafero requests.
+    :param cluster: The cluster name of the ASUP which function should delete.
+    :param node: The node name of the ASUP which function should delete.
+    :param trafero_address: Adress of Trafero container.
+    """
     url = '%s/api/manage/delete/' % trafero_address
+    logging.debug('url delete request: %s', url)
+
     data = '{"cluster":"%s","node":"%s"}' % (cluster, node)
+    logging.debug('payload delete request: %s', data)
 
     requests.delete(url, headers=header, data=data)
 
-    shutil.rmtree(abs_asup_path)
-
-
-INPUT_FILE, OUTPUT_DIR = handle_user_input(sys.argv)
-TRAFERO_COLLECTOR, TRAFERO_ADDRESS, OBJECTS_COUNTERS_DICT = read_config()
-ASUP_PATH = str(uuid.uuid4())
-ABS_ASUP_PATH = os.path.join(TRAFERO_COLLECTOR, ASUP_PATH)
-copy_tgz_to_trafero(ABS_ASUP_PATH, INPUT_FILE)
-
+# constant dict to send as headers in http requests
 REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
-CLUSTER, NODE = ingest_into_trafero(
-    REQUEST_HEADER, OBJECTS_COUNTERS_DICT, ASUP_PATH, TRAFERO_ADDRESS)
-retrieve_values(REQUEST_HEADER, OBJECTS_COUNTERS_DICT, CLUSTER, NODE, TRAFERO_ADDRESS, OUTPUT_DIR)
-delete_from_trafero(REQUEST_HEADER, CLUSTER, NODE, TRAFERO_ADDRESS, ABS_ASUP_PATH)
+# read user arguments
+INPUT_FILE, OUTPUT_DIR = handle_user_input(sys.argv)
+
+# read config.yml file
+TRAFERO_COLLECTOR, TRAFERO_ADDRESS, OBJECTS_COUNTERS_DICT = read_config()
+
+# create directory with random name in Trafero collector
+while True:
+    ASUP_PATH = str(uuid.uuid4())
+    ABS_ASUP_PATH = os.path.join(TRAFERO_COLLECTOR, ASUP_PATH)
+    try:
+        os.makedirs(ABS_ASUP_PATH)
+        break
+    except FileExistsError:
+        logging.debug('random file name already exists: %s, create new file name', ASUP_PATH)
+
+try:
+    # unpack ASUP inside Trafero collector directory
+    unpack_to_collector(ABS_ASUP_PATH, INPUT_FILE)
+
+    # Trafero ingest: Upload ccmas in ASUP to Trafero database
+    CLUSTER, NODE = ingest_into_trafero(
+        REQUEST_HEADER, OBJECTS_COUNTERS_DICT, ASUP_PATH, TRAFERO_ADDRESS)
+
+    # Trafero retrieve values: Download data in json format from Trafero database
+    retrieve_values(
+        REQUEST_HEADER, OBJECTS_COUNTERS_DICT, CLUSTER, NODE, TRAFERO_ADDRESS, OUTPUT_DIR)
+
+    # Trafero delete: Remove ASUP from Trafero database
+    delete_from_trafero(REQUEST_HEADER, CLUSTER, NODE, TRAFERO_ADDRESS)
+
+finally:
+    # remove ASUP from Trafero collector directory
+    shutil.rmtree(ABS_ASUP_PATH)
