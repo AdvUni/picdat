@@ -88,11 +88,12 @@ try:
                     logging.info('You gave a directory without a HEADER file. This means, some '
                                  'meta data for charts are missing such as node and cluster name.')
 
-            # check whether data is json data
-            elif all(picdat_util.data_type(file) == 'json'
+            # check whether at least one file is of json data type
+            elif not all(picdat_util.data_type(file) != 'json'
                      for file in os.listdir(os.path.abspath(input_file))):
                 asup_json_files = [os.path.join(input_file, file)
-                                   for file in os.listdir(os.path.abspath(input_file))]
+                                   for file in os.listdir(os.path.abspath(input_file))
+                                   if picdat_util.data_type(file) == 'json']
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':
