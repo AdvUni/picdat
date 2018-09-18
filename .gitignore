@@ -12,3 +12,5 @@ fct_archive.py
 .project
 .pydevproject
 *.pyc
+
+config.yml
