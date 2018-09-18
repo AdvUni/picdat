@@ -1,0 +1,21 @@
+# For running the script convert_ccma_to_json.py, you need to have a file called config.yml in the
+# same directory. Therefore, you can copy this file and change it for your needs.
+
+# Path on which the Trafero volume 'ccma' is accessable from your machine. Look it up in the
+# docker-compose.yml of Trafero.
+trafero_in_dir: /tmp/trafero/collector/collector-data
+
+# The address on which you can access the Trafero container:
+trafero_address: http://0.0.0.0:8080
+
+# Following dict describes the data which will be extracted from the ASUP. Each object is mapped to
+# a list of counters belonging to the object. You should append to this list if you wish to include
+# new charts in PicDat. Of course, you need to adapt the PicDat code respectively.
+objects: 
+ aggregate: [total_transfers]
+ processor: [processor_busy]
+ disk: [disk_busy]
+ volume: [total_ops, avg_latency, read_data, write_data]
+ lun: [total_ops, avg_latency, read_data, write_data, read_align_histo]
+ system: [hdd_data_read, hdd_data_written, net_data_recv, net_data_sent, ssd_data_read, ssd_data_written, fcp_data_recv, fcp_data_sent, tape_data_read, tape_data_written, nfs_ops, cifs_ops, fcp_ops, iscsi_ops, other_ops]
+ raid: [partial_stripes, full_stripes]
