@@ -163,8 +163,12 @@ def unpack_to_collector(abs_asup_path, input_file):
     :param input_file: path to ASUP tgz file.
     :return: None.
     """
-    with tarfile.open(input_file, 'r') as tar:
-        tar.extractall(abs_asup_path)
+    try:
+        with tarfile.open(input_file, 'r') as tar:
+            tar.extractall(abs_asup_path)
+    except tarfile.ReadError:
+        logging.error(
+            'File you gave as input is not a tar file. Input must be an ASUP tgz archive!')
 
 
 def get_list_string(some_list):
@@ -178,7 +182,8 @@ def get_list_string(some_list):
     for element in some_list:
         list_string += '"' + str(element) + '"'
         list_string += ','
-    list_string = list_string[:-1]
+    if some_list:
+        list_string = list_string[:-1]
     list_string += ']'
     return list_string
 
@@ -204,11 +209,18 @@ def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_addres
     response = requests.post(url, headers=header, data=data)
     logging.debug('ingest response: %s', response.text)
 
-    cluster_uuid = response.json()['ingest_results'][0]['cluster_uuid']
-    node_uuid = response.json()['ingest_results'][0]['node_uuid']
-    logging.debug('cluster uuid: %s, node uuid: %s', cluster_uuid, node_uuid)
+    try:
+        cluster_uuid = response.json()['ingest_results'][0]['cluster_uuid']
+        node_uuid = response.json()['ingest_results'][0]['node_uuid']
+        logging.debug('cluster uuid: %s, node uuid: %s', cluster_uuid, node_uuid)
+        return cluster_uuid, node_uuid
 
-    return cluster_uuid, node_uuid
+    except KeyError:
+        logging.error(
+            'Tried to read cluster and node name from Trafero\'s response, but is has not '
+            'expected format. Probably, something went wrong. Here is the response: %s',
+            response.text)
+        sys.exit(1)
 
 
 def retrieve_values(header, objects_counters_dict, cluster, node, trafero_address, output_dir):
@@ -238,12 +250,14 @@ def retrieve_values(header, objects_counters_dict, cluster, node, trafero_addres
         logging.debug('payload retrieve values request (%s): %s', obj, data)
 
         value_file = os.path.join(output_dir, str(obj) + '.json')
+
         with requests.get(url, headers=header, data=data, stream=True) as response:
             with open(value_file, 'wb') as values:
                 for chunk in response.iter_content(chunk_size=1024):
                     logging.debug('chunk (obj: %s): %s', obj, chunk)
                     values.write(chunk)
 
+        logging.info('Wrote values in file %s', value_file)
 
 def delete_from_trafero(header, cluster, node, trafero_address):
     """
@@ -260,6 +274,7 @@ def delete_from_trafero(header, cluster, node, trafero_address):
     logging.debug('payload delete request: %s', data)
 
     requests.delete(url, headers=header, data=data)
+
 
 # constant dict to send as headers in http requests
 REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -279,22 +294,32 @@ while True:
         break
     except FileExistsError:
         logging.debug('random file name already exists: %s, create new file name', ASUP_PATH)
+logging.debug('ASUP location inside Trafero: %s', ASUP_PATH)
 
 try:
     # unpack ASUP inside Trafero collector directory
+    logging.info('Extract ASUP into Trafero collector directory...')
     unpack_to_collector(ABS_ASUP_PATH, INPUT_FILE)
 
     # Trafero ingest: Upload ccmas in ASUP to Trafero database
+    logging.info('Ingest ASUP in Trafero...')
     CLUSTER, NODE = ingest_into_trafero(
         REQUEST_HEADER, OBJECTS_COUNTERS_DICT, ASUP_PATH, TRAFERO_ADDRESS)
 
     # Trafero retrieve values: Download data in json format from Trafero database
+    logging.info('Retrieve values from Trafero...')
     retrieve_values(
         REQUEST_HEADER, OBJECTS_COUNTERS_DICT, CLUSTER, NODE, TRAFERO_ADDRESS, OUTPUT_DIR)
 
     # Trafero delete: Remove ASUP from Trafero database
+    logging.info('Delete ASUP from Trafero...')
     delete_from_trafero(REQUEST_HEADER, CLUSTER, NODE, TRAFERO_ADDRESS)
+
+    logging.info('Done. You will find json files converted from ASUP under %s. You can now pass'
+                 'this directory to PicDat.', OUTPUT_DIR)
+
 
 finally:
     # remove ASUP from Trafero collector directory
     shutil.rmtree(ABS_ASUP_PATH)
+    logging.info('(Temporarily extracted ASUP in Trafero collector directory deleted)')
