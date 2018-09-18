@@ -227,7 +227,7 @@ def handle_user_input(argv):
 
     # decide, whether logging information should be written into a log file
     if '-l' in opts or '--logfile' in opts:
-        [logging.root.removeHandler(handler) for handler in logging.root.handlers[:]]
+        _ = [logging.root.removeHandler(handler) for handler in logging.root.handlers[:]]
         logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename=output_dir
                             + os.sep + constants.LOGFILE_NAME, level=log_level)
 
