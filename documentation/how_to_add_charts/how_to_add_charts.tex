@@ -60,7 +60,8 @@ The \verb|sysstat_container| has three key lists. The sysstat blocks in PerfStat
 The \verb|statit_container| is responsible for collecting data for a single chart from a specific PerfStat block. This is not really flexible; the container does not even have any kind of key list. So there is no true chance to easily add a new search key to this container.
 
 \subsection*{For ASUP mode}
-Data from ASUP is much more homogenious than PerfStats, so life is somewhat easier with them. As the package \verb|asup_mode| provides support for three different kinds of input data -- XML, JSON and HDF5 -- there are three container classes. Their names are, unsurprisingly, \verb|XmlContainer| inside the \verb|xml_container| module, \verb|JsonContainer| inside the \verb|json_container| module, and \verb|Hdf5Container| inside \verb|hdf5_container|. Each of the three modules have again several lists with search keys. Fortunately, the key lists' structures in all modules are exactly the same. Only the content differs a bit. So, the following applies to all container modules. But mind, that the hdf5 mode is replaced by the json mode anyway, so better concentrate on xml and json mode.
+Data from ASUP is much more homogenious than PerfStats, so life is somewhat easier with them. As the package \verb|asup_mode| provides support for two different kinds of input data -- XML and JSON -- there are two container classes. Their names are, unsurprisingly, \verb|XmlContainer| inside the \verb|xml_container| module and \verb|JsonContainer| inside the \verb|json_container| module. Both modules have again several lists with search keys. Fortunately, the key lists' structures in both modules are exactly the same. Only the content differs a bit. So, the following applies to all container modules. 
+\bigskip
 
 The key lists \verb|INSTANCES_OVER_TIME_KEYS|, \verb|INSTANCES_OVER_BUCKET_KEYS|, and \verb|COUNTERS_|\break\verb|OVER_TIME_KEYS| are each for a different kind of charts. The difference is about the charts' x-axis and whether the single graph lines in one chart are about different instances or different counters. Again, read the list descriptions inside the code. Additionally, the following drawing might help your imagination:
 
@@ -85,5 +86,10 @@ The key lists \verb|INSTANCES_OVER_TIME_KEYS|, \verb|INSTANCES_OVER_BUCKET_KEYS|
         time                                             bucket                                           time                                                  
 \end{lstlisting}
 If one of the lists fits your needs, append your key and your chart should be drawn. Otherwise, you will need to reimplement most of the methods. 
+\bigskip
 
+When you add keys to the \verb|json_container|, be aware that you probably \textbf{also need to change the config.yml for the convert\_ccma\_to\_json script!}. Otherwise, PicDat will search for your new objects and counters in your JSON files, but has no chance to find anything, because you didn't ask Trafero to convert this information at all.
+\bigskip
+
+Finally, it is to mention, that there is a third container module named \verb|hdf5_container| inside the asup mode package. It is deprecated, but it still works. You can manipulate its keys in the same way as them in the other two asup container modules.
 \end{document}
