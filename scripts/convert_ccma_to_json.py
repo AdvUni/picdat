@@ -166,9 +166,19 @@ def unpack_to_collector(abs_asup_path, input_file):
     try:
         with tarfile.open(input_file, 'r') as tar:
             tar.extractall(abs_asup_path)
+
+        if 'CM-STATS-HOURLY-INFO.XML' in os.listdir(abs_asup_path) \
+        and 'CM-STATS-HOURLY-DATA.XML' in os.listdir(abs_asup_path):
+            logging.info('Found files called CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML'
+                         ' in your ASUP. This means probably, that your performance data has xml '
+                         'format and not ccma. Trafero is not able to convert it. But, if you '
+                         'wish to visualise the ASUP, just pass it directly to PicDat.')
+            sys.exit(0)
+
     except tarfile.ReadError:
         logging.error(
             'File you gave as input is not a tar file. Input must be an ASUP tgz archive!')
+        sys.exit(1)
 
 
 def get_list_string(some_list):
