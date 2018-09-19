@@ -331,6 +331,6 @@ try:
 
 
 finally:
-    # remove ASUP from Trafero's 'ccma' volume 
+    # remove ASUP from Trafero's 'ccma' volume
     shutil.rmtree(ABS_ASUP_PATH)
     logging.info('(Temporarily extracted ASUP in Trafero\'s \'ccma\' volume deleted)')

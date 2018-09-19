@@ -89,12 +89,14 @@ try:
                                  'meta data for charts are missing such as node and cluster name.')
 
             # check whether at least one file is of json data type
-            elif not all(picdat_util.data_type(file) != 'json'
+            elif any(picdat_util.data_type(file) == 'json'
                      for file in os.listdir(os.path.abspath(input_file))):
                 logging.debug('Found json file(s) in dir')
                 asup_json_files = [os.path.join(input_file, file)
                                    for file in os.listdir(os.path.abspath(input_file))
                                    if picdat_util.data_type(file) == 'json']
+            else:
+                picdat_util.ccma_check(os.listdir())
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':

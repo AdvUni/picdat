@@ -241,6 +241,23 @@ def handle_user_input(argv):
 
     return input_file, output_dir, sort_columns_by_name, webserver
 
+def ccma_check(filenames):
+    """
+    Checks, if list of filenames contains files, which are characteristic of ccma ASUPs. This
+    allows to explain the user, that PicDat needs those ASUPs to be preprocessed with Trafero.
+    If it finds such files, quits the program.
+    Should be called for filenames in a folder (possibly) containing an ASUP, which seems not
+    to contain any other readable performance output.
+    :param filenames: List of filenames which are suspected to include ccma archives.
+    :returns: None
+    """
+    if 'PERFORMANCE_ARCHIVES.TAR' in filenames or any(
+        [('CM-STATS-HOURLY-DATA-' in file and '.TAR' in file) for file in filenames]):
+        logging.info('Seems like you gave some ASUP as input, which contains performance data not '
+                     'in xml format, but in ccma files. PicDat can\'t read those files just like '
+                     'that. Use Trafero to convert the ASUP into JSON first. Then pass the .json '
+                     'files to PicDat.')
+        sys.exit(0)
 
 def extract_tgz(dir_path, tgz_file, data_name_extension=None):
     """
@@ -265,6 +282,7 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
             asup_xml_info_file = os.path.join(dir_path, asup_xml_info_file)
             asup_data_file = os.path.join(dir_path, asup_data_file)
         except KeyError:
+            ccma_check(tar.getnames())
             logging.info(
                 'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
                 'gave a tgz archive which does not contain them. Quit program.')
