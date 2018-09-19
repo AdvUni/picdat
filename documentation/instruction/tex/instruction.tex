@@ -25,6 +25,7 @@
 \usepackage{lmodern}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{hyperref}
 
 \definecolor{grey}{rgb}{0.8, 0.8, 0.8}
 \definecolor{darkblue}{rgb}{0.15, 0.38, 0.61}
@@ -141,19 +142,71 @@ If you want to visualize \textcolor{darkblue}{\textbf{PerfStat data}}, you have 
 \end{frame}
 
 \subsection{ASUP mode}
+
 \begin{frame}
 \frametitle{Input format -- ASUP mode}
-\textcolor{darkblue}{\textbf{ASUP XML}} data is usually packed in tar files with file extension \textbf{.tgz}. You can pass them as input in a whole. It is also possible to transmit the unpacked tars, i.e. a \textbf{directory}. There is nothing as a single file transmission available, because PicDat needs at least two files, a CM-STATS-HOURLY-INFO.XML and a CM-STATS-HOURLY-DATA.XML file for its analysis. 
+How an \textcolor{darkblue}{\textbf{ASUP}} looks like depends on the os version of your NetApp machine. PicDat currently supports \textbf{ASUPs of Ontap 9}. Among the minor versions of Ontap 9, there are two different data types for performance data in the ASUPs -- xml and ccma. XML is human readable and can be processed by PicDat directly. Ccma files in contrast must be preprocessed by a tool called \hyperref[trafero]{Trafero} first.
+\bigskip
+
+In the first place, this means for you to check which kind of data your ASUP contains. From Ontap versions up to 9.2, automatic ASUPs get createt in XML format. For Ontap 9.2 and higher, automatic ASUPs will be in ccma format. But if you trigger an ASUP manually, so that it appears under the 'On Demand History', ccma format will be present even for previous versions. How you can convert ccma ASUPs into readable JSON, which is again processable by PicDat, is described in section \hyperref[trafero]{\underline{Use Trafero}}.
+
+To deal with the different kinds of input, PicDat divides the ASUP mode into two sub modes: \textbf{ASUP XML mode} and \textbf{ASUP JSON mode}. The mode's input formats are described precisely on the following slides.
+\end{frame}
+
+\subsubsection{XML}
+
+\begin{frame}
+\frametitle{Input format -- ASUP XML mode}
+\textcolor{darkblue}{\textbf{ASUP XML}} data is available in automatically generated ASUPs for Ontap 9.0 or Ontap 9.1. The whole ASUP usually is a tar archive with file extension \textbf{.tgz}. You can pass it as input in a whole. It is also possible to transmit the unpacked tar, i.e. a \textbf{directory}. There is nothing as a single file transmission as in Perfstat mode, because PicDat needs at least two files from the ASUP, a CM-STATS-HOURLY-INFO.XML and a CM-STATS-HOURLY-DATA.XML file for its analysis.
+\bigskip
 
 Working with ASUPs, it might be useful to visualize data for several consecutive ASUP files together. To do so, just pack \textbf{several ASUP .tgz archives into one directory} and pass the directory to PicDat. Therefore, the alphabetical order of the archive names should go with the chronological order. PicDat will stick the results for the different data files together. This means, different from visualizing PerfStats, only \textbf{one HTML for all data} will be generated. So don't mess around and pack ASUP files into one folder, which don't belong together! Don't mix nodes.
 \end{frame}
 
+\subsubsection{JSON}
+
 \begin{frame}
-\frametitle{Input format -- ASUP mode}
-After os version ontap 9.1, ASUPs don't provide permormance data in XML format anymore. Instead, there are files with a ccma file extension. Luckily, you can transform them into JSON. Therefore, PicDat provides another mode: \textcolor{darkblue}{\textbf{ASUP JSON}}. To use this mode, give PicDat either a single \textbf{.json} file as input or a \textbf{directory with JSON files inside}. If you give several JSONs, make sure they all belong to the same cluster and node! Besides this, it doesn't matter a lot how the information is splitted over the several files. As each JSON object contains all necessary information about a value, PicDat will read one after another without caring about their order.
+\frametitle{Input format -- ASUP JSON mode}
+From os version ontap 9.2, ASUPs don't provide permormance data in XML format anymore. Instead, there are files with a ccma file extension. This applies also to 'on Demand' ASUPs. Luckily, you can use the tool \hyperref[trafero]{\underline{Trafero}} to transform them into JSON.
 \bigskip
 
-Before switching to JSON, PicDat tried to deal with performance data which was converted from ccma to HDF5. As the HDF5 files don't contain essential information, there is no use for the \textcolor{darkblue}{\textbf{ASUP HDF5}} mode anymore. It is fully replaced by the JSON mode. But, technically, it still works, so it is mentioned here. To use it, give PicDat a single \textbf{.h5} file as input; something like directory or archive transmission is not possible. PicDat will create \textbf{one HTML} per input file. 
+For JSON data, PicDat provides the \textcolor{darkblue}{\textbf{ASUP JSON mode}}. To use this mode, give PicDat either a single \textbf{.json} file as input or a \textbf{directory with JSON files inside}. If you give several JSONs, make sure they all belong to the same cluster and node! Besides this, it doesn't matter a lot how the information is splitted over the several files. As each JSON object contains all necessary information about a value, PicDat will read one after another without caring about their order.
+\end{frame}
+
+\subsubsection{Comment about HDF5}
+
+\begin{frame}
+\frametitle{Comment about HDF5}
+During conversion of ccma files with Trafero, an additional file with performance data gets created: A HDF5 file. PicDat tried to deal with this file in the first place. Therefore, there was the additional mode \textcolor{darkblue}{\textbf{ASUP HDF5}}. But the HDF5 files do not contain all necessary information, so PicDat now uses Trafero's JSON output instead.
+\bigskip
+
+So, the ASUP HDF5 mode is deprecated now. But, technically, it still works, so it is mentioned here. To use it, give PicDat a single \textbf{.h5} file as input; something like directory or archive transmission is not possible. PicDat will create \textbf{one HTML} per input file. 
+\end{frame}
+
+\section{Use Trafero}
+
+\begin{frame}[fragile, label=trafero]
+\frametitle{Use Trafero}
+If you have an ASUP from a Netapp machine with os version \textbf{Ontap 9.2 or later}, or an \textbf{onDemand} ASUP, you need to preprocess it with a Netapp tool called Trafero before PicDat understands it.
+
+Trafero is embedded into a bigger tool called 'NetApp Active IQ PAS' using Docker. Its documentation can be find here: \url{http://aiqpas-metadata.s3-website-us-east-1.amazonaws.com/}
+
+You will need a NetApp account to get it.
+\bigskip
+
+Assuming that you have access to a running docker container with a working Trafero installation, you can perform the conversion with a script called \textcolor{darkblue}{\textbf{convert\_ccma\_to\_json.py}}. You'll find it under picdatscripts.
+\bigskip
+
+Call the script for example like:
+
+\begin{lstlisting}
+python convert_ccma_to_json.py -i"</path/to/your/ASUP_with_ccma.tgz" -o"</favorite/output/directory>"
+\end{lstlisting}
+
+This will copy and extract your ASUP to the Trafero container, ingest the ASUP into the Trafero database, Request the values of this ASUP in JSON format, writes the values in several .json file into your output directory, deletes the ASUP from the Trafero database, and finally removes the extracted ASUP files from the Trafero container. All command line options can be shown with \textcolor{darkblue}{\texttt{-\,-help}}.
+\bigskip
+
+Be aware that you need the correct \textcolor{darkblue}{\textbf{config.yml}} file in the same location as the script while running. This file specifies, how the Trafero container can be accessed and which objects and counters will be collected while conversion. 
 \end{frame}
 
 \section{Interactive charts}
@@ -215,7 +268,7 @@ If your values are very close and unsteady, you might get a better overview usin
 If PicDat seems to ran correctly, but all charts inside the charts.html are empty, see whether one of the following applies:
 \bigskip
 
-If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See \hyperref[options]{'Command line options'}). Alternatively, use Firefox instead or try to change security settings.
+If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See \hyperref[options]{\underline{Command line options}}). Alternatively, use Firefox instead or try to change security settings.
 \bigskip
 
 If this is not the problem, make sure that dygraphs is available at all. A folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file. Of course, a folder called 'tables' which contains all chart data within csv tables must be available too.
