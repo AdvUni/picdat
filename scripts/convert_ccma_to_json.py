@@ -135,7 +135,8 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 def read_config():
     """
     Reads config.yml file.
-    :return: path to Trafero collector, Trafero's address, dict of objects and counters.
+    :return: path to location, which is mapped to Trafero's 'ccma' volume; Trafero's address; dict
+    of objects and counters.
     """
     try:
         with open('config.yml', 'r') as ymlfile:
@@ -155,11 +156,11 @@ def read_config():
         sys.exit(1)
 
 
-def unpack_to_collector(abs_asup_path, input_file):
+def unpack_to_trafero_volume(abs_asup_path, input_file):
     """
-    Unpacks the ASUP inside the Trafero's collector.
-    :param abs_asup_path: absolute path to an empty directory inside Trafero collector, where ASUP
-    should be extracted to.
+    Unpacks the ASUP inside the Trafero's 'ccma' volume.
+    :param abs_asup_path: absolute path to an empty directory inside the location, which is mapped
+    to the Trafero volume 'ccma'. ASUP will be extracted here.
     :param input_file: path to ASUP tgz file.
     :return: None.
     """
@@ -205,7 +206,7 @@ def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_addres
     :param objects_counters_dict: dict, mapping counters like 'total_ops', 'read_data', ... to
     objects like 'aggregate', 'processor',...
     :param asup_path: relative path to directory, in which the ASUP is extracted to. Relative means
-    here, relative to the Trafero collector dir which is the /ccma directory from Trafero's sight.
+    here, relative to the Trafero 'ccma' volume.
     :param trafero_address: Adress of Trafero container.
     """
     objects_str = get_list_string((list(objects_counters_dict.keys())))
@@ -293,12 +294,12 @@ REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/jso
 INPUT_FILE, OUTPUT_DIR = handle_user_input(sys.argv)
 
 # read config.yml file
-TRAFERO_COLLECTOR, TRAFERO_ADDRESS, OBJECTS_COUNTERS_DICT = read_config()
+TRAFERO_CCMA_VOLUME, TRAFERO_ADDRESS, OBJECTS_COUNTERS_DICT = read_config()
 
-# create directory with random name in Trafero collector
+# create directory with random name inside location, which is mapped to Trafero's 'ccma' volume
 while True:
     ASUP_PATH = str(uuid.uuid4())
-    ABS_ASUP_PATH = os.path.join(TRAFERO_COLLECTOR, ASUP_PATH)
+    ABS_ASUP_PATH = os.path.join(TRAFERO_CCMA_VOLUME, ASUP_PATH)
     try:
         os.makedirs(ABS_ASUP_PATH)
         break
@@ -307,9 +308,9 @@ while True:
 logging.debug('ASUP location inside Trafero: %s', ASUP_PATH)
 
 try:
-    # unpack ASUP inside Trafero collector directory
-    logging.info('Extract ASUP into Trafero collector directory...')
-    unpack_to_collector(ABS_ASUP_PATH, INPUT_FILE)
+    # unpack ASUP inside directory with random name
+    logging.info('Extract ASUP into Trafero\'s \'ccma\' volume...')
+    unpack_to_trafero_volume(ABS_ASUP_PATH, INPUT_FILE)
 
     # Trafero ingest: Upload ccmas in ASUP to Trafero database
     logging.info('Ingest ASUP in Trafero...')
@@ -330,6 +331,6 @@ try:
 
 
 finally:
-    # remove ASUP from Trafero collector directory
+    # remove ASUP from Trafero's 'ccma' volume 
     shutil.rmtree(ABS_ASUP_PATH)
-    logging.info('(Temporarily extracted ASUP in Trafero collector directory deleted)')
+    logging.info('(Temporarily extracted ASUP in Trafero\'s \'ccma\' volume deleted)')
