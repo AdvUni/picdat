@@ -48,7 +48,10 @@ def read_json(asup_json_files, sort_columns_by_name):
     a label dict, which contains all required meta data about charts, labels or file names. At
     third, it returns a tuple of two strings which are cluster name and node name.
     """
-    container = JsonContainer()
+
+    timezone = util.get_local_timezone()
+
+    container = JsonContainer(timezone)
     logging.info('Read data file(s)...')
 
     # initialise variables to write cluster and node names to

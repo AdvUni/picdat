@@ -4,6 +4,7 @@ processing both xml and hdf5 files, there are two different main routines.
 """
 import logging
 import os
+from asup_mode import util
 from asup_mode import xml_data_collector
 from asup_mode import json_data_collector
 from asup_mode import hdf5_data_collector
@@ -46,9 +47,21 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
     :return: None
     """
 
+    # extract meta data from HEADER file:
+    logging.info('Read header file...')
+    node, cluster, timezone = xml_data_collector.read_header_file(asup_xml_header_file)
+    logging.debug('cluster: %s, node: %s', cluster, node)
+    if cluster and node:
+        html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
+    else:
+        html_title = os.path.abspath(os.path.dirname(asup_xml_info_file))
+
+    if not timezone:
+        timezone = util.get_local_timezone()
+
     # collect data from file
     tables, label_dict = xml_data_collector.read_xmls(
-        asup_xml_data_files, asup_xml_info_file, sort_columns_by_name)
+        asup_xml_data_files, asup_xml_info_file, timezone, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
     csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
@@ -61,17 +74,6 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
     # write data into csv tables
     logging.info('Create csv tables...')
     table_writer.create_csv(csv_abs_filepaths, tables)
-
-    # extract meta data from HEADER file:
-    logging.info('Read header file...')
-    node, cluster, timezone = xml_data_collector.read_header_file(asup_xml_header_file)
-    logging.debug('cluster: %s, node: %s', cluster, node)
-    if timezone:
-        label_dict['timezone'] = timezone
-    if cluster and node:
-        html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
-    else:
-        html_title = os.path.abspath(os.path.dirname(asup_xml_info_file))
 
     # write html file
     html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)

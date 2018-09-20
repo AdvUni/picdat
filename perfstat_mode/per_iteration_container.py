@@ -35,7 +35,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 PER_ITERATION_AGGREGATE_KEYS = [('total_transfers', '/s')]
 #PER_ITERATION_HYA_KEYS = [('read_ops_total', '/s'), ('read_ops_replaced', '/s'),
 #                          ('write_ops_total', '/s'), ('write_ops_replaced', '/s')]
-#PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')] 
+#PER_ITERATION_HYA_KEYS = [('hya_hdd_read_io_replaced', '/s'), ('hya_hdd_read_io', '/s')]
 # values appears sometimes without unit
 PER_ITERATION_PROCESSOR_KEYS = [('processor_busy', '%')]
 PER_ITERATION_VOLUME_KEYS = [('read_ops', '/s'), ('write_ops', '/s'), ('other_ops', '/s'),

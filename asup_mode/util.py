@@ -4,6 +4,7 @@ This modules contains functions needed for the asup mode.
 import datetime
 import logging
 import sys
+import tzlocal
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -21,8 +22,16 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+def get_local_timezone():
+    """
+    Calls tzlocal.get_localzone(). Is in util module so that xml container and json container can
+    both access it and only one import of module tzlocal is necessary.
+    :return: local time zone.
+    """
+    return tzlocal.get_localzone()
 
-def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
+
+def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key, timezone=None):
     """
     As it seems that the counters storing the values written in the xml data file
     never get cleared, it is always necessary to calculate: (this_val -
@@ -43,10 +52,13 @@ def get_abs_val(this_val, unixtimestamp, val_buffer, buffer_key):
     else:
         abs_val = str((this_val - last_val) / (unixtimestamp - last_unixtime))
 
-    datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp)
+    # the timestamp must be converted to the right time zone, but then, the timezone information
+    # gets removed (.replace(tzinfo=None)) because dygraphs can't display timezone aware timestamps
+    datetimestamp = datetime.datetime.fromtimestamp(unixtimestamp, timezone).replace(tzinfo=None)
+    logging.debug('datetime ')
 
     if unixtimestamp < last_unixtime:
-        last_datetimestamp = datetime.datetime.fromtimestamp(last_unixtime)
+        last_datetimestamp = datetime.datetime.fromtimestamp(last_unixtime, timezone)
         logging.warning('PicDat read two values in wrong chronological order (Timestamps %s and '
                         ' %s). This is probably because PicDat sorts its input files '
                         'alphabetically. This will cause problems if the alphabetical order of '
@@ -112,6 +124,8 @@ def build_label_dict(asup_container):
     :return: all mentioned information, packed into a dict
     """
 
+    timezone = str(asup_container.timezone)
+
     # get the three key list INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS, and
     # COUNTERS_OVER_TIME_KEYS. Each asup container's module has this key lists, but they may vary a
     # bit, so it is important to access the keys over the given container object.
@@ -150,4 +164,4 @@ def build_label_dict(asup_container):
     units += [asup_container.units[key_id] for (_, key_id) in available]
     is_histo += [False for _ in available]
 
-    return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo}
+    return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo, 'timezone': timezone}

@@ -79,10 +79,12 @@ class JsonContainer:
     Furthermore, it provides meta data like table names and axis labeling information.
     """
 
-    def __init__(self):
+    def __init__(self, timezone):
         """
         Constructor for JsonContainer.
         """
+
+        self.timezone = timezone
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in json data file.
@@ -120,8 +122,7 @@ class JsonContainer:
             for key_object, key_counter in INSTANCES_OVER_TIME_KEYS:
                 if object_type == key_object:
                     if json_item['counter_name'] == key_counter:
-                        timestamp = datetime.datetime.fromtimestamp(
-                            math.trunc(json_item['timestamp'] / 1000))
+                        timestamp = self.get_datetime(json_item['timestamp'])
                         instance = json_item['instance_name']
                         value = str(json_item['counter_value'])
                         logging.debug('object: %s, counter: %s, time: %s, instance: %s, value: %s',
@@ -156,8 +157,7 @@ class JsonContainer:
                     counter = json_item['counter_name']
                     for key_counter in key_counters:
                         if counter == key_counter:
-                            timestamp = datetime.datetime.fromtimestamp(
-                                math.trunc(json_item['timestamp'] / 1000))
+                            timestamp = self.get_datetime(json_item['timestamp'])
                             value = str(json_item['counter_value'])
                             logging.debug('object: %s, counter: %s, time: %s, value: %s',
                                           key_object, key_counter, timestamp, value)
@@ -195,3 +195,15 @@ class JsonContainer:
             if unit == "microseconds":
                 self.tables[unit_key].expand_values(1 / (10 ** 3))
                 self.units[unit_key] = "milliseconds"
+
+    def get_datetime(self, unixtime):
+        """
+        Takes a unixtime, removes the last three numbers (because the timestamps in the json files
+        are too detailed for the fromtimestamp method), converts them to a datetime object under
+        consideration of the container's timezone, and afterwards removes the timezone information
+        again, because dygraphs won't display timezone-aware timestamps.
+        :param unixtime: a unix time stamp from a ASUP json file.
+        :return: A naive datetime object in the container's time zone.
+        """
+        return datetime.datetime.fromtimestamp(
+            math.trunc(unixtime / 1000), self.timezone).replace(tzinfo=None)

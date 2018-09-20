@@ -5,12 +5,12 @@ object which stores all collected data.
 
 import logging
 import xml.etree.ElementTree as ET
+import picdat_util
 from asup_mode.xml_container import XmlContainer
 from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
-
 
 # license notice:
 #
@@ -24,6 +24,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 #
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
+
 
 def read_header_file(header_file):
     """
@@ -45,7 +46,9 @@ def read_header_file(header_file):
                     cluster = line.replace('X-Netapp-asup-cluster-name:', '').strip()
 
                 if 'X-Netapp-asup-generated-on:' in line:
-                    timezone = line.replace('X-Netapp-asup-generated-on:', '').strip().split()[-2]
+                    timezonestr = line.replace('X-Netapp-asup-generated-on:', ''
+                                               ).strip().split()[-2]
+                    timezone = picdat_util.get_timezone(timezonestr)
 
     return node, cluster, timezone
 
@@ -103,7 +106,7 @@ def read_data_file(container, data_file):
     logging.debug('remaining base elements: %s', str(container.base_heap))
 
 
-def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
+def read_xmls(asup_xml_data_files, asup_xml_info_file, timezone, sort_columns_by_name):
     """
     This function analyzes both, the 'CM-STATS-HOURLY-DATA.XML' and the 'CM-STATS-HOURLY-INFO.XML'
     file. It holds a XmlContainer object to store collected information.
@@ -116,7 +119,7 @@ def read_xmls(asup_xml_data_files, asup_xml_info_file, sort_columns_by_name):
     :return: all chart data in tablelist format; ready to be written into csv tables. Additionally
     an label dict, which contains all required meta data about charts, labels or file names.
     """
-    container = XmlContainer()
+    container = XmlContainer(timezone)
 
     logging.info('Read info file...')
     read_info_file(container, asup_xml_info_file)

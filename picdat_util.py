@@ -11,6 +11,12 @@ import tempfile
 import tarfile
 from zipfile import ZipFile
 from general import constants
+try:
+    import pytz
+except ImportError:
+    pytz = None
+    print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
+          'timezones. Be aware of possible confusion with time values in charts!')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -342,3 +348,33 @@ def extract_zip(zip_folder):
     output_files, perfstat_console_file = get_all_perfstats(temp_path)
 
     return temp_path, output_files, perfstat_console_file
+
+def get_timezone(tz_string):
+    """
+    Creates a pytz.timezone object from a timezone String.
+    Usually, the module pytz can handle such Strings by itself, but we face the problem that many
+    files include the timezone string 'CEST' but pytz accepts only 'CET'; pytz wants to switch
+    between summer time and winter time itself.
+    This function simply translates 'CEST' to 'CET'. By appending to the tz_switch dict,
+    translation could be done for other suspicious timezone strings as well.
+    :param tz_string: A timezone identifier as String.
+    :return: A pytz.timezone object, or None, if pytz throws an exception.
+    """
+    if not pytz:
+        return None
+
+    tz_switch = {
+        'CEST': pytz.timezone('CET')
+    }
+
+    if tz_string in tz_switch:
+        return tz_switch[tz_string]
+
+    else:
+        try:
+            return pytz.timezone(tz_string)
+        except pytz.UnknownTimeZoneError:
+            logging.warning('Found unexpected timezone identifier: \'%s\'. '
+                            'PicDat is not able to harmonize timezones. Be aware of possible '
+                            'confusion with time values in charts.', tz_string)
+            return None

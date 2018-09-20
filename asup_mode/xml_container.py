@@ -79,10 +79,12 @@ class XmlContainer:
     names and axis labeling information.
     """
 
-    def __init__(self):
+    def __init__(self, timezone):
         """
         Constructor for XmlContainer.
         """
+        self.timezone = timezone
+        logging.debug('timezone xml container: %s', timezone)
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in xml data file.
@@ -211,7 +213,7 @@ class XmlContainer:
                                 # build absolute value through comparison of two consecutive values
                                 abs_val, datetimestamp = util.get_abs_val(
                                     value, unixtimestamp, self.buffer,
-                                    (object_type, counter, instance))
+                                    (object_type, counter, instance), self.timezone)
                                 self.tables[(object_type, counter)].insert(
                                     datetimestamp, instance, abs_val)
 
@@ -243,7 +245,7 @@ class XmlContainer:
                                     # values
                                     abs_val_list, _ = util.get_abs_val(
                                         valuelist, unixtimestamp, self.buffer,
-                                        (object_type, counter, instance))
+                                        (object_type, counter, instance), self.timezone)
 
                                     buckets = self.histo_labels[object_type, counter]
                                     for bucket in range(len(buckets)):
@@ -282,7 +284,8 @@ class XmlContainer:
 
                                 # build absolute value through comparison of two consecutive values
                                 abs_val, datetimestamp = util.get_abs_val(
-                                    value, unixtimestamp, self.buffer, (object_type, counter))
+                                    value, unixtimestamp, self.buffer, (object_type, counter),
+                                    self.timezone)
                                 self.tables[key_id].insert(datetimestamp, counter, abs_val)
 
                             self.buffer[(object_type, counter)] = (unixtimestamp, value)
@@ -331,7 +334,7 @@ class XmlContainer:
                                 # build absolute value through comparison of two consecutive values
                                 abs_baseval, datetimestamp = util.get_abs_val(
                                     baseval, unixtimestamp, self.base_buffer,
-                                    (object_type, counter, instance))
+                                    (object_type, counter, instance), self.timezone)
 
                                 original_counter = self.base_dict[(object_type, counter)]
                                 try:
@@ -371,7 +374,7 @@ class XmlContainer:
                                     # values
                                     abs_baseval, _ = util.get_abs_val(
                                         baseval, unixtimestamp, self.base_buffer,
-                                        (object_type, counter, instance))
+                                        (object_type, counter, instance), self.timezone)
 
                                     original_counter = self.histo_base_dict[(object_type, counter)]
                                     for bucket in range(len(
@@ -415,7 +418,7 @@ class XmlContainer:
         :param instance: The object's instance name to which the value belongs which also is the
         name of the value's table column.
         :param rowname: The table row, to which the value should be inserted. It is a datetime
-        object for most values or a bucket number, as the value belongs to a histogram.
+        object for most values or a bucket number, if the value belongs to a histogram.
         :param base_val: The value's base value.
         :return: None
         :raises KeyError: Will occur if the value is not stored in self.tables, means if

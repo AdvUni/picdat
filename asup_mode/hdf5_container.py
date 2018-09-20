@@ -86,6 +86,7 @@ class Hdf5Container:
         """
         Constructor for Hdf5Container.
         """
+        self.timezone = None
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in hdf5 data file.

@@ -4,12 +4,7 @@ Provides some functions other modules inside package perfstat_mode may use.
 import logging
 import datetime
 import sys
-try:
-    import pytz
-except ImportError:
-    pytz = None
-    print('Warning: Module pytz is not installed. PicDat won\'t be able to convert '
-          'timezones. Be aware of possible confusion with time values in charts!')
+import picdat_util
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -93,33 +88,6 @@ def get_month_number(month_string):
     }[month_string]
 
 
-def get_timezone(tz_string):
-    """
-    Creates a pytz.timezone object from a timezone String as it appears in a PerfStat file.
-    Usually, the module pytz can handle such Strings by itself, but some timezone identifiers
-    need translation. (For example, CEST is no real timezone but the summer equivalent of CET,
-    and pytz wants to handle it as CET.)
-    :param tz_string: A timezone identifier from a PerfStat file as String.
-    :return: A pytz.timezone object.
-    """
-
-    tz_switch = {
-        'CEST': pytz.timezone('CET')
-    }
-
-    if tz_string in tz_switch:
-        return tz_switch[tz_string]
-
-    else:
-        try:
-            return pytz.timezone(tz_string)
-        except pytz.UnknownTimeZoneError:
-            logging.warning('Found unexpected timezone identifier in PerfStat file: \'%s\'. '
-                            'PicDat is not able to harmonize timezones. Be aware of possible '
-                            'confusion with time values in charts.', tz_string)
-            return '???'
-
-
 def build_date(timestamp_string):
     """
     Auxiliary function for get_iteration_timestamp and get_sysstat_timestamp. Parses a String to
@@ -135,10 +103,7 @@ def build_date(timestamp_string):
     month = get_month_number(timestamp_list[1])
     day = int(timestamp_list[2])
     time = timestamp_list[3].split(":")
-    if pytz is not None:
-        timezone = get_timezone(timestamp_list[4])
-    else:
-        timezone = None
+    timezone = picdat_util.get_timezone(timestamp_list[4])
     year = int(timestamp_list[5])
 
     hour = int(time[0])
@@ -156,7 +121,7 @@ def build_date(timestamp_string):
             datetime.datetime(year, month, day, hour, minute, second, 0, None)).astimezone(
                 localtimezone).replace(tzinfo=None)
     except (AttributeError, TypeError):
-        localtimezone = '???'
+        localtimezone = None
         return datetime.datetime(year, month, day, hour, minute, second, 0, None)
 
 
