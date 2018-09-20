@@ -96,7 +96,7 @@ try:
                                    for file in os.listdir(os.path.abspath(input_file))
                                    if picdat_util.data_type(file) == 'json']
             else:
-                picdat_util.ccma_check(os.listdir())
+                picdat_util.ccma_check(os.listdir(os.path.abspath(input_file)))
 
     # handle tar files as input
     elif picdat_util.data_type(input_file) == 'tgz':

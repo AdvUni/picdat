@@ -257,7 +257,7 @@ def ccma_check(filenames):
     :param filenames: List of filenames which are suspected to include ccma archives.
     :returns: None
     """
-    if 'PERFORMANCE_ARCHIVES.TAR' in filenames or any(
+    if 'PERFORMANCE-ARCHIVES.TAR' in filenames or any(
         [('CM-STATS-HOURLY-DATA-' in file and '.TAR' in file) for file in filenames]):
         logging.info('Seems like you gave some ASUP as input, which contains performance data not '
                      'in xml format, but in ccma files. PicDat can\'t read those files just like '
