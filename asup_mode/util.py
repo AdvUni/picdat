@@ -4,7 +4,15 @@ This modules contains functions needed for the asup mode.
 import datetime
 import logging
 import sys
-import tzlocal
+try:
+    import tzlocal
+except ImportError:
+    tzlocal = None
+    print('Warning: Module tzlocal is not installed. PicDat won\'t be able to determine '
+          'your local time zone. This is probably no problem if you\'re trying to run PicDat in '
+          'perfstat mode or in asup xml mode, as those performance data usually provide their own '
+          'time zone information. But for asup json mode, PicDat will not be able to say, to '
+          'which time zone the time stamps in the charts belong.')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -28,6 +36,8 @@ def get_local_timezone():
     both access it and only one import of module tzlocal is necessary.
     :return: local time zone.
     """
+    if not tzlocal:
+        return None
     return tzlocal.get_localzone()
 
 
