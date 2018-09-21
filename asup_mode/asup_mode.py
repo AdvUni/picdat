@@ -8,9 +8,7 @@ from asup_mode import util
 from asup_mode import xml_data_collector
 from asup_mode import json_data_collector
 from asup_mode import hdf5_data_collector
-from general import constants
-from general import table_writer
-from general import visualizer
+from general import create_output
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -64,21 +62,8 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
         asup_xml_data_files, asup_xml_info_file, timezone, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
-    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
-                     second_str + constants.CSV_FILE_ENDING for first_str, second_str
-                     in label_dict['identifiers']]
-    csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-    csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                     csv_filenames]
-
-    # write data into csv tables
-    logging.info('Create csv tables...')
-    table_writer.create_csv(csv_abs_filepaths, tables)
-
-    # write html file
-    html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
-    logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
+    create_output.create_output(
+        result_dir, csv_dir, html_title, cluster + node + '_', tables, label_dict, compact_file)
 
 
 def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name, compact_file):
@@ -97,22 +82,11 @@ def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_nam
         asup_json_files, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
-    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
-                     second_str + constants.CSV_FILE_ENDING for first_str, second_str
-                     in label_dict['identifiers']]
-    csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-    csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                     csv_filenames]
-
-    # write data into csv tables
-    logging.info('Create csv tables...')
-    table_writer.create_csv(csv_abs_filepaths, tables)
-
-    # write html file
-    html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
     html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
-    logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
+
+    create_output.create_output(
+        result_dir, csv_dir, html_title, cluster + node + '_', tables, label_dict, compact_file)
+
 
 def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name, compact_file):
     """
@@ -129,22 +103,7 @@ def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name
     tables, label_dict = hdf5_data_collector.read_hdf5(asup_hdf5_file, sort_columns_by_name)
     logging.debug('all labels: %s', label_dict)
 
-    csv_filenames = [first_str.replace(':', '_').replace('-', '_') + '_' +
-                     second_str + constants.CSV_FILE_ENDING for first_str, second_str
-                     in label_dict['identifiers']]
-    csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-    csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                     csv_filenames]
-
-    # write data into csv tables
-    logging.info('Create csv tables...')
-    table_writer.create_csv(csv_abs_filepaths, tables)
-
-    # extract meta data from HEADER file:
-    logging.info('Read header file...')
     html_title = os.path.abspath(os.path.dirname(asup_hdf5_file))
 
-    # write html file
-    html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
-    logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
+    create_output.create_output(
+        result_dir, csv_dir, html_title, '', tables, label_dict, compact_file)

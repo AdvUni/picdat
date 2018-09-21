@@ -88,7 +88,7 @@ CSV_FILE_ENDING = '_chart_values.csv'
 HTML_FILENAME = 'charts'
 HTML_ENDING = '.html'
 
-# this is the path to the text file the program uses as template to create the html head and 
+# this is the path to the text file the program uses as template to create the html head and
 # all js code in the body:
 HTML_TEMPLATE = 'templates' + sep + 'html_template.txt'
 # and the same thing when command line option 'compact' is given; this template also includes all

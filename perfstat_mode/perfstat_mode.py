@@ -7,6 +7,7 @@ import traceback
 
 from perfstat_mode import util
 from perfstat_mode import data_collector
+from general import create_output
 from general import constants
 from general import table_writer
 from general import visualizer
@@ -28,8 +29,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, csv_dir, 
-                      compact_file, sort_columns_by_name):
+def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, csv_dir,
+                      sort_columns_by_name, compact_file):
     """
     The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
     and finally create an HTML.
@@ -96,6 +97,9 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
 
         logging.debug('tables: %s', tables)
         logging.debug('all labels: %s', label_dict)
+
+        create_output.create_output(
+            result_dir, csv_dir, html_title, node_identifier, tables, label_dict, compact_file)
 
         # frame html file path
         html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \

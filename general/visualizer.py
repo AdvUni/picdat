@@ -38,6 +38,13 @@ def create_select_buttons(html_document, chart_id):
                         ')">deselect all</button>' + '\n')
     html_document.write('</p>' + '\n')
 
+def write_template(html_document, compact_file):
+    if compact_file:
+        html_template = constants.HTML_TEMPLATE_COMPACT
+    else:
+        html_template = constants.HTML_TEMPLATE
+    with open(html_template, 'r') as template:
+        html_document.writelines(template.readlines())
 
 def create_tab_button(html_document, tab_name, tab_charts):
     tab_charts_str = str(tab_charts[0])
@@ -48,7 +55,6 @@ def create_tab_button(html_document, tab_name, tab_charts):
     html_document.write('    <button class="tablinks" onclick="openTab(event, ' +
                         "'" + tab_name + "', [" + tab_charts_str + '])">' + tab_name +
                         '</button>\n')
-
 
 def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
     """
@@ -80,13 +86,7 @@ def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
 
     with open(html_filepath, 'w') as html_document:
         # write template, including js code
-        if compact_file:
-            html_template = constants.HTML_TEMPLATE_COMPACT
-        else:
-            html_template = constants.HTML_TEMPLATE
-        print(html_template)
-        with open(html_template, 'r') as template:
-            html_document.writelines(template.readlines())
+        write_template(html_document, compact_file)
 
         # write caption
         html_document.write('    <h1> ' + html_title + ' </h1>\n')
@@ -108,8 +108,9 @@ def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
             for chart_nr in tabs_dict[tab]:
                 # call js function to create Dygraph objects
                 html_document.write('<script> ' + chart_ids[chart_nr] + ' = makeChart("' +
-                                    chart_ids[chart_nr] + '", "' + tab + '", "' +
-                                    csv_files[chart_nr] + '", "' + titles[chart_nr] +
+                                    chart_ids[chart_nr] + '", "' + tab + '", ' +
+                                    repr(csv_files[chart_nr]) + ', "' +
+                                    titles[chart_nr] +
                                     '", "' + x_labels[chart_nr] + '", "' +
                                     y_labels[chart_nr] + '", ' + barchart_booleans[chart_nr] +
                                     '); </script>')
