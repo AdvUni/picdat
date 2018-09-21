@@ -28,8 +28,8 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def run_perfstat_mode(
-        perfstat_console_file, perfstat_output_files, result_dir, csv_dir, sort_columns_by_name):
+def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, csv_dir, 
+                      compact_file, sort_columns_by_name):
     """
     The perfstat mode's main routine. Calls all functions to read perfstat data, write CSVs
     and finally create an HTML.
@@ -113,7 +113,7 @@ def run_perfstat_mode(
 
         # write html file
         logging.info('Create html file...')
-        visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)
+        visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
 
         # reset global variable 'localtimezone'
         util.localtimezone = None

@@ -36,7 +36,7 @@ try:
     temp_path = None
 
     # read command line options and take additional user input
-    input_file, result_dir, sort_columns_by_name, webserver = picdat_util.handle_user_input(
+    input_file, result_dir, sort_columns_by_name, compact_file, webserver = picdat_util.handle_user_input(
         sys.argv)
 
     # initialize all accepted kinds of input files
@@ -121,27 +121,29 @@ try:
             asup_json_files = [input_file]
 
     # create directory and copy the necessary templates files into it
-    csv_dir = picdat_util.prepare_directory(result_dir)
+    csv_dir = picdat_util.prepare_directory(result_dir, compact_file)
 
     # run
     if perfstat_output_files:
         # run in perfstat mode
         logging.info('Running PicDat in PerfStat mode')
         perfstat_mode.run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir,
-                                        csv_dir, sort_columns_by_name)
+                                        csv_dir, sort_columns_by_name, compact_file)
     elif asup_xml_data_files:
         # run in asup xml mode
         logging.info('Running PicDat in ASUP-xml mode')
         asup_mode.run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_file,
-                                    result_dir, csv_dir, sort_columns_by_name)
+                                    result_dir, csv_dir, sort_columns_by_name, compact_file)
     elif asup_hdf5_file:
         # run in asup hdf5 mode
         logging.info('Running PicDat in ASUP-hdf5 mode')
-        asup_mode.run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name)
+        asup_mode.run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name,
+                                     compact_file)
     elif asup_json_files:
         # run in asup json mode
         logging.info('Running PicDat in ASUP-json mode')
-        asup_mode.run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name)
+        asup_mode.run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name,
+                                     compact_file)
     else:
         logging.info('The input you gave (%s) doesn\'t contain any files this program can handle.',
                      input_file)

@@ -50,7 +50,7 @@ def create_tab_button(html_document, tab_name, tab_charts):
                         '</button>\n')
 
 
-def create_html(html_filepath, csv_files, html_title, label_dict):
+def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
@@ -79,10 +79,14 @@ def create_html(html_filepath, csv_files, html_title, label_dict):
         tabs_dict[first_str].append(i)
 
     with open(html_filepath, 'w') as html_document:
-        # write head
-        with open(constants.HTML_HEAD_TEMPLATE, 'r') as template:
+        # write template, including js code
+        if compact_file:
+            html_template = constants.HTML_TEMPLATE_COMPACT
+        else:
+            html_template = constants.HTML_TEMPLATE
+        print(html_template)
+        with open(html_template, 'r') as template:
             html_document.writelines(template.readlines())
-        template.close()
 
         # write caption
         html_document.write('    <h1> ' + html_title + ' </h1>\n')

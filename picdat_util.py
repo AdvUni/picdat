@@ -136,7 +136,7 @@ def take_directory():
     return destination_directory
 
 
-def prepare_directory(destination_dir):
+def prepare_directory(destination_dir, compact_file):
     """
     Copies the templates .jss and .css files into the given directory. Also creates an empty
     subdirectory for csv tables.
@@ -150,16 +150,17 @@ def prepare_directory(destination_dir):
     if not os.path.isdir(csv_dir):
         os.makedirs(csv_dir)
 
-    dygraphs_dir = destination_dir + os.sep + 'dygraphs'
-    if not os.path.isdir(dygraphs_dir):
-        os.makedirs(dygraphs_dir)
+    if not compact_file:
+        dygraphs_dir = destination_dir + os.sep + 'dygraphs'
+        if not os.path.isdir(dygraphs_dir):
+            os.makedirs(dygraphs_dir)
 
-    dygraphs_js_source = constants.DYGRAPHS_JS_SRC
-    dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
-    dygraphs_css_source = constants.DYGRAPHS_CSS_SRC
-    dygraphs_css_dest = dygraphs_dir + os.sep + 'dygraph.css'
-    shutil.copyfile(dygraphs_js_source, dygraphs_js_dest)
-    shutil.copyfile(dygraphs_css_source, dygraphs_css_dest)
+        dygraphs_js_source = constants.DYGRAPHS_JS_SRC
+        dygraphs_js_dest = dygraphs_dir + os.sep + 'dygraph.js'
+        dygraphs_css_source = constants.DYGRAPHS_CSS_SRC
+        dygraphs_css_dest = dygraphs_dir + os.sep + 'dygraph.css'
+        shutil.copyfile(dygraphs_js_source, dygraphs_js_dest)
+        shutil.copyfile(dygraphs_css_source, dygraphs_css_dest)
 
     return csv_dir
 
@@ -176,8 +177,8 @@ def handle_user_input(argv):
 
     # get all options from argv and turn them into a dict
     try:
-        opts, _ = getopt.getopt(argv[1:], 'hslwd:i:o:',
-            ['help', 'sortbynames', 'logfile', 'webserver', 'debug=', 'input=', 'outputdir='])
+        opts, _ = getopt.getopt(argv[1:], 'hlscwd:i:o:',
+            ['help', 'logfile', 'sortbynames', 'compact', 'webserver', 'debug=', 'input=', 'outputdir='])
         opts = dict(opts)
     except getopt.GetoptError:
         logging.exception('Couldn\'t read command line options.')
@@ -186,12 +187,6 @@ def handle_user_input(argv):
     # print help information if option 'help' is given
     if '-h' in opts or '--help' in opts:
         print_help_and_exit(argv[0])
-
-    # Looks, whether user wants to sort legend entries alphabetically instead of by relevance
-    if '-s' in opts or '--sortbynames' in opts:
-        sort_columns_by_name = True
-    else:
-        sort_columns_by_name = False
 
     # extract log level from options if possible
     if '-d' in opts:
@@ -240,12 +235,12 @@ def handle_user_input(argv):
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
         output_dir))
 
-    if '-w' in opts or '--webserver' in opts:
-        webserver = True
-    else:
-        webserver = False
+    # Looks, whether user wants to sort legend entries alphabetically instead of by relevance
+    sort_columns_by_name = ('-s' in opts or '--sortbynames' in opts)
+    compact_file = ('-c' in opts or '--compact' in opts)
+    webserver = ('-w' in opts or '--webserver' in opts)
 
-    return input_file, output_dir, sort_columns_by_name, webserver
+    return input_file, output_dir, sort_columns_by_name, compact_file, webserver
 
 def ccma_check(filenames):
     """

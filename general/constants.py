@@ -88,8 +88,12 @@ CSV_FILE_ENDING = '_chart_values.csv'
 HTML_FILENAME = 'charts'
 HTML_ENDING = '.html'
 
-# this is the path to the text file the program uses as template to create the html head:
-HTML_HEAD_TEMPLATE = 'templates' + sep + 'html_template.txt'
+# this is the path to the text file the program uses as template to create the html head and 
+# all js code in the body:
+HTML_TEMPLATE = 'templates' + sep + 'html_template.txt'
+# and the same thing when command line option 'compact' is given; this template also includes all
+# dygraph code:
+HTML_TEMPLATE_COMPACT = 'templates' + sep + 'html_template_compact.txt'
 
 # these are the paths to the dygraph files the html document needs to show its charts:
 DYGRAPHS_JS_SRC = 'templates' + sep + 'dygraph.js'

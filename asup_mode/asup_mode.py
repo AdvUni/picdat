@@ -30,7 +30,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
 
 def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_file, result_dir,
-                      csv_dir, sort_columns_by_name):
+                      csv_dir, sort_columns_by_name, compact_file):
     """
     The asup mode's main routine for processing xml files. Calls all functions to read xml data,
     writes CSVs and finally creates an HTML.
@@ -78,10 +78,10 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
     # write html file
     html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
     logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)
+    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
 
 
-def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name):
+def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_name, compact_file):
     """
     The asup mode's main routine for processing JSON files. Calls all functions to read JSON data,
     writes CSVs and finally creates an HTML.
@@ -112,9 +112,9 @@ def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_nam
     html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
     html_title = 'Cluster: ' + cluster + '&ensp; &ensp; Node: ' + node
     logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)
+    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
 
-def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name):
+def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name, compact_file):
     """
     The asup mode's main routine for processing hdf5 files. Calls all functions to read hdf5 data,
     writes CSVs and finally creates an HTML.
@@ -147,4 +147,4 @@ def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name
     # write html file
     html_filepath = os.path.join(result_dir, constants.HTML_FILENAME + constants.HTML_ENDING)
     logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict)
+    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
