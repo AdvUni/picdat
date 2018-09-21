@@ -101,23 +101,5 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
         create_output.create_output(
             result_dir, csv_dir, html_title, node_identifier, tables, label_dict, compact_file)
 
-        # frame html file path
-        html_filepath = result_dir + os.sep + node_identifier + constants.HTML_FILENAME + \
-            constants.HTML_ENDING
-
-        csv_filenames = [node_identifier + first_str + '_' + second_str + constants.CSV_FILE_ENDING
-                         for first_str, second_str in label_dict['identifiers']]
-        csv_abs_filepaths = [csv_dir + os.sep + filename for filename in csv_filenames]
-        csv_filelinks = [csv_dir.split(os.sep)[-1] + '/' + filename for filename in
-                         csv_filenames]
-
-        # write data into csv tables
-        logging.info('Create csv tables...')
-        table_writer.create_csv(csv_abs_filepaths, tables)
-
-        # write html file
-        logging.info('Create html file...')
-        visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact_file)
-
         # reset global variable 'localtimezone'
         util.localtimezone = None
