@@ -66,6 +66,10 @@ usage: %s [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [
                                  
     --logfile, -l: redirects logging information into a file called picdat.log.
     
+    --compact, -c: packs all necessary resources into the charts files. With this, the charts.html
+                   files get more portable, because they do not depend on any other files, and
+                   furthermore, there will be less problems with the browsers Edge and Chrome.
+    
     --webserver, -w: at the end of execution, starts a local web server in output directory to
                      serve dygraphs JavaScript from it. This is a workaround for security settings
                      of browsers like Google Chrome and Internet Explorer.
