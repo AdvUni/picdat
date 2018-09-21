@@ -21,6 +21,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # You should have received a copy of the GNU General Public License along with PicDat. If not,
 # see <http://www.gnu.org/licenses/>.
 
+
 def create_select_buttons(html_document, chart_id):
     """
     Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or
@@ -31,12 +32,13 @@ def create_select_buttons(html_document, chart_id):
     """
     html_document.write('<p>' + '\n')
     html_document.write('    <button type="button" onclick="selectAll(this, '
-                        +chart_id + ', ' + "'" + chart_id + "'" +
-                        ')">select all</button>' + '\n')
+                        +chart_id + ', ' + "'" + chart_id + "'"
+                        +')">select all</button>' + '\n')
     html_document.write('    <button type="button" onclick="deselectAll(this, '
-                        +chart_id + ', ' + "'" + chart_id + "'" +
-                        ')">deselect all</button>' + '\n')
+                        +chart_id + ', ' + "'" + chart_id + "'"
+                        +')">deselect all</button>' + '\n')
     html_document.write('</p>' + '\n')
+
 
 def write_template(html_document, compact_file):
     if compact_file:
@@ -46,25 +48,30 @@ def write_template(html_document, compact_file):
     with open(html_template, 'r') as template:
         html_document.writelines(template.readlines())
 
+
 def create_tab_button(html_document, tab_name, tab_charts):
     tab_charts_str = str(tab_charts[0])
     for chart in tab_charts[1:]:
         tab_charts_str += ', '
         tab_charts_str += str(chart)
 
-    html_document.write('    <button class="tablinks" onclick="openTab(event, ' +
-                        "'" + tab_name + "', [" + tab_charts_str + '])">' + tab_name +
-                        '</button>\n')
+    html_document.write('    <button class="tablinks" onclick="openTab(event, '
+                        +"'" + tab_name + "', [" + tab_charts_str + '])">' + tab_name
+                        +'</button>\n')
 
-def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
+
+def create_html(html_filepath, csv, html_title, label_dict, compact_file):
     """
     Writes an html file which visualizes the contents of csv tables in a nice way.
     :param html_filepath: The path the html file should be saved at.
-    :param csv_files: A list of file names from csv tables which should be visualized.
-    :param html_title: A file path which is used as caption for the resulting html. Should be the
-    path of the PerfStat output file.
+    :param csv: Either a list of strings referencing csv files, or a list of the raw csv data
+    itself.
+    :param html_title: Some string describing the processed performance data, for example naming
+    the cluster and the node. Will be written to the top of the html document.
     :param label_dict: A dict containing meta data such as axis labels or names for the charts
     the tables)
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    dygraphs code and csv content will be included into the html.
     :return: None
     """
 
@@ -92,8 +99,8 @@ def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
         html_document.write('    <h1> ' + html_title + ' </h1>\n')
         # write timezone notice
         if 'timezone' in label_dict:
-            html_document.write('    <h2> ' + 'timezone: ' +
-                                label_dict['timezone'] + ' </h2>\n')
+            html_document.write('    <h2> ' + 'timezone: '
+                                +label_dict['timezone'] + ' </h2>\n')
 
         # write tab buttons:
         html_document.write('<div class="tab">\n')
@@ -107,13 +114,13 @@ def create_html(html_filepath, csv_files, html_title, label_dict, compact_file):
             html_document.write('<div id="' + tab + '" class="tabcontent">\n')
             for chart_nr in tabs_dict[tab]:
                 # call js function to create Dygraph objects
-                html_document.write('<script> ' + chart_ids[chart_nr] + ' = makeChart("' +
-                                    chart_ids[chart_nr] + '", "' + tab + '", ' +
-                                    repr(csv_files[chart_nr]) + ', "' +
-                                    titles[chart_nr] +
-                                    '", "' + x_labels[chart_nr] + '", "' +
-                                    y_labels[chart_nr] + '", ' + barchart_booleans[chart_nr] +
-                                    '); </script>')
+                html_document.write('<script> ' + chart_ids[chart_nr] + ' = makeChart("'
+                                    +chart_ids[chart_nr] + '", "' + tab + '", '
+                                    +repr(csv[chart_nr]) + ', "'
+                                    +titles[chart_nr]
+                                    +'", "' + x_labels[chart_nr] + '", "'
+                                    +y_labels[chart_nr] + '", ' + barchart_booleans[chart_nr]
+                                    +'); </script>')
 
                 # create 'select all' and 'deselect all' buttons
                 create_select_buttons(html_document, chart_ids[chart_nr])

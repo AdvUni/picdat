@@ -141,6 +141,9 @@ def prepare_directory(destination_dir, compact_file):
     Copies the templates .jss and .css files into the given directory. Also creates an empty
     subdirectory for csv tables.
     :param destination_dir: The directory, the user gave in as destination.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    there is no need to copy dygraph files, because they will be included in the resulting html
+    file.
     :return: The path to the csv directory inside destination_dir. In this directory, PicDat should
     write all csv tables.
     """

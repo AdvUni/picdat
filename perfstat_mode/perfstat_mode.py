@@ -42,6 +42,8 @@ def run_perfstat_mode(perfstat_console_file, perfstat_output_files, result_dir, 
     in here.
     :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
     name or by value.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    dygraphs code and csv content will be included into the charts html.
     :return: None
     """
     logging.debug("Perfstat output files: %s", perfstat_output_files)

@@ -42,6 +42,8 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
     in here.
     :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
     name or by value.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    dygraphs code and csv content will be included into the charts html.
     :return: None
     """
 
@@ -76,6 +78,8 @@ def run_asup_mode_json(asup_json_files, result_dir, csv_dir, sort_columns_by_nam
     in here.
     :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
     name or by value.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    dygraphs code and csv content will be included into the charts html.
     :return: None
     """
     tables, label_dict, (cluster, node) = json_data_collector.read_json(
@@ -98,6 +102,8 @@ def run_asup_mode_hdf5(asup_hdf5_file, result_dir, csv_dir, sort_columns_by_name
     in here.
     :param sort_columns_by_name: boolean, which says whether user wants to sort chart legends by
     name or by value.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    dygraphs code and csv content will be included into the charts html.
     :return: None
     """
     tables, label_dict = hdf5_data_collector.read_hdf5(asup_hdf5_file, sort_columns_by_name)
