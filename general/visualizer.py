@@ -40,8 +40,16 @@ def create_select_buttons(html_document, chart_id):
     html_document.write('</p>' + '\n')
 
 
-def write_template(html_document, compact_file):
-    if compact_file:
+def write_template(html_document, compact):
+    """
+    Copies the content of the html template into the html document. Decides between two templates,
+    depending on the compact boolean.
+    :param html_document: File object, where to write the template to.
+    :param compact: Boolean, which says whether command line option 'compact' is set or not. If so,
+    uses the HTML_TEMPLATE_COMPACT, which already includes all the dygraphs code.
+    :return: None.
+    """
+    if compact:
         html_template = constants.HTML_TEMPLATE_COMPACT
     else:
         html_template = constants.HTML_TEMPLATE
@@ -50,6 +58,14 @@ def write_template(html_document, compact_file):
 
 
 def create_tab_button(html_document, tab_name, tab_charts):
+    """
+    Writes an html button element of class 'tablinks' into html_document. Buttons of this class
+    will be arranged in a tab bar.
+    :param html_document: File object, where to write the button to.
+    :param tab_name: button text, describing the kind of charts belonging to this tab.
+    :param tab_charts: chart id's of the charts belonging to this tab.
+    :return: None.
+    """
     tab_charts_str = str(tab_charts[0])
     for chart in tab_charts[1:]:
         tab_charts_str += ', '
