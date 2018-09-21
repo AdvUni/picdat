@@ -33,7 +33,8 @@ def create_output(result_dir, csv_dir, html_title, output_label, tables, label_d
     html_filepath = os.path.join(
         result_dir, output_label + constants.HTML_FILENAME + constants.HTML_ENDING)
     logging.info('Create html file...')
-    visualizer.create_html(html_filepath, csv_filelinks, html_title, label_dict, compact)
+    visualizer.create_html(html_filepath, csv_strings(csv_abs_filepaths, csv_filelinks, compact),
+                           html_title, label_dict, compact)
 
 
 def csv_strings(csv_abs_filepaths, csv_filelinks, compact):
