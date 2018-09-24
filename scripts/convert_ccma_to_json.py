@@ -17,6 +17,9 @@ import requests
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 
+# constant dict to send as headers in http requests
+REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+
 
 def get_log_level(log_level_string):
     """
@@ -66,7 +69,10 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 
     --help, -h: prints this message
                       
-    --input "input", -i "input": input is the path to an ASUP tgz
+    --input "input", -i "input": input is the path to an ASUP tgz archive or to a directory. In
+                                 case of a directory, it must either contain again several ASUP tgz
+                                 archives belonging all to the same cluster and node, or several
+                                 ccma files, which are files ending with 'ccma.gz' or 'ccma.meta'.
                                  
     --outputdir "output", -o "output": output is the directory's path, where this program puts its
                                        results. If there is no directory existing yet under this
@@ -89,21 +95,21 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
 
-    # extract inputfile from options if possible
+    # extract input from options if possible
     if '-i' in opts:
-        input_file = opts['-i']
+        input_data = opts['-i']
     elif '--input' in opts:
-        input_file = opts['--input']
+        input_data = opts['--input']
     else:
         while True:
-            input_file = input('Please enter a path to a ASUP tgz:' + os.linesep)
+            input_data = input('Please enter a path to a ASUP tgz:' + os.linesep)
 
-            if os.path.isfile(input_file):
+            if os.path.isfile(input_data) or os.path.isdir(input_data):
                 break
             else:
-                print('This file does not exist. Try again.')
-    if not os.path.isfile(input_file):
-        print('input file does not exist.')
+                print('This file/directory does not exist. Try again.')
+    if not os.path.isfile(input_data) and not os.path.isdir(input_data):
+        print('Path %s does not exist.', input_data)
         sys.exit(1)
 
     # extract outputdir from options if possible
@@ -126,10 +132,10 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
         logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename=output_dir
                             +os.sep + 'conversion.log', level=log_level)
 
-    logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_file), os.path.abspath(
+    logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_data), os.path.abspath(
         output_dir))
 
-    return os.path.abspath(input_file), os.path.abspath(output_dir)
+    return os.path.abspath(input_data), os.path.abspath(output_dir)
 
 
 def read_config():
@@ -156,16 +162,49 @@ def read_config():
         sys.exit(1)
 
 
-def unpack_to_trafero_volume(abs_asup_path, input_file):
+def determine_input(input_data):
+    """
+    Decides whether input is of ingest_type 'asup' or 'ccma'.
+    :param input_data: The script's user input.
+    :return: A list and a Boolean. The list contains all absolute file paths of the input, which
+    have file extension 'tgz'. The boolean says, whether input data is of kind 'asup' (or 'ccma',
+    if False). If the boolean is False, which means, the data is of kind 'ccma', the list is empty.
+    """
+
+    if os.path.isfile(input_data):
+        return [input_data], True
+
+    elif os.path.isdir(input_data):
+        if any(['ccma' in filename for filename in os.listdir(input_data)]):
+            return [], False
+
+        return [os.path.join(input_data, file) for file in os.listdir(input_data)
+                if file.split('.')[-1] == 'tgz'], True
+
+
+def copy_ccmas(source_dir, destination_dir):
+    """
+    Copies all files from source_dir to destination_dir, which contain 'ccma' in their names.
+    :param: destination_dir: destination directory.
+    :param: source_dir: source directory.
+    """
+    for filename in os.listdir(source_dir):
+        if 'ccma' in filename:
+            shutil.copyfile(
+                os.path.join(source_dir, filename), os.path.join(destination_dir, filename))
+
+
+def unpack_to_trafero_volume(abs_asup_path, tgz):
     """
     Unpacks the ASUP inside the Trafero's 'ccma' volume.
     :param abs_asup_path: absolute path to an empty directory inside the location, which is mapped
     to the Trafero volume 'ccma'. ASUP will be extracted here.
-    :param input_file: path to ASUP tgz file.
+    :param tgz: path to ASUP tgz file.
     :return: None.
     """
+
     try:
-        with tarfile.open(input_file, 'r') as tar:
+        with tarfile.open(tgz, 'r') as tar:
             tar.extractall(abs_asup_path)
 
         if 'CM-STATS-HOURLY-INFO.XML' in os.listdir(abs_asup_path) \
@@ -199,25 +238,34 @@ def get_list_string(some_list):
     return list_string
 
 
-def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_address):
+def ingest_into_trafero(objects_counters_dict, data_path, trafero_address, is_asup):
     """
     Sends a ingest request to Trafero over http (POST).
-    :param header: dict containing the headers for Trafero requests.
     :param objects_counters_dict: dict, mapping counters like 'total_ops', 'read_data', ... to
     objects like 'aggregate', 'processor',...
-    :param asup_path: relative path to directory, in which the ASUP is extracted to. Relative means
+    :param data_path: relative path to directory, in which the ASUP is extracted to. Relative means
     here, relative to the Trafero 'ccma' volume.
     :param trafero_address: Adress of Trafero container.
     """
-    objects_str = get_list_string((list(objects_counters_dict.keys())))
-    data = '{"ccma_dir_path":"","ingest_type":"asup","asup_dir_path":"%s","object_filter":%s,' \
-    '"display_all_zeros":false}' % (asup_path, objects_str)
+    objects_str = get_list_string(list(objects_counters_dict.keys()))
+
+    if is_asup:
+        ingest_type = 'asup'
+        ccma_dir_path = ''
+        asup_dir_path = data_path
+    else:
+        ingest_type = 'ccma'
+        ccma_dir_path = data_path
+        asup_dir_path = ''
+
+    data = '{"ccma_dir_path":"%s","ingest_type":"%s","asup_dir_path":"%s","object_filter":%s,' \
+    '"display_all_zeros":false}' % (ccma_dir_path, ingest_type, asup_dir_path, objects_str)
     logging.debug('payload ingest request: %s', data)
 
     url = '%s/api/manage/ingest/' % trafero_address
     logging.debug('url ingest request: %s', url)
 
-    response = requests.post(url, headers=header, data=data)
+    response = requests.post(url, headers=REQUEST_HEADER, data=data)
     logging.debug('ingest response: %s', response.text)
 
     try:
@@ -234,11 +282,10 @@ def ingest_into_trafero(header, objects_counters_dict, asup_path, trafero_addres
         sys.exit(1)
 
 
-def retrieve_values(header, objects_counters_dict, cluster, node, trafero_address, output_dir):
+def retrieve_values(objects_counters_dict, cluster, node, trafero_address, output_dir):
     """
     Sends several retrieve-values requests to Trafero over http (GET).
     Sends one request per object in config.yml.
-    :param header: dict containing the headers for Trafero requests.
     :param objects_counters_dict: dict, mapping counters like 'total_ops', 'read_data', ... to
     objects like 'aggregate', 'processor',...
     :param cluster: The cluster name of the ASUP where function should retrieve values from.
@@ -262,7 +309,7 @@ def retrieve_values(header, objects_counters_dict, cluster, node, trafero_addres
 
         value_file = os.path.join(output_dir, str(obj) + '.json')
 
-        with requests.get(url, headers=header, data=data, stream=True) as response:
+        with requests.get(url, headers=REQUEST_HEADER, data=data, stream=True) as response:
             with open(value_file, 'wb') as values:
                 for chunk in response.iter_content(chunk_size=1024):
                     logging.debug('chunk (obj: %s): %s', obj, chunk)
@@ -270,10 +317,10 @@ def retrieve_values(header, objects_counters_dict, cluster, node, trafero_addres
 
         logging.info('Wrote values in file %s', value_file)
 
-def delete_from_trafero(header, cluster, node, trafero_address):
+
+def delete_from_trafero(cluster, node, trafero_address):
     """
     Sends a delete request to Trafero over http (DELETE).
-    :param header: dict containing the headers for Trafero requests.
     :param cluster: The cluster name of the ASUP which function should delete.
     :param node: The node name of the ASUP which function should delete.
     :param trafero_address: Adress of Trafero container.
@@ -284,53 +331,95 @@ def delete_from_trafero(header, cluster, node, trafero_address):
     data = '{"cluster":"%s","node":"%s"}' % (cluster, node)
     logging.debug('payload delete request: %s', data)
 
-    requests.delete(url, headers=header, data=data)
+    requests.delete(url, headers=REQUEST_HEADER, data=data)
 
 
-# constant dict to send as headers in http requests
-REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+def create_random_dir(location):
+    # create directory with random name inside location, which is mapped to Trafero's 'ccma' volume
+    while True:
+        random_dir = str(uuid.uuid4())
+        try:
+            os.makedirs(os.path.join(location, random_dir))
+            return random_dir
+        except FileExistsError:
+            logging.debug('random file name already exists: %s, create new file name', random_dir)
 
-# read user arguments
-INPUT_FILE, OUTPUT_DIR = handle_user_input(sys.argv)
 
-# read config.yml file
-TRAFERO_CCMA_VOLUME, TRAFERO_ADDRESS, OBJECTS_COUNTERS_DICT = read_config()
+def run_conversion():
 
-# create directory with random name inside location, which is mapped to Trafero's 'ccma' volume
-while True:
-    ASUP_PATH = str(uuid.uuid4())
-    ABS_ASUP_PATH = os.path.join(TRAFERO_CCMA_VOLUME, ASUP_PATH)
+    # read user arguments
+    input_data, output_dir = handle_user_input(sys.argv)
+
+    # read config.yml file
+    trafero_ccma_volume, trafero_address, objects_counters_dict = read_config()
+
+    # create directory with random name inside location, which is mapped to Trafero's 'ccma' volume
+    working_dir = create_random_dir(trafero_ccma_volume)
+    logging.debug('Location of working directory inside Trafero: %s', working_dir)
+
     try:
-        os.makedirs(ABS_ASUP_PATH)
-        break
-    except FileExistsError:
-        logging.debug('random file name already exists: %s, create new file name', ASUP_PATH)
-logging.debug('ASUP location inside Trafero: %s', ASUP_PATH)
+        # decide, whether data is of kind 'asup' or 'ccma' and create list of all asup tgz files
+        tgz_files, is_asup = determine_input(input_data)
 
-try:
-    # unpack ASUP inside directory with random name
-    logging.info('Extract ASUP into Trafero\'s \'ccma\' volume...')
-    unpack_to_trafero_volume(ABS_ASUP_PATH, INPUT_FILE)
+        # initialise cluster and node
+        cluster = None
+        node = None
 
-    # Trafero ingest: Upload ccmas in ASUP to Trafero database
-    logging.info('Ingest ASUP in Trafero...')
-    CLUSTER, NODE = ingest_into_trafero(
-        REQUEST_HEADER, OBJECTS_COUNTERS_DICT, ASUP_PATH, TRAFERO_ADDRESS)
+        if is_asup:
+            logging.debug('Ingest type is "asup"')
+            for tgz in tgz_files:
+                # create directory with random name inside working_dir
+                asup_dir = create_random_dir(os.path.join(trafero_ccma_volume, working_dir))
 
-    # Trafero retrieve values: Download data in json format from Trafero database
-    logging.info('Retrieve values from Trafero...')
-    retrieve_values(
-        REQUEST_HEADER, OBJECTS_COUNTERS_DICT, CLUSTER, NODE, TRAFERO_ADDRESS, OUTPUT_DIR)
+                # unpack ASUP inside asup_dir
+                logging.info('Extract ASUP %s into Trafero\'s \'ccma\' volume...', tgz)
+                logging.debug('absolute path, where to extract asup: %s',
+                              os.path.join(trafero_ccma_volume, working_dir, asup_dir))
+                unpack_to_trafero_volume(
+                    os.path.join(trafero_ccma_volume, working_dir, asup_dir), tgz)
 
-    # Trafero delete: Remove ASUP from Trafero database
-    logging.info('Delete ASUP from Trafero...')
-    delete_from_trafero(REQUEST_HEADER, CLUSTER, NODE, TRAFERO_ADDRESS)
+                # Trafero ingest: Upload data from ASUP to Trafero database
+                logging.info('Ingest ASUP %s in Trafero...', tgz)
+                new_cluster, new_node = ingest_into_trafero(
+                    objects_counters_dict, os.path.join(working_dir, asup_dir), trafero_address,
+                    True)
+                logging.debug('ingested cluster %s, node %s', new_cluster, new_node)
 
-    logging.info('Done. You will find json files converted from ASUP under %s. You can now pass'
-                 'this directory to PicDat.', OUTPUT_DIR)
+                if not cluster:
+                    cluster, node = new_cluster, new_node
+                elif (cluster, node) != (new_cluster, new_node):
+                    logging.warning('Expected cluster %s and node %s, but found cluster %s and '
+                                    'node %s. This means, you gave several ASUPs as input, which '
+                                    'do not belong all to the same cluster and node. ASUP for '
+                                    'cluster %s and node %s will be ignored.', cluster, node,
+                                    new_cluster, new_node, new_cluster, new_node)
+
+        else:
+            logging.debug('Ingest type is "ccma"')
+
+            logging.info('Copying all ccma files into Trafero\'s \'ccma\' volume...')
+            copy_ccmas(input_data, os.path.join(trafero_ccma_volume, working_dir))
+
+            logging.info('Ingest ccma files in Trafero...')
+            cluster, node = ingest_into_trafero(
+                objects_counters_dict, working_dir, trafero_address, False)
+            logging.debug('ingested cluster %s, node %s', new_cluster, new_node)
+
+        # Trafero retrieve values: Download data in json format from Trafero database
+        logging.info('Retrieve values from Trafero...')
+        retrieve_values(objects_counters_dict, cluster, node, trafero_address, output_dir)
+
+        # Trafero delete: Remove ASUP from Trafero database
+        logging.info('Delete ingested data from Trafero...')
+        delete_from_trafero(cluster, node, trafero_address)
+
+        logging.info('Done. You will find json files converted from your ASUP/ccma data under %s. '
+                     'You can now pass this directory to PicDat.', output_dir)
+
+    finally:
+        # remove ASUP from Trafero's 'ccma' volume
+        shutil.rmtree(os.path.join(trafero_ccma_volume, working_dir))
+        logging.info('(Deleted all files copied to Trafero\'s \'ccma\' volume)')
 
 
-finally:
-    # remove ASUP from Trafero's 'ccma' volume
-    shutil.rmtree(ABS_ASUP_PATH)
-    logging.info('(Temporarily extracted ASUP in Trafero\'s \'ccma\' volume deleted)')
+run_conversion()
