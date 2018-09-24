@@ -58,6 +58,8 @@ def run_asup_mode_xml(asup_xml_info_file, asup_xml_data_files, asup_xml_header_f
 
     if not timezone:
         timezone = util.get_local_timezone()
+        logging.info('Found no time zone information in HEADER file. Using local time zone of this '
+                     'machine instead: %s', timezone)
 
     # collect data from file
     tables, label_dict = xml_data_collector.read_xmls(
