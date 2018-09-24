@@ -125,7 +125,7 @@ If you wand to redirect the command line output into a log file for further anal
 By default, PicDat sorts the most data series by relevance. This means, the graph with the highest sum of values will be displayed at the top of a chart's legend. If you rather wants them to be sorted alphanumeric, use the flag \textcolor{darkblue}{\texttt{-\,-sortbyname}} or \textcolor{darkblue}{\texttt{-s}}.
 \bigskip
 
-As the security settings from some browsers like Google Chrome or Edge prevent the execution of external JavaScript code, PicDat charts stay empty when you try to open them with those browsers from your file system. As workaround, PicDat provides the flag \textcolor{darkblue}{\texttt{-\,-webserver}} or \textcolor{darkblue}{\texttt{-w}}. This will start a simple local HTTP server at the end of PicDat's execution. With this, you should be able to view the charts from \textit{http://localhost:8000}. You will need to terminate the server after you're done.
+PicDat needs the dygraph library as well as the csv data files to show charts in a browser. But some browsers like Google Chrome or Edge refuse to load additional local files for security reasons. Hence, PicDat charts just stay empty. To avoid this, use option \textcolor{darkblue}{\texttt{-\,-compact}} or \textcolor{darkblue}{\texttt{-c}}. This option packs all code and data into the HTML file. The dygraph.js and dygraph.css files don't get copied to your result directory anymore. The csv data files still get created, but the charts.html file don't reference them. So, the result is even more portable, because you can copy the single HTML file without caring for any dependencies.
 \bigskip
 
 To get an overview about all command line option, try option \textcolor{darkblue}{\texttt{-\,-help}} or \textcolor{darkblue}{\texttt{-h}}.
@@ -268,10 +268,10 @@ If your values are very close and unsteady, you might get a better overview usin
 If PicDat seems to ran correctly, but all charts inside the charts.html are empty, see whether one of the following applies:
 \bigskip
 
-If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js can't be loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-webserver}}, which will start a local web server (See \hyperref[options]{\underline{Command line options}}). Alternatively, use Firefox instead or try to change security settings.
+If you are running the charts.html from your file system, the browsers Chrome and Internet Explorer/Edge will block external files for security reasons. So, the dygraph.js don't get loaded. As workaround, PicDat provides the command line option \textcolor{darkblue}{\texttt{-\,-compact}}, which packs all the output into one file (See \hyperref[options]{\underline{Command line options}}). Alternatively, use Firefox instead or try to change security settings.
 \bigskip
 
-If this is not the problem, make sure that dygraphs is available at all. A folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file. Of course, a folder called 'tables' which contains all chart data within csv tables must be available too.
+If this is not the problem, make sure that dygraphs is available at all. As long as you haven't used option \textcolor{darkblue}{\texttt{-\,-compact}}, a folder called 'dygraphs', containing the dygraph.js and dygraph.css, must be in the same location as your charts.html file. Of course, a folder called 'tables' which contains all chart data within csv tables must be available too.
 \end{frame}
 
 \end{document}
