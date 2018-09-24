@@ -209,6 +209,25 @@ This will copy and extract your ASUP to the Trafero container, ingest the ASUP i
 Be aware that you need the correct \textcolor{darkblue}{\textbf{config.yml}} file in the same location as the script while running. This file specifies, how the Trafero container can be accessed and which objects and counters will be collected while conversion. 
 \end{frame}
 
+\section{Time zones}
+\begin{frame}
+\frametitle{Time zones}
+PicDat seeks to convert all time information into a reasonable time zone. The time zone in use is stated at the top of the HTML document. 
+\bigskip
+
+\textcolor{darkblue}{Perfstats} provide time stamps with time zones, but unfortunately, with different ones. So, PicDat collects the first time zone information it detects and tries to convert all time stamps into it.
+\bigskip
+
+\textcolor{darkblue}{ASUP} timestamps are given in Unix time, which is standardised with UTC. \textcolor{darkblue}{XML} ASUPs usually provide a HEADER file, which contains a time zone information for the ASUP. Hence, PicDat converts the Unix time stamps into this time zone.
+\bigskip
+
+For ASUP data in \textcolor{darkblue}{JSON} format, PicDat currently reads nothing like a HEADER file, so for simplicity it uses the local time zone of the machine running PicDat. Be aware, that this might not be the actual time zone of the machine, to which the ASUP belongs to.
+\bigskip
+
+If anything wents wrong with time zone conversion, it is also possible, that you read \textit{timzone: None} at the top of your HTML document. In this case, it might even be possible (particulary for Perfstats) that time stamps in different charts belong to different time zones. Maybe, PicDat's logging output gives you more information.
+\end{frame}
+
+
 \section{Interactive charts}
 \subsection{Interactive charts -- legend}
 \begin{frame}
