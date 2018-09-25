@@ -239,6 +239,56 @@ def get_list_string(some_list):
     return list_string
 
 
+def handle_retrieve_error(unexpected_response):
+    """
+    If retrieve request fails, there are some known error messages. Here, they get caught to
+    provide the user with more information about this error and to tell him, how he can fix it.
+    :param unexpected_response: http response which probably contains an error.
+    :return: (cluster, node) or (None, None)
+    """
+    if 'errors' in unexpected_response.json():
+        if 'message' in unexpected_response.json()['errors']:
+            # Handle error message, that ASUP is invalid:
+            if unexpected_response.json()['errors']['message'] == 'Invalid ASUP directory. ' \
+            'Cannot find either hourly or event files in the directory':
+                logging.warning('Trafero rejects ASUP. It seems not to contain the expected '
+                                'performance data. Trafero usually expects either a '
+                                'PERFORMANCE-ARCHIVES.TAR or several '
+                                'CM-STATS-HOURLY-DATA-**.TAR archives inside the ASUP.')
+                return None, None
+
+    elif 'ingest_results' in unexpected_response.json():
+        if 'errors' in unexpected_response.json()['ingest_results'][0]:
+            if 'message' in unexpected_response.json()['ingest_results'][0]['errors']:
+            # Handle ccmas, which are already ingested:
+                if 'File already ingested' in unexpected_response.json(
+                    )['ingest_results'][0]['errors']['message']:
+                    logging.error('It seems like some or all of the ccma files from your input '
+                                  'are already ingested in Trafero. Unfortunately, Trafero don\'t '
+                                  'want to tell in its unexpected_response, for which cluster/node'
+                                  ' the ccma files are already ingested. '
+                                  'So, program can\'t go on with '
+                                  'retrieving values from them. Can you manually enter the '
+                                  'cluster and the node name? Otherwise, you can fix this issue '
+                                  'with deleting everything from the folder, which is mapped to '
+                                  'Trafero\'s "hdf5" volume and running the script again.')
+                    cluster = input('Please enter cluster name: ')
+                    if not cluster:
+                        logging.info('Quit Program.')
+                        sys.exit(1)
+                    node = input('Please enter node name: ')
+                    if not node:
+                        logging.info('Quit Program.')
+                        sys.exit(1)
+                    return cluster, node
+
+    logging.error(
+        'Tried to read cluster and node name from Trafero\'s unexpected_response, but is has not '
+        'expected format. Probably, something went wrong. Here is the unexpected_response: %s',
+        unexpected_response.text)
+    return None, None
+
+
 def ingest_into_trafero(objects_counters_dict, data_path, trafero_address, is_asup):
     """
     Sends a ingest request to Trafero over http (POST).
@@ -276,11 +326,7 @@ def ingest_into_trafero(objects_counters_dict, data_path, trafero_address, is_as
         return cluster_uuid, node_uuid
 
     except KeyError:
-        logging.error(
-            'Tried to read cluster and node name from Trafero\'s response, but is has not '
-            'expected format. Probably, something went wrong. Here is the response: %s',
-            response.text)
-        sys.exit(1)
+        return handle_retrieve_error(response)
 
 
 def retrieve_values(objects_counters_dict, cluster, node, trafero_address, destination_dir):
@@ -315,6 +361,9 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, desti
                 for chunk in response.iter_content(chunk_size=1024):
                     logging.debug('chunk (obj: %s): %s', obj, chunk)
                     values.write(chunk)
+            if response.status_code != 200:
+                logging.warning('Got response with status code != 200. File %s will probably '
+                                'contain noting but an error message.', value_file)
 
         logging.info('Wrote values in file %s', value_file)
 
@@ -332,7 +381,12 @@ def delete_from_trafero(cluster, node, trafero_address):
     data = '{"cluster":"%s","node":"%s"}' % (cluster, node)
     logging.debug('payload delete request: %s', data)
 
-    requests.delete(url, headers=REQUEST_HEADER, data=data)
+    response = requests.delete(url, headers=REQUEST_HEADER, data=data)
+    logging.debug('delete response: %s', response)
+
+    if response.status_code != 200:
+        logging.error('Deletion from Trafero failed. Here is Trafero\'s response: %s',
+                        response.text)
 
 
 def create_random_dir(location):
@@ -412,7 +466,13 @@ def run_conversion():
             logging.info('Ingest ccma files in Trafero...')
             cluster, node = ingest_into_trafero(
                 objects_counters_dict, working_dir, trafero_address, False)
-            logging.debug('ingested cluster %s, node %s', new_cluster, new_node)
+            logging.debug('ingested cluster %s, node %s', cluster, node)
+
+        # check, if any ingestion was successful
+        if not cluster and not node:
+            logging.info('It seems like none of your input was ingested successfully. Hence,'
+                         'can\'t retrieve any values. Quit program.')
+            sys.exit(0)
 
         # Trafero retrieve values: Download data in json format from Trafero database
         logging.info('Retrieve values from Trafero...')
