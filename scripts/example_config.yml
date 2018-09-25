@@ -11,8 +11,9 @@ trafero_address: http://0.0.0.0:8080
 # Following dict describes the data which will be extracted from the ASUP. Each object is mapped to
 # a list of counters belonging to the object. You should append to this list if you wish to include
 # new charts in PicDat. Of course, you need to adapt the PicDat code respectively.
-objects: 
- aggregate: [total_transfers]
+objects:
+ aggregate: [total_transfers, zombie_rate_blks_reclaimed, cp_reads]
+ ext_cache_obj: [hya_reads_replaced]
  processor: [processor_busy]
  disk: [disk_busy]
  volume: [total_ops, avg_latency, read_data, write_data]
