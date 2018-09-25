@@ -180,6 +180,7 @@ def determine_input(input_data):
 
         return [os.path.join(input_data, file) for file in os.listdir(input_data)
                 if file.split('.')[-1] == 'tgz'], True
+    return None
 
 
 def copy_ccmas(source_dir, destination_dir):
@@ -194,21 +195,21 @@ def copy_ccmas(source_dir, destination_dir):
                 os.path.join(source_dir, filename), os.path.join(destination_dir, filename))
 
 
-def unpack_to_trafero_volume(abs_asup_path, tgz):
+def unpack_tgz(destination_dir, tgz):
     """
-    Unpacks the ASUP inside the Trafero's 'ccma' volume.
-    :param abs_asup_path: absolute path to an empty directory inside the location, which is mapped
-    to the Trafero volume 'ccma'. ASUP will be extracted here.
+    Unpacks an ASUP tgz file into destination directory.
+    :param destination_dir: absolute path to an empty directory for unpacking tgz inside. Should
+    probably be inside the location, which is mapped to the Trafero volume 'ccma'.
     :param tgz: path to ASUP tgz file.
     :return: None.
     """
 
     try:
         with tarfile.open(tgz, 'r') as tar:
-            tar.extractall(abs_asup_path)
+            tar.extractall(destination_dir)
 
-        if 'CM-STATS-HOURLY-INFO.XML' in os.listdir(abs_asup_path) \
-        and 'CM-STATS-HOURLY-DATA.XML' in os.listdir(abs_asup_path):
+        if 'CM-STATS-HOURLY-INFO.XML' in os.listdir(destination_dir) \
+        and 'CM-STATS-HOURLY-DATA.XML' in os.listdir(destination_dir):
             logging.info('Found files called CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML'
                          ' in your ASUP. This means probably, that your performance data has xml '
                          'format and not ccma. Trafero is not able to convert it. But, if you '
@@ -282,7 +283,7 @@ def ingest_into_trafero(objects_counters_dict, data_path, trafero_address, is_as
         sys.exit(1)
 
 
-def retrieve_values(objects_counters_dict, cluster, node, trafero_address, output_dir):
+def retrieve_values(objects_counters_dict, cluster, node, trafero_address, destination_dir):
     """
     Sends several retrieve-values requests to Trafero over http (GET).
     Sends one request per object in config.yml.
@@ -291,7 +292,7 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, outpu
     :param cluster: The cluster name of the ASUP where function should retrieve values from.
     :param node: The node name of the ASUP where function should retrieve values from.
     :param trafero_address: Adress of Trafero container.
-    :param output_dir: Path to directory where to write json files with values.
+    :param destination_dir: Path to directory where to write json files with values.
     """
     url = '%s/api/retrieve/values/' % trafero_address
     logging.debug('url retrieve values request: %s', url)
@@ -307,7 +308,7 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, outpu
         % (cluster, node, obj, counter_string)
         logging.debug('payload retrieve values request (%s): %s', obj, data)
 
-        value_file = os.path.join(output_dir, str(obj) + '.json')
+        value_file = os.path.join(destination_dir, str(obj) + '.json')
 
         with requests.get(url, headers=REQUEST_HEADER, data=data, stream=True) as response:
             with open(value_file, 'wb') as values:
@@ -335,6 +336,11 @@ def delete_from_trafero(cluster, node, trafero_address):
 
 
 def create_random_dir(location):
+    """
+    Creates a unique directory with a random name inside 'location'.
+    :param location: Path to the location, where random dir should get created.
+    :return: Name of random directory.
+    """
     # create directory with random name inside location, which is mapped to Trafero's 'ccma' volume
     while True:
         random_dir = str(uuid.uuid4())
@@ -346,6 +352,9 @@ def create_random_dir(location):
 
 
 def run_conversion():
+    """
+    Runs script. Gets called at the bottom of this module.
+    """
 
     # read user arguments
     input_data, output_dir = handle_user_input(sys.argv)
@@ -375,7 +384,7 @@ def run_conversion():
                 logging.info('Extract ASUP %s into Trafero\'s \'ccma\' volume...', tgz)
                 logging.debug('absolute path, where to extract asup: %s',
                               os.path.join(trafero_ccma_volume, working_dir, asup_dir))
-                unpack_to_trafero_volume(
+                unpack_tgz(
                     os.path.join(trafero_ccma_volume, working_dir, asup_dir), tgz)
 
                 # Trafero ingest: Upload data from ASUP to Trafero database
