@@ -85,6 +85,8 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
     --logfile, -l: redirects logging information into a file called conversion.log.
         ''' % argv[0])
 
+        sys.exit(0)
+
     # extract log level from options if possible
     if '-d' in opts:
         log_level = get_log_level(opts['-d'])
@@ -94,6 +96,8 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
         log_level = logging.INFO
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
+    # set log level for extern logger:
+    logging.getLogger('requests').setLevel(logging.ERROR)
 
     # extract input from options if possible
     if '-i' in opts:
@@ -265,7 +269,7 @@ def handle_retrieve_error(unexpected_response):
                     )['ingest_results'][0]['errors']['message']:
                     logging.error('It seems like some or all of the ccma files from your input '
                                   'are already ingested in Trafero. Unfortunately, Trafero don\'t '
-                                  'want to tell in its unexpected_response, for which cluster/node'
+                                  'want to tell in its response, for which cluster/node'
                                   ' the ccma files are already ingested. '
                                   'So, program can\'t go on with '
                                   'retrieving values from them. Can you manually enter the '
@@ -350,7 +354,7 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, desti
 
         data = '{"cluster":"%s","node":"%s","object_name":"%s","counter_name":"",'\
         '"counter_names":%s,"instance_name":"","x_label":"","y_label":"","time_from":0,'\
-        '"time_to":0,"summary_type":"","best_effort":false,"raw":false}' \
+        '"time_to":0,"summary_type":"","best_effort":true,"raw":false}' \
         % (cluster, node, obj, counter_string)
         logging.debug('payload retrieve values request (%s): %s', obj, data)
 
