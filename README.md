@@ -1,4 +1,4 @@
-# PicDat
+# PicDat #
 
 The aim of PicDat is to provide better insight to performance data from NetApp
 controllers. There is a utitily from NetApp called PerfStat which allows to
@@ -13,14 +13,14 @@ Similary, PicDat can handle ASUP xml performance data.
 To generate graphs we use the tool dygraphs in a second step.
 
 
-General usage:
+## General usage: ##
 
 ````
 picdat [--help] [--sortbyname] [--inputfile "input"] [--outputdir "output"] [--debug "level"] [--logfile]
 ````
 
 
-Example output:
+## Example output: ##
 
 ````
 python picdat.py -i"</path/to/input>" -o"</path/to/output>" 
@@ -48,3 +48,16 @@ python picdat.py -i"</path/to/input>" -o"</path/to/output>"
 2018-03-09 12:00:37,833 INFO: Generated html file at /path/to/output/charts.html
 2018-03-09 12:00:37,843 INFO: Done. You will find charts under: </path/to/output>
 ````
+
+## Requirements: ##
+
+Following python modules are required to run PicDat:
+
+* ijson
+* tzlocal
+* pytz
+
+The script `convert_ccma_to_json` requires:
+
+* yaml
+* requests
