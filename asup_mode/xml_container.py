@@ -33,7 +33,9 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # The x axis of the charts will be 'time'. These two characteristics makes the keys different from
 # the keys in the other lists, so this is why the list is called like this.
 
-INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'),
+INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('aggregate', 'user_writes'),
+                            ('aggregate','cp_reads'),
+                            ('aggregate','zombie_rate_blks_reclaimed'),
                             ('ext_cache_obj', 'hya_reads_replaced'),
                             ('processor', 'processor_busy'), ('disk:constituent', 'disk_busy'),
                             ('volume', 'total_ops'), ('volume', 'avg_latency'),
