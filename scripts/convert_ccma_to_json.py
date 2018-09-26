@@ -97,7 +97,7 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
     # set log level for extern logger:
-    logging.getLogger('requests').setLevel(logging.ERROR)
+    # logging.getLogger('requests').setLevel(logging.ERROR)
 
     # extract input from options if possible
     if '-i' in opts:
