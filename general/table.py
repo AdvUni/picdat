@@ -83,6 +83,13 @@ class Table:
         return len(self.outer_dict) == 0
 
     def add_constant_column(self, constant_name, constant_value):
+        """
+        This method adds a column to the table, which has the same value for all table rows. This
+        intends to offer the possibility of showing reference lines in later charts.
+        :param constant_name: Some string, which will be used as the new column's name.
+        :param constant_value: Value, which will be inserted to each row for new column.
+        :return: None.
+        """
         for _, col_dict in self.outer_dict.items():
             col_dict[constant_name] = str(constant_value)
 
@@ -160,13 +167,13 @@ class Table:
 
 def do_table_operation(value_operator, table1, table2):
     """
-    Performs a mathematical operation between all values of two tables. If you
-    :param value_operator: callable operator for two values from python module 'operator'; for
-    example operator.add, operator.truediv etc. Call operator.__all__ to see all possible
+    Performs a mathematical operation (for two operands) element-wise on whole tables.
+    :param value_operator: callable operator for two operands from python module 'operator'; for
+    example operator.add, operator.truediv etc. You can call operator.__all__ to see all possible
     operators.
     :param table1: Table, which values are the first operand of mathematical operation.
     :param table2: Table, which values are the second operand of mathematical operation.
-    :return: new Table object which is the result of the table operation.
+    :return: new Table object which is the result of the element-wise table operation.
     """
     result = Table()
 
