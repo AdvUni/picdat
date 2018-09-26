@@ -129,6 +129,7 @@ def read_xmls(asup_xml_data_files, asup_xml_info_file, timezone, sort_columns_by
         read_data_file(container, data_file)
 
     container.process_base_heap()
+    container.calculate_further_charts()
     container.do_unit_conversions()
 
     return util.get_flat_tables(container, sort_columns_by_name), util.build_label_dict(container)

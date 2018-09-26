@@ -96,6 +96,7 @@ def read_json(asup_json_files, sort_columns_by_name):
             logging.info('Search key had no hit: Table about %s is empty. Are you sure that your '
                          'json includes all available data about this search key?', table_name)
 
+    container.calculate_further_charts()
     container.do_unit_conversions()
 
     return util.get_flat_tables(container, sort_columns_by_name), \

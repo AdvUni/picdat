@@ -82,6 +82,10 @@ class Table:
         """
         return len(self.outer_dict) == 0
 
+    def add_constant_column(self, constant_name, constant_value):
+        for _, col_dict in self.outer_dict.items():
+            col_dict[constant_name] = str(constant_value)
+
     def sort_columns_by_relevance(self):
         """
         Generates a list of all column names the table has. They'll be sorted by the sum of their
@@ -152,3 +156,27 @@ class Table:
         header_row.insert(0, x_label)
 
         return [header_row] + value_rows
+
+
+def do_table_operation(value_operator, table1, table2):
+    """
+    Performs a mathematical operation between all values of two tables. If you
+    :param value_operator: callable operator for two values from python module 'operator'; for
+    example operator.add, operator.truediv etc. Call operator.__all__ to see all possible
+    operators.
+    :param table1: Table, which values are the first operand of mathematical operation.
+    :param table2: Table, which values are the second operand of mathematical operation.
+    :return: new Table object which is the result of the table operation.
+    """
+    result = Table()
+
+    for row_name, t1_col_dict in table1.outer_dict.items():
+        for col_name, t1_value in t1_col_dict.items():
+            try:
+                t2_value = table2.get_item(row_name, col_name)
+                result_value = value_operator(float(t1_value), float(t2_value))
+                result.insert(row_name, col_name, str(result_value))
+            except (KeyError, IndexError):
+                logging.debug('do_table_operation table1')  #
+
+    return result

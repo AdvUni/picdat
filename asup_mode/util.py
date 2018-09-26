@@ -103,6 +103,7 @@ def get_flat_tables(asup_container, sort_columns_by_name):
     instances_over_time_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_TIME_KEYS
     instances_over_bucket_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_BUCKET_KEYS
     counters_over_time_keys = sys.modules[asup_container.__module__].COUNTERS_OVER_TIME_KEYS
+    further_charts = sys.modules[asup_container.__module__].FURTHER_CHARTS
 
     # initialise table list
     flat_tables = []
@@ -118,6 +119,10 @@ def get_flat_tables(asup_container, sort_columns_by_name):
     flat_tables = flat_tables + [asup_container.tables[key_id].flatten('time', True)
                                  for (key_id, _, _) in counters_over_time_keys
                                  if not asup_container.tables[key_id].is_empty()]
+
+    flat_tables = flat_tables + [asup_container.tables[name].flatten('time', True)
+                                 for name in further_charts
+                                 if not asup_container.tables[name].is_empty()]
     return flat_tables
 
 
@@ -142,6 +147,7 @@ def build_label_dict(asup_container):
     instances_over_time_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_TIME_KEYS
     instances_over_bucket_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_BUCKET_KEYS
     counters_over_time_keys = sys.modules[asup_container.__module__].COUNTERS_OVER_TIME_KEYS
+    further_charts = sys.modules[asup_container.__module__].FURTHER_CHARTS
 
     # initialise label lists
     identifiers = []
@@ -172,6 +178,12 @@ def build_label_dict(asup_container):
                                         ).replace('system', asup_container.node_name),
                      key_id) for (key_object, key_id) in available]
     units += [asup_container.units[key_id] for (_, key_id) in available]
+    is_histo += [False for _ in available]
+
+
+    available = [name for name in further_charts if not asup_container.tables[name].is_empty()]
+    identifiers += available
+    units += [asup_container.units[name] for name in available]
     is_histo += [False for _ in available]
 
     return {'identifiers': identifiers, 'units': units, 'is_histo': is_histo, 'timezone': timezone}

@@ -5,7 +5,8 @@ processing all data collected from json files.
 import logging
 import datetime
 import math
-from general.table import Table
+import operator
+from general.table import Table, do_table_operation
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -33,6 +34,7 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # per instance. The x axis of the charts will be 'time'. These two characteristics makes the keys
 # different from the keys in the other lists, so this is why the list is called like this.
 INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('aggregate', 'cp_reads'),
+                            ('aggregate', 'user_writes'),
                             ('aggregate', 'zombie_rate_blks_reclaimed'),
                             ('ext_cache_obj', 'hya_reads_replaced'),
                             ('processor', 'processor_busy'), ('disk', 'disk_busy'),
@@ -71,6 +73,8 @@ COUNTERS_OVER_TIME_KEYS = [
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
 
+FURTHER_CHARTS = [('aggregate', 'free_space_fragmentation')]
+
 
 class JsonContainer:
     """
@@ -89,10 +93,12 @@ class JsonContainer:
 
         # A dict of Table objects. Each key from the three key lists has exactly one Table
         # storing all the matching data found in json data file.
-        self.tables = {searchkey: Table()
-                       for searchkey in INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
+        self.tables = {searchkey: Table() for searchkey in
+                       INSTANCES_OVER_TIME_KEYS + INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.tables[key_id] = Table()
+        for name in FURTHER_CHARTS:
+            self.tables[name] = Table()
 
         # A dict for relating units to each search key from the three key lists. None values will
         # be replaced while reading the data
@@ -100,6 +106,8 @@ class JsonContainer:
                       INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = None
+        for name in FURTHER_CHARTS:
+            self.units[name] = Table()
 
         # To get a nice title for the last system chart, the program reads the node name from one
         # of the json objects. This node name will substitute the word 'system' in chart labels.
@@ -177,6 +185,22 @@ class JsonContainer:
         except KeyError:
             logging.warning('Found JSON object which doesn\'t hold expected contents. Object will '
                             'be ignored. It looks like: %s', json_item)
+
+    def calculate_further_charts(self):
+        # ('aggregate', 'free space fragmentation = user_writes/cp_writes')
+        new_chart_name = ('aggregate', 'free_space_fragmentation')
+        operand1_name = ('aggregate', 'user_writes')
+        operand2_name = ('aggregate', 'cp_reads')
+
+        self.units[new_chart_name] = ''
+        self.tables[new_chart_name] = do_table_operation(
+            operator.truediv, self.tables[operand1_name], self.tables[operand2_name])
+        self.tables[new_chart_name].add_constant_column('1', 1)
+
+        self.tables[operand1_name] = Table()
+        self.tables[operand2_name] = Table()
+
+        logging.debug(self.tables[new_chart_name])
 
     def do_unit_conversions(self):
         """

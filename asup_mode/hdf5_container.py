@@ -73,6 +73,7 @@ COUNTERS_OVER_TIME_KEYS = [
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
 
+FURTHER_CHARTS = []
 
 class Hdf5Container:
     """

@@ -3,7 +3,8 @@ Contains the class XmlContainer. This class is responsible for holding and
 processing all data collected from xml files.
 """
 import logging
-from general.table import Table
+import operator
+from general.table import Table, do_table_operation
 from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
@@ -69,6 +70,8 @@ COUNTERS_OVER_TIME_KEYS = [
     ('IOPS', 'system:constituent', {'nfs_ops', 'cifs_ops', 'fcp_ops', 'iscsi_ops', 'other_ops'}),
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
+
+FURTHER_CHARTS = [('aggregate', 'free_space_fragmentation')]
 
 
 class XmlContainer:
@@ -458,6 +461,22 @@ class XmlContainer:
                     'Found base value but no matching actual value. This means, Value for '
                     '%s - %s, instance %s with time stamp/bucket %s is missing in data!',
                     object_type, counter, instance, row)
+
+    def calculate_further_charts(self):
+        # ('aggregate', 'free space fragmentation = user_writes/cp_writes')
+        new_chart_name = ('aggregate', 'free_space_fragmentation')
+        operand1_name = ('aggregate', 'user_writes')
+        operand2_name = ('aggregate', 'cp_reads')
+
+        self.units[new_chart_name] = ''
+        self.tables[new_chart_name] = do_table_operation(
+            operator.truediv, self.tables[operand1_name], self.tables[operand2_name])
+        self.tables[new_chart_name].add_constant_column('1', 1)
+
+        self.tables[operand1_name] = Table()
+        self.tables[operand2_name] = Table()
+
+        logging.debug(self.tables[new_chart_name])
 
     def do_unit_conversions(self):
         """
