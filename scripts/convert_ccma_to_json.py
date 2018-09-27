@@ -13,7 +13,6 @@ import tarfile
 import uuid
 import yaml
 import requests
-from urllib3.exceptions import NewConnectionError
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -95,10 +94,10 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
         log_level = get_log_level(opts['--debug'])
     else:
         log_level = logging.INFO
-
-    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=log_level)
-    # set log level for extern logger:
-    # logging.getLogger('requests').setLevel(logging.ERROR)
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s')
+    logging.getLogger().setLevel(log_level)
+    # suppress warnings from request logger
+    logging.getLogger('urllib3').setLevel(logging.ERROR)
 
     # extract input from options if possible
     if '-i' in opts:
@@ -135,7 +134,10 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
     if '-l' in opts or '--logfile' in opts:
         _ = [logging.root.removeHandler(handler) for handler in logging.root.handlers[:]]
         logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', filename=output_dir
-                            +os.sep + 'conversion.log', level=log_level)
+                            +os.sep + 'conversion.log')
+        logging.getLogger().setLevel(log_level)
+        # suppress warnings from request logger
+        logging.getLogger('urllib3').setLevel(logging.ERROR)
 
     logging.info('inputfile: %s, outputdir: %s', os.path.abspath(input_data), os.path.abspath(
         output_dir))
