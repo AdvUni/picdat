@@ -40,6 +40,7 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('aggregate', 'use
                             ('processor', 'processor_busy'), ('disk:constituent', 'disk_busy'),
                             ('volume', 'total_ops'), ('volume', 'avg_latency'),
                             ('volume', 'read_data'), ('volume', 'write_data'),
+                            ('volume', 'repl_read_data'), ('volume','repl_write_data'),
                             ('lun:constituent', 'total_ops'), ('lun:constituent', 'avg_latency'),
                             ('lun:constituent', 'read_data')]
 
