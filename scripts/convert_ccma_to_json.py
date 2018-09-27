@@ -13,6 +13,7 @@ import tarfile
 import uuid
 import yaml
 import requests
+from urllib3.exceptions import NewConnectionError
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -489,6 +490,9 @@ def run_conversion():
         logging.info('Done. You will find json files converted from your ASUP/ccma data under %s. '
                      'You can now pass this directory to PicDat.', output_dir)
 
+    except requests.exceptions.ConnectionError:
+        logging.error('Caught a ConnectionError. Seems like the Trafero container you '
+                      'specified in your config.yml is not reachable.')
     finally:
         # remove ASUP from Trafero's 'ccma' volume
         shutil.rmtree(os.path.join(trafero_ccma_volume, working_dir))
