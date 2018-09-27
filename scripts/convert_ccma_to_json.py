@@ -364,13 +364,14 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, desti
         value_file = os.path.join(destination_dir, str(obj) + '.json')
 
         with requests.get(url, headers=REQUEST_HEADER, data=data, stream=True) as response:
-            with open(value_file, 'wb') as values:
-                for chunk in response.iter_content(chunk_size=1024):
-                    logging.debug('chunk (obj: %s): %s', obj, chunk)
-                    values.write(chunk)
-            if response.status_code != 200:
-                logging.warning('Got response with status code != 200. File %s will probably '
-                                'contain noting but an error message.', value_file)
+            if response.status_code == 200:
+                with open(value_file, 'wb') as values:
+                    for chunk in response.iter_content(chunk_size=1024):
+                        logging.debug('chunk (obj: %s): %s', obj, chunk)
+                        values.write(chunk)
+            else:
+                logging.warning('Got response with status code != 200 for object %s. Error '
+                                'message: %s', obj, response.text)
 
         logging.info('Wrote values in file %s', value_file)
 
