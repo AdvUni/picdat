@@ -120,7 +120,7 @@ def get_flat_tables(asup_container, sort_columns_by_name):
                                  for (key_id, _, _) in counters_over_time_keys
                                  if not asup_container.tables[key_id].is_empty()]
 
-    flat_tables = flat_tables + [asup_container.tables[name].flatten('time', True)
+    flat_tables = flat_tables + [asup_container.tables[name].flatten('time', sort_columns_by_name)
                                  for name in further_charts
                                  if not asup_container.tables[name].is_empty()]
     return flat_tables
@@ -142,7 +142,8 @@ def build_label_dict(asup_container):
     timezone = str(asup_container.timezone)
 
     # get the three key list INSTANCES_OVER_TIME_KEYS, INSTANCES_OVER_BUCKET_KEYS, and
-    # COUNTERS_OVER_TIME_KEYS. Each asup container's module has this key lists, but they may vary a
+    # COUNTERS_OVER_TIME_KEYS as well as the list FURTHER_CHARTS.
+    # Each asup container's module has these lists, but they may vary a
     # bit, so it is important to access the keys over the given container object.
     instances_over_time_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_TIME_KEYS
     instances_over_bucket_keys = sys.modules[asup_container.__module__].INSTANCES_OVER_BUCKET_KEYS
@@ -180,7 +181,7 @@ def build_label_dict(asup_container):
     units += [asup_container.units[key_id] for (_, key_id) in available]
     is_histo += [False for _ in available]
 
-
+    # get labels for all charts which are listed in FURTHER_CHARTS
     available = [name for name in further_charts if not asup_container.tables[name].is_empty()]
     identifiers += available
     units += [asup_container.units[name] for name in available]

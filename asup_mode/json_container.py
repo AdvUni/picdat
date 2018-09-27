@@ -73,6 +73,20 @@ COUNTERS_OVER_TIME_KEYS = [
     ('fragmentation', 'raid', {'partial_stripes', 'full_stripes'})
 ]
 
+# PicDat aims to collect and visualise performance data given in ASUPs. But it also intends to show
+# further charts, for which the data is not directly given in the ASUP, but can get calculated with
+# it.
+# So, for this kind of chart, there are no actual search keys, because PicDat does not find this
+# data in the input. Nevertheless, PicDat needs a possibility to see, which charts exist at all.
+# Because in general PicDat accesses the module's key lists for this purpose, there is now a fourth
+# list, not containing actual keys, but elements which are very similar to the keys. Each element
+# is a tuple of two strings. From the tuples, PicDat generates for example the chart names.
+#
+# If you want to include an additional, calculated chart, only appending to the FURTHER_CHARTS list
+# won't do the job. In parallel, you need to append to the JsonContainer method
+# 'calculate_further_charts'. In there, the new chart can be calculated with accessing already
+# collected values.
+# For simplicity, 'further charts' cannot be histograms (cannot be displayed as bar charts).
 FURTHER_CHARTS = [('aggregate', 'free_space_fragmentation')]
 
 
@@ -102,8 +116,8 @@ class JsonContainer:
 
         # A dict for relating units to each search key from the three key lists. None values will
         # be replaced while reading the data
-        self.units = {searchkey: None for searchkey in INSTANCES_OVER_TIME_KEYS +
-                      INSTANCES_OVER_BUCKET_KEYS}
+        self.units = {searchkey: None for searchkey in INSTANCES_OVER_TIME_KEYS
+                      +INSTANCES_OVER_BUCKET_KEYS}
         for key_id, _, _ in COUNTERS_OVER_TIME_KEYS:
             self.units[key_id] = None
         for name in FURTHER_CHARTS:
@@ -187,20 +201,88 @@ class JsonContainer:
                             'be ignored. It looks like: %s', json_item)
 
     def calculate_further_charts(self):
-        # ('aggregate', 'free space fragmentation = user_writes/cp_writes')
+        """
+        PicDat aims to collect and visualise performance data given in ASUPs. But it also intends
+        to show further charts, for which the data is not directly given in the ASUP, but can get
+        calculated with it. This approach is a bit contradictory to the program's remaining logic,
+        so its implementation is less smooth. It is handled in this method.
+
+        For each additional, calculated chart, this method explicitly creates a new value Table
+        by calculating the values from other tables. Further, it adds a unit to the container's
+        self.units list and clears the tables, which have been the operands for the calculation
+        (optional).
+
+        In parallel, each additional chart has to be referenced in the module constant list
+        FURTHER_CHARTS. Otherwise, the new chart won't be considered when calling the functions
+        util.get_flat_tables() and util.build_label_dict. This means, PicDat won't create the new
+        chart at all. The chart's entry in FURTHER_CHARTS must be the same as the dict key, which
+        is used to store the charts data in self.tables and self.units. Further, it must be a
+        tuple of two strings.
+        """
+
+        # Following commented code is an example about how a new calculated chart can be created.
+        # You can copy, uncomment and adapt it to your needs.
+#===============================================================================
+#         # select different dict keys from them used for self.tables and self.units
+#         # tuple 'new_chart_name' has to be copied to FURTHER_CHARTS
+#         # Which dict keys are used to store the tables you want to use as operands, can be
+#         # obtained from other object methods. If the operand is a table belonging to
+#         # INSTANCES_OVER_TIME_KEYS, it is always ('object', 'counter')
+#         new_chart_name = ('some_object_name', 'description_of_kind_of_values')
+#         operand1_name = ('some_object_name', 'some_counter_with_collected_values')
+#         operand2_name = ('some_object_name', 'some_other_counter_with_collected_values')
+#
+#         # add new unit
+#         self.units[new_chart_name] = 'chose right unit'
+#
+#         # following will calculate : new_table = operand1_table + operand2_table
+#         self.tables[new_chart_name] = do_table_operation(
+#             operator.add, self.tables[operand1_name], self.tables[operand2_name])
+#
+#         # if you want to through away your operands after you did the calculation, replace the
+#         # operands with empty tables. Otherwise, PicDat will generate charts for each operand too
+#         self.tables[operand1_name] = Table()
+#         self.tables[operand2_name] = Table()
+#
+#         # finally, you can apply some more magic to your calculated table. Following code adds a
+#         # constant line to your chart.
+#         if not self.tables[new_chart_name].is_empty():
+#             self.tables[new_chart_name].add_constant_column('reference', 1)
+#===============================================================================
+
+        # Following code is for creating the new chart with name
+        # ('aggregate', 'free_space_fragmentation')
+
+        # Following name must be inside FURTHER_CHARTS list
         new_chart_name = ('aggregate', 'free_space_fragmentation')
+
+        # The tables with following keys contain the yet collected values, from which the new table
+        # gets calculated
         operand1_name = ('aggregate', 'user_writes')
         operand2_name = ('aggregate', 'cp_reads')
 
+        if self.units[operand1_name] != self.units[operand2_name]:
+            logging.warning('table %s and table %s should have the same unit, but they don\'t.'
+                            'Hence, table %s is probably calculated wrong!', operand1_name,
+                            operand2_name, new_chart_name)
+
+        # Decide, which unit the new chart's values have
         self.units[new_chart_name] = ''
+
+        # calculate new table
         self.tables[new_chart_name] = do_table_operation(
             operator.truediv, self.tables[operand1_name], self.tables[operand2_name])
-        self.tables[new_chart_name].add_constant_column('1', 1)
 
+        # delete contents of operand tables by replacing them through empty tables, so that tables
+        # will be ignored in the future
         self.tables[operand1_name] = Table()
         self.tables[operand2_name] = Table()
 
         logging.debug(self.tables[new_chart_name])
+
+        # add a constant data series to the chart
+        if not self.tables[new_chart_name].is_empty():
+            self.tables[new_chart_name].add_constant_column('reference', 1)
 
     def do_unit_conversions(self):
         """
