@@ -183,7 +183,9 @@ def do_table_operation(value_operator, table1, table2):
                 t2_value = table2.get_item(row_name, col_name)
                 result_value = value_operator(float(t1_value), float(t2_value))
                 result.insert(row_name, col_name, str(result_value))
+            except ZeroDivisionError:
+                result.insert(row_name, col_name, str(0))
             except (KeyError, IndexError):
-                logging.debug('do_table_operation table1')  #
+                logging.debug('do_table_operation: Found value in table1 which is not in table2')
 
     return result
