@@ -13,7 +13,7 @@ except ImportError:
           'json files. If you try to run PicDat in asup json mode, it will crash. With PerfStats '
           'or asup xml files, everything is fine.')
 
-from asup_mode.json_container import JsonContainer
+from asup_mode.json_container import JsonContainer, FURTHER_CHARTS
 from asup_mode import util
 
 __author__ = 'Marie Lohbeck'
@@ -92,7 +92,7 @@ def read_json(asup_json_files, sort_columns_by_name):
 
     # print information if charts are empty:
     for table_name, table in container.tables.items():
-        if table.is_empty():
+        if table_name not in FURTHER_CHARTS and table.is_empty():
             logging.info('Search key had no hit: Table about %s is empty. Are you sure that your '
                          'json includes all available data about this search key?', table_name)
 
