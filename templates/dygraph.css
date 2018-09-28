@@ -123,6 +123,10 @@
 
 /* The following part is an addition by Marie Lohbeck, developer of PicDat */
 
+body {
+font-family:sans-serif;
+}
+
 .legend-div {
     display: inline-block;
     vertical-align: top;
@@ -175,6 +179,41 @@ button:hover {
     border-top: none;
     padding-top: 15px;
     width: 99%;
+}
+
+
+.checkdiv {
+    background-color:#f1f1f1;
+    border:1px solid #ccc;
+    overflow:auto;
+    float:left;
+    display:inline;
+}
+
+.checkdiv:hover {
+    background-color: #ddd;
+}
+
+.checkdiv label {
+    float:left;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.checkdiv label span {
+    text-align:center;
+    padding:3px 5px;
+    display:block;
+}
+
+.checkdiv label input {
+    position:absolute;
+    top:-20px;
+}
+
+.checkdiv input:checked + span {
+    background-color:#911;
+    color:#fff;
 }
 
 #topButton {
