@@ -124,7 +124,7 @@
 /* The following part is an addition by Marie Lohbeck, developer of PicDat */
 
 body {
-font-family:sans-serif;
+    font-family: sans-serif;
 }
 
 .legend-div {
@@ -134,6 +134,7 @@ font-family:sans-serif;
     height: 600px;
     overflow: auto;
 }
+
 .chart-div {
     display: inline-block;
     vertical-align: top;
@@ -142,16 +143,27 @@ font-family:sans-serif;
        (See constants WIDTH_FACTOR and HEIGHT_PX) */
 }
 
+.chartbuttondiv {
+    display: block;
+    height: 28px; 
+}
+
 button {
     border: 1px solid #ccc;
     background-color: #f1f1f1;
     cursor: pointer;
     padding: 3px 5px;
     font-size: 15px;
+    display: inline-block;
+    float: left;
 }
 
 button:hover {
     background-color: #ddd;
+}
+
+.selectbtn {
+    margin-right: 10px;
 }
 
 .tab {
@@ -181,13 +193,14 @@ button:hover {
     width: 99%;
 }
 
-
 .checkdiv {
     background-color:#f1f1f1;
     border:1px solid #ccc;
     overflow:auto;
-    float:left;
-    display:inline;
+    display: inline-block;
+    padding: 3px 5px;
+    float: left;
+    margin-left: 20px;
 }
 
 .checkdiv:hover {
@@ -202,17 +215,15 @@ button:hover {
 
 .checkdiv label span {
     text-align:center;
-    padding:3px 5px;
     display:block;
 }
 
 .checkdiv label input {
-    position:absolute;
-    top:-20px;
+    display: none;
 }
 
-.checkdiv input:checked + span {
-    background-color:#911;
+.checkdiv input:checked + span{
+    background-color:#595959;
     color:#fff;
 }
 

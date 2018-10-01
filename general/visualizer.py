@@ -30,22 +30,17 @@ def create_select_buttons(html_document, chart_id):
     :param chart_id: The id of the chart, the checkboxes should belong to.
     :return: None
     """
-    html_document.write('<p>\n')
-    html_document.write('    <button type="button" onclick="selectAll(this, '
+    html_document.write('<div class="chartbuttondiv">\n')
+    html_document.write('    <button type="button" class="selectbtn" onclick="selectAll(this, '
                         +chart_id + ', ' + "'" + chart_id + "'"
                         +')">select all</button>' + '\n')
-    html_document.write('    <button type="button" onclick="deselectAll(this, '
+    html_document.write('    <button type="button" class="selectbtn" onclick="deselectAll(this, '
                         +chart_id + ', ' + "'" + chart_id + "'"
                         +')">deselect all</button>' + '\n')
-    html_document.write('</p>\n')
-
-
-def create_toggle_stacked_button(html_document, chart_id):
-    html_document.write('<p>\n')
     html_document.write('<div class="checkdiv"><label><input type="checkbox" '
                         'onclick="toggleStacked(this.checked, %s)">'
                         '<span>stacked</span></label></div>\n' % chart_id)
-    html_document.write('</p>\n')
+    html_document.write('</div>\n')
 
 
 def write_template(html_document, compact):
@@ -148,7 +143,6 @@ def create_html(html_filepath, csv, html_title, label_dict, compact_file):
 
                 # create 'select all' and 'deselect all' buttons
                 create_select_buttons(html_document, chart_ids[chart_nr])
-                create_toggle_stacked_button(html_document, chart_ids[chart_nr])
             html_document.write('</div>\n')
 
         # end html document
