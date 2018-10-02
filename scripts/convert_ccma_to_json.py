@@ -113,7 +113,7 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
             else:
                 print('This file/directory does not exist. Try again.')
     if not os.path.isfile(input_data) and not os.path.isdir(input_data):
-        print('Path %s does not exist.', input_data)
+        print('Path %s does not exist.' % input_data)
         sys.exit(1)
 
     # extract outputdir from options if possible
@@ -369,11 +369,10 @@ def retrieve_values(objects_counters_dict, cluster, node, trafero_address, desti
                     for chunk in response.iter_content(chunk_size=1024):
                         logging.debug('chunk (obj: %s): %s', obj, chunk)
                         values.write(chunk)
+                logging.info('Wrote values in file %s', value_file)
             else:
                 logging.warning('Got response with status code != 200 for object %s. Error '
                                 'message: %s', obj, response.text)
-
-        logging.info('Wrote values in file %s', value_file)
 
 
 def delete_from_trafero(cluster, node, trafero_address):
