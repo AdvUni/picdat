@@ -452,8 +452,7 @@ def run_conversion():
                 # Trafero ingest: Upload data from ASUP to Trafero database
                 logging.info('Ingest ASUP %s in Trafero...', tgz)
                 new_cluster, new_node = ingest_into_trafero(
-                    objects_counters_dict, os.path.join(working_dir, asup_dir), trafero_address,
-                    True)
+                    objects_counters_dict, working_dir + '/' + asup_dir, trafero_address, True)
                 logging.debug('ingested cluster %s, node %s', new_cluster, new_node)
 
                 if not cluster:
