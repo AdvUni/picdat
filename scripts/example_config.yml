@@ -16,7 +16,7 @@ objects:
  ext_cache_obj: [hya_reads_replaced]
  processor: [processor_busy]
  disk: [disk_busy]
- volume: [total_ops, read-ops, write_ops, avg_latency, read_data, write_data, repl_read_data, repl_write_data]
+ volume: [total_ops, read_ops, write_ops, avg_latency, read_data, write_data, repl_read_data, repl_write_data]
  lun: [total_ops, avg_latency, read_data, write_data, read_align_histo]
  system: [hdd_data_read, hdd_data_written, net_data_recv, net_data_sent, ssd_data_read, ssd_data_written, fcp_data_recv, fcp_data_sent, tape_data_read, tape_data_written, nfs_ops, cifs_ops, fcp_ops, iscsi_ops, other_ops]
  raid: [partial_stripes, full_stripes]
