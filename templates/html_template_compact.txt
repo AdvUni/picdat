@@ -9802,8 +9802,8 @@ module.exports = exports['default'];
                 if (graphLabels[i].includes(filterStr)) {
                     matchingIndices.push(i-1);
                 }
-            chart.setVisibility(matchingIndices, !reverse);
             }
+            chart.setVisibility(matchingIndices, !reverse);
         }
     }
 
