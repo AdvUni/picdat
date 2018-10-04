@@ -41,7 +41,7 @@ INSTANCES_OVER_TIME_KEYS = [('aggregate', 'total_transfers'), ('aggregate', 'cp_
                             ('volume', 'read_ops'), ('volume', 'write_ops'),
                             ('volume', 'total_ops'), ('volume', 'avg_latency'),
                             ('volume', 'read_data'), ('volume', 'write_data'),
-                            ('volume', 'repl_read_data'), ('volume','repl_write_data'),
+                            ('volume', 'repl_read_data'), ('volume', 'repl_write_data'),
                             ('lun', 'total_ops'), ('lun', 'avg_latency'), ('lun', 'read_data')]
 
 # The following list contains search keys about histograms.
