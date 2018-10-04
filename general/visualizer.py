@@ -46,10 +46,12 @@ def create_chart_buttons(html_document, chart_id):
                         '<span>stacked</span></label></div>\n' % chart_id)
 
     reverse_filter_id = chart_id + '_filter'
+    # filter label
+    html_document.write('    <div class="filterlabel">filter:</div>\n')
     # filter text field
     html_document.write('    <input type="text" onkeypress="filter(event.keyCode, %s, this.value, '
-                        'document.getElementById(\'%s\').checked)">\n'
-                        % (chart_id, reverse_filter_id))
+                        'document.getElementById(\'%s\').checked)" placeholder="filter selection '
+                        'by substring">\n' % (chart_id, reverse_filter_id))
     # reverse filter toggle button / checkbox
     html_document.write('    <div class="checkdiv"><label><input type="checkbox" id="%s">'
                         '<span>reverse filter</span></label></div>\n' % reverse_filter_id)
