@@ -153,7 +153,9 @@ body {
 
 .chartbuttondiv {
     display: block;
-    height: 28px; 
+    height: 28px;
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
 button {
@@ -233,6 +235,23 @@ button:hover {
 .checkdiv input:checked + span{
     background-color:#595959;
     color:#fff;
+}
+
+.filterlabel {
+    padding: 3px 5px;
+    float: left;
+    margin-left: 50px;
+    text-align: center;
+}
+
+input[type=text] {
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    padding: 3px 5px;
+    font-size: 15px;
+    display: inline-block;
+    float: left;
+    margin-left: 10px;
 }
 
 #topButton {
@@ -9767,21 +9786,25 @@ module.exports = exports['default'];
         document.documentElement.scrollTop = 0;
     }
 
-    function getAllGraphIndices(chartName) {
-        var legend_dashes = document.getElementsByName(chartName);
-        var indicesArray = [];
-        for (var i = 0, n = legend_dashes.length; i < n; i++) {
-            indicesArray.push(i);
+    function selectAll(button, chart) {
+        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], true);
+    }
+
+    function deselectAll(button, chart) {
+        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], false);
+    }
+
+    function filter(keyCode, chart, filterStr, reverse) {
+        if (keyCode == 13) {
+            graphLabels = chart.getLabels();
+            matchingIndices = [];
+            for (var i = 1; i < graphLabels.length; i++) {
+                if (graphLabels[i].includes(filterStr)) {
+                    matchingIndices.push(i-1);
+                }
+            chart.setVisibility(matchingIndices, !reverse);
+            }
         }
-        return indicesArray;
-    }
-
-    function selectAll(button, chart, name) {
-        chart.setVisibility(getAllGraphIndices(name), true);
-    }
-
-    function deselectAll(button, chart, name) {
-        chart.setVisibility(getAllGraphIndices(name), false);
     }
 
     function toggleStacked(isChecked, chart) {
@@ -9798,7 +9821,7 @@ module.exports = exports['default'];
                    // Add a name and a 'onClick' function to legend dashes, to enable graph
                    // selection and deselection by clicking them
                     var oldDash = series.dashHTML;
-                    var dashInsertion = 'name="' + chartID + '" onClick="' + chartID +
+                    var dashInsertion = 'onClick="' + chartID +
                         '.setVisibility(' + series.graphIndex + ', ' + !series.isVisible + ');"';
                     var newDash = oldDash.substr(0, oldDash.indexOf(' ')) + ' ' + dashInsertion +
                         ' ' + oldDash.substr(oldDash.indexOf(' ')+1);
@@ -9893,6 +9916,4 @@ module.exports = exports['default'];
             }
         );
     }
-
 </script>
-
