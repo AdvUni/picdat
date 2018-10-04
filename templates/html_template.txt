@@ -58,6 +58,19 @@
         chart.setVisibility([...Array(chart.getLabels().length-1).keys()], false);
     }
 
+    function filter(keyCode, chart, filterStr, reverse) {
+        if (keyCode == 13) {
+            graphLabels = chart.getLabels();
+            matchingIndices = [];
+            for (var i = 1; i < graphLabels.length; i++) {
+                if (graphLabels[i].includes(filterStr)) {
+                    matchingIndices.push(i-1);
+                }
+            chart.setVisibility(matchingIndices, !reverse);
+            }
+        }
+    }
+
     function toggleStacked(isChecked, chart) {
         chart.updateOptions({stackedGraph: isChecked})
     }

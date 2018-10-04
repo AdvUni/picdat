@@ -22,24 +22,37 @@ __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
 # see <http://www.gnu.org/licenses/>.
 
 
-def create_select_buttons(html_document, chart_id):
+def create_chart_buttons(html_document, chart_id):
     """
     Creates two html buttons - 'select all' and 'deselect all' - which allow selecting or
     deselecting all checkboxes and with this all graph lines of one chart at once.
-    :param html_document: The html file, the checkboxes should be written in.
-    :param chart_id: The id of the chart, the checkboxes should belong to.
+    Additionally, creates a toggle button called 'stacked', which toggles the dygraphs option
+    'stacked'. Further, creates a text field which is for filtering the visible graph lines and a
+    second toggle button which can reverse the filter.
+    :param html_document: The html file, the chart buttons should be written in.
+    :param chart_id: The id of the chart, the buttons should belong to.
     :return: None
     """
     html_document.write('<div class="chartbuttondiv">\n')
-    html_document.write('    <button type="button" class="selectbtn" onclick="selectAll(this, '
-                        +chart_id + ', ' + "'" + chart_id + "'"
-                        +')">select all</button>' + '\n')
+    # select button
+    html_document.write('    <button type="button" class="selectbtn" onclick="selectAll(this, %s'
+                        ')">select all</button>\n' % chart_id)
+    # deselect button
     html_document.write('    <button type="button" class="selectbtn" onclick="deselectAll(this, '
-                        +chart_id + ', ' + "'" + chart_id + "'"
-                        +')">deselect all</button>' + '\n')
-    html_document.write('<div class="checkdiv"><label><input type="checkbox" '
+                        '%s)">deselect all</button>\n' % chart_id)
+    # stacked toggle button / checkbox
+    html_document.write('    <div class="checkdiv"><label><input type="checkbox" '
                         'onclick="toggleStacked(this.checked, %s)">'
                         '<span>stacked</span></label></div>\n' % chart_id)
+
+    reverse_filter_id = chart_id + '_filter'
+    # filter text field
+    html_document.write('    <input type="text" onkeypress="filter(event.keyCode, %s, this.value, '
+                        'document.getElementById(\'%s\').checked)">\n'
+                        % (chart_id, reverse_filter_id))
+    # reverse filter toggle button / checkbox
+    html_document.write('    <div class="checkdiv"><label><input type="checkbox" id="%s">'
+                        '<span>reverse filter</span></label></div>\n' % reverse_filter_id)
     html_document.write('</div>\n')
 
 
@@ -142,7 +155,7 @@ def create_html(html_filepath, csv, html_title, label_dict, compact_file):
                                     +'); </script>')
 
                 # create 'select all' and 'deselect all' buttons
-                create_select_buttons(html_document, chart_ids[chart_nr])
+                create_chart_buttons(html_document, chart_ids[chart_nr])
             html_document.write('</div>\n')
 
         # end html document
