@@ -50,21 +50,12 @@
         document.documentElement.scrollTop = 0;
     }
 
-    function getAllGraphIndices(chartName) {
-        var legend_dashes = document.getElementsByName(chartName);
-        var indicesArray = [];
-        for (var i = 0, n = legend_dashes.length; i < n; i++) {
-            indicesArray.push(i);
-        }
-        return indicesArray;
+    function selectAll(button, chart) {
+        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], true);
     }
 
-    function selectAll(button, chart, name) {
-        chart.setVisibility(getAllGraphIndices(name), true);
-    }
-
-    function deselectAll(button, chart, name) {
-        chart.setVisibility(getAllGraphIndices(name), false);
+    function deselectAll(button, chart) {
+        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], false);
     }
 
     function toggleStacked(isChecked, chart) {
@@ -81,7 +72,7 @@
                    // Add a name and a 'onClick' function to legend dashes, to enable graph
                    // selection and deselection by clicking them
                     var oldDash = series.dashHTML;
-                    var dashInsertion = 'name="' + chartID + '" onClick="' + chartID +
+                    var dashInsertion = 'onClick="' + chartID +
                         '.setVisibility(' + series.graphIndex + ', ' + !series.isVisible + ');"';
                     var newDash = oldDash.substr(0, oldDash.indexOf(' ')) + ' ' + dashInsertion +
                         ' ' + oldDash.substr(oldDash.indexOf(' ')+1);
