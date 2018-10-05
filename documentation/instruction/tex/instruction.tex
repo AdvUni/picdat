@@ -26,6 +26,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{hyperref}
+\usepackage[export]{adjustbox}
 
 \definecolor{grey}{rgb}{0.8, 0.8, 0.8}
 \definecolor{darkblue}{rgb}{0.15, 0.38, 0.61}
@@ -227,13 +228,25 @@ For ASUP data in \textcolor{darkblue}{JSON} format, PicDat currently reads nothi
 If anything wents wrong with time zone conversion, it is also possible, that you read \textit{timzone: None} at the top of your HTML document. In this case, it might even be possible (particulary for Perfstats) that time stamps in different charts belong to different time zones. Maybe, PicDat's logging output gives you more information.
 \end{frame}
 
-
 \section{Interactive charts}
+
+\subsection{Interactive charts -- tabs}
+\begin{frame}
+\frametitle{Interactive charts -- tabs}
+The Job of PicDat is to pick and visualize some of the various information given with the input. The charts.html files contain multiple labeled charts offering some interaction.
+\bigskip
+
+The charts are arranged within several Tabs. If you open a charts.html file in your browser, at first you will see a title, containing cluster name, node name and timezone, as well as a tab bar with several items. Click one of the tabs to see the charts it contains.
+\bigskip
+
+\begin{figure}
+        \includegraphics[width=0.7\textwidth, left]{../images/PicDat_tabs.png}
+\end{figure}
+\end{frame}
+
 \subsection{Interactive charts -- legend}
 \begin{frame}
 \frametitle{Interactive charts -- legend}
-The Job of PicDat is to pick and visualize some of the various information given with the input. The charts.html files contain multiple labeled charts offering some interaction. They are arranged in several Tabs.
-
 \begin{figure}
 	\includegraphics[width=\textwidth]{../images/PicDat_highlight2.png}
 \end{figure}
@@ -268,7 +281,22 @@ To zoom inside the charts, just click and drag them in x or y direction. Once zo
 \end{figure}
 
 You might wish to take some graph lines out of view. Therefore, click one of the colored boxes inside the legend. It'll turn to black and the corresponding graph will disappear from sight. Click it again and the graph will come back. To select or deselect all lines at once, use the buttons beneath the chart.
+
 Note, that disabled graphs disappear from the legend whereas your cursor is on the chart. Entries, belonging to graphs with a gap at the place your cursor recently is, will disappear as well. So don't be confused if the legend will bounce a bit as you move your mouse.
+\end{frame}
+
+\subsection{Interaktive charts -- filter}
+\begin{frame}
+\frametitle{Interaktive charts -- filter}
+\begin{figure}
+	\includegraphics[width=0.8\textwidth, left]{../images/PicDat_filter.png}
+\end{figure}
+
+If you have many entries in your legend, it might be a pain to select each per mouse click. Instead, you can use the new filtering feature by typing any string into the text field beneath the chart and pressing enter. The filter will perform a select on each legend entry, which contains the fitlering string. If you toggle the 'reverse' button next to the filter field, the filter performs a deselect instead.
+
+Note, that the filter has no effect on the legend entries which do not match the string. So, if all graph lines are already selected and you apply the filter without 'reverse', nothing will happen at all. This behaviour enables you to perform some more complex filtering. For example, if you want to select all instances which contain string A, but not string B, press 'deselect all' first, enter 'A' to the filter field, then toggle the 'reverse' button and finally filter for 'B'.
+
+The filter field does not understand regular expressions.
 \end{frame}
 
 \subsection{Interactive charts -- rolling average}
