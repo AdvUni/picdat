@@ -156,7 +156,7 @@ class Table:
                     value_row.append(row_dict[column])
                 else:
                     value_row.append(' ')
-                    logging.info('Gap in table: Value is missing in row %s, column %s',
+                    logging.warning('Gap in table: Value is missing in row %s, column %s',
                                  str(row), column)
             value_rows.append(value_row)
 
