@@ -50,12 +50,20 @@
         document.documentElement.scrollTop = 0;
     }
 
+    function range(number) {
+        rangeArray = [];
+        for (var i = 0; i < number; i++) {
+            rangeArray.push(i);
+        }
+        return rangeArray;
+    }
+
     function selectAll(button, chart) {
-        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], true);
+        chart.setVisibility(range(chart.getLabels().length-1), true);
     }
 
     function deselectAll(button, chart) {
-        chart.setVisibility([...Array(chart.getLabels().length-1).keys()], false);
+        chart.setVisibility(range(chart.getLabels().length-1), false);
     }
 
     function filter(keyCode, chart, filterStr, reverse) {
@@ -63,7 +71,7 @@
             graphLabels = chart.getLabels();
             matchingIndices = [];
             for (var i = 1; i < graphLabels.length; i++) {
-                if (graphLabels[i].includes(filterStr)) {
+                if (graphLabels[i].indexOf(filterStr) !== -1) {
                     matchingIndices.push(i-1);
                 }
             }
