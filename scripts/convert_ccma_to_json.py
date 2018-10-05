@@ -106,7 +106,8 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
         input_data = opts['--input']
     else:
         while True:
-            input_data = input('Please enter a path to a ASUP tgz or to a dir with several tgz or with ccma files:' + os.linesep)
+            input_data = input('Please enter a path to a ASUP tgz or to a dir with several tgz or '
+                               'with ccma files:' + os.linesep)
 
             if os.path.isfile(input_data) or os.path.isdir(input_data):
                 break
