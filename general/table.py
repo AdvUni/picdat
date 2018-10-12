@@ -109,13 +109,13 @@ class Table:
                         else:
                             value_dict[column_name] = float(value)
                     except ValueError:
-                        logging.warning('Found value, which is not convertible to float: %s - '
+                        logging.warning('Found a value which is not convertible to float: %s - '
                                         '%s', column_name, value)
                         raise
             logging.debug('value dict: %s', value_dict)
             return sorted(value_dict, key=value_dict.get, reverse=True)
         except ValueError:
-            logging.error('Was not able to sort columns by relevance. Sorting them by name '
+            logging.error('Unable to sort columns by relevance. Sorting them by name '
                           'instead.')
 
             column_names = set()

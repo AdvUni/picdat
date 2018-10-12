@@ -65,7 +65,7 @@ def get_log_level(log_level_string):
     try:
         return log_level_dict[log_level_string]
     except KeyError:
-        logging.error('No log level like \'%s\' exists. Try one of those: %s', log_level_string,
+        logging.error('Unknown log level \'%s\'. Try one of those: %s', log_level_string,
                       [entry for entry in log_level_dict])
         sys.exit(1)
 
@@ -109,7 +109,7 @@ def take_input_file():
     input.
     """
     while True:
-        input_file = input('Please enter a path to some performance output (folder or zipfolder '
+        input_file = input('Please enter a path to some performance output (folder or zipfile '
                            'or .data or .out or .json file or .tgz archive):' + os.linesep)
 
         try:
@@ -129,7 +129,7 @@ def take_directory():
     :return: The path to the directory, the results should be written in
     """
     destination_directory = input('Please select a destination directory for the results ('
-                                  'Default is ./results):' + os.linesep)
+                                  'default is ./results):' + os.linesep)
     if destination_directory == '':
         destination_directory = 'results'
 
@@ -257,9 +257,9 @@ def ccma_check(filenames):
     """
     if 'PERFORMANCE-ARCHIVES.TAR' in filenames or any(
         [('CM-STATS-HOURLY-DATA-' in file and '.TAR' in file) for file in filenames]):
-        logging.info('Seems like you gave some ASUP as input, which contains performance data not '
-                     'in xml format, but in ccma files. PicDat can\'t read those files just like '
-                     'that. Use Trafero to convert the ASUP into JSON first. Then pass the .json '
+        logging.info('It looks like you gave an ASUP file as input which contains performance data '
+                     'in ccma format instead of xml. PicDat can\'t read those files as-is. '
+                     'Use Trafero to convert the ASUP into JSON first. Then pass the .json '
                      'files to PicDat.')
         sys.exit(0)
 
@@ -288,16 +288,16 @@ def extract_tgz(dir_path, tgz_file, data_name_extension=None):
         except KeyError:
             ccma_check(tar.getnames())
             logging.info(
-                'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML file. You '
-                'gave a tgz archive which does not contain them. Quit program.')
+                'PicDat needs CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML files. You '
+                'provided a tgz archive which does not contain them. Quitting.')
             sys.exit(0)
         try:
             tarmembers.append(tar.getmember(asup_xml_header_file))
             asup_xml_header_file = os.path.join(dir_path, asup_xml_header_file)
         except KeyError:
             logging.info(
-                'You gave a tgz archive without a HEADER file. This means, some meta data for '
-                'charts are missing such as node and cluster name.')
+                'You provided a tgz archive without a HEADER file. This means that some metadata '
+                'for charts will be missing, such as node and cluster name.')
             asup_xml_header_file = None
 
         tar.extractall(dir_path, members=tarmembers)
