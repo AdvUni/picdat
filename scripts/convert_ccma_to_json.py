@@ -23,8 +23,8 @@ REQUEST_HEADER = {'Content-Type': 'application/json', 'Accept': 'application/jso
 
 def get_log_level(log_level_string):
     """
-    Turns a string into a log level, the logging module can understand
-    :param log_level_string: A String representing a log level like 'info' or 'error'.
+    Turns a string into a log level that the logging module can understand
+    :param log_level_string: A String representing a log level, like 'info' or 'error'.
     :return: A constant from the logging module, representing a log level.
     """
     log_level_dict = {
@@ -42,7 +42,7 @@ def get_log_level(log_level_string):
     try:
         return log_level_dict[log_level_string]
     except KeyError:
-        logging.error('No log level like \'%s\' exists. Try one of those: %s', log_level_string,
+        logging.error('No log level \'%s\' exists. Try one of those: %s', log_level_string,
                       [entry for entry in log_level_dict])
         sys.exit(1)
 
@@ -69,16 +69,16 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 
     --help, -h: prints this message
                       
-    --input "input", -i "input": input is the path to an ASUP tgz archive or to a directory. In
+    --input "path", -i "path":   specify the path to an ASUP tgz archive or to a directory. In
                                  case of a directory, it must either contain several ASUP tgz
                                  archives belonging all to the same cluster and node, or several
                                  ccma files, which are files ending with 'ccma.gz' or 'ccma.meta'.
                                  
-    --outputdir "output", -o "output": output is the directory's path where the results will be
-                                       put. If the directory does not exist yet, it will be created.
+    --outputdir "path", -o "path": specify the directory's path where the results will be
+                                 put. If the directory does not exist yet, it will be created.
                                        
-    --debug "level", -d "level": level must be one of debug, info, warning, error, critical. It
-                                 specifies the diagnostic level of the console output of this
+    --debug "level", -d "level": level must be one of debug, info, warning, error, critical.
+                                 Specify the diagnostic level of the console output of this
                                  program. Default is "info".
                                  
     --logfile, -l: redirects logging information into a file called conversion.log.
@@ -148,7 +148,7 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
 def read_config():
     """
     Reads config.yml file.
-    :return: path to location, which is mapped to Trafero's 'ccma' volume; Trafero's address; dict
+    :return: path to location which is mapped to Trafero's 'ccma' volume; Trafero's URL endpoint; dict
     of objects and counters.
     """
     try:
@@ -174,8 +174,8 @@ def determine_input(input_data):
     Decides whether input is of ingest_type 'asup' or 'ccma'.
     :param input_data: The script's user input.
     :return: A list and a Boolean. The list contains all absolute file paths of the input, which
-    have file extension 'tgz'. The boolean says, whether input data is of kind 'asup' (or 'ccma',
-    if False). If the boolean is False, which means, the data is of kind 'ccma', the list is empty.
+    have file extension 'tgz'. The boolean specifies whether input data is of kind 'asup' (if True)
+    or 'ccma' (if False). In the latter case, the list is empty.
     """
 
     if os.path.isfile(input_data):
@@ -192,7 +192,7 @@ def determine_input(input_data):
 
 def copy_ccmas(source_dir, destination_dir):
     """
-    Copies all files from source_dir to destination_dir, which contain 'ccma' in their names.
+    Copies all files that have 'ccma' in their filename from source_dir to destination_dir
     :param: destination_dir: destination directory.
     :param: source_dir: source directory.
     """
@@ -205,7 +205,7 @@ def copy_ccmas(source_dir, destination_dir):
 def unpack_tgz(destination_dir, tgz):
     """
     Unpacks an ASUP tgz file into destination directory.
-    :param destination_dir: absolute path to an empty directory for unpacking tgz inside. Should
+    :param destination_dir: absolute path to an empty directory for unpacking tgz. Should
     probably be inside the location, which is mapped to the Trafero volume 'ccma'.
     :param tgz: path to ASUP tgz file.
     :return: None.
@@ -225,7 +225,7 @@ def unpack_tgz(destination_dir, tgz):
 
     except tarfile.ReadError:
         logging.error(
-            'File you gave as input is not a tar file. Input must be an ASUP tgz archive!')
+            'Specified file is not a tgz file. Input must be an ASUP tgz archive!')
         sys.exit(1)
 
 
@@ -248,8 +248,8 @@ def get_list_string(some_list):
 
 def handle_retrieve_error(unexpected_response):
     """
-    If retrieve request fails, there are some known error messages. Here, they get caught to
-    provide the user with more information about this error and to tell him, how he can fix it.
+    If the retrieve request fails, there are some known error messages. Here, they are caught to
+    provide the user with more information about the error and information on how to fix it.
     :param unexpected_response: http response which probably contains an error.
     :return: (cluster, node) or (None, None)
     """
@@ -258,7 +258,7 @@ def handle_retrieve_error(unexpected_response):
             # Handle error message, that ASUP is invalid:
             if unexpected_response.json()['errors']['message'] == 'Invalid ASUP directory. ' \
             'Cannot find either hourly or event files in the directory':
-                logging.warning('Trafero rejects ASUP. It seems not to contain the expected '
+                logging.warning('Trafero rejected the ASUP. It seems to not contain the expected '
                                 'performance data. Trafero usually expects either a '
                                 'PERFORMANCE-ARCHIVES.TAR or several '
                                 'CM-STATS-HOURLY-DATA-**.TAR archives inside the ASUP.')
@@ -270,21 +270,21 @@ def handle_retrieve_error(unexpected_response):
             # Handle ccmas, which are already ingested:
                 if 'File already ingested' in unexpected_response.json(
                     )['ingest_results'][0]['errors']['message']:
-                    logging.error('It seems like some or all of the ccma files from your input '
+                    logging.error('It seems that some or all of the ccma files from your input '
                                   'are already ingested in Trafero. Unfortunately, Trafero does not '
                                   'specify in its response for which cluster/node the ccma files are '
-				  'already ingested. So, this program cannot continue with '
+				  'already ingested. So this program cannot continue with '
                                   'retrieving values from these files. Can you manually enter the '
                                   'cluster and the node name? Otherwise, just press Enter and fix '
 				  'this issue by deleting everything from the folder which is mapped '
-                                  'to Trafero\'s "hdf5" volume, and then running this script again.')
+                                  'to Trafero\'s "hdf5" volume, and then run this script again.')
                     cluster = input('Please enter cluster name: ')
                     if not cluster:
-                        logging.info('Quit Program.')
+                        logging.info('Quitting program.')
                         sys.exit(1)
                     node = input('Please enter node name: ')
                     if not node:
-                        logging.info('Quit Program.')
+                        logging.info('Quitting program.')
                         sys.exit(1)
                     return cluster, node
 
