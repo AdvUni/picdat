@@ -1,17 +1,18 @@
 # PicDat #
 
-The aim of PicDat is to provide better insight to performance data from NetApp
-controllers. There is a utitily from NetApp called PerfStat which allows to
-collect a huge number of performance counters. The drawback is that PerfStat
-generates one large text file, which is very cumbersome to analyse. 
+The aim of PicDat is to provide better insight into performance data from NetApp
+controllers. There is a utitily from NetApp called PerfStat which can collect
+a huge number of performance counters. The main drawback is that PerfStat
+generates one large text file, often more than 100 mb in size, which is very
+cumbersome to analyze.
 
-PicDat selects some of the counters which are typically sufficient for the 
-analysis and writes them to several csv files. 
+PicDat selects some of the counters which are typically sufficient for
+performance analysis, and writes them to seperate csv files.
 
-Similary, PicDat can handle ASUP xml performance data.
+Additionally, PicDat can handle ASUP xml performance data, that can be downloaded
+from the NetApp support site.
 
-To generate graphs we use the tool dygraphs in a second step.
-
+To generate the graphs, PicDat uses the tool dygraphs in a second step.
 
 ## General usage: ##
 
@@ -51,7 +52,7 @@ python picdat.py -i"</path/to/input>" -o"</path/to/output>"
 
 ## Requirements: ##
 
-Following python modules are required to run PicDat:
+The following Python modules are required to run PicDat:
 
 * ijson
 * tzlocal
@@ -61,3 +62,4 @@ The script `convert_ccma_to_json` requires:
 
 * yaml
 * requests
+
