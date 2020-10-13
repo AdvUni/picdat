@@ -91,9 +91,9 @@ def start_picdat():
                     if os.path.isfile(os.path.join(input_file, constants.ASUP_HEADER_FILE)):
                         asup_xml_header_file = os.path.join(input_file, constants.ASUP_HEADER_FILE)
                     else:
-                        logging.info('You gave a directory without a HEADER file. This means, some '
-                                     'meta data for charts are missing such as node and cluster '
-                                     'name.')
+                        logging.info('You specified a directory that does not contain a HEADER file.'
+			             'This means, some metadata for charts will be missing, such as '
+				     'node and cluster name.')
 
                 # check whether at least one file is of json data type
                 elif any(picdat_util.data_type(file) == 'json'
@@ -162,14 +162,14 @@ def start_picdat():
         # start web server if initiated with command line option
         if webserver:
             logging.info('Starting local web server... ')
-            logging.info('Open \'localhost:8000\' in browser for viewing charts.')
+            logging.info('Open \'http://localhost:8000\' in your browser to view the charts.')
             logging.info('Hit ctrl+C to terminate web server (might be necessary several times)')
 
             os.chdir(os.path.abspath(result_dir))
             server = http.server.HTTPServer(('', 8000), http.server.SimpleHTTPRequestHandler)
             server.serve_forever()
         else:
-            logging.info('Done. You will find charts under: %s', os.path.abspath(result_dir))
+            logging.info('Done. You will find the charts under: %s', os.path.abspath(result_dir))
 
     finally:
         # delete temporarily extracted files

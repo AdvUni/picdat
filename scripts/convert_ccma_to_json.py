@@ -70,17 +70,16 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
     --help, -h: prints this message
                       
     --input "input", -i "input": input is the path to an ASUP tgz archive or to a directory. In
-                                 case of a directory, it must either contain again several ASUP tgz
+                                 case of a directory, it must either contain several ASUP tgz
                                  archives belonging all to the same cluster and node, or several
                                  ccma files, which are files ending with 'ccma.gz' or 'ccma.meta'.
                                  
-    --outputdir "output", -o "output": output is the directory's path, where this program puts its
-                                       results. If there is no directory existing yet under this
-                                       path, one would be created.
+    --outputdir "output", -o "output": output is the directory's path where the results will be
+                                       put. If the directory does not exist yet, it will be created.
                                        
-    --debug "level", -d "level": level should be inside debug, info, warning, error, critical. It
-                                 describes the filtering level of command line output during
-                                 running this program. Default is "info".
+    --debug "level", -d "level": level must be one of debug, info, warning, error, critical. It
+                                 specifies the diagnostic level of the console output of this
+                                 program. Default is "info".
                                  
     --logfile, -l: redirects logging information into a file called conversion.log.
         ''' % argv[0])
@@ -106,8 +105,8 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
         input_data = opts['--input']
     else:
         while True:
-            input_data = input('Please enter a path to a ASUP tgz or to a dir with several tgz or '
-                               'with ccma files:' + os.linesep)
+            input_data = input('Please enter a path to an ASUP tgz file, or to a directory with several '
+                               'tgz or ccma files:' + os.linesep)
 
             if os.path.isfile(input_data) or os.path.isdir(input_data):
                 break
@@ -123,7 +122,7 @@ usage: %s [--help] [--input "input"] [--outputdir "output"] [--debug "level"]
     elif '--outputdir' in opts:
         output_dir = opts['--outputdir']
     else:
-        output_dir = input('Please select a destination directory for the json files. ('
+        output_dir = input('Please enter a destination directory for the json files. ('
                                       'Default is ./picdat_json_files):' + os.linesep)
         if output_dir == '':
             output_dir = 'picdat_json_files'
@@ -162,7 +161,7 @@ def read_config():
 
         return trafero_in_dir, trafero_address, objects
     except FileNotFoundError:
-        logging.error('No config file. Script needs a file named config.yml in the same location.')
+        logging.error('No config file. This script needs a file called config.yml in the working directory.')
         sys.exit(1)
     except KeyError:
         logging.error('Invalid config file. config.yml needs to include entries '
@@ -219,9 +218,9 @@ def unpack_tgz(destination_dir, tgz):
         if 'CM-STATS-HOURLY-INFO.XML' in os.listdir(destination_dir) \
         and 'CM-STATS-HOURLY-DATA.XML' in os.listdir(destination_dir):
             logging.info('Found files called CM-STATS-HOURLY-INFO.XML and CM-STATS-HOURLY-DATA.XML'
-                         ' in your ASUP. This means probably, that your performance data has xml '
-                         'format and not ccma. Trafero is not able to convert it. But, if you '
-                         'wish to visualise the ASUP, just pass it directly to PicDat.')
+                         'in your ASUP. This probably means that your performance data is in xml '
+                         'format instead of ccma. Trafero is not able to convert it. If you '
+                         'want to visualise the ASUP, just pass it to PicDat directly.')
             sys.exit(0)
 
     except tarfile.ReadError:
@@ -272,14 +271,13 @@ def handle_retrieve_error(unexpected_response):
                 if 'File already ingested' in unexpected_response.json(
                     )['ingest_results'][0]['errors']['message']:
                     logging.error('It seems like some or all of the ccma files from your input '
-                                  'are already ingested in Trafero. Unfortunately, Trafero don\'t '
-                                  'want to tell in its response, for which cluster/node'
-                                  ' the ccma files are already ingested. '
-                                  'So, program can\'t go on with '
-                                  'retrieving values from them. Can you manually enter the '
-                                  'cluster and the node name? Otherwise, you can fix this issue '
-                                  'with deleting everything from the folder, which is mapped to '
-                                  'Trafero\'s "hdf5" volume and running the script again.')
+                                  'are already ingested in Trafero. Unfortunately, Trafero does not '
+                                  'specify in its response for which cluster/node the ccma files are '
+				  'already ingested. So, this program cannot continue with '
+                                  'retrieving values from these files. Can you manually enter the '
+                                  'cluster and the node name? Otherwise, just press Enter and fix '
+				  'this issue by deleting everything from the folder which is mapped '
+                                  'to Trafero\'s "hdf5" volume, and then running this script again.')
                     cluster = input('Please enter cluster name: ')
                     if not cluster:
                         logging.info('Quit Program.')
@@ -291,8 +289,8 @@ def handle_retrieve_error(unexpected_response):
                     return cluster, node
 
     logging.error(
-        'Tried to read cluster and node name from Trafero\'s unexpected_response, but is has not '
-        'expected format. Probably, something went wrong. Here is the unexpected_response: %s',
+        'Tried to read cluster and node name from Trafero\'s unexpected_response, but is was not '
+        'in an expected format. Probably, something went wrong. Here is the unexpected_response: %s',
         unexpected_response.text)
     return None, None
 
@@ -410,7 +408,7 @@ def create_random_dir(location):
             os.makedirs(os.path.join(location, random_dir))
             return random_dir
         except FileExistsError:
-            logging.debug('random file name already exists: %s, create new file name', random_dir)
+            logging.debug('random file name already exists: %s, generating new file name', random_dir)
 
 
 def run_conversion():
@@ -478,7 +476,7 @@ def run_conversion():
         # check, if any ingestion was successful
         if not cluster and not node:
             logging.info('It seems like none of your input was ingested successfully. Hence,'
-                         'can\'t retrieve any values. Quit program.')
+                         'can\'t retrieve any values. Quitting.')
             sys.exit(0)
 
         # Trafero retrieve values: Download data in json format from Trafero database
