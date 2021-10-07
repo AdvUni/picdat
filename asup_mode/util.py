@@ -11,8 +11,8 @@ except ImportError:
     print('Warning: Module tzlocal is not installed. PicDat won\'t be able to determine '
           'your local time zone. This is probably no problem if you\'re trying to run PicDat in '
           'perfstat mode or in asup xml mode, as those performance data usually provide their own '
-          'time zone information. But for asup json mode, PicDat will not be able to say, to '
-          'which time zone the time stamps in the charts belong.')
+          'time zone information. But for asup json mode, PicDat will not be able to determine '
+          'the time zone for the time stamps in the charts.')
 
 __author__ = 'Marie Lohbeck'
 __copyright__ = 'Copyright 2018, Advanced UniByte GmbH'
@@ -136,7 +136,7 @@ def build_label_dict(asup_container):
     :param asup_container: xml_container, json_container, or hdf5_container object. Those container
     object does have a similar structure, so their labels can be gathered in the same way by this
     function.
-    :return: all mentioned information, packed into a dict
+    :return: a dictionary containing all mentioned information
     """
 
     timezone = str(asup_container.timezone)
